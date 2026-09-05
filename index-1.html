@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>RMI · Visualize your roof — mockup v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#12213A; --navy-2:#1C3255; --ink:#22303F; --mute:#6B7684;
+    --line:#D5DAE0; --paper:#FBFBF9; --sky:#E6EAEE;
+    --gold:#D9A21B; --gold-2:#B8860B; --silver:#C3C7CC; --white-plus:#F1F0EB;
+    --ok:#2F7D4F; --warn:#B45309;
+    --rail:300px; --foot:168px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{font-family:"Barlow",system-ui,sans-serif;color:var(--ink);background:var(--paper);overflow:hidden}
+  button,input,select{font:inherit}
+
+  #app{display:grid;position:fixed;inset:0;height:100%;overflow:hidden;grid-template-columns:var(--rail) minmax(0,1fr);grid-template-rows:56px minmax(0,1fr) var(--foot);
+       grid-template-areas:"head head" "rail view" "rail foot"}
+  header{grid-area:head;background:var(--navy);color:#fff;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:3px solid var(--gold)}
+  header .mark{font-family:"Barlow Semi Condensed";font-weight:700;font-size:22px;letter-spacing:.5px}
+  header .mark b{color:var(--gold)}
+  header .sub{font-size:14px;opacity:.8}
+  header .mock{margin-left:auto;font-size:12px;border:1px solid rgba(255,255,255,.35);padding:3px 8px;border-radius:3px;opacity:.85}
+
+  aside{grid-area:rail;min-height:0;background:#fff;border-right:1px solid var(--line);overflow-y:auto;padding:16px 18px 24px}
+  aside h2{font-family:"Barlow Semi Condensed";font-size:15px;font-weight:700;margin:18px 0 8px;color:var(--navy)}
+  aside h2:first-child{margin-top:0}
+  .field{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .field select,.field input[type=number]{border:1px solid var(--line);border-radius:3px;padding:4px 6px;background:#fff;max-width:160px;font-size:13px}
+  .field input[type=number]{width:110px;text-align:right}
+  .checks{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:13px;padding-top:6px}
+  .checks label{display:flex;gap:6px;align-items:center;padding:5px 6px;border:1px solid var(--line);border-radius:3px;cursor:pointer}
+  .checks label.off{color:var(--mute)}
+  .checks input{accent-color:var(--navy)}
+  .seg{display:flex;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .seg button{flex:1;padding:6px 4px;border:0;background:#fff;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .seg button.on{background:var(--navy);color:#fff}
+  .swatch{width:12px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.2);display:inline-block}
+  .toggle{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:14px;border-bottom:1px solid var(--line)}
+  .toggle input{accent-color:var(--navy);transform:scale(1.15)}
+  .est{font-size:13px;border:1px solid var(--line);border-radius:3px;padding:8px 10px;background:#FAFAF8}
+  .est table{width:100%;border-collapse:collapse}
+  .est td{padding:3px 0}
+  .est td:last-child{text-align:right;font-weight:600}
+  .est .note{color:var(--mute);font-size:12px;margin-top:6px;line-height:1.35}
+  .cta{width:100%;margin-top:14px;background:var(--gold);color:var(--navy);border:0;padding:11px;border-radius:3px;font-weight:700;cursor:pointer;font-size:14px}
+  .cta:hover{background:var(--gold-2);color:#fff}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.3px;padding:1px 5px;border-radius:2px;vertical-align:middle}
+  .tag.v{background:#E3F1E8;color:var(--ok)}
+  .tag.a{background:#FBEBD6;color:var(--warn)}
+  .pattern{font-size:12px;color:var(--mute);margin:6px 0 0;line-height:1.35}
+
+  main{grid-area:view;position:relative;min-height:0;min-width:0;overflow:hidden;background:linear-gradient(#DCE3E9,#EEF1F4 60%,#F4F5F6)}
+  canvas{display:block;position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+  .viewbar{position:absolute;top:12px;left:12px;display:flex;gap:8px;align-items:center}
+  .chip{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:3px;padding:6px 10px;font-size:13px;display:flex;gap:8px;align-items:center;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+  .chip b{color:var(--navy)}
+  .chip button{border:0;background:var(--navy);color:#fff;padding:3px 8px;border-radius:2px;cursor:pointer;font-size:12px}
+  .hint{position:absolute;right:12px;top:12px;font-size:12px;color:var(--mute);background:rgba(255,255,255,.8);padding:4px 8px;border-radius:3px}
+  .hot{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;pointer-events:none}
+  .hot button{pointer-events:auto;background:#fff;border:1.5px solid var(--navy);color:var(--navy);border-radius:3px;padding:4px 8px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+  .hot button:hover{background:var(--navy);color:#fff}
+  .hot i{width:2px;height:22px;background:var(--navy);display:block}
+  .hot.hide{display:none}
+  .layers{position:absolute;right:12px;bottom:12px;width:240px;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:3px;padding:10px 12px;font-size:12.5px;display:none}
+  .layers.show{display:block}
+  .layers h3{margin:0 0 6px;font-size:13px;font-family:"Barlow Semi Condensed";color:var(--navy)}
+  .layers .row{display:flex;align-items:center;gap:8px;padding:4px 0;color:var(--mute)}
+  .layers .row.on{color:var(--ink);font-weight:600}
+  .layers .row .swatch{width:26px;height:10px;border-radius:1px;flex:none}
+  .layers .src{margin-top:6px;color:var(--mute);font-size:11.5px;line-height:1.35}
+
+  footer{grid-area:foot;min-height:0;overflow:hidden;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0}
+  .stages{padding:12px 18px;display:flex;flex-direction:column;gap:8px}
+  .stagebar{display:flex;gap:6px;align-items:stretch}
+  .stagebar button{flex:1;border:1px solid var(--line);background:#fff;border-radius:3px;padding:7px 6px;text-align:left;cursor:pointer;line-height:1.15;position:relative;overflow:hidden}
+  .stagebar button small{display:block;color:var(--mute);font-size:11px}
+  .stagebar button b{font-size:13px;font-family:"Barlow Semi Condensed";color:var(--navy)}
+  .stagebar button.on{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy)}
+  .stagebar button.done{background:#F6F7F8}
+  .stagebar button .bar{position:absolute;left:0;bottom:0;height:3px;background:var(--gold);width:0}
+  .controls{display:flex;gap:8px;align-items:center}
+  .controls button{border:1px solid var(--navy);background:var(--navy);color:#fff;border-radius:3px;padding:6px 12px;cursor:pointer;font-weight:600;font-size:13px}
+  .controls button.ghost{background:#fff;color:var(--navy)}
+  .controls .step{display:flex;gap:4px}
+  .controls .step button{padding:6px 10px}
+  .desc{padding:12px 18px 12px 14px;border-left:1px solid var(--line);font-size:13px;line-height:1.4;overflow:auto}
+  .desc h3{margin:0 0 4px;font-size:15px;font-family:"Barlow Semi Condensed";color:var(--navy);display:flex;gap:8px;align-items:center}
+  .desc p{margin:0 0 4px}
+  .desc .src{color:var(--mute);font-size:12px}
+
+  .modal{position:fixed;inset:0;background:rgba(18,33,58,.55);display:none;align-items:center;justify-content:center;z-index:20}
+  .modal.show{display:flex}
+  .modal .box{background:#fff;width:min(560px,92vw);max-height:86vh;overflow:auto;border-radius:4px;padding:18px 20px;border-top:4px solid var(--gold)}
+  .modal h3{margin:0 0 6px;font-family:"Barlow Semi Condensed";color:var(--navy)}
+  .modal p{font-size:13px;color:var(--mute);margin:0 0 10px}
+  .modal pre{background:#F4F5F7;border:1px solid var(--line);padding:10px;font-size:12px;overflow:auto;border-radius:3px}
+  .modal .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+  .modal .actions button{border:1px solid var(--navy);background:var(--navy);color:#fff;padding:7px 12px;border-radius:3px;cursor:pointer}
+  .modal .actions button.ghost{background:#fff;color:var(--navy)}
+
+  #railToggle{display:none}
+  @media (max-width:820px){
+    :root{--foot:190px}
+    #app{grid-template-columns:minmax(0,1fr);grid-template-rows:56px minmax(0,1fr) var(--foot);grid-template-areas:"head" "view" "foot"}
+    aside{position:fixed;top:56px;bottom:0;left:0;width:min(88vw,320px);transform:translateX(-100%);transition:transform .25s;z-index:10;box-shadow:4px 0 16px rgba(0,0,0,.15)}
+    aside.open{transform:none}
+    #railToggle{display:inline-block;border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:3px;padding:4px 9px;cursor:pointer;font-size:13px}
+    header .sub{display:none}
+    header .mark{font-size:18px}
+    header .mock{font-size:11px;padding:2px 6px}
+    footer{grid-template-columns:minmax(0,1fr)}
+    .stagebar{gap:4px}
+    .stagebar button{padding:6px 4px}
+    .stagebar button b{font-size:12px}
+    .desc{border-left:0;border-top:1px solid var(--line);padding:8px 14px;font-size:12.5px}
+    .stagebar button small{display:none}
+    .layers{width:190px;font-size:12px}
+    .hint{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){ aside{transition:none} }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <button id="railToggle" aria-label="Open options">Options</button>
+    <div class="mark">RMI <b>·</b> Visualize your roof</div>
+    <div class="sub" id="subTitle"></div>
+    <div class="mock">Mockup — not RMI spec</div>
+  </header>
+
+  <aside id="rail">
+    <h2>Your building</h2>
+    <div class="field"><label for="bld">Building type</label><select id="bld"></select></div>
+    <div class="field"><label for="roof">Roof type</label><select id="roof"></select></div>
+    <div class="pattern" id="patternNote"></div>
+    <div class="toggle"><label for="cond" id="condLabel">Existing condition</label><input type="checkbox" id="cond" checked></div>
+
+    <h2>What's on the roof</h2>
+    <div class="checks" id="detailChecks"></div>
+
+    <h2>Finish</h2>
+    <div class="seg" id="topcoat">
+      <button class="on" data-v="thane"><span class="swatch" style="background:#C3C7CC"></span>RMI-Thane</button>
+      <button data-v="white"><span class="swatch" style="background:#F1F0EB"></span>RMI-White Plus</button>
+    </div>
+    <div class="toggle" style="margin-top:8px"><label for="solar">Add Solar Post supports</label><input type="checkbox" id="solar"></div>
+
+    <h2>Roof size (optional)</h2>
+    <div class="field"><label for="sqft">Approx. square feet</label><input type="number" id="sqft" value="9600" min="500" step="100"></div>
+    <div class="est" style="margin-top:10px">
+      <table id="estTable"></table>
+      <div class="note">Material estimate from RMI spec-plate coverage rates. Per-detail allowances are <span class="tag a">ASSUMED</span> until RMI supplies figures. Not a bid — no pricing here; an RMI rep or contractor prices the job.</div>
+    </div>
+    <button class="cta" id="emailBtn">Email me this configuration</button>
+  </aside>
+
+  <main id="view">
+    <canvas id="c"></canvas>
+    <div class="viewbar"><div class="chip" id="viewChip"><b>Whole roof</b><span id="viewName"></span><button id="backBtn" style="display:none">Back to roof</button></div></div>
+    <div class="hint">Drag to orbit · scroll to zoom · click a marker to zoom in</div>
+    <div id="hots"></div>
+    <div class="layers" id="layers"></div>
+  </main>
+
+  <footer>
+    <div class="stages">
+      <div class="stagebar" id="stagebar"></div>
+      <div class="controls">
+        <button id="play">Play all stages</button>
+        <div class="step"><button class="ghost" id="prev">‹</button><button class="ghost" id="next">›</button></div>
+        <span id="scaleNote" style="font-size:12px;color:var(--mute)"></span>
+      </div>
+    </div>
+    <div class="desc" id="desc"></div>
+  </footer>
+</div>
+
+<div class="modal" id="modal"><div class="box">
+  <h3>Configuration sent to RMI</h3>
+  <p>In production this posts to the Webflow form, which fires the webhook → Lambda → ShareFile pipeline and pre-fills an RMI Project Evaluation form. This is the payload it would carry.</p>
+  <pre id="payload"></pre>
+  <div class="actions"><button class="ghost" id="copyBtn">Copy</button><button id="closeBtn">Close</button></div>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* =================================================================
+   DATA. VERIFIED = from an RMI document in project knowledge.
+   ASSUMED = simulated for the mockup; correct via the catalog.
+================================================================= */
+const ROOFS = {
+  rpanel: { label:'R-panel metal', plate:'MP', pattern:'seam', shape:'gable',
+    system:{thane:'MP-10-17-FF-FL48-T17', white:'MP-10-23-FF-FL48-WP23'},
+    rates:{ primerSqFtPerGal:1000, flexGalPerSq:3, topGalPerSq:1.5 },
+    condLabel:'Rust at laps and fasteners',
+    patternNote:'Metal: primer + Flex on seams, laps, fasteners, curbs and penetrations only; full-field topcoat. <span class="tag v">VERIFIED</span> Plate MP',
+    stages:[
+      { key:'existing', name:'Existing roof', short:'Existing', text:'Aged R-panel metal roof. Leaks start where panels overlap: side laps, end laps, and fastener heads. That is exactly where RMI puts the membrane.', src:'Condition list from Plate MP: treat rust, replace defective panels and fasteners.' },
+      { key:'prep', name:'Prep', short:'Prep', text:'Roof is cleaned. Rust is wire-brushed and treated, loose or defective fasteners replaced, voids sealed. An adhesion test is documented before the system goes on.', src:'Plate MP notes 1, 2, 6 and rust treatment (RMI Alto rust inhibitor or Thane at 11 mil).' },
+      { key:'primer', name:'Primer', short:'Primer', text:'RMI primer goes on every surface that will receive Flex: panel seams, laps, fasteners, the curb, and transitions. On metal the field panels stay uncoated at this stage.', src:'Plate MP note 2: primer required under all Flex, min 1 gal per 1,000 sq ft.' },
+      { key:'flex', name:'RMI-Flex', short:'Flex', text:'Flex, the gold fluid-applied membrane, traces every side lap, end lap, and fastener head and wraps the base of the curb. Metal gets Flex only where the roof can leak; the panel field is optional.', src:'Plate MP FL48 flashings — "apply Flex to all seams, laps, transitions, penetrations, drains, scuppers, curbs and fasteners." Order within the roof is ASSUMED.' },
+      { key:'thane', name:'RMI-Thane', short:'Thane', text:'The silver topcoat is sprayed over the entire roof — panels, seams, Flex, and curb become one continuous surface. Thane is a radiant barrier: it reflects heat and protects the Flex underneath from UV.', src:'Plate MP: Thane 17 mil (1.5 gal/sq) for 10-yr, 22 mil (2 gal/sq) for 15-yr. Spray direction is ASSUMED.' },
+      { key:'done', name:'Finished system', short:'Finished', text:'The completed roof. Switch the finish to RMI-White Plus for a bright reflective surface, or add Solar Post supports to see how the mounts are flashed into the system.', src:'System codes MP-10-17-FF-FL48-T17 (Thane) and MP-10-23-FF-FL48-WP23 (White Plus).' }
+    ] },
+  tpo: { label:'TPO / PVC / EPDM single-ply', plate:'SP', pattern:'field', shape:'flat',
+    system:{thane:'SP-10-65-S-F48-T17', white:'SP-10-71-S-F48-WP23'},
+    rates:{ primerSqFtPerGal:650, flexGalPerSq:3, topGalPerSq:1.5 },
+    condLabel:'Failed seams and ponding',
+    patternNote:'Single-ply: full-field primer, full-field Flex at 48 mil, full-field topcoat; seams, curbs and drains get Flex first. <span class="tag v">VERIFIED</span> Plate SP',
+    stages:[
+      { key:'existing', name:'Existing roof', short:'Existing', text:'Aged single-ply membrane — at least five years old, factory luster gone. Seams have opened, water ponds around the drains, and the membrane is chalking. Still sound enough to keep, which is the point: RMI goes over it instead of tearing it off.', src:'Plate SP note 1: minimum 5-yr aged 60 mil TPO / 50 mil PVC / 45 mil EPDM; exposed scrim is not eligible.' },
+      { key:'prep', name:'Prep', short:'Prep', text:'Power wash the whole roof. Repair every seam, rip, tear and slit with the same membrane, reattach anything loose, and run a documented moisture scan — RMI will not go over wet insulation.', src:'Plate SP note 1 and the moisture-scan requirement. Repair placement is ASSUMED.' },
+      { key:'primer', name:'Primer', short:'Primer', text:'RMI primer is rolled or fogged over the entire field, plus the parapet walls, curbs and drain sumps. Unlike metal, every square foot gets primed because every square foot gets Flex.', src:'Plate SP note 2: primer at 1 gal per 600–700 sq ft on smooth single-ply.' },
+      { key:'flex', name:'RMI-Flex', short:'Flex', text:'Flex is rolled over the entire roof at 48 dry mils — 3 gallons per square — and carried up the parapet, around each curb and into every drain sump. The membrane seams disappear under one continuous fluid-applied sheet.', src:'Plate SP: F48 field + all seams, laps, penetrations, drains, scuppers, curbs. Roller direction and detail-before-field order are ASSUMED.' },
+      { key:'thane', name:'RMI-Thane', short:'Thane', text:'The silver topcoat goes over everything — field, parapet, curbs, drain flanges. It shields the Flex from UV and turns the whole roof into one reflective surface.', src:'Plate SP: Thane 17 mil (1.5 gal/sq) for 10-yr, 22 mil (2 gal/sq) for 15-yr.' },
+      { key:'done', name:'Finished system', short:'Finished', text:'The completed roof. Switch to RMI-White Plus — the usual pick on a flat roof — or add Solar Post supports to see the post flashing.', src:'System codes SP-10-65-S-F48-T17 (Thane) and SP-10-71-S-F48-WP23 (White Plus).' }
+    ] }
+};
+
+const DETAILS = {
+  curb:   { name:'Curb-mounted HVAC unit', drawing:'CS-13-MP', concept:'CS13-1-8-3D', dist:21, phi:1.18, theta:0.85, drop:4.6, menu:'HVAC curb',
+    layers:[{k:'existing',label:'Existing metal curb and panel',color:'#AEB3B0'},{k:'primer',label:'Primer on curb wall and panel',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb wall and out onto the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
+    src:'Assembly per CS-13-MP (2D) and CS13-1-8-3D (3D concept). Wrap heights are ASSUMED until measured from the drawing.' },
+  lap:    { name:'R-panel side lap', drawing:'F-8-TYP', concept:'F8-2-FT-3D', dist:8, phi:1.1, theta:0.5, drop:0, menu:'Side laps',
+    layers:[{k:'existing',label:'Overlapping panel edges and fastener',color:'#AEB3B0'},{k:'primer',label:'Primer on the lap and fastener head',color:'#E8D7A6'},{k:'flex',label:'Flex bridges the lap and encapsulates the fastener',color:'#D9A21B'},{k:'thane',label:'Topcoat over the panel field',color:'#C3C7CC'}],
+    src:'Assembly per F-8-TYP (2D) and F8-2-FT-3D (3D concept).' },
+  ridge:  { name:'Ridge cap', drawing:'F-21-M-TYP', concept:'—', dist:12, phi:1.0, theta:0.2, drop:0, menu:'Ridge cap',
+    layers:[{k:'existing',label:'Existing ridge cap and closures',color:'#AEB3B0'},{k:'primer',label:'Primer on cap laps and fasteners',color:'#E8D7A6'},{k:'flex',label:'Flex over cap laps and both edges',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
+    src:'Assembly per F-21-M-TYP. No 3D concept render yet; geometry here is ASSUMED.' },
+  rtu:    { name:'Curb-mounted RTU', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:26, phi:1.15, theta:0.8, drop:5.5, menu:'HVAC curbs',
+    layers:[{k:'existing',label:'Existing curb, cant and membrane flashing',color:'#C9C9C2'},{k:'primer',label:'Primer on curb wall and field',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb to the cap and across the field',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
+    src:'Assembly per CS-1-TYP (curb with liftable cap) and CS1-18-3D. Flex height on the curb is ASSUMED.' },
+  drain:  { name:'Cast-iron roof drain', drawing:'D-1-TYP', concept:'CID-1-21-FT3D', dist:12, phi:1.05, theta:0.6, drop:0.8, menu:'Drains',
+    layers:[{k:'existing',label:'Existing drain bowl, clamping ring and strainer',color:'#C9C9C2'},{k:'primer',label:'Primer into the sump and flange',color:'#E8D7A6'},{k:'flex',label:'Flex from the field into the sump, under the clamping ring',color:'#D9A21B'},{k:'thane',label:'Topcoat to the ring; strainer reset',color:'#C3C7CC'}],
+    src:'Assembly per D-1-TYP and CID-1-21-FT3D. Flange radius is ASSUMED.' },
+  scupper:{ name:'Overflow scupper', drawing:'D-4-TYP', concept:'D4-1-FT-3D', dist:14, phi:1.1, theta:0.4, drop:0.8, menu:'Scuppers',
+    layers:[{k:'existing',label:'Existing scupper sleeve through the parapet',color:'#C9C9C2'},{k:'primer',label:'Primer on sleeve, wall and field',color:'#E8D7A6'},{k:'flex',label:'Flex into the sleeve and up the wall around it',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
+    src:'Assembly per D-4-TYP and D4-1-FT-3D. Sleeve wrap depth is ASSUMED.' },
+  coping: { name:'Parapet and metal coping', drawing:'W-1-TYP', concept:'W1-11-FT3D', dist:18, phi:1.05, theta:2.4, drop:1.8, menu:'Parapet / coping',
+    layers:[{k:'existing',label:'Existing parapet, base flashing and coping joints',color:'#C9C9C2'},{k:'primer',label:'Primer on wall face and coping laps',color:'#E8D7A6'},{k:'flex',label:'Flex up the wall and over every coping joint',color:'#D9A21B'},{k:'thane',label:'Topcoat over wall and field',color:'#C3C7CC'}],
+    src:'Assembly per W-1-TYP (coping joints) and W1-11-FT3D. Wall height of Flex is ASSUMED.' }
+};
+
+const BUILDINGS = {
+  warehouse: { label:'Warehouse', roofs:['rpanel'], sqft:9600, details:['curb','lap','ridge'], defaultOn:['curb','lap','ridge'] },
+  bigbox:    { label:'Big-box retail', roofs:['tpo'], sqft:28000, details:['rtu','drain','scupper','coping'], defaultOn:['rtu','drain','scupper','coping'] },
+  school:    { label:'School (next)', roofs:[], disabled:true },
+  office:    { label:'Office (next)', roofs:[], disabled:true },
+  manufacturing:{ label:'Manufacturing (next)', roofs:[], disabled:true },
+  hospital:  { label:'Hospital (next)', roofs:[], disabled:true },
+  arena:     { label:'Arena / gym (next)', roofs:[], disabled:true }
+};
+
+const S = { building:'warehouse', roof:'rpanel', stage:0, prog:1, playing:false, topcoat:'thane', solar:false, cond:true, on:{}, view:'roof', sqft:9600 };
+
+/* =================================================================
+   THREE
+================================================================= */
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.localClippingEnabled = true;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputEncoding = THREE.sRGBEncoding;
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0xE9EDF1, 650, 1700);
+const camera = new THREE.PerspectiveCamera(42, 1, 0.5, 2500);
+scene.add(new THREE.HemisphereLight(0xE8EEF5, 0x8A8F86, 0.75));
+const sun = new THREE.DirectionalLight(0xFFF6E6, 1.1); sun.position.set(-140, 220, 110); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); sun.shadow.camera.left=-180; sun.shadow.camera.right=180; sun.shadow.camera.top=180; sun.shadow.camera.bottom=-180; sun.shadow.camera.near=20; sun.shadow.camera.far=600; sun.shadow.bias=-0.0008; scene.add(sun);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(3000,3000), new THREE.MeshStandardMaterial({color:0xA7ADA5, roughness:1})); ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+const world = new THREE.Group(); scene.add(world);
+
+// Clip planes: overlays "sweep" across x as their constant advances.
+const clipTop = new THREE.Plane(new THREE.Vector3(-1,0,0), -1000);
+const clipFlex = new THREE.Plane(new THREE.Vector3(-1,0,0), -1000);
+const clipPrim = new THREE.Plane(new THREE.Vector3(-1,0,0), -1000);
+const M = {
+  wall:   new THREE.MeshStandardMaterial({color:0xD6D1C6, roughness:.92}),
+  wallB:  new THREE.MeshStandardMaterial({color:0x5F6B78, roughness:.9}),
+  panel:  new THREE.MeshStandardMaterial({color:0x9BA09B, roughness:.72, metalness:.22}),
+  rib:    new THREE.MeshStandardMaterial({color:0x8F9490, roughness:.66, metalness:.28}),
+  ridge:  new THREE.MeshStandardMaterial({color:0x8C918E, roughness:.6, metalness:.3}),
+  membrane:new THREE.MeshStandardMaterial({color:0xCFCFC7, roughness:.85}),
+  seam:   new THREE.MeshStandardMaterial({color:0xB9B9B0, roughness:.85}),
+  stain:  new THREE.MeshStandardMaterial({color:0x5E6A66, roughness:1, transparent:true, opacity:.5, depthWrite:false}),
+  patch:  new THREE.MeshStandardMaterial({color:0xE6E6E0, roughness:.8}),
+  rust:   new THREE.MeshStandardMaterial({color:0x8A4A22, roughness:1, transparent:true, opacity:.85, depthWrite:false}),
+  fast:   new THREE.MeshStandardMaterial({color:0xB9BEC0, roughness:.4, metalness:.6}),
+  primer: new THREE.MeshStandardMaterial({color:0xE8D7A6, roughness:.35, transparent:true, opacity:0, depthWrite:false}),
+  primerOv:new THREE.MeshStandardMaterial({color:0xE8D7A6, roughness:.35, transparent:true, opacity:.5, depthWrite:false, clippingPlanes:[clipPrim]}),
+  flex:   new THREE.MeshStandardMaterial({color:0xD9A21B, roughness:.45, metalness:.05}),
+  flexOv: new THREE.MeshStandardMaterial({color:0xC98F12, roughness:.5, metalness:.05, clippingPlanes:[clipFlex], clipShadows:true}),
+  topcoat:new THREE.MeshStandardMaterial({color:0xDCE0E4, roughness:.3, metalness:.38, clippingPlanes:[clipTop], clipShadows:true}),
+  curb:   new THREE.MeshStandardMaterial({color:0x8F9598, roughness:.6, metalness:.4}),
+  unit:   new THREE.MeshStandardMaterial({color:0xD8DBD6, roughness:.7}),
+  unitD:  new THREE.MeshStandardMaterial({color:0x5C6670, roughness:.8}),
+  iron:   new THREE.MeshStandardMaterial({color:0x3E4448, roughness:.7, metalness:.5}),
+  coping: new THREE.MeshStandardMaterial({color:0xB6BABB, roughness:.5, metalness:.5}),
+  joint:  new THREE.MeshStandardMaterial({color:0x6E7477, roughness:.7}),
+  post:   new THREE.MeshStandardMaterial({color:0x7A8288, roughness:.6, metalness:.5}),
+  pv:     new THREE.MeshStandardMaterial({color:0x1E2A44, roughness:.25, metalness:.4}),
+  pvF:    new THREE.MeshStandardMaterial({color:0xC8CCD0, roughness:.5, metalness:.5})
+};
+function box(w,h,d,mat,x,y,z,shadow){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); m.position.set(x,y,z); if(shadow!==false){m.castShadow=true;m.receiveShadow=true;} return m; }
+function disposeGroup(g){ g.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); while(g.children.length) g.remove(g.children[0]); }
+
+let B = null;   // the current built building: { extent, hots, applyStage(p) }
+
+/* -----------------------------------------------------------------
+   WAREHOUSE × R-PANEL (seam-trace pattern)
+----------------------------------------------------------------- */
+function buildWarehouse(){
+  const L=120, W=80, H=20, PITCH=1/12, RUN=W/2, RISE=RUN*PITCH, SL=Math.sqrt(RUN*RUN+RISE*RISE), ANG=Math.atan(PITCH);
+  const g0 = world;
+  g0.add(box(L, H, W, M.wall, 0, H/2, 0)); g0.add(box(L+0.2, 4, W+0.2, M.wallB, 0, 2, 0));
+  (function(){ const sh=new THREE.Shape(); sh.moveTo(-W/2,0); sh.lineTo(W/2,0); sh.lineTo(0,RISE); sh.closePath(); const g=new THREE.ShapeGeometry(sh);
+    [-1,1].forEach(s=>{ const m=new THREE.Mesh(g,M.wall); m.rotation.y = s>0?Math.PI/2:-Math.PI/2; m.position.set(s*L/2,H,0); m.castShadow=true; g0.add(m); }); })();
+  [-40,-10,20,50].forEach(x=> g0.add(box(9,10,0.3,M.unitD,x,5,W/2+0.1,false)));
+  const slopes=[]; const mm=new THREE.Matrix4();
+  function makeSlope(sign){
+    const outer=new THREE.Group(); outer.position.set(0,H+RISE,0); outer.rotation.y = sign>0?0:Math.PI; const g=new THREE.Group(); g.rotation.x=ANG; outer.add(g); g0.add(outer);
+    const pl=new THREE.Mesh(new THREE.PlaneGeometry(L,SL),M.panel); pl.rotation.x=-Math.PI/2; pl.position.set(0,0,SL/2); pl.receiveShadow=true; g.add(pl);
+    const ov=new THREE.Mesh(new THREE.PlaneGeometry(L,SL),M.topcoat); ov.rotation.x=-Math.PI/2; ov.position.set(0,0.03,SL/2); ov.receiveShadow=true; g.add(ov);
+    const nR=L, ribG=new THREE.BoxGeometry(0.28,0.11,SL); const ribs=new THREE.InstancedMesh(ribG,M.rib,nR), ribsO=new THREE.InstancedMesh(ribG,M.topcoat,nR);
+    for(let i=0;i<nR;i++){ const x=-L/2+0.5+i; mm.makeTranslation(x,0.055,SL/2); ribs.setMatrixAt(i,mm); mm.makeTranslation(x,0.085,SL/2); ribsO.setMatrixAt(i,mm); }
+    ribs.castShadow=true; ribs.receiveShadow=true; g.add(ribs); g.add(ribsO);
+    const laps=[]; for(let i=1;i<L/3;i++) laps.push(-L/2+i*3);
+    const lapG=new THREE.BoxGeometry(0.46,0.05,1); const lapP=new THREE.InstancedMesh(lapG,M.primer,laps.length), lapF=new THREE.InstancedMesh(lapG,M.flex,laps.length), lapO=new THREE.InstancedMesh(lapG,M.topcoat,laps.length);
+    laps.forEach((x,i)=>{ mm.makeScale(1.35,1,SL); mm.setPosition(x,0.13,SL/2); lapO.setMatrixAt(i,mm); }); g.add(lapP); g.add(lapF); g.add(lapO);
+    const endP=box(L,0.05,1.0,M.primer,0,0.09,SL/2,false), endF=box(L,0.06,1.0,M.flex,0,0.1,SL/2,false); g.add(endP); g.add(endF);
+    const ridgeP=box(L,0.05,1.6,M.primer,0,0.12,0.8,false), ridgeF=box(L,0.06,1.6,M.flex,0,0.13,0.8,false); g.add(ridgeP); g.add(ridgeF);
+    g.add(box(L,0.06,1.05,M.topcoat,0,0.135,SL/2,false)); g.add(box(L,0.06,1.65,M.topcoat,0,0.165,0.8,false));
+    const rows=[]; for(let z=4;z<SL-1;z+=5) rows.push(z); const cols=[]; for(let x=-L/2+1.5;x<L/2;x+=1.5) cols.push(x);
+    const nF=rows.length*cols.length; const fast=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.13,0.13,0.09,10),M.fast,nF);
+    const fastF=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.3,0.34,0.07,14),M.flex,nF), fastO=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.33,0.37,0.07,14),M.topcoat,nF);
+    const fz=[]; let k=0; rows.forEach(z=>cols.forEach(x=>{ mm.makeTranslation(x,0.1,z); fast.setMatrixAt(k,mm); mm.makeTranslation(x,0.12,z); fastF.setMatrixAt(k,mm); mm.makeTranslation(x,0.15,z); fastO.setMatrixAt(k,mm); fz.push(z); k++; }));
+    const rusty=[], cRust=new THREE.Color(0x8A4A22), cZinc=new THREE.Color(0xB9BEC0); for(let i=0;i<nF;i++){ const r=Math.random()<0.28; rusty.push(r); fast.setColorAt(i, r?cRust:cZinc); } fast.instanceColor.needsUpdate=true;
+    const nP=46, patch=new THREE.InstancedMesh(new THREE.CircleGeometry(1,14),M.rust,nP); const e=new THREE.Object3D();
+    for(let i=0;i<nP;i++){ const x=laps[Math.floor(Math.random()*laps.length)]+(Math.random()-.5)*0.3, z=2+Math.random()*(SL-4), s=0.5+Math.random()*1.4; e.position.set(x,0.07,z); e.rotation.set(-Math.PI/2,0,0); e.scale.set(s*0.5,s*1.6,1); e.updateMatrix(); patch.setMatrixAt(i,e.matrix); }
+    fast.castShadow=true; g.add(fast); g.add(fastF); g.add(fastO); g.add(patch);
+    const s={sign,g,laps,lapP,lapF,endF,ridgeF,fast,fastF,fz,rusty,cRust,cZinc}; slopes.push(s); return s;
+  }
+  const right=makeSlope(1), left=makeSlope(-1);
+  const ridgeCap=new THREE.Group(); ridgeCap.position.set(0,H+RISE+0.12,0); g0.add(ridgeCap);
+  [-1,1].forEach(s=>{ const m=box(L,0.08,2.2,M.ridge,0,0,s*1.05); m.rotation.x=s*ANG; ridgeCap.add(m); const o=box(L,0.08,2.2,M.topcoat,0,0.05,s*1.05); o.rotation.x=s*ANG; ridgeCap.add(o); });
+  // HVAC curb — CS-13-MP
+  const hvac=new THREE.Group(); hvac.position.set(18,0,17); right.g.add(hvac); const CW=6, CH=1.4;
+  hvac.add(box(CW,CH,CW,M.curb,0,CH/2,0)); hvac.add(box(7.2,3.2,7.2,M.unit,0,CH+1.6,0)); hvac.add(box(7.4,0.35,7.4,M.unitD,0,CH+3.3,0));
+  (function(){ const fan=new THREE.Mesh(new THREE.CylinderGeometry(2.2,2.2,0.2,24),M.unitD); fan.position.set(0,CH+3.55,0); hvac.add(fan); })();
+  const cFB=box(CW+0.16,1.0,CW+0.16,M.flex,0,0.5,0,false), cFA=box(CW+2.4,0.06,CW+2.4,M.flex,0,0.09,0,false), cPB=box(CW+0.12,1.1,CW+0.12,M.primer,0,0.55,0,false), cPA=box(CW+2.3,0.05,CW+2.3,M.primer,0,0.085,0,false);
+  hvac.add(cPB,cPA,cFB,cFA); hvac.add(box(CW+0.22,CH+0.02,CW+0.22,M.topcoat,0,CH/2+0.01,0,false)); hvac.add(box(CW+2.5,0.06,CW+2.5,M.topcoat,0,0.13,0,false));
+  const solar=makeSolar(left.g, [-34,-24,-14,-4,6,16,26,36],[8,20,32]); solar.visible=false;
+  const tmpO=new THREE.Object3D(), tmpM=new THREE.Matrix4();
+  const hots=[
+    {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(18,CH+3.8,17)), show:()=>S.on.curb},
+    {id:'lap',  anchor:()=> right.g.localToWorld(new THREE.Vector3(-27,0.3,26)), show:()=>S.on.lap},
+    {id:'ridge',anchor:()=> new THREE.Vector3(-30,H+RISE+0.4,0), show:()=>S.on.ridge}];
+  function applyStage(p){
+    M.rust.opacity = S.cond ? 0.85*(1-p.prep) : 0; M.primer.opacity = 0.55*p.primer;
+    slopes.forEach(s=>{
+      if(s._lp!==p.prep || s._lc!==S.cond){ const c=new THREE.Color(); for(let i=0;i<s.rusty.length;i++){ if(s.rusty[i]&&S.cond) c.copy(s.cRust).lerp(s.cZinc,p.prep); else c.copy(s.cZinc); s.fast.setColorAt(i,c);} s.fast.instanceColor.needsUpdate=true; s._lp=p.prep; s._lc=S.cond; }
+      s.laps.forEach((x,i)=>{ tmpO.position.set(x,0.075,SL/2); tmpO.scale.set(1,1,SL); tmpO.rotation.set(0,0,0); tmpO.updateMatrix(); s.lapP.setMatrixAt(i,tmpO.matrix); const len=SL*p.flex; tmpO.position.set(x,0.1,len/2); tmpO.scale.set(1,1,Math.max(0.001,len)); tmpO.updateMatrix(); s.lapF.setMatrixAt(i,tmpO.matrix); });
+      s.lapP.instanceMatrix.needsUpdate=true; s.lapF.instanceMatrix.needsUpdate=true; s.lapF.visible=p.flex>0;
+      const pX=Math.max(0,Math.min(1,(p.flex-0.35)/0.65)); s.endF.scale.x=Math.max(0.001,pX); s.endF.position.x=-L/2+L*pX/2; s.endF.visible=pX>0; s.ridgeF.scale.x=Math.max(0.001,pX); s.ridgeF.position.x=-L/2+L*pX/2; s.ridgeF.visible=pX>0;
+      for(let i=0;i<s.fz.length;i++){ const on=s.fz[i]<=SL*p.flex; s.fastF.getMatrixAt(i,tmpM); const e=tmpM.elements; const sc=on?1:0.0001; if((e[0]===1)!==on){ tmpO.position.set(e[12],e[13],e[14]); tmpO.scale.set(sc,sc,sc); tmpO.rotation.set(0,0,0); tmpO.updateMatrix(); s.fastF.setMatrixAt(i,tmpO.matrix);} }
+      s.fastF.instanceMatrix.needsUpdate=true; s.fastF.visible=p.flex>0;
+    });
+    cPB.visible=cPA.visible=p.primer>0; const pC=Math.max(0,Math.min(1,(p.flex-0.15)/0.5)); cFA.visible=pC>0; cFA.scale.set(Math.max(0.001,pC),1,Math.max(0.001,pC)); cFB.visible=pC>0.3; const b=Math.max(0.001,(pC-0.3)/0.7); cFB.scale.y=b; cFB.position.y=0.5*b;
+    clipTop.constant = -L/2-4+(L+8)*p.thane; clipFlex.constant=-1000; clipPrim.constant=-1000;
+    hvac.visible=!!S.on.curb; solar.visible=S.solar;
+  }
+  return { extent:{L,W,H:H+RISE}, hots, applyStage };
+}
+
+/* -----------------------------------------------------------------
+   BIG-BOX RETAIL × TPO (full-field pattern)
+----------------------------------------------------------------- */
+function buildBigBox(){
+  const L=200, W=140, H=26, PH=3, PT=1.0;   // parapet height / thickness
+  const g0=world;
+  g0.add(box(L,H,W,M.wall,0,H/2,0)); g0.add(box(L+0.2,5,W+0.2,M.wallB,0,2.5,0));
+  g0.add(box(70,12,0.4,M.unitD,0,7,W/2+0.15,false));   // storefront glazing band
+  // parapet ring
+  const par=new THREE.Group(); par.position.y=H; g0.add(par);
+  par.add(box(L,PH,PT,M.wall,0,PH/2,-W/2+PT/2)); par.add(box(L,PH,PT,M.wall,0,PH/2,W/2-PT/2)); par.add(box(PT,PH,W,M.wall,-L/2+PT/2,PH/2,0)); par.add(box(PT,PH,W,M.wall,L/2-PT/2,PH/2,0));
+  // coping cap with joints every 10 ft; Flex caps over joints (W-1-TYP), sweep-clipped; topcoat cap
+  const cop=new THREE.Group(); par.add(cop);
+  cop.add(box(L+0.4,0.25,PT+0.5,M.coping,0,PH+0.12,-W/2+PT/2)); cop.add(box(L+0.4,0.25,PT+0.5,M.coping,0,PH+0.12,W/2-PT/2)); cop.add(box(PT+0.5,0.25,W+0.4,M.coping,-L/2+PT/2,PH+0.12,0)); cop.add(box(PT+0.5,0.25,W+0.4,M.coping,L/2-PT/2,PH+0.12,0));
+  for(let x=-L/2+10;x<L/2;x+=10){ [-1,1].forEach(s=>{ cop.add(box(0.12,0.3,PT+0.6,M.joint,x,PH+0.12,s*(W/2-PT/2),false)); cop.add(box(1.2,0.06,PT+0.6,M.flexOv,x,PH+0.29,s*(W/2-PT/2),false)); }); }
+  for(let z=-W/2+10;z<W/2;z+=10){ [-1,1].forEach(s=>{ cop.add(box(PT+0.6,0.3,0.12,M.joint,s*(L/2-PT/2),PH+0.12,z,false)); cop.add(box(PT+0.6,0.06,1.2,M.flexOv,s*(L/2-PT/2),PH+0.29,z,false)); }); }
+  cop.add(box(L+0.5,0.06,PT+0.6,M.topcoat,0,PH+0.33,-W/2+PT/2,false)); cop.add(box(L+0.5,0.06,PT+0.6,M.topcoat,0,PH+0.33,W/2-PT/2,false)); cop.add(box(PT+0.6,0.06,W+0.5,M.topcoat,-L/2+PT/2,PH+0.33,0,false)); cop.add(box(PT+0.6,0.06,W+0.5,M.topcoat,L/2-PT/2,PH+0.33,0,false));
+  // field membrane + seams (10 ft sheets running across z)
+  const IL=L-2*PT, IW=W-2*PT; const roof=new THREE.Group(); roof.position.y=H; g0.add(roof);
+  const fld=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),M.membrane); fld.rotation.x=-Math.PI/2; fld.receiveShadow=true; roof.add(fld);
+  const nS=Math.floor(IL/10)-1; const seams=new THREE.InstancedMesh(new THREE.BoxGeometry(0.35,0.04,IW),M.seam,nS); const mm=new THREE.Matrix4();
+  for(let i=0;i<nS;i++){ mm.makeTranslation(-IL/2+10*(i+1),0.02,0); seams.setMatrixAt(i,mm); } roof.add(seams);
+  // overlays: primer, flex, topcoat over the field and up the parapet inner faces
+  function addOverlay(mat,dy,wallH){ const f=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),mat); f.rotation.x=-Math.PI/2; f.position.y=dy; f.receiveShadow=true; roof.add(f);
+    roof.add(box(IL,wallH,0.05,mat,0,wallH/2,-IW/2+0.03+dy,false)); roof.add(box(IL,wallH,0.05,mat,0,wallH/2,IW/2-0.03-dy,false)); roof.add(box(0.05,wallH,IW,mat,-IL/2+0.03+dy,wallH/2,0,false)); roof.add(box(0.05,wallH,IW,mat,IL/2-0.03-dy,wallH/2,0,false)); }
+  addOverlay(M.primerOv,0.05,1.6); addOverlay(M.flexOv,0.08,1.5); addOverlay(M.topcoat,0.11,PH);   // 18" up the wall for primer/Flex is ASSUMED
+  // existing condition: ponding stains + seam failures; prep: patches
+  const stains=new THREE.Group(), fails=new THREE.Group(), patches=new THREE.Group(); roof.add(stains); roof.add(fails); roof.add(patches);
+  const drainPos=[[-70,-40],[-70,40],[70,-40],[70,40]];
+  drainPos.forEach(([x,z])=>{ const st=new THREE.Mesh(new THREE.CircleGeometry(9,24),M.stain); st.rotation.x=-Math.PI/2; st.position.set(x+2,0.035,z-1); st.scale.set(1.4,1,1); stains.add(st); });
+  for(let i=0;i<14;i++){ const sx=-IL/2+10*(1+Math.floor(Math.random()*nS)); const z=-IW/2+6+Math.random()*(IW-12); const len=4+Math.random()*6; fails.add(box(0.9,0.05,len,M.stain,sx,0.04,z,false)); patches.add(box(2.2,0.06,len+2,M.patch,sx,0.045,z,false)); }
+  // RTUs — CS-1-TYP
+  const rtuPos=[[-40,-30],[10,10],[55,-25]]; const rtus=new THREE.Group(); roof.add(rtus);
+  rtuPos.forEach(([x,z])=>{ const g=new THREE.Group(); g.position.set(x,0,z); rtus.add(g); const CW=8, CH=1.5;
+    g.add(box(CW,CH,CW,M.curb,0,CH/2,0)); g.add(box(9.5,4,9.5,M.unit,0,CH+2,0)); g.add(box(9.7,0.4,9.7,M.unitD,0,CH+4.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(2.8,2.8,0.25,24),M.unitD); fan.position.set(0,CH+4.4,0); g.add(fan);
+    g.add(box(CW+0.16,CH,CW+0.16,M.primerOv,0,CH/2,0,false)); g.add(box(CW+0.24,CH,CW+0.24,M.flexOv,0,CH/2,0,false)); g.add(box(CW+0.32,CH+0.02,CW+0.32,M.topcoat,0,CH/2+0.01,0,false)); });
+  // drains — D-1-TYP
+  const drains=new THREE.Group(); roof.add(drains);
+  drainPos.forEach(([x,z])=>{ const g=new THREE.Group(); g.position.set(x,0,z); drains.add(g);
+    const ring=new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.7,0.3,28),M.iron); ring.position.y=0.15; g.add(ring);
+    const bowl=new THREE.Mesh(new THREE.CylinderGeometry(1.3,1.3,0.06,28),M.unitD); bowl.position.y=0.3; g.add(bowl);
+    const dome=new THREE.Mesh(new THREE.SphereGeometry(0.95,20,12,0,Math.PI*2,0,Math.PI/2),M.iron); dome.position.y=0.3; g.add(dome);
+    const flange=(mat,r,y)=>{ const m=new THREE.Mesh(new THREE.RingGeometry(1.5,r,40),mat); m.rotation.x=-Math.PI/2; m.position.y=y; g.add(m); };
+    flange(M.primerOv,3.1,0.075); flange(M.flexOv,3.2,0.1); flange(M.topcoat,3.3,0.13); });
+  // scuppers — D-4-TYP, through the back (-z) parapet
+  const scupX=[-60,60]; const scups=new THREE.Group(); par.add(scups);
+  scupX.forEach(x=>{ const g=new THREE.Group(); g.position.set(x,0,-W/2+PT/2); scups.add(g);
+    g.add(box(2.2,1.2,PT+0.6,M.iron,0,0.8,0)); g.add(box(1.8,0.8,PT+0.7,M.unitD,0,0.8,0,false)); g.add(box(3.0,1.6,0.4,M.coping,0,0.8,-PT/2-0.3));
+    g.add(box(3.2,1.9,0.12,M.flexOv,0,0.95,PT/2+0.08,false)); g.add(box(3.4,2.0,0.12,M.topcoat,0,1.0,PT/2+0.16,false)); });
+  const solar=makeSolar(roof,[-80,-60,-40,-20,0,20,40,60,80],[-55,-15,25]); solar.visible=false;
+  const hots=[
+    {id:'rtu', anchor:()=> new THREE.Vector3(rtuPos[0][0],H+6.4,rtuPos[0][1]), show:()=>S.on.rtu},
+    {id:'drain', anchor:()=> new THREE.Vector3(drainPos[3][0],H+1.2,drainPos[3][1]), show:()=>S.on.drain},
+    {id:'scupper', anchor:()=> new THREE.Vector3(scupX[1],H+PH+0.6,-W/2+PT/2), show:()=>S.on.scupper},
+    {id:'coping', anchor:()=> new THREE.Vector3(L/2-PT/2,H+PH+0.6,-20), show:()=>S.on.coping}];
+  function applyStage(p){
+    M.stain.opacity = S.cond ? 0.5*(1-p.prep) : 0; stains.visible=fails.visible=S.cond && p.prep<1; patches.visible = S.cond && p.prep>0.3 && p.flex<1;
+    const sweep = q => -L/2-6+(L+12)*q;
+    clipPrim.constant = sweep(p.primer); clipFlex.constant = sweep(p.flex); clipTop.constant = sweep(p.thane);
+    rtus.visible=!!S.on.rtu; drains.visible=!!S.on.drain; scups.visible=!!S.on.scupper; solar.visible=S.solar;
+  }
+  return { extent:{L,W,H:H+PH}, hots, applyStage };
+}
+
+function makeSolar(parent, cols, rows){
+  const solar=new THREE.Group(); parent.add(solar);
+  rows.forEach(z=>cols.forEach(x=>{ const p=new THREE.Group(); p.position.set(x,0,z); solar.add(p);
+    p.add(box(0.6,3.2,0.6,M.post,0,1.6,0)); p.add(box(1.8,0.9,1.8,M.flex,0,0.45,0,false)); p.add(box(2.6,0.06,2.6,M.flex,0,0.08,0,false)); p.add(box(1.9,0.92,1.9,M.topcoat,0,0.47,0,false)); }));
+  const cx=(cols[0]+cols[cols.length-1])/2, span=cols[cols.length-1]-cols[0]+8;
+  rows.forEach(z=>{ const rack=box(span,0.3,7.5,M.pvF,cx,3.4,z+2.2); rack.rotation.x=-0.28; solar.add(rack); const pv=box(span-1,0.14,7.2,M.pv,cx,3.62,z+2.2); pv.rotation.x=-0.28; solar.add(pv); });
+  return solar;
+}
+
+function rebuild(){ disposeGroup(world); B = ROOFS[S.roof].shape==='gable' ? buildWarehouse() : buildBigBox(); buildHots(); goRoof(true); }
+
+/* =================================================================
+   CAMERA
+================================================================= */
+const cam={ target:new THREE.Vector3(0,22,0), dist:165, theta:0.62, phi:1.0 };
+const camTo={ ...cam, target:cam.target.clone() }, camFrom={ ...cam, target:cam.target.clone() }; let camT=1;
+const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ease=t=>t<.5?2*t*t:-1+(4-2*t)*t, lerp=(a,b,t)=>a+(b-a)*t;
+function roofDist(){ const e=B?B.extent:{L:120,W:80}; const base=Math.max(e.L,e.W)*1.38; return (canvas.parentElement.clientWidth<canvas.parentElement.clientHeight)? base*1.5 : base; }
+function applyCam(){ const t=camT<1?ease(camT):1; const c= camT<1 ? {dist:lerp(camFrom.dist,camTo.dist,t),theta:lerp(camFrom.theta,camTo.theta,t),phi:lerp(camFrom.phi,camTo.phi,t),target:camFrom.target.clone().lerp(camTo.target,t)} : cam;
+  if(camT>=1){ Object.assign(cam,{dist:camTo.dist,theta:camTo.theta,phi:camTo.phi}); cam.target.copy(camTo.target); }
+  camera.position.copy(c.target.clone().add(new THREE.Vector3(Math.sin(c.theta)*Math.sin(c.phi),Math.cos(c.phi),Math.cos(c.theta)*Math.sin(c.phi)).multiplyScalar(c.dist))); camera.lookAt(c.target); }
+function flyTo(target,dist,theta,phi,instant){ camFrom.target.copy(cam.target); camFrom.dist=cam.dist; camFrom.theta=cam.theta; camFrom.phi=cam.phi; camTo.target.copy(target); camTo.dist=dist; camTo.theta=theta; camTo.phi=phi; camT=(reduceMotion||instant)?1:0; }
+let drag=null, pinch=null;
+canvas.addEventListener('pointerdown',e=>{ drag={x:e.clientX,y:e.clientY,moved:false}; canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener('pointermove',e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; if(Math.abs(dx)+Math.abs(dy)>3) drag.moved=true; camTo.theta-=dx*0.006; camTo.phi=Math.min(1.45,Math.max(0.25,camTo.phi-dy*0.005)); cam.theta=camTo.theta; cam.phi=camTo.phi; camT=1; drag.x=e.clientX; drag.y=e.clientY; });
+canvas.addEventListener('pointerup',()=>{ drag=null; });
+canvas.addEventListener('wheel',e=>{ e.preventDefault(); camTo.dist=Math.min(600,Math.max(5,camTo.dist*(1+Math.sign(e.deltaY)*0.08))); cam.dist=camTo.dist; camT=1; },{passive:false});
+canvas.addEventListener('touchstart',e=>{ if(e.touches.length===2) pinch=dist2(e.touches); },{passive:true});
+canvas.addEventListener('touchmove',e=>{ if(e.touches.length===2&&pinch){ const d=dist2(e.touches); camTo.dist=Math.min(600,Math.max(5,camTo.dist*(pinch/d))); cam.dist=camTo.dist; camT=1; pinch=d; drag=null; } },{passive:true});
+function dist2(t){ return Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY); }
+
+/* =================================================================
+   HOTSPOTS + VIEWS
+================================================================= */
+const hotsEl=document.getElementById('hots'); const v3=new THREE.Vector3();
+function buildHots(){ hotsEl.innerHTML=''; B.hots.forEach(h=>{ const d=document.createElement('div'); d.className='hot'; d.innerHTML=`<button>${DETAILS[h.id].name} <span style="opacity:.6;font-weight:500">${DETAILS[h.id].drawing}</span></button><i></i>`; d.querySelector('button').onclick=()=>goDetail(h.id); hotsEl.appendChild(d); h.el=d; }); }
+function placeHots(){ if(!B) return; const r=canvas.getBoundingClientRect(); B.hots.forEach(h=>{ const show=S.view==='roof'&&!!h.show(); h.el.classList.toggle('hide',!show); if(!show) return; v3.copy(h.anchor()).project(camera); h.el.style.left=((v3.x+1)/2*r.width)+'px'; h.el.style.top=((1-v3.y)/2*r.height)+'px'; }); }
+function goDetail(id){ const d=DETAILS[id]; S.view=id; const a=B.hots.find(h=>h.id===id).anchor().clone(); a.y-=d.drop||0; flyTo(a,d.dist,d.theta,d.phi);
+  document.getElementById('viewChip').querySelector('b').textContent='Detail'; document.getElementById('viewName').textContent=`${d.name} · ${d.drawing}`; document.getElementById('backBtn').style.display='inline-block'; document.getElementById('scaleNote').textContent='Stages replay at detail scale'; renderLayers(); }
+function goRoof(instant){ S.view='roof'; const e=B.extent; flyTo(new THREE.Vector3(0,e.H+2,0),roofDist(),0.62,1.0,instant);
+  document.getElementById('viewChip').querySelector('b').textContent='Whole roof'; document.getElementById('viewName').textContent=''; document.getElementById('backBtn').style.display='none'; document.getElementById('scaleNote').textContent=''; renderLayers(); }
+document.getElementById('backBtn').onclick=()=>goRoof(false);
+function renderLayers(){ const el=document.getElementById('layers'); if(S.view==='roof'){ el.classList.remove('show'); return; } const d=DETAILS[S.view]; const order=['existing','prep','primer','flex','thane','done']; const cur=order[S.stage];
+  const on=k=> order.indexOf(k)<=order.indexOf(cur) && !(k==='thane'&&S.stage<4);
+  el.innerHTML=`<h3>${d.name} — layers</h3>`+d.layers.map(l=>`<div class="row ${on(l.k)?'on':''}"><span class="swatch" style="background:${l.k==='thane'?(S.topcoat==='white'?'#F1F0EB':l.color):l.color}"></span>${l.label}</div>`).join('')+`<div class="src">${d.src}</div>`; el.classList.add('show'); }
+
+/* =================================================================
+   STAGES
+================================================================= */
+const DUR=[0.4,1.6,2.2,3.2,3.2,0.5];
+const stagesOf=()=>ROOFS[S.roof].stages;
+function setStage(n,animate){ n=Math.max(0,Math.min(stagesOf().length-1,n)); S.stage=n; S.prog=animate&&!reduceMotion?0:1; renderStageUI(); renderLayers(); }
+function stageProgress(k){ const i=stagesOf().findIndex(s=>s.key===k); if(S.stage<i) return 0; if(S.stage>i) return 1; return S.prog; }
+function applyStage(){ const p={prep:stageProgress('prep'),primer:stageProgress('primer'),flex:stageProgress('flex'),thane:stageProgress('thane')};
+  const white=S.topcoat==='white'; M.topcoat.color.set(white?0xF4F3EE:0xDCE0E4); M.topcoat.metalness=white?0.04:0.38; M.topcoat.roughness=white?0.62:0.3; B.applyStage(p); }
+
+/* =================================================================
+   UI
+================================================================= */
+const stagebar=document.getElementById('stagebar');
+function buildStageBar(){ stagebar.innerHTML=''; stagesOf().forEach((s,i)=>{ const b=document.createElement('button'); b.innerHTML=`<b>${i+1}. ${s.short}</b><small>${s.name}</small><span class="bar"></span>`; b.onclick=()=>{ S.playing=false; setStage(i,true); }; stagebar.appendChild(b); }); }
+function renderStageUI(){ [...stagebar.children].forEach((b,i)=>{ b.classList.toggle('on',i===S.stage); b.classList.toggle('done',i<S.stage); b.querySelector('.bar').style.width= i<S.stage?'100%': i===S.stage?(S.prog*100)+'%':'0'; });
+  const s=stagesOf()[S.stage]; document.getElementById('desc').innerHTML=`<h3>${s.name} <span class="tag v">VERIFIED</span></h3><p>${s.text}</p><p class="src">${s.src}</p>`;
+  document.getElementById('play').textContent= S.playing?'Pause':(S.stage===stagesOf().length-1&&S.prog>=1?'Replay all stages':'Play all stages'); }
+document.getElementById('play').onclick=()=>{ if(S.playing){ S.playing=false; } else { if(S.stage===stagesOf().length-1&&S.prog>=1) setStage(0,true); S.playing=true; if(S.prog>=1) setStage(S.stage+(S.stage<stagesOf().length-1?1:0),true); } renderStageUI(); };
+document.getElementById('prev').onclick=()=>{ S.playing=false; setStage(S.stage-1,false); };
+document.getElementById('next').onclick=()=>{ S.playing=false; setStage(S.stage+1,true); };
+document.getElementById('topcoat').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; [...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b)); S.topcoat=b.dataset.v; renderLayers(); renderEstimate(); });
+document.getElementById('solar').onchange=e=>{ S.solar=e.target.checked; renderEstimate(); };
+document.getElementById('cond').onchange=e=>{ S.cond=e.target.checked; };
+document.getElementById('sqft').oninput=e=>{ S.sqft=Math.max(0,+e.target.value||0); renderEstimate(); };
+document.getElementById('railToggle').onclick=()=>document.getElementById('rail').classList.toggle('open');
+document.getElementById('view').addEventListener('pointerdown',()=>document.getElementById('rail').classList.remove('open'));
+
+const bldSel=document.getElementById('bld'), roofSel=document.getElementById('roof');
+Object.entries(BUILDINGS).forEach(([k,b])=>{ const o=document.createElement('option'); o.value=k; o.textContent=b.label; o.disabled=!!b.disabled; bldSel.appendChild(o); });
+function selectBuilding(key){ S.building=key; const b=BUILDINGS[key]; S.roof=b.roofs[0]; S.sqft=b.sqft; document.getElementById('sqft').value=b.sqft; S.on={}; b.defaultOn.forEach(k=>S.on[k]=true); S.playing=false; bldSel.value=key; syncUI(); rebuild(); setStage(0,false); renderEstimate(); }
+bldSel.onchange=()=>selectBuilding(bldSel.value);
+roofSel.onchange=()=>{ S.roof=roofSel.value; syncUI(); rebuild(); setStage(0,false); renderEstimate(); };
+function syncUI(){ const b=BUILDINGS[S.building], r=ROOFS[S.roof];
+  roofSel.innerHTML=''; b.roofs.forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=ROOFS[k].label; roofSel.appendChild(o); }); roofSel.value=S.roof;
+  ['Standing seam','SPF','Mod-bit / BUR','Concrete / LIC'].forEach(l=>{ const o=document.createElement('option'); o.disabled=true; o.textContent=l+' (next)'; roofSel.appendChild(o); });
+  document.getElementById('patternNote').innerHTML=r.patternNote; document.getElementById('condLabel').textContent=r.condLabel; document.getElementById('subTitle').textContent=`${b.label} · ${r.label}`;
+  const dc=document.getElementById('detailChecks'); dc.innerHTML=''; b.details.forEach(k=>{ const l=document.createElement('label'); l.innerHTML=`<input type="checkbox" ${S.on[k]?'checked':''}> ${DETAILS[k].menu}`; l.querySelector('input').onchange=ev=>{ S.on[k]=ev.target.checked; if(!S.on[k]&&S.view===k) goRoof(false); renderEstimate(); }; dc.appendChild(l); });
+  ['Penetrations','Skylights','Gutters','Vents'].forEach(t=>{ const l=document.createElement('label'); l.className='off'; l.innerHTML=`<input type="checkbox" disabled> ${t}`; dc.appendChild(l); });
+  buildStageBar(); }
+
+function estimate(){ const r=ROOFS[S.roof], A=S.sqft, sq=A/100; let flexSq, treated; const on=k=>S.on[k]?1:0;
+  if(r.pattern==='seam'){ const lap=(A/3)*0.5/100, endl=(A/40)*1.0/100, fast=(A/7.5)*0.2/100; flexSq=lap+endl+fast; treated=flexSq*100+on('curb')*60; }
+  else { flexSq=sq*1.06; treated=A*1.06; }   // +6% for parapet walls, curbs and sumps (ASSUMED)
+  const detailGal = on('curb')*2 + on('rtu')*3*2 + on('drain')*4*0.5 + on('scupper')*2*0.5 + (S.solar?24*0.25:0);
+  const flexGal=flexSq*r.rates.flexGalPerSq+detailGal, primerGal=treated/r.rates.primerSqFtPerGal, topGal=sq*r.rates.topGalPerSq;
+  return { primerGal, flexGal, topGal, system:r.system[S.topcoat] }; }
+function renderEstimate(){ const e=estimate(), r=ROOFS[S.roof]; const f=n=>n<10?n.toFixed(1):Math.round(n).toLocaleString(); const where=r.pattern==='seam'?'seams, laps, fasteners, curb':'full field + details';
+  document.getElementById('estTable').innerHTML=`<tr><td>RMI system</td><td>${e.system}</td></tr><tr><td>RMI primer</td><td>${f(e.primerGal)} gal</td></tr><tr><td>RMI-Flex (${where})</td><td>${f(e.flexGal)} gal</td></tr><tr><td>${S.topcoat==='white'?'RMI-White Plus':'RMI-Thane'} (full field)</td><td>${f(e.topGal)} gal</td></tr>`; }
+
+document.getElementById('emailBtn').onclick=()=>{ const e=estimate(), b=BUILDINGS[S.building], r=ROOFS[S.roof];
+  const payload={ source:'visualize-your-roof', building:b.label, roof:`${r.label} (Plate ${r.plate})`, rmi_system:e.system, existing_condition:{[r.condLabel]:S.cond},
+    details:b.details.filter(k=>S.on[k]).map(k=>`${DETAILS[k].menu} (${DETAILS[k].drawing})`).concat(S.solar?['Solar Post supports (P-1-S-TYP)']:[]), topcoat:S.topcoat==='white'?'RMI-White Plus':'RMI-Thane', roof_sqft:S.sqft,
+    material_estimate_gal:{primer:+e.primerGal.toFixed(1),flex:+e.flexGal.toFixed(1),topcoat:+e.topGal.toFixed(1),basis:'spec-plate coverage rates; detail allowances ASSUMED; no pricing'},
+    project_evaluation_prefill:{ existing_roof_system:r.label, detail_drawings_checked:b.details.filter(k=>S.on[k]).map(k=>DETAILS[k].menu.toUpperCase()).concat(S.solar?['SOLAR']:[]) }, contact:{name:'',email:'',phone:''} };
+  document.getElementById('payload').textContent=JSON.stringify(payload,null,2); document.getElementById('modal').classList.add('show'); };
+document.getElementById('closeBtn').onclick=()=>document.getElementById('modal').classList.remove('show');
+document.getElementById('copyBtn').onclick=()=>{ navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('payload').textContent); };
+document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id==='modal') e.currentTarget.classList.remove('show'); });
+
+/* =================================================================
+   LOOP
+================================================================= */
+function resize(){ const r=canvas.parentElement.getBoundingClientRect(); const w=Math.max(1,Math.floor(r.width)), h=Math.max(1,Math.floor(r.height)); if(canvas.width!==w*renderer.getPixelRatio()||canvas.height!==h*renderer.getPixelRatio()){ renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); } }
+let last=performance.now();
+function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize();
+  if(S.prog<1){ S.prog=Math.min(1,S.prog+dt/DUR[S.stage]); renderStageUI(); if(S.view!=='roof') renderLayers(); }
+  else if(S.playing){ if(S.stage<stagesOf().length-1) setStage(S.stage+1,true); else { S.playing=false; renderStageUI(); } }
+  if(camT<1) camT=Math.min(1,camT+dt/1.1);
+  applyCam(); applyStage(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
+
+selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame);
+window.__rmi={ S, setStage, goDetail, goRoof, selectBuilding, finishCam:()=>{ camT=1; } };
+})();
+</script>
+</body>
+</html>
