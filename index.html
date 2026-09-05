@@ -20,7 +20,7 @@
   body{font-family:"Barlow",system-ui,sans-serif;color:var(--ink);background:var(--paper);overflow:hidden}
   button,input,select{font:inherit}
 
-  #app{display:grid;height:100vh;grid-template-columns:var(--rail) 1fr;grid-template-rows:56px 1fr var(--foot);
+  #app{display:grid;position:fixed;inset:0;height:100%;grid-template-columns:var(--rail) 1fr;grid-template-rows:56px 1fr var(--foot);
        grid-template-areas:"head head" "rail view" "rail foot"}
   header{grid-area:head;background:var(--navy);color:#fff;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:3px solid var(--gold)}
   header .mark{font-family:"Barlow Semi Condensed";font-weight:700;font-size:22px;letter-spacing:.5px}
