@@ -20,7 +20,7 @@
   body{font-family:"Barlow",system-ui,sans-serif;color:var(--ink);background:var(--paper);overflow:hidden}
   button,input,select{font:inherit}
 
-  #app{display:grid;position:fixed;inset:0;height:100%;grid-template-columns:var(--rail) 1fr;grid-template-rows:56px 1fr var(--foot);
+  #app{display:grid;position:fixed;inset:0;height:100%;overflow:hidden;grid-template-columns:var(--rail) minmax(0,1fr);grid-template-rows:56px minmax(0,1fr) var(--foot);
        grid-template-areas:"head head" "rail view" "rail foot"}
   header{grid-area:head;background:var(--navy);color:#fff;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:3px solid var(--gold)}
   header .mark{font-family:"Barlow Semi Condensed";font-weight:700;font-size:22px;letter-spacing:.5px}
@@ -28,7 +28,7 @@
   header .sub{font-size:14px;opacity:.8}
   header .mock{margin-left:auto;font-size:12px;border:1px solid rgba(255,255,255,.35);padding:3px 8px;border-radius:3px;opacity:.85}
 
-  aside{grid-area:rail;background:#fff;border-right:1px solid var(--line);overflow-y:auto;padding:16px 18px 24px}
+  aside{grid-area:rail;min-height:0;background:#fff;border-right:1px solid var(--line);overflow-y:auto;padding:16px 18px 24px}
   aside h2{font-family:"Barlow Semi Condensed";font-size:15px;font-weight:700;margin:18px 0 8px;color:var(--navy)}
   aside h2:first-child{margin-top:0}
   .field{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
@@ -57,8 +57,8 @@
   .tag.v{background:#E3F1E8;color:var(--ok)}
   .tag.a{background:#FBEBD6;color:var(--warn)}
 
-  main{grid-area:view;position:relative;background:linear-gradient(#DCE3E9,#EEF1F4 60%,#F4F5F6)}
-  canvas{display:block;width:100%;height:100%;touch-action:none}
+  main{grid-area:view;position:relative;min-height:0;min-width:0;overflow:hidden;background:linear-gradient(#DCE3E9,#EEF1F4 60%,#F4F5F6)}
+  canvas{display:block;position:absolute;inset:0;width:100%;height:100%;touch-action:none}
   .viewbar{position:absolute;top:12px;left:12px;display:flex;gap:8px;align-items:center}
   .chip{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:3px;padding:6px 10px;font-size:13px;display:flex;gap:8px;align-items:center;box-shadow:0 1px 2px rgba(0,0,0,.06)}
   .chip b{color:var(--navy)}
@@ -78,7 +78,7 @@
   .layers .row .swatch{width:26px;height:10px;border-radius:1px}
   .layers .src{margin-top:6px;color:var(--mute);font-size:11.5px;line-height:1.35}
 
-  footer{grid-area:foot;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 340px;gap:0}
+  footer{grid-area:foot;min-height:0;overflow:hidden;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0}
   .stages{padding:12px 18px;display:flex;flex-direction:column;gap:8px}
   .stagebar{display:flex;gap:6px;align-items:stretch}
   .stagebar button{flex:1;border:1px solid var(--line);background:#fff;border-radius:3px;padding:7px 6px;text-align:left;cursor:pointer;line-height:1.15;position:relative;overflow:hidden}
@@ -110,14 +110,14 @@
   #railToggle{display:none}
   @media (max-width:820px){
     :root{--foot:190px}
-    #app{grid-template-columns:1fr;grid-template-rows:56px 1fr var(--foot);grid-template-areas:"head" "view" "foot"}
+    #app{grid-template-columns:minmax(0,1fr);grid-template-rows:56px minmax(0,1fr) var(--foot);grid-template-areas:"head" "view" "foot"}
     aside{position:fixed;top:56px;bottom:0;left:0;width:min(88vw,320px);transform:translateX(-100%);transition:transform .25s;z-index:10;box-shadow:4px 0 16px rgba(0,0,0,.15)}
     aside.open{transform:none}
     #railToggle{display:inline-block;border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:3px;padding:4px 9px;cursor:pointer;font-size:13px}
     header .sub{display:none}
     header .mark{font-size:18px}
     header .mock{font-size:11px;padding:2px 6px}
-    footer{grid-template-columns:1fr}
+    footer{grid-template-columns:minmax(0,1fr)}
     .stagebar{gap:4px}
     .stagebar button{padding:6px 4px}
     .stagebar button b{font-size:12px}
