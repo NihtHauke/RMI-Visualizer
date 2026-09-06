@@ -691,8 +691,8 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
   const tapeList=[]; cop.traverse(o=>{ if(o.userData.tape||o.parent===tapes) tapeList.push(o); });
   const IL=L-2*PT, IW=W-2*PT; const roof=new THREE.Group(); roof.position.y=H; g.add(roof);
   const surf = mem.plate==='A'?M.modbit : mem.plate==='C'?M.concrete : mem.plate==='MA'?M.felts : M.membrane;
-  const fld=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),surf); fld.rotation.x=-Math.PI/2; fld.receiveShadow=true; roof.add(fld);
-  if(mem.plate==='MA'){ const gv=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),M.gravel); gv.rotation.x=-Math.PI/2; gv.position.y=0.03; gv.receiveShadow=true; roof.add(gv);
+  const fld=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),surf); fld.rotation.x=-Math.PI/2; fld.receiveShadow=true; roof.add(fld); const fieldPlanes=[fld]; const cutouts=[];
+  if(mem.plate==='MA'){ const gv=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),M.gravel); gv.rotation.x=-Math.PI/2; gv.position.y=0.03; gv.receiveShadow=true; roof.add(gv); fieldPlanes.push(gv);
     const nPb=Math.round(IL*IW/28); const e2=new THREE.Object3D(); [M.pebble,M.pebble2].forEach(pm=>{ const pb=new THREE.InstancedMesh(new THREE.CircleGeometry(0.5,6),pm,nPb); for(let i=0;i<nPb;i++){ e2.position.set(-IL/2+Math.random()*IL,0.04,-IW/2+Math.random()*IW); e2.rotation.set(-Math.PI/2,0,Math.random()*3); const sc=0.4+Math.random()*0.9; e2.scale.set(sc,sc*0.7,1); e2.updateMatrix(); pb.setMatrixAt(i,e2.matrix); } roof.add(pb); }); }
   const pitch=mem.plate==='A'?3:mem.plate==='C'?20:mem.plate==='MA'?3:10, nS=Math.floor(IL/pitch)-1; const seamMat=mem.plate==='A'?M.lapA:mem.plate==='C'?M.cjoint:mem.plate==='MA'?M.felts:M.seam;
   const seams=new THREE.InstancedMesh(new THREE.BoxGeometry(mem.plate==='C'?0.3:mem.plate==='A'?0.25:0.35,0.04,IW),seamMat,nS); const mm=new THREE.Matrix4();
@@ -702,7 +702,7 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
     const em=new THREE.Group(); em.position.y=H; g.add(em); o._em=em; const ed=[{w:L+0.6,d:0.9,x:0,z:-W/2+0.15,fx:L+0.6,fd:0.25,fz:-W/2-0.12},{w:L+0.6,d:0.9,x:0,z:W/2-0.15,fx:L+0.6,fd:0.25,fz:W/2+0.12},{w:0.9,d:W+0.6,x:-L/2+0.15,z:0,fx:0.25,fd:W+0.6,fz:0,fxx:-L/2-0.12},{w:0.9,d:W+0.6,x:L/2-0.15,z:0,fx:0.25,fd:W+0.6,fz:0,fxx:L/2+0.12}];
     ed.forEach(e=>{ em.add(box(e.w,0.12,e.d,M.coping,e.x,0.06,e.z)); em.add(box(e.fx,1.4,e.fd,M.coping,e.fxx!==undefined?e.fxx:e.x,-0.6,e.fz!==undefined&&e.fxx===undefined?e.fz:e.z));
       em.add(box(e.w+0.1,0.05,e.d+0.1,M.primerOv,e.x,0.14,e.z,false)); em.add(box(e.w+0.2,0.06,e.d+0.2,M.flexOv,e.x,0.17,e.z,false)); em.add(box(e.w+0.3,0.06,e.d+0.3,M.topcoat,e.x,0.2,e.z,false)); }); }
-  function addOverlay(mat,dy,wallH){ const f=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),mat); f.rotation.x=-Math.PI/2; f.position.y=dy; f.receiveShadow=true; roof.add(f);
+  function addOverlay(mat,dy,wallH){ const f=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),mat); f.rotation.x=-Math.PI/2; f.position.y=dy; f.receiveShadow=true; roof.add(f); fieldPlanes.push(f);
     const wl=[{k:'N',w:IL,d:0.05,x:0,z:-IW/2+0.03+dy},{k:'S',w:IL,d:0.05,x:0,z:IW/2-0.03-dy},{k:'W',w:0.05,d:IW,x:-IL/2+0.03+dy,z:0},{k:'E',w:0.05,d:IW,x:IL/2-0.03-dy,z:0}];
     wl.filter(w=>!skip.includes(w.k)).forEach(w=>roof.add(box(w.w,wallH,w.d,mat,w.x,wallH/2,w.z,false))); }
   addOverlay(M.primerOv,0.05,1.6); addOverlay(M.flexOv,0.08,1.5); addOverlay(M.topcoat,0.11,PH);   // 18" up the wall for primer/Flex is ASSUMED
@@ -712,8 +712,13 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
     else if(mem.plate==='MA'){ const bl=new THREE.Mesh(new THREE.CircleGeometry(1,12),M.blister); bl.rotation.x=-Math.PI/2; bl.position.set(sx+(Math.random()-.5)*8,0.025,zz); bl.scale.set(1.5+Math.random()*3,1+Math.random()*2,1); fails.add(bl); patches.add(box(2.4,0.05,len+2,M.patchA,sx,0.028,zz,false)); }
     else if(mem.plate==='C'){ const cr=box(0.25,0.04,len*1.6,M.crack,sx+(Math.random()-.5)*6,0.04,zz,false); cr.rotation.y=(Math.random()-.5)*1.2; fails.add(cr); const pc=box(1.2,0.06,len*1.6+1,M.patchC,cr.position.x,0.045,zz,false); pc.rotation.y=cr.rotation.y; patches.add(pc); }
     else { fails.add(box(0.9,0.05,len,M.stain,sx,0.04,zz,false)); patches.add(box(2.2,0.06,len+2,M.patch,sx,0.045,zz,false)); } }
-  return {g,roof,par,L,W,H,PH,PT,IL,IW,x,z,stains,fails,patches,em:o._em,tapeList};
+  const blk={g,roof,par,L,W,H,PH,PT,IL,IW,x,z,stains,fails,patches,em:o._em,tapeList,fieldPlanes,cutouts}; BLOCKS.push(blk); return blk;
 }
+const BLOCKS=[];
+// Punch holes in a block's field layers where loaded models carry their own patch of roof (avoids the field sheets flooding a drain sump).
+function applyCutouts(b){ if(!b.cutouts.length) return; const sh=new THREE.Shape(); sh.moveTo(-b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,b.IW/2); sh.lineTo(-b.IL/2,b.IW/2); sh.closePath();
+  b.cutouts.forEach(c=>{ const h=new THREE.Path(); if(c.r){ h.absarc(c.x,-c.z,c.r,0,Math.PI*2,true); } else { h.moveTo(c.x-c.h,-c.z-c.h); h.lineTo(c.x-c.h,-c.z+c.h); h.lineTo(c.x+c.h,-c.z+c.h); h.lineTo(c.x+c.h,-c.z-c.h); h.closePath(); } sh.holes.push(h); });
+  const geo=new THREE.ShapeGeometry(sh,24); b.fieldPlanes.forEach(pl=>{ pl.geometry.dispose(); pl.geometry=geo; }); }
 function addStain(b,x,z,r=9){ const st=new THREE.Mesh(new THREE.CircleGeometry(r,24),M.stain); st.rotation.x=-Math.PI/2; st.position.set(x+r*0.2,0.035,z-r*0.1); st.scale.set(1.4,1,1); b.stains.add(st); }
 // Curb assembly per CS-1-TYP (flat) / CS-13-MP (metal): (E) curb with (E) flashing skirt and fasteners at the top;
 // Flex from the field up the full curb wall, over the top lip and onto the interior; topcoat over all; unit lifted and reset.
@@ -726,7 +731,7 @@ function curbAssembly(g,CW,CH,mode,metalRoof){ const T=0.15, d={prim:[],flex:[]}
   const wrap=(mat,dr,arr)=>{ const w=box(CW+0.16+dr,CH+dr,CW+0.16+dr,mat,0,(CH+dr)/2,0,false); const lip=box(CW-0.42-dr,0.4,CW-0.42-dr,mat,0,CH-0.2,0,false); const apron=box(CW+2.6+dr,0.06,CW+2.6+dr,mat,0,0.09+dr,0,false); [w,lip,apron].forEach(m=>{ g.add(m); if(arr) arr.push(m); }); };
   wrap(P,0.0,mode==='toggle'?d.prim:null); wrap(F,0.06,mode==='toggle'?d.flex:null); wrap(M.topcoat,0.12,null);
   const unit=new THREE.Group(); unit.position.y=CH+0.35; g.add(unit); d.unit=unit; return d; }
-function addRTU(b,x,z,CW=8,CH=1.5){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g; if(CW===8&&CH===1.5){ const prim=new THREE.Group(); g.add(prim); mountModel('rtu',g,0,0,0,prim); g=prim; } const d=curbAssembly(g,CW,CH,'sweep',false);
+function addRTU(b,x,z,CW=8,CH=1.5){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g; if(CW===8&&CH===1.5){ const prim=new THREE.Group(); g.add(prim); if(mountModel('rtu',g,0,0,0,prim)) b.cutouts.push({x,z,h:6.4}); g=prim; } const d=curbAssembly(g,CW,CH,'sweep',false);
   d.unit.add(box(CW+1.5,CW*0.5,CW+1.5,M.unit,0,CW*0.25,0)); d.unit.add(box(CW+1.7,0.4,CW+1.7,M.unitD,0,CW*0.5+0.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.35,CW*0.35,0.25,24),M.unitD); fan.position.set(0,CW*0.5+0.4,0); d.unit.add(fan); g.userData.unit=d.unit; g.userData.CH=CH; return gOuter; }
 function addRTU_old(b,x,z,CW=8,CH=1.5){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
   g.add(box(CW,CH,CW,M.curb,0,CH/2,0)); g.add(box(CW+1.5,CW*0.5,CW+1.5,M.unit,0,CH+CW*0.25,0)); g.add(box(CW+1.7,0.4,CW+1.7,M.unitD,0,CH+CW*0.5+0.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.35,CW*0.35,0.25,24),M.unitD); fan.position.set(0,CH+CW*0.5+0.4,0); g.add(fan);
@@ -736,7 +741,7 @@ function addSkylight(b,x,z,CW=6,CH=1.2){ const g=new THREE.Group(); g.position.s
 // Cast-iron drain per D-1-TYP: (E) bowl set below the field; clamping ring removed and reset in sealant; strainer replaced/primed;
 // Flex encapsulates the ring, extends min 18" out from the drain and 3" down into the bowl past the ring; topcoat extends 1" further into the bowl.
 function addDrain(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const RB=1.0;   // bowl radius (ft)
-  const prim=new THREE.Group(); g.add(prim); mountModel('drain',g,0,0,0,prim); const gOuter=g; g=prim;
+  const prim=new THREE.Group(); g.add(prim); if(mountModel('drain',g,0,0,0,prim)) b.cutouts.push({x,z,r:2.45}); const gOuter=g; g=prim;
   const bowl=new THREE.Mesh(new THREE.CylinderGeometry(RB,RB*0.8,0.7,32,1,true),M.unitD); bowl.position.y=-0.34; g.add(bowl); const bfloor=new THREE.Mesh(new THREE.CircleGeometry(RB*0.8,32),M.unitD); bfloor.rotation.x=-Math.PI/2; bfloor.position.y=-0.68; g.add(bfloor);
   const mouth=new THREE.Mesh(new THREE.CircleGeometry(RB,32),M.unitD); mouth.rotation.x=-Math.PI/2; mouth.position.y=0.025; g.add(mouth);   // opening in the field
   const ring=new THREE.Mesh(new THREE.TorusGeometry(RB+0.18,0.14,10,36),M.iron); ring.rotation.x=Math.PI/2; ring.position.y=0.1; g.add(ring); g.userData.ring=ring;
@@ -1020,7 +1025,7 @@ function makeSolar(parent, cols, rows){
 }
 
 const BUILDERS={ warehouse:buildWarehouse, bigbox:buildBigBox, school:buildSchool, office:buildOffice, manufacturing:buildManufacturing, hospital:buildHospital, arena:buildArena, silo:buildSilo, hotel:buildHotel, airport:buildAirport, restaurant:buildRestaurant };
-function rebuild(){ modelInstances.length=0; disposeGroup(world); B = BUILDERS[S.building](); buildHots(); goRoof(true); }
+function rebuild(){ modelInstances.length=0; BLOCKS.length=0; disposeGroup(world); B = BUILDERS[S.building](); BLOCKS.forEach(applyCutouts); buildHots(); goRoof(true); }
 
 /* =================================================================
    CAMERA
@@ -1134,7 +1139,7 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize()
   applyCam(); applyStage(); applySection(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
 
 selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame);
-window.__rmi={ S, setStage, goDetail, goRoof, selectBuilding, finishCam:()=>{ camT=1; }, world, modelInstances, camera };
+window.__rmi={ S, setStage, goDetail, goRoof, selectBuilding, finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS };
 })();
 </script>
 </body>
