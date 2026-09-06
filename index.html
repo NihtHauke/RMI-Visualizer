@@ -164,7 +164,7 @@
 
   <main id="view">
     <canvas id="c"></canvas>
-    <div class="viewbar"><div class="chip" id="viewChip"><b>Whole roof</b><span id="viewName"></span><button id="backBtn" style="display:none">Back to roof</button></div></div>
+    <div class="viewbar"><div class="chip" id="viewChip"><b>Whole roof</b><span id="viewName"></span><button id="backBtn" style="display:none">Back to roof</button><button id="secBtn" style="display:none;background:#fff;color:var(--navy);border:1px solid var(--navy)">Section view</button></div></div>
     <div class="hint">Drag to orbit · scroll to zoom · click a marker to zoom in</div>
     <div id="hots"></div>
     <div class="layers" id="layers"></div>
@@ -200,7 +200,7 @@
    ASSUMED = simulated for the mockup; correct via the catalog.
 ================================================================= */
 const ROOFS = {
-  rpanel: { label:'R-panel metal', plate:'MP', pattern:'seam', shape:'gable',
+  rpanel: { label:'R-panel metal', plate:'MP', pattern:'seam', shape:'gable', surface:'rpanel',
     system:{thane:'MP-10-17-FF-FL48-T17', white:'MP-10-23-FF-FL48-WP23'},
     rates:{ primerSqFtPerGal:1000, flexGalPerSq:3, topGalPerSq:1.5 },
     condLabel:'Rust at laps and fasteners',
@@ -212,6 +212,71 @@ const ROOFS = {
       { key:'flex', name:'RMI-Flex', short:'Flex', text:'Flex, the gold fluid-applied membrane, traces every side lap, end lap, and fastener head and wraps the base of the curb. Metal gets Flex only where the roof can leak; the panel field is optional.', src:'Plate MP FL48 flashings — "apply Flex to all seams, laps, transitions, penetrations, drains, scuppers, curbs and fasteners." Order within the roof is ASSUMED.' },
       { key:'thane', name:'RMI-Thane', short:'Thane', text:'The silver topcoat is sprayed over the entire roof — panels, seams, Flex, and curb become one continuous surface. Thane is a radiant barrier: it reflects heat and protects the Flex underneath from UV.', src:'Plate MP: Thane 17 mil (1.5 gal/sq) for 10-yr, 22 mil (2 gal/sq) for 15-yr. Spray direction is ASSUMED.' },
       { key:'done', name:'Finished system', short:'Finished', text:'The completed roof. Switch the finish to RMI-White Plus for a bright reflective surface, or add Solar Post supports to see how the mounts are flashed into the system.', src:'System codes MP-10-17-FF-FL48-T17 (Thane) and MP-10-23-FF-FL48-WP23 (White Plus).' }
+    ] },
+  sseam: { label:'Standing seam metal', plate:'MP', pattern:'seam', shape:'gable', surface:'sseam',
+    system:{thane:'MP-10-17-FF-FL48-T17', white:'MP-10-23-FF-FL48-WP23'},
+    rates:{ primerSqFtPerGal:1000, flexGalPerSq:3, topGalPerSq:1.5 },
+    condLabel:'Rust at end laps and sealant failure',
+    patternNote:'Metal: primer + Flex on every standing seam, end lap, transition and penetration; full-field topcoat. Clips are concealed, so fasteners show only at end laps. <span class="tag v">VERIFIED</span> Plate MP',
+    stages:[
+      { key:'existing', name:'Existing roof', short:'Existing', text:'Aged standing-seam panels. The seams themselves are tight, but the factory sealant at the end laps has failed, the ridge closures are open, and rust runs from the end-lap fasteners. Leaks follow the seams to the eave.', src:'Plate MP applies to all metal panel systems including standing seam. Condition list: treat rust, replace defective fasteners.' },
+      { key:'prep', name:'Prep', short:'Prep', text:'Roof is cleaned, rust at the end laps is treated, failed sealant is cut out and defective fasteners are replaced. Adhesion test documented.', src:'Plate MP notes 1, 2, 6.' },
+      { key:'primer', name:'Primer', short:'Primer', text:'RMI primer on every standing seam, end lap, ridge, penetration and curb — the places that will receive Flex. The panel field stays uncoated at this stage.', src:'Plate MP note 2: primer required under all Flex, min 1 gal per 1,000 sq ft.' },
+      { key:'flex', name:'RMI-Flex', short:'Flex', text:'Flex caps every standing seam from ridge to eave, bridges each end lap, and wraps every penetration. On standing seam this is a narrow, precise application — the seam is the whole story.', src:'Plate MP FL48 flashings; F-9-TYP standing seam, F-6-TYP end lap. Order within the roof is ASSUMED.' },
+      { key:'thane', name:'RMI-Thane', short:'Thane', text:'The silver topcoat is sprayed over the entire roof — panels, seams and Flex become one continuous surface that reflects heat and protects the Flex from UV.', src:'Plate MP: Thane 17 mil (1.5 gal/sq) for 10-yr, 22 mil (2 gal/sq) for 15-yr.' },
+      { key:'done', name:'Finished system', short:'Finished', text:'The completed roof. Switch the finish to RMI-White Plus, or add Solar Post supports.', src:'System codes MP-10-17-FF-FL48-T17 (Thane) and MP-10-23-FF-FL48-WP23 (White Plus).' }
+    ] },
+  spf: { label:'SPF spray foam', plate:'SPF', pattern:'field', shape:'gable', surface:'spf',
+    system:{thane:'SPF-10-65-S-F48-T17', white:'SPF-10-71-S-F48-WP23'},
+    rates:{ primerSqFtPerGal:650, flexGalPerSq:3, topGalPerSq:1.5 },
+    condLabel:'UV-degraded and pitted foam',
+    patternNote:'Spray foam: repair voids, moisture scan, primer on weathered foam, full-field Flex at 48 mil to encapsulate the foam, full-field topcoat. <span class="tag v">VERIFIED</span> Plate SPF',
+    stages:[
+      { key:'existing', name:'Existing roof', short:'Existing', text:'Spray polyurethane foam whose coating has worn through. Exposed foam turns orange and chalky under UV, birds peck it, and pits hold water. The foam still insulates — it needs to be sealed again, not removed.', src:'Plate SPF note 1: new, existing or recover SPF with a smooth surface free of orange peel or other defects; RMI warranty excludes the SPF itself.' },
+      { key:'prep', name:'Prep', short:'Prep', text:'Power wash, scarf and repair every void and pit with new foam, and run a documented moisture scan of the foam and the deck beneath it. Adhesion is tested on the foam surface.', src:'Plate SPF header notes: repair/seal voids and deficiencies in SPF; test SPF for adhesion; moisture scan. Repair placement is ASSUMED.' },
+      { key:'primer', name:'Primer', short:'Primer', text:'Weathered foam gets a fog coat of RMI primer over the whole field. Fresh foam coated before exposure may not need it — this is confirmed with the foam supplier.', src:'Plate SPF note 2: primer typically not required on fresh SPF; otherwise 1 gal per 600–700 sq ft.' },
+      { key:'flex', name:'RMI-Flex', short:'Flex', text:'Flex is sprayed or rolled over the entire foam surface at 48 dry mils, fully encapsulating it, and carried over the ridge, around every vent and pipe, and down to the eave.', src:'Plate SPF: F48 field + repairs, terminations, curbs, transitions, penetrations. Detail-before-field order is ASSUMED.' },
+      { key:'thane', name:'RMI-Thane', short:'Thane', text:'The silver topcoat goes over everything and shields both Flex and foam from UV — the thing that destroyed the last coating.', src:'Plate SPF: Thane 17 mil (1.5 gal/sq) for 10-yr, 22 mil (2 gal/sq) for 15-yr.' },
+      { key:'done', name:'Finished system', short:'Finished', text:'The completed roof. Switch to RMI-White Plus or add Solar Post supports.', src:'System codes SPF-10-65-S-F48-T17 (Thane) and SPF-10-71-S-F48-WP23 (White Plus).' }
+    ] },
+  modbit: { label:'Mod-bit / BUR, granule cap', plate:'A', pattern:'field', shape:'flat',
+    system:{thane:'A-10-65-G-F48-T17', white:'A-10-71-G-F48-WP23'},
+    rates:{ primerSqFtPerGal:450, flexGalPerSq:3, topGalPerSq:1.5 },
+    condLabel:'Granule loss and splits',
+    patternNote:'Granule cap sheet: power wash, optional leveling coat, full-field primer, full-field Flex at 48 mil, full-field topcoat. <span class="tag v">VERIFIED</span> Plate A (granule)',
+    stages:[
+      { key:'existing', name:'Existing roof', short:'Existing', text:'Aged modified-bitumen cap sheet. Granules have washed off in patches, laps are lifting, and the cap has split where the deck moves. Typical of a school roof that has been patched for twenty years.', src:'Plate A (granule) note 1: granule cap sheets and granule-embedded BUR; adhesion test any residual coatings.' },
+      { key:'prep', name:'Prep', short:'Prep', text:'Power wash to remove loose granules and dirt. Seal every void, crack, split and lap, then run a documented moisture scan. Low spots that hold water get an optional leveling coat and must be fully cured before primer.', src:'Plate A (granule) notes 1–2: power wash; repair/seal deficiencies prior to Flex; leveling coat optional at low spots. Repair placement is ASSUMED.' },
+      { key:'primer', name:'Primer', short:'Primer', text:'RMI primer is fog-coated over the entire field to lock the remaining granules and give Flex something to bond to. Granule surfaces take more primer than smooth ones.', src:'Plate A (granule) note 3: primer at 1 gal per 400–500 sq ft.' },
+      { key:'flex', name:'RMI-Flex', short:'Flex', text:'Flex is rolled over the whole roof at 48 dry mils, encapsulating the granules, and carried up every wall, around every pipe and into every drain. Worn cap sheets absorb the listed rate; newer ones with more granules may need extra.', src:'Plate A (granule) note 4: F48 to field, seams, laps, transitions, penetrations, drains, curbs. Detail-before-field order is ASSUMED.' },
+      { key:'thane', name:'RMI-Thane', short:'Thane', text:'The silver topcoat goes over everything and turns a dark, heat-soaking granule roof into a reflective one. It shields the Flex from UV.', src:'Plate A (granule): Thane 17 mil (1.5 gal/sq) for 10-yr, 22 mil (2 gal/sq) for 15-yr.' },
+      { key:'done', name:'Finished system', short:'Finished', text:'The completed roof. Switch to RMI-White Plus for the brightest surface, or add Solar Post supports to see the post flashing.', src:'System codes A-10-65-G-F48-T17 (Thane) and A-10-71-G-F48-WP23 (White Plus).' }
+    ] },
+  gravel: { label:'BUR, gravel surface', plate:'MA', pattern:'field', shape:'flat', noWhite:true,
+    system:{thane:'MA-10-81-GR-F64-T17', white:'MA-10-81-GR-F64-T17'},
+    rates:{ primerSqFtPerGal:300, flexGalPerSq:4, topGalPerSq:1.5 },
+    condLabel:'Bare felts, blisters and splits under the gravel',
+    patternNote:'Gravel BUR: remove all gravel to the felts, asphalt primer to seal felts, leveling coat, full-field Flex at 64 mil, Thane only. 10-yr material warranty. <span class="tag v">VERIFIED</span> Plate A (gravel)',
+    stages:[
+      { key:'existing', name:'Existing roof', short:'Existing', text:'Gravel-surfaced built-up roof. The gravel hides the felts, so problems are found by feel: soft spots, blisters, and bare patches where the flood coat has worn through. Ponding sits in the low areas.', src:'Plate A (gravel) note 1: gravel must be removed down to the felts; damaged felts repaired.' },
+      { key:'prep', name:'Prep', short:'Prep', text:'Every bit of gravel comes off, down to the felts, without damaging them. Damaged felts are repaired, the surface is power washed, a moisture scan is documented, and the felts are sealed with asphalt primer. Low spots get a leveling coat, which can take 30+ days to cure.', src:'Plate A (gravel) notes 1–2: remove gravel; asphalt primer 1 gal per 300 sq ft; leveling coat optional, cure before Flex. Gravel-removal direction is ASSUMED.' },
+      { key:'primer', name:'Primer', short:'Primer', text:'RMI primer is fog-coated over the prepared felts and leveling coat, plus every wall, curb, pitch pan and drain.', src:'Plate A (gravel) note 3: primer under all Flex.' },
+      { key:'flex', name:'RMI-Flex', short:'Flex', text:'Flex is rolled at 64 dry mils — 4 gallons per square, a third more than a smooth roof — because the exposed felts are irregular and need a thicker membrane to bridge them.', src:'Plate A (gravel): F64 field + repairs, terminations, curbs, transitions, penetrations. Detail-before-field order is ASSUMED.' },
+      { key:'thane', name:'RMI-Thane', short:'Thane', text:'Thane at 17 mil goes over everything. This system is Thane-only — RMI-White Plus is not offered on a gravel BUR conversion.', src:'Plate A (gravel): T17 at 1.5 gal/sq. Thane only.' },
+      { key:'done', name:'Finished system', short:'Finished', text:'The completed roof: a gravel BUR turned into a smooth, reflective, fluid-applied surface without a tear-off.', src:'System code MA-10-81-GR-F64-T17. 10-yr material-only warranty.' }
+    ] },
+  concrete: { label:'Concrete / LIC deck', plate:'C', pattern:'field', shape:'flat',
+    system:{thane:'C-10-65-S-F48-T17', white:'C-10-71-S-F48-WP23'},
+    rates:{ primerSqFtPerGal:375, flexGalPerSq:3, topGalPerSq:1.5 },
+    condLabel:'Cracks, spalling and ponding',
+    patternNote:'Concrete deck: power wash or bead blast, repair cracks and spalls, mandatory moisture test, full-field primer, Flex at 48 mil, topcoat. <span class="tag v">VERIFIED</span> Plate C',
+    stages:[
+      { key:'existing', name:'Existing roof', short:'Existing', text:'Bare structural or lightweight concrete deck. Cracks follow the control joints, corners are spalling, and water ponds where the slab has deflected. Concrete is porous — it needs to be sealed, not just coated.', src:'Plate C note 1: smooth concrete without structural defects; cracks, control joints and spalls repaired to concrete standards.' },
+      { key:'prep', name:'Prep', short:'Prep', text:'Power wash, bead-blast if needed, and repair every crack and spall with concrete patch or epoxy injection. Joint sealants are tested for compatibility. A moisture test is mandatory before anything goes on; new concrete cures 28 days first.', src:'Plate C note 1 and header notes: moisture testing mandatory; check joint sealant; 28-day cure for new concrete. Repair placement is ASSUMED.' },
+      { key:'primer', name:'Primer', short:'Primer', text:'RMI primer is fog-coated over the whole deck at the heaviest rate of any substrate — concrete drinks it. Primer coverage and adhesion are tested before Flex.', src:'Plate C note 3: primer at 1 gal per 350–400 sq ft; test primer coverage and adhesion.' },
+      { key:'flex', name:'RMI-Flex', short:'Flex', text:'Flex is rolled over the entire deck at 48 dry mils, bridging the control joints and carried up the penthouse walls, over the edge metal and into every drain. Concrete becomes a monolithic waterproofed surface.', src:'Plate C: F48 field + repairs, terminations, curbs, transitions, penetrations. Detail-before-field order is ASSUMED.' },
+      { key:'thane', name:'RMI-Thane', short:'Thane', text:'The silver topcoat goes over everything and shields the Flex from UV. On a bare concrete deck the temperature drop is the most visible change of all.', src:'Plate C: Thane 17 mil (1.5 gal/sq) for 10-yr, 22 mil (2 gal/sq) for 15-yr.' },
+      { key:'done', name:'Finished system', short:'Finished', text:'The completed roof. Switch to RMI-White Plus or add Solar Post supports to see the post flashing.', src:'System codes C-10-65-S-F48-T17 (Thane) and C-10-71-S-F48-WP23 (White Plus).' }
     ] },
   tpo: { label:'TPO / PVC / EPDM single-ply', plate:'SP', pattern:'field', shape:'flat',
     system:{thane:'SP-10-65-S-F48-T17', white:'SP-10-71-S-F48-WP23'},
@@ -229,37 +294,97 @@ const ROOFS = {
 };
 
 const DETAILS = {
-  curb:   { name:'Curb-mounted HVAC unit', drawing:'CS-13-MP', concept:'CS13-1-8-3D', dist:21, phi:1.18, theta:0.85, drop:4.6, menu:'HVAC curb',
-    layers:[{k:'existing',label:'Existing metal curb and panel',color:'#AEB3B0'},{k:'primer',label:'Primer on curb wall and panel',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb wall and out onto the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
-    src:'Assembly per CS-13-MP (2D) and CS13-1-8-3D (3D concept). Wrap heights are ASSUMED until measured from the drawing.' },
-  lap:    { name:'R-panel side lap', drawing:'F-8-TYP', concept:'F8-2-FT-3D', dist:8, phi:1.1, theta:0.5, drop:0, menu:'Side laps',
-    layers:[{k:'existing',label:'Overlapping panel edges and fastener',color:'#AEB3B0'},{k:'primer',label:'Primer on the lap and fastener head',color:'#E8D7A6'},{k:'flex',label:'Flex bridges the lap and encapsulates the fastener',color:'#D9A21B'},{k:'thane',label:'Topcoat over the panel field',color:'#C3C7CC'}],
-    src:'Assembly per F-8-TYP (2D) and F8-2-FT-3D (3D concept).' },
-  ridge:  { name:'Ridge cap', drawing:'F-21-M-TYP', concept:'—', dist:12, phi:1.0, theta:0.2, drop:0, menu:'Ridge cap',
+  curb:   { name:'Curb-mounted HVAC unit', drawing:'CS-13-MP', concept:'CS13-1-8-3D', dist:21, phi:1.18, theta:0.85, drop:4.6, menu:'HVAC curb', byRoof:{ spf:{ drawing:'SPF-12-TYP', concept:'B-1-SPF-1-3D', src:'Assembly per SPF-12-TYP (HVAC curb). Wrap height is ASSUMED.' } },
+    layers:[{k:'existing',label:'(E) metal curb, flashing skirt and counterflashing; unit lifted',color:'#AEB3B0'},{k:'primer',label:'Primer on curb, flashing and the panel around it',color:'#E8D7A6'},{k:'flex',label:'Flex from the panel up the full curb wall, over the top, onto the interior',color:'#D9A21B'},{k:'thane',label:'Topcoat over all; counterflashing and unit reset after cure',color:'#C3C7CC'}],
+    src:'Assembly per CS-13-MP and CS13-1-8-3D — VERIFIED: Flex up the full curb wall and over the top to the interior, counterflashing above, unit lifted and reset after cure.' },
+  lap:    { name:'R-panel side lap', drawing:'F-8-TYP', concept:'F8-2-FT-3D', dist:9, phi:1.15, theta:0.5, drop:0.3, menu:'Side laps',
+    layers:[{k:'existing',label:'(E) min 24 ga. panels lapped at a major rib, fastened through the crest; rust treated, damaged/loose fasteners replaced',color:'#AEB3B0'},{k:'primer',label:'Bead of approved sealant at all voids; clean and prime the lap and fasteners',color:'#E8D7A6'},{k:'flex',label:'Flex fully encapsulates the lap rib and its fasteners, rib to flat on both sides',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything; optional Flex base coat to the whole field',color:'#C3C7CC'}],
+    src:'Assembly per F-8-TYP and F8-2-FT-3D — VERIFIED: the lap is the rib, and the Flex wraps the whole rib profile. Note 12: ill-fitting panels with excessive movement can void the warranty; note 10: rust with pinholes must be patched or replaced.' },
+  sseam:  { name:'Standing seam', drawing:'F-9-TYP', concept:'B-1-F10-22-3D', dist:7, phi:1.15, theta:0.5, drop:0.2, menu:'Standing seams',
+    layers:[{k:'existing',label:'(E) min 24 ga. panels with a crimped double-lock seam; loose or improper crimps re-crimped to the manufacturer\'s profile',color:'#AEB3B0'},{k:'primer',label:'Rust treated per RMI approved application; clean and prime the seam',color:'#E8D7A6'},{k:'flex',label:'Flex fully encapsulates the standing seam — over the cap, down both legs and onto the flat',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything; optional Flex base coat to the whole field',color:'#C3C7CC'}],
+    src:'Assembly per F-9-TYP (and F-20-TYP for seam laps) and B-1-F10-22-3D — VERIFIED. Note 11: loose or improper crimping creates voids and can void the warranty; note 10: rust with pinholes must be patched or replaced.' },
+  mskylight:{ name:'Flush-mounted skylight panel', drawing:'F-12-TYP', concept:'—', dist:16, phi:1.1, theta:0.6, drop:0.4, menu:'Skylight panels',
+    layers:[{k:'existing',label:'Existing translucent panel lapped into the metal',color:'#AEB3B0'},{k:'primer',label:'Primer on the laps around the panel',color:'#E8D7A6'},{k:'flex',label:'Flex over every lap and fastener around the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over the metal; panel left clear',color:'#C3C7CC'}],
+    src:'Assembly per F-12-TYP. No 3D concept render; geometry is ASSUMED.', byRoof:{ spf:{ drawing:'—', src:'No SPF skylight drawing in the library; treated as a curb per SPF-12-TYP. ASSUMED.' } } },
+  vent:   { name:'Roof exhaust vent', drawing:'Plate D', concept:'—', dist:12, phi:1.1, theta:2.6, drop:2.0, menu:'Vents',
+    layers:[{k:'existing',label:'Existing vent curb and gooseneck hood',color:'#AEB3B0'},{k:'primer',label:'Primer on curb and surrounding panel',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb and out onto the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
+    src:'Metal ducts, vents and curbs per Plate D. No dedicated vent drawing for metal roofs in the library; assembly is ASSUMED.', byRoof:{ spf:{ drawing:'SPF-16-TYP', src:'Assembly per SPF-16-TYP (roof vent). Wrap height is ASSUMED.' }, concrete:{ name:'Bin vent', drawing:'CS-12-CON', src:'Treated as a curb on exposed concrete per CS-12-CON. ASSUMED.' } } },
+  mpipe:  { name:'Pipe penetration, EPDM boot', drawing:'P-9-MP', concept:'—', dist:8, phi:1.05, theta:2.5, drop:2.2, menu:'Pipes',
+    layers:[{k:'existing',label:'Existing pipe with EPDM boot',color:'#AEB3B0'},{k:'primer',label:'Primer on boot and panel',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the boot and its flange',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
+    src:'Assembly per P-9-MP (EPDM boot). P-10-MP covers the metal-jack alternative.', byRoof:{ spf:{ drawing:'SPF-3-TYP', src:'Assembly per SPF-3-TYP (penetration). Wrap height is ASSUMED.' } } },
+  gutter: { name:'Metal gutter seams', drawing:'W-7-TYP', concept:'D-7-FT-24-3D', dist:10, phi:1.2, theta:0.4, drop:0.5, menu:'Gutters',
+    layers:[{k:'existing',label:'Existing hung gutter with lapped and riveted seams',color:'#AEB3B0'},{k:'primer',label:'Primer on each seam',color:'#E8D7A6'},{k:'flex',label:'Flex over every seam and rivet inside the gutter',color:'#D9A21B'},{k:'thane',label:'Topcoat inside the gutter',color:'#C3C7CC'}],
+    src:'Assembly per W-7-TYP (metal gutter seams) and D-7-FT-24-3D. Standard exterior gutters are limited to a material-only warranty per Plate MP.' },
+  gutterinlet:{ name:'Gutter inlet / downspout', drawing:'D-8-TYP', concept:'D8-9-FT-3D', dist:9, phi:1.2, theta:0.5, drop:0.6, menu:'Downspout inlets',
+    layers:[{k:'existing',label:'Existing outlet tube through the gutter floor',color:'#AEB3B0'},{k:'primer',label:'Primer on outlet flange and gutter floor',color:'#E8D7A6'},{k:'flex',label:'Flex seals the flange into the gutter and down into the outlet',color:'#D9A21B'},{k:'thane',label:'Topcoat over the gutter floor',color:'#C3C7CC'}],
+    src:'Assembly per D-8-TYP and D8-9-FT-3D.' },
+  hatch:  { name:'Roof hatch', drawing:'CS-15-MP', concept:'—', dist:12, phi:1.1, theta:0.8, drop:1.6, menu:'Roof hatch',
+    layers:[{k:'existing',label:'Existing hatch curb and lid',color:'#AEB3B0'},{k:'primer',label:'Primer on curb wall and panel',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb to the lid frame and out onto the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
+    src:'Access and smoke hatches are named in CS-1-TYP note 7 (flat roofs) — VERIFIED; on metal, CS-15-MP fixed curb. Flex up the full curb and over the top; hatch lifted and reset.', byRoof:{ spf:{ drawing:'SPF-12-TYP', src:'Curb per SPF-12-TYP. Hatch-specific wrap is ASSUMED.' }, concrete:{ name:'Manway / bin hatch', drawing:'CS-14-CON', src:'Fixed curb on exposed concrete per CS-14-CON.' } } },
+  ridge:  { name:'Ridge cap', drawing:'F-21-M-TYP', concept:'—', dist:12, phi:1.0, theta:0.2, drop:0, menu:'Ridge cap', byRoof:{ spf:{ drawing:'SPF-2-TYP', src:'Assembly per SPF-2-TYP (ridge).' } },
     layers:[{k:'existing',label:'Existing ridge cap and closures',color:'#AEB3B0'},{k:'primer',label:'Primer on cap laps and fasteners',color:'#E8D7A6'},{k:'flex',label:'Flex over cap laps and both edges',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
     src:'Assembly per F-21-M-TYP. No 3D concept render yet; geometry here is ASSUMED.' },
-  rtu:    { name:'Curb-mounted RTU', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:26, phi:1.15, theta:0.8, drop:5.5, menu:'HVAC curbs',
-    layers:[{k:'existing',label:'Existing curb, cant and membrane flashing',color:'#C9C9C2'},{k:'primer',label:'Primer on curb wall and field',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb to the cap and across the field',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
-    src:'Assembly per CS-1-TYP (curb with liftable cap) and CS1-18-3D. Flex height on the curb is ASSUMED.' },
-  drain:  { name:'Cast-iron roof drain', drawing:'D-1-TYP', concept:'CID-1-21-FT3D', dist:12, phi:1.05, theta:0.6, drop:0.8, menu:'Drains',
-    layers:[{k:'existing',label:'Existing drain bowl, clamping ring and strainer',color:'#C9C9C2'},{k:'primer',label:'Primer into the sump and flange',color:'#E8D7A6'},{k:'flex',label:'Flex from the field into the sump, under the clamping ring',color:'#D9A21B'},{k:'thane',label:'Topcoat to the ring; strainer reset',color:'#C3C7CC'}],
-    src:'Assembly per D-1-TYP and CID-1-21-FT3D. Flange radius is ASSUMED.' },
-  scupper:{ name:'Overflow scupper', drawing:'D-4-TYP', concept:'D4-1-FT-3D', dist:14, phi:1.1, theta:0.4, drop:0.8, menu:'Scuppers',
-    layers:[{k:'existing',label:'Existing scupper sleeve through the parapet',color:'#C9C9C2'},{k:'primer',label:'Primer on sleeve, wall and field',color:'#E8D7A6'},{k:'flex',label:'Flex into the sleeve and up the wall around it',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
-    src:'Assembly per D-4-TYP and D4-1-FT-3D. Sleeve wrap depth is ASSUMED.' },
-  coping: { name:'Parapet and metal coping', drawing:'W-1-TYP', concept:'W1-11-FT3D', dist:18, phi:1.05, theta:2.4, drop:1.8, menu:'Parapet / coping',
-    layers:[{k:'existing',label:'Existing parapet, base flashing and coping joints',color:'#C9C9C2'},{k:'primer',label:'Primer on wall face and coping laps',color:'#E8D7A6'},{k:'flex',label:'Flex up the wall and over every coping joint',color:'#D9A21B'},{k:'thane',label:'Topcoat over wall and field',color:'#C3C7CC'}],
-    src:'Assembly per W-1-TYP (coping joints) and W1-11-FT3D. Wall height of Flex is ASSUMED.' }
+  rtu:    { name:'Curb-mounted RTU', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:22, phi:1.15, theta:0.8, drop:5.0, menu:'HVAC curbs',
+    layers:[{k:'existing',label:'(E) curb with (E) flashing skirt and fasteners at the top; unit lifted',color:'#C9C9C2'},{k:'primer',label:'Clean, repair and prime the curb and field per the plate',color:'#E8D7A6'},{k:'flex',label:'Flex from the field up the full curb wall, over the top, onto the interior — encapsulating the (E) flashing',color:'#D9A21B'},{k:'thane',label:'Topcoat over all; unit reset with stainless screws and EPDM washers after full cure',color:'#C3C7CC'}],
+    src:'Assembly per CS-1-TYP and CS13-1-8-3D — VERIFIED. Note 7: the same detail applies to vents, ducts, soil stacks, conduit, refrigeration lines, access and smoke hatches, and skylight domes.' },
+  drain:  { name:'Cast-iron roof drain', drawing:'D-1-TYP', concept:'CID-1-21-FT3D', dist:9, phi:1.05, theta:0.6, drop:0.6, menu:'Drains',
+    layers:[{k:'existing',label:'(E) cast-iron bowl, clamping ring and strainer; damaged strainers replaced, rust treated',color:'#C9C9C2'},{k:'primer',label:'(E) flashing trimmed, sealant bead to the bowl; clean and prime',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the ring, min 18" out from the drain and 3" down into the bowl past the ring',color:'#D9A21B'},{k:'thane',label:'Topcoat extends 1" further into the bowl than the Flex; ring reset in sealant, strainer painted',color:'#C3C7CC'}],
+    src:'Assembly per D-1-TYP and CID-1-21-FT3D — VERIFIED, including the 18" / 3" / 1" extents. Notes: water-test after install; plastic/ABS drains excluded from warranty.' },
+  scupper:{ name:'Overflow scupper', drawing:'D-4-TYP', concept:'D4-1-FT-3D', dist:8, phi:1.05, theta:0.35, drop:3.0, menu:'Scuppers',
+    layers:[{k:'existing',label:'(E) scupper tube through the parapet at roof level, (E) cant and wall flashing; damaged components replaced, rust treated',color:'#C9C9C2'},{k:'primer',label:'Clean and prime tube, wall and field; sealant bead at the exterior termination',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the interior of the tube and extends min 12" onto the field; base coat continues up the wall',color:'#D9A21B'},{k:'thane',label:'Topcoat over the tube interior, wall and field',color:'#C3C7CC'}],
+    src:'Assembly per D-4-TYP and D4-1-FT-3D — VERIFIED, including the 12" field extent. Notes: water-test before and after; plastic/ABS scuppers excluded from warranty; exterior termination must be watertight to the building.' },
+  wall:   { name:'Wall tie-in, reglet counterflashing', drawing:'W-11-TYP', concept:'W13-FT-26-3D', dist:12, phi:1.15, theta:0.95, drop:1.2, menu:'Wall tie-in',
+    layers:[{k:'existing',label:'(E) wall flashing up to a Fry-type reglet with counterflashing; voids fastened with term bar + sealant 12" o.c.',color:'#C9C9C2'},{k:'primer',label:'Rake out (E) sealant at the reglet, new continuous bead; counterflashing removed; clean and prime',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the (E) wall flashing and term bar, extending up to the reglet receiver',color:'#D9A21B'},{k:'thane',label:'Topcoat encapsulates the Flex; counterflashing reset (optionally coated too)',color:'#C3C7CC'}],
+    src:'Assembly per W-11-TYP and W13-FT-26-3D — VERIFIED: Flex runs the full height of the (E) flashing to the reglet, not a fixed band. Flashing height itself varies by wall (24" here, ASSUMED). Note 7: applies to Fry-type reglets; do not damage the receiver.' },
+  pipe:   { name:'Soil stack / pipe penetration', drawing:'P-6-TYP', concept:'P3SP-11-FT-3D', dist:8, phi:1.05, theta:0.7, drop:1.8, menu:'Pipes / soil stacks',
+    layers:[{k:'existing',label:'(E) stack with lead flashing up the pipe and folded into the top; ill-fitting lead replaced',color:'#C9C9C2'},{k:'primer',label:'Sealant bead at the base; clean and prime lead and field',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the lead from the field to the top and extends inside the stack',color:'#D9A21B'},{k:'thane',label:'Topcoat over the Flex and past it into the stack',color:'#C3C7CC'}],
+    src:'Assembly per P-6-TYP and P3SP-11-FT-3D — VERIFIED (lead encapsulation, Flex inside the stack, topcoat past the Flex). Field extent of the Flex is not dimensioned; 12" ASSUMED. Note 7: applies equally to conduit, HVAC and refrigeration penetrations.' },
+  skylight:{ name:'Curb-mounted skylight', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:18, phi:1.15, theta:0.8, drop:2.0, menu:'Skylights',
+    layers:[{k:'existing',label:'Existing curb and skylight frame',color:'#C9C9C2'},{k:'primer',label:'Primer on curb wall and field',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb to the frame',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
+    src:'Assembly per CS-1-TYP, which names skylight domes in note 7 — VERIFIED. Flex up the full curb and over the top to the interior; dome lifted and reset.' },
+  edge:   { name:'Perimeter edge metal', drawing:'F-1-TYP', concept:'F1-34-FT-3D', dist:14, phi:1.1, theta:0.7, drop:0.6, menu:'Edge metal',
+    layers:[{k:'existing',label:'Existing gravel-stop edge metal and fascia',color:'#C9C9C2'},{k:'primer',label:'Primer on the metal flange and field',color:'#E8D7A6'},{k:'flex',label:'Flex over the flange, onto the field and to the drip edge',color:'#D9A21B'},{k:'thane',label:'Topcoat over flange and field',color:'#C3C7CC'}],
+    src:'Assembly per F-1-TYP and F1-34-FT-3D. Flange width is ASSUMED.' },
+  penthouse:{ name:'Penthouse wall, fixed counterflashing', drawing:'W-13-TYP', concept:'W-11-24-FT-3D', dist:20, phi:1.15, theta:0.9, drop:2.0, menu:'Penthouse walls',
+    layers:[{k:'existing',label:'Existing wall, cant and surface-mounted counterflashing',color:'#C9C9C2'},{k:'primer',label:'Primer up the wall to the counterflashing',color:'#E8D7A6'},{k:'flex',label:'Flex from the field up the wall, sealed under the counterflashing',color:'#D9A21B'},{k:'thane',label:'Topcoat over wall and field',color:'#C3C7CC'}],
+    src:'Assembly per W-13-TYP (fixed counterflashing) and W-11-24-FT-3D. Flex height on the wall is ASSUMED.' },
+  sleeper:{ name:'Sleeper support (pipes, condensers)', drawing:'CS-8-TYP', concept:'CS8-2-19-3D', dist:11, phi:1.1, theta:2.6, drop:0.6, menu:'Sleeper supports',
+    layers:[{k:'existing',label:'Existing sleeper block and conduit',color:'#C9C9C2'},{k:'primer',label:'Primer under and around the sleeper',color:'#E8D7A6'},{k:'flex',label:'Flex wraps the sleeper base and bonds it to the field',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
+    src:'Assembly per CS-8-TYP and CS8-2-19-3D. Wrap height is ASSUMED.' },
+  pitchpan:{ name:'Pitch pan / pipe cluster', drawing:'P-8-TYP', concept:'PP-1-FT-3D', dist:9, phi:1.05, theta:0.7, drop:1.4, menu:'Pipe clusters',
+    layers:[{k:'existing',label:'Existing metal pan with failed pourable sealer around the pipes',color:'#C9C9C2'},{k:'primer',label:'Primer on pan, pipes and field',color:'#E8D7A6'},{k:'flex',label:'Flex fills the pan, wraps each pipe and bonds to the field',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
+    src:'Assembly per P-8-TYP (chem curb / pitch pan) and PP-1-FT-3D. Fill depth is ASSUMED.' },
+  ej:     { name:'Expansion joint', drawing:'A-3-TYP', concept:'—', dist:14, phi:1.1, theta:0.8, drop:1.0, menu:'Expansion joint',
+    layers:[{k:'existing',label:'Existing double curb with flexible cover',color:'#C9C9C2'},{k:'primer',label:'Primer on both curb walls and the field',color:'#E8D7A6'},{k:'flex',label:'Flex up both curbs to the cover; cover stays flexible',color:'#D9A21B'},{k:'thane',label:'Topcoat over curbs and field',color:'#C3C7CC'}],
+    src:'Assembly per A-3-TYP (expansion joint, EPDM/PVC/TPO). No 3D concept render; geometry is ASSUMED.' },
+  silowall:{ name:'Concrete silo wall, vertical application', drawing:'W-7-TYP', concept:'—', dist:60, phi:1.35, theta:0.55, drop:0, menu:'Silo walls',
+    layers:[{k:'existing',label:'Existing concrete wall: hairline cracks, spalls and staining',color:'#C9C9C2'},{k:'primer',label:'Primer fog-coated down the wall',color:'#E8D7A6'},{k:'flex',label:'Flex sprayed vertically, encapsulating the concrete',color:'#D9A21B'},{k:'thane',label:'Topcoat over the wall',color:'#C3C7CC'}],
+    src:'Concrete wall assembly per W-7-TYP (concrete/CMU walls). Vertical field application on silos per the Longview grain terminal project; sequence and coverage on curved walls are ASSUMED.' },
+  support:{ name:'Circular support on concrete', drawing:'P-5-C', concept:'—', dist:10, phi:1.1, theta:0.7, drop:1.5, menu:'Gallery supports',
+    layers:[{k:'existing',label:'Existing steel post through the deck',color:'#C9C9C2'},{k:'primer',label:'Primer on post base and deck',color:'#E8D7A6'},{k:'flex',label:'Flex up the post and out onto the deck',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
+    src:'Assembly per P-5-C / P-7-C (circular supports on concrete: site screens, solar, mechanical). Wrap height is ASSUMED.' },
+  exhaust:{ name:'Kitchen exhaust fan curb', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:12, phi:1.1, theta:0.7, drop:2.4, menu:'Kitchen exhaust',
+    layers:[{k:'existing',label:'Existing fan curb with grease staining on the membrane',color:'#C9C9C2'},{k:'primer',label:'Primer on curb and degreased field',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb and across the field',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything; grease guard reinstalled',color:'#C3C7CC'}],
+    src:'Curb per CS-1-TYP (vents and ducts named in note 7) — VERIFIED. Grease must be removed before priming (plates: no RMI over contaminants); degreasing method is ASSUMED.' },
+  coping: { name:'Parapet and metal coping', drawing:'W-1-TYP', concept:'W1-11-FT3D', dist:9, phi:1.05, theta:2.4, drop:0.4, menu:'Parapet / coping',
+    layers:[{k:'existing',label:'(E) metal coping with open joints and loose fasteners; damaged sections replaced, fasteners at joints relocated',color:'#C9C9C2'},{k:'primer',label:'4" tape centred on each joint (2" each side, no voids); loose fasteners replaced with oversize stainless + EPDM washers; prime',color:'#E8D7A6'},{k:'flex',label:'Flex over the tape, min 2" beyond it on both sides and down both faces; every fastener encapsulated',color:'#D9A21B'},{k:'thane',label:'Topcoat min 2" past the Flex — or the entire coping under the system warranty; vertical faces may need multiple coats',color:'#C3C7CC'}],
+    src:'Assembly per W-1-TYP and W1-11-FT3D — VERIFIED, including the 4" tape / 2" Flex / 2" topcoat extents. Note 7: coping must meet code and SMACNA for wind uplift or it is excluded from warranty. Applies to all coping laps, joints, corners and transitions.' }
 };
 
+function DET(id){ const d=DETAILS[id]; const o=d.byRoof&&d.byRoof[S.roof]; return o?Object.assign({},d,o):d; }
+
 const BUILDINGS = {
-  warehouse: { label:'Warehouse', roofs:['rpanel'], sqft:9600, details:['curb','lap','ridge'], defaultOn:['curb','lap','ridge'] },
-  bigbox:    { label:'Big-box retail', roofs:['tpo'], sqft:28000, details:['rtu','drain','scupper','coping'], defaultOn:['rtu','drain','scupper','coping'] },
-  school:    { label:'School (next)', roofs:[], disabled:true },
-  office:    { label:'Office (next)', roofs:[], disabled:true },
-  manufacturing:{ label:'Manufacturing (next)', roofs:[], disabled:true },
-  hospital:  { label:'Hospital (next)', roofs:[], disabled:true },
-  arena:     { label:'Arena / gym (next)', roofs:[], disabled:true }
+  warehouse: { label:'Warehouse', roofs:['rpanel','sseam','spf'], sqft:9600, details:['curb','lap','ridge'], defaultOn:['curb','lap','ridge'] },
+  bigbox:    { label:'Big-box retail', roofs:['tpo','modbit','gravel'], sqft:28000, details:['rtu','drain','scupper','coping'], defaultOn:['rtu','drain','scupper','coping'] },
+  school:    { label:'School', roofs:['modbit','tpo'], sqft:25000, details:['wall','pipe','skylight','drain','rtu'], defaultOn:['wall','pipe','skylight','drain','rtu'] },
+  office:    { label:'Office (low-rise)', roofs:['tpo','concrete','modbit'], sqft:14000, details:['penthouse','edge','sleeper','drain','rtu','pipe'], defaultOn:['penthouse','edge','sleeper','drain','rtu','pipe'] },
+  manufacturing:{ label:'Manufacturing', roofs:['sseam','spf','rpanel'], sqft:24000, details:['sseam','mskylight','vent','mpipe','curb','ridge'], defaultOn:['sseam','mskylight','vent','mpipe','curb','ridge'] },
+  hospital:  { label:'Hospital', roofs:['gravel','modbit','tpo','concrete'], sqft:32000, details:['pitchpan','ej','penthouse','rtu','drain','pipe','coping'], defaultOn:['pitchpan','ej','penthouse','rtu','drain','pipe','coping'] },
+  airport:   { label:'Airport hangar', roofs:['sseam','rpanel','spf'], sqft:62000, details:['sseam','mskylight','gutter','gutterinlet','vent','mpipe','ridge'], defaultOn:['sseam','mskylight','gutter','gutterinlet','vent','mpipe','ridge'] },
+  restaurant:{ label:'Restaurant', roofs:['tpo','modbit'], sqft:3500, details:['exhaust','rtu','pipe','drain','coping'], defaultOn:['exhaust','rtu','pipe','drain','coping'] },
+  hotel:     { label:'Hotel / senior living', roofs:['tpo','modbit','concrete'], sqft:12600, details:['penthouse','pipe','sleeper','rtu','drain','coping'], defaultOn:['penthouse','pipe','sleeper','rtu','drain','coping'] },
+  silo:      { label:'Silo / grain elevator', roofs:['concrete'], sqft:6600, extraSqFt:{silowall:58000}, details:['silowall','penthouse','support','hatch','vent','drain'], defaultOn:['silowall','penthouse','support','hatch','vent','drain'] },
+  arena:     { label:'Arena / gym', roofs:['sseam','spf','rpanel'], sqft:42000, details:['sseam','gutter','gutterinlet','hatch','vent','curb','ridge'], defaultOn:['sseam','gutter','gutterinlet','hatch','vent','curb','ridge'] }
 };
 
 const S = { building:'warehouse', roof:'rpanel', stage:0, prog:1, playing:false, topcoat:'thane', solar:false, cond:true, on:{}, view:'roof', sqft:9600 };
@@ -286,6 +411,7 @@ const world = new THREE.Group(); scene.add(world);
 const clipTop = new THREE.Plane(new THREE.Vector3(-1,0,0), -1000);
 const clipFlex = new THREE.Plane(new THREE.Vector3(-1,0,0), -1000);
 const clipPrim = new THREE.Plane(new THREE.Vector3(-1,0,0), -1000);
+const clipGravel = new THREE.Plane(new THREE.Vector3(1,0,0), 1000);   // gravel is REMOVED as this recedes
 const M = {
   wall:   new THREE.MeshStandardMaterial({color:0xD6D1C6, roughness:.92}),
   wallB:  new THREE.MeshStandardMaterial({color:0x5F6B78, roughness:.9}),
@@ -293,6 +419,28 @@ const M = {
   rib:    new THREE.MeshStandardMaterial({color:0x8F9490, roughness:.66, metalness:.28}),
   ridge:  new THREE.MeshStandardMaterial({color:0x8C918E, roughness:.6, metalness:.3}),
   membrane:new THREE.MeshStandardMaterial({color:0xCFCFC7, roughness:.85}),
+  modbit: new THREE.MeshStandardMaterial({color:0x6F6B63, roughness:1}),
+  lapA:   new THREE.MeshStandardMaterial({color:0x8C877D, roughness:1}),
+  granLoss:new THREE.MeshStandardMaterial({color:0x3E3B37, roughness:1, transparent:true, opacity:.8, depthWrite:false}),
+  patchA: new THREE.MeshStandardMaterial({color:0x2B2926, roughness:.9}),
+  glass:  new THREE.MeshStandardMaterial({color:0x9DBBD0, roughness:.2, metalness:.1, transparent:true, opacity:.75}),
+  concrete:new THREE.MeshStandardMaterial({color:0xB7B4AC, roughness:.95}),
+  felts:  new THREE.MeshStandardMaterial({color:0x3A3734, roughness:1}),
+  gravel: new THREE.MeshStandardMaterial({color:0x9B968C, roughness:1, clippingPlanes:[clipGravel]}),
+  pebble: new THREE.MeshStandardMaterial({color:0xC4BFB4, roughness:1, clippingPlanes:[clipGravel]}),
+  pebble2:new THREE.MeshStandardMaterial({color:0x6F6A62, roughness:1, clippingPlanes:[clipGravel]}),
+  blister:new THREE.MeshStandardMaterial({color:0x1F1D1B, roughness:1, transparent:true, opacity:.9, depthWrite:false}),
+  ejCover:new THREE.MeshStandardMaterial({color:0x2C2F33, roughness:.85}),
+  streak: new THREE.MeshStandardMaterial({color:0x5A5F5A, roughness:1, transparent:true, opacity:.35, depthWrite:false}),
+  spf:    new THREE.MeshStandardMaterial({color:0xC9A46A, roughness:1}),
+  spfPit: new THREE.MeshStandardMaterial({color:0x6B4A2A, roughness:1, transparent:true, opacity:.9, depthWrite:false}),
+  spfPatch:new THREE.MeshStandardMaterial({color:0xEFE3C4, roughness:1}),
+  skyPanel:new THREE.MeshStandardMaterial({color:0xE9EEEA, roughness:.4, transparent:true, opacity:.85}),
+  skyPanelT:new THREE.MeshStandardMaterial({color:0xE9EEEA, roughness:.4, transparent:true, opacity:.85, clippingPlanes:[clipTop]}),
+  cjoint: new THREE.MeshStandardMaterial({color:0x8D8A83, roughness:.95}),
+  crack:  new THREE.MeshStandardMaterial({color:0x4A4744, roughness:1, transparent:true, opacity:.9, depthWrite:false}),
+  patchC: new THREE.MeshStandardMaterial({color:0xC9C6BE, roughness:.9}),
+  glazing:new THREE.MeshStandardMaterial({color:0x4F6B86, roughness:.15, metalness:.5}),
   seam:   new THREE.MeshStandardMaterial({color:0xB9B9B0, roughness:.85}),
   stain:  new THREE.MeshStandardMaterial({color:0x5E6A66, roughness:1, transparent:true, opacity:.5, depthWrite:false}),
   patch:  new THREE.MeshStandardMaterial({color:0xE6E6E0, roughness:.8}),
@@ -308,143 +456,531 @@ const M = {
   unitD:  new THREE.MeshStandardMaterial({color:0x5C6670, roughness:.8}),
   iron:   new THREE.MeshStandardMaterial({color:0x3E4448, roughness:.7, metalness:.5}),
   coping: new THREE.MeshStandardMaterial({color:0xB6BABB, roughness:.5, metalness:.5}),
-  joint:  new THREE.MeshStandardMaterial({color:0x6E7477, roughness:.7}),
+  joint:  new THREE.MeshStandardMaterial({color:0x2A2D30, roughness:.7}),
+  tape:   new THREE.MeshStandardMaterial({color:0xD8DADC, roughness:.6, metalness:.2}),
+  rustFast:new THREE.MeshStandardMaterial({color:0x8A4A22, roughness:1}),
   post:   new THREE.MeshStandardMaterial({color:0x7A8288, roughness:.6, metalness:.5}),
   pv:     new THREE.MeshStandardMaterial({color:0x1E2A44, roughness:.25, metalness:.4}),
   pvF:    new THREE.MeshStandardMaterial({color:0xC8CCD0, roughness:.5, metalness:.5})
 };
+// Environment: a simple sky/ground cube so metals reflect something and Thane reads as silver up close
+(function(){ const faces=[]; const mk=(top,bot)=>{ const c=document.createElement('canvas'); c.width=c.height=64; const g=c.getContext('2d'); const gr=g.createLinearGradient(0,0,0,64); gr.addColorStop(0,top); gr.addColorStop(1,bot); g.fillStyle=gr; g.fillRect(0,0,64,64); return c; };
+  const side=mk('#dfe6ee','#8e948e'); faces.push(side,side,mk('#f3f6f9','#dfe6ee'),mk('#8e948e','#6f746c'),side,side);
+  const cube=new THREE.CubeTexture(faces); cube.needsUpdate=true; cube.encoding=THREE.sRGBEncoding; scene.environment=cube; })();
+function noiseTex(scale,contrast,repeat){ const c=document.createElement('canvas'); c.width=c.height=256; const g=c.getContext('2d'); const img=g.createImageData(256,256); for(let i=0;i<img.data.length;i+=4){ const v=128+(Math.random()-0.5)*contrast; img.data[i]=img.data[i+1]=img.data[i+2]=v; img.data[i+3]=255; } g.putImageData(img,0,0);
+  if(scale>1){ const c2=document.createElement('canvas'); c2.width=c2.height=256; const g2=c2.getContext('2d'); g2.imageSmoothingEnabled=true; g2.drawImage(c,0,0,256/scale,256/scale); g2.drawImage(c2,0,0,256/scale,256/scale,0,0,256,256); }
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(repeat,repeat); return t; }
+const TEX={ granule:noiseTex(1,180,60), foam:noiseTex(3,120,24), concrete:noiseTex(2,60,30), metal:noiseTex(1,20,40) };
+Object.values(M).forEach(m=>{ m.side=THREE.DoubleSide; });
+M.modbit.bumpMap=TEX.granule; M.modbit.bumpScale=0.02; M.spf.bumpMap=TEX.foam; M.spf.bumpScale=0.06; M.concrete.bumpMap=TEX.concrete; M.concrete.bumpScale=0.01; M.felts.bumpMap=TEX.concrete; M.felts.bumpScale=0.01;
+M.topcoat.envMapIntensity=1.2; M.panel.envMapIntensity=0.8; M.rib.envMapIntensity=0.8; M.coping.envMapIntensity=1.0; M.flex.envMapIntensity=0.35; M.flexOv.envMapIntensity=0.35;
 function box(w,h,d,mat,x,y,z,shadow){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); m.position.set(x,y,z); if(shadow!==false){m.castShadow=true;m.receiveShadow=true;} return m; }
 function disposeGroup(g){ g.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); while(g.children.length) g.remove(g.children[0]); }
 
 let B = null;   // the current built building: { extent, hots, applyStage(p) }
 
 /* -----------------------------------------------------------------
-   WAREHOUSE × R-PANEL (seam-trace pattern)
+   GABLE METAL / SPF BUILDER (warehouse, manufacturing)
+   surface: rpanel (exposed fasteners, 3-ft laps), sseam (2-ft standing
+   seams, concealed clips), spf (foam over the deck, full-field pattern)
 ----------------------------------------------------------------- */
-function buildWarehouse(){
-  const L=120, W=80, H=20, PITCH=1/12, RUN=W/2, RISE=RUN*PITCH, SL=Math.sqrt(RUN*RUN+RISE*RISE), ANG=Math.atan(PITCH);
-  const g0 = world;
-  g0.add(box(L, H, W, M.wall, 0, H/2, 0)); g0.add(box(L+0.2, 4, W+0.2, M.wallB, 0, 2, 0));
+function buildGable(cfg){
+  const {L,W,H,PITCH=1/12} = cfg; const RUN=W/2, RISE=RUN*PITCH, SL=Math.sqrt(RUN*RUN+RISE*RISE), ANG=Math.atan(PITCH);
+  if(cfg.pitchLabel) cfg.pitchLabel(PITCH);
+  const surface=ROOFS[S.roof].surface; const metal=surface!=='spf';
+  const g0=world; g0.add(box(L,H,W,M.wall,0,H/2,0)); g0.add(box(L+0.2,4,W+0.2,M.wallB,0,2,0));
   (function(){ const sh=new THREE.Shape(); sh.moveTo(-W/2,0); sh.lineTo(W/2,0); sh.lineTo(0,RISE); sh.closePath(); const g=new THREE.ShapeGeometry(sh);
     [-1,1].forEach(s=>{ const m=new THREE.Mesh(g,M.wall); m.rotation.y = s>0?Math.PI/2:-Math.PI/2; m.position.set(s*L/2,H,0); m.castShadow=true; g0.add(m); }); })();
-  [-40,-10,20,50].forEach(x=> g0.add(box(9,10,0.3,M.unitD,x,5,W/2+0.1,false)));
-  const slopes=[]; const mm=new THREE.Matrix4();
+  (cfg.doors||[-40,-10,20,50]).forEach(x=> g0.add(box(9,10,0.3,M.unitD,x,5,W/2+0.1,false)));
+  const shadowSpan=Math.max(L,W)*0.6; sun.shadow.camera.left=-shadowSpan; sun.shadow.camera.right=shadowSpan; sun.shadow.camera.top=shadowSpan; sun.shadow.camera.bottom=-shadowSpan; sun.shadow.camera.updateProjectionMatrix();
+  const slopes=[]; const mm=new THREE.Matrix4(); const e=new THREE.Object3D();
+  const ribPitch = surface==='sseam'?2:1, ribW = surface==='sseam'?0.14:0.28, ribH = surface==='sseam'?0.2:0.11, lapPitch = surface==='sseam'?2:3;
   function makeSlope(sign){
     const outer=new THREE.Group(); outer.position.set(0,H+RISE,0); outer.rotation.y = sign>0?0:Math.PI; const g=new THREE.Group(); g.rotation.x=ANG; outer.add(g); g0.add(outer);
-    const pl=new THREE.Mesh(new THREE.PlaneGeometry(L,SL),M.panel); pl.rotation.x=-Math.PI/2; pl.position.set(0,0,SL/2); pl.receiveShadow=true; g.add(pl);
-    const ov=new THREE.Mesh(new THREE.PlaneGeometry(L,SL),M.topcoat); ov.rotation.x=-Math.PI/2; ov.position.set(0,0.03,SL/2); ov.receiveShadow=true; g.add(ov);
-    const nR=L, ribG=new THREE.BoxGeometry(0.28,0.11,SL); const ribs=new THREE.InstancedMesh(ribG,M.rib,nR), ribsO=new THREE.InstancedMesh(ribG,M.topcoat,nR);
-    for(let i=0;i<nR;i++){ const x=-L/2+0.5+i; mm.makeTranslation(x,0.055,SL/2); ribs.setMatrixAt(i,mm); mm.makeTranslation(x,0.085,SL/2); ribsO.setMatrixAt(i,mm); }
-    ribs.castShadow=true; ribs.receiveShadow=true; g.add(ribs); g.add(ribsO);
-    const laps=[]; for(let i=1;i<L/3;i++) laps.push(-L/2+i*3);
-    const lapG=new THREE.BoxGeometry(0.46,0.05,1); const lapP=new THREE.InstancedMesh(lapG,M.primer,laps.length), lapF=new THREE.InstancedMesh(lapG,M.flex,laps.length), lapO=new THREE.InstancedMesh(lapG,M.topcoat,laps.length);
-    laps.forEach((x,i)=>{ mm.makeScale(1.35,1,SL); mm.setPosition(x,0.13,SL/2); lapO.setMatrixAt(i,mm); }); g.add(lapP); g.add(lapF); g.add(lapO);
-    const endP=box(L,0.05,1.0,M.primer,0,0.09,SL/2,false), endF=box(L,0.06,1.0,M.flex,0,0.1,SL/2,false); g.add(endP); g.add(endF);
-    const ridgeP=box(L,0.05,1.6,M.primer,0,0.12,0.8,false), ridgeF=box(L,0.06,1.6,M.flex,0,0.13,0.8,false); g.add(ridgeP); g.add(ridgeF);
-    g.add(box(L,0.06,1.05,M.topcoat,0,0.135,SL/2,false)); g.add(box(L,0.06,1.65,M.topcoat,0,0.165,0.8,false));
-    const rows=[]; for(let z=4;z<SL-1;z+=5) rows.push(z); const cols=[]; for(let x=-L/2+1.5;x<L/2;x+=1.5) cols.push(x);
-    const nF=rows.length*cols.length; const fast=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.13,0.13,0.09,10),M.fast,nF);
-    const fastF=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.3,0.34,0.07,14),M.flex,nF), fastO=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.33,0.37,0.07,14),M.topcoat,nF);
-    const fz=[]; let k=0; rows.forEach(z=>cols.forEach(x=>{ mm.makeTranslation(x,0.1,z); fast.setMatrixAt(k,mm); mm.makeTranslation(x,0.12,z); fastF.setMatrixAt(k,mm); mm.makeTranslation(x,0.15,z); fastO.setMatrixAt(k,mm); fz.push(z); k++; }));
-    const rusty=[], cRust=new THREE.Color(0x8A4A22), cZinc=new THREE.Color(0xB9BEC0); for(let i=0;i<nF;i++){ const r=Math.random()<0.28; rusty.push(r); fast.setColorAt(i, r?cRust:cZinc); } fast.instanceColor.needsUpdate=true;
-    const nP=46, patch=new THREE.InstancedMesh(new THREE.CircleGeometry(1,14),M.rust,nP); const e=new THREE.Object3D();
-    for(let i=0;i<nP;i++){ const x=laps[Math.floor(Math.random()*laps.length)]+(Math.random()-.5)*0.3, z=2+Math.random()*(SL-4), s=0.5+Math.random()*1.4; e.position.set(x,0.07,z); e.rotation.set(-Math.PI/2,0,0); e.scale.set(s*0.5,s*1.6,1); e.updateMatrix(); patch.setMatrixAt(i,e.matrix); }
-    fast.castShadow=true; g.add(fast); g.add(fastF); g.add(fastO); g.add(patch);
-    const s={sign,g,laps,lapP,lapF,endF,ridgeF,fast,fastF,fz,rusty,cRust,cZinc}; slopes.push(s); return s;
+    const pl=new THREE.Mesh(new THREE.PlaneGeometry(L,SL), metal?M.panel:M.spf); pl.rotation.x=-Math.PI/2; pl.position.set(0,0,SL/2); pl.receiveShadow=true; g.add(pl);
+    const ov=new THREE.Mesh(new THREE.PlaneGeometry(L,SL),M.topcoat); ov.rotation.x=-Math.PI/2; ov.position.set(0,metal?0.03:0.11,SL/2); ov.receiveShadow=true; g.add(ov);
+    const s={sign,g,laps:[],fz:[],rusty:[]};
+    if(metal){
+      const trap=(bw,tw,h,len)=>{ const sh=new THREE.Shape(); sh.moveTo(-bw/2,0); sh.lineTo(-tw/2,h); sh.lineTo(tw/2,h); sh.lineTo(bw/2,0); sh.closePath(); const ge=new THREE.ExtrudeGeometry(sh,{depth:len,bevelEnabled:false}); ge.translate(0,0,-len/2); return ge; };
+      const poly=(pts,len)=>{ const sh=new THREE.Shape(); pts.forEach(([x,y],i)=> i?sh.lineTo(x,y):sh.moveTo(x,y)); sh.closePath(); const ge=new THREE.ExtrudeGeometry(sh,{depth:len,bevelEnabled:false}); ge.translate(0,0,-len/2); return ge; };
+      // standing seam: double-lock profile (vertical legs with a crimped cap); Flex shell fully encapsulates the seam down to the flat both sides
+      const SEAM=[[-0.07,0],[-0.07,0.2],[-0.13,0.2],[-0.13,0.26],[0.13,0.26],[0.13,0.2],[0.07,0.2],[0.07,0]];
+      const SHELL=(o,f)=>[[-(0.16+f),0],[-(0.16+f),0.03+o],[-(0.12+o),0.03+o],[-(0.12+o),0.2],[-(0.18+o),0.2],[-(0.18+o),0.31+o],[0.18+o,0.31+o],[0.18+o,0.2],[0.12+o,0.2],[0.12+o,0.03+o],[0.16+f,0.03+o],[0.16+f,0]];
+      const nR=Math.floor(L/ribPitch); const ribG = surface==='rpanel' ? trap(0.55,0.25,ribH,SL) : poly(SEAM,SL); const ribGO = surface==='rpanel' ? trap(0.62,0.32,ribH+0.03,SL) : poly(SHELL(0.1,0.34),SL);
+      const ribs=new THREE.InstancedMesh(ribG,M.rib,nR), ribsO=new THREE.InstancedMesh(ribGO,M.topcoat,nR); const ribY = 0, ribYO = 0.002;
+      for(let i=0;i<nR;i++){ const x=-L/2+ribPitch/2+i*ribPitch; mm.makeTranslation(x,ribY,SL/2); ribs.setMatrixAt(i,mm); mm.makeTranslation(x,ribYO,SL/2); ribsO.setMatrixAt(i,mm); }
+      ribs.castShadow=true; ribs.receiveShadow=true; g.add(ribs); g.add(ribsO);
+      for(let i=1;i<L/lapPitch;i++) s.laps.push(-L/2+ribPitch/2+Math.round(i*lapPitch/ribPitch)*ribPitch );   // laps sit on a rib (R-panel) or are the seam itself (standing seam)
+      const lapY = 0.002;
+      const lapG = surface==='rpanel' ? trap(0.95,0.45,ribH+0.09,1) : poly(SHELL(0.06,0.3),1);   // Flex fully encapsulates the lap rib / standing seam, down to the flat
+      const lapGP = surface==='rpanel' ? trap(0.85,0.38,ribH+0.06,1) : poly(SHELL(0.03,0.26),1);
+      s.lapP=new THREE.InstancedMesh(lapGP,M.primer,s.laps.length); s.lapF=new THREE.InstancedMesh(lapG,M.flex,s.laps.length); const lapO=new THREE.InstancedMesh(surface==='rpanel'?trap(1.05,0.5,ribH+0.12,1):poly(SHELL(0.1,0.34),1),M.topcoat,s.laps.length);
+      s.laps.forEach((x,i)=>{ mm.makeScale(1,1,SL); mm.setPosition(x,0.003,SL/2); lapO.setMatrixAt(i,mm); }); g.add(s.lapP); g.add(s.lapF); g.add(lapO); s.lapY=lapY; s.rp=true;
+      const eY=(surface==='sseam'?0.3:ribH)+0.02; s.endP=box(L,0.05,1.0,M.primer,0,eY,SL/2,false); s.endF=box(L,0.06,1.0,M.flex,0,eY+0.01,SL/2,false); g.add(s.endP); g.add(s.endF);
+      s.ridgeP=box(L,0.05,1.6,M.primer,0,eY+0.03,0.8,false); s.ridgeF=box(L,0.06,1.6,M.flex,0,eY+0.04,0.8,false); g.add(s.ridgeP); g.add(s.ridgeF);
+      g.add(box(L,0.06,1.05,M.topcoat,0,eY+0.045,SL/2,false)); g.add(box(L,0.06,1.65,M.topcoat,0,eY+0.075,0.8,false));
+      // exposed fasteners: every purlin on R-panel; only the end-lap row on standing seam (clips are concealed)
+      const rows=[]; if(surface==='sseam'){ rows.push(SL/2-0.7); } else { for(let z=4;z<SL-1;z+=5) rows.push(z); }
+      const cols=[]; if(surface==='rpanel'){ for(let i=0;i<nR;i++) cols.push(-L/2+ribPitch/2+i*ribPitch); } else { for(let x=-L/2+1.5;x<L/2;x+=1.5) cols.push(x); } const nF=rows.length*cols.length; const fy = surface==='rpanel'?ribH+0.02:0.1;
+      s.fast=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.13,0.13,0.09,10),M.fast,nF); const fr = surface==='rpanel'?0.17:0.3; s.fastF=new THREE.InstancedMesh(new THREE.CylinderGeometry(fr,fr+0.04,0.06,14),M.flex,nF); const fastO=new THREE.InstancedMesh(new THREE.CylinderGeometry(fr+0.03,fr+0.07,0.06,14),M.topcoat,nF);
+      let k=0; rows.forEach(z=>cols.forEach(x=>{ mm.makeTranslation(x,fy,z); s.fast.setMatrixAt(k,mm); mm.makeTranslation(x,fy+0.02,z); s.fastF.setMatrixAt(k,mm); mm.makeTranslation(x,fy+0.05,z); fastO.setMatrixAt(k,mm); s.fz.push(z); k++; }));
+      s.cRust=new THREE.Color(0x8A4A22); s.cZinc=new THREE.Color(0xB9BEC0); for(let i=0;i<nF;i++){ const r=Math.random()<0.28; s.rusty.push(r); s.fast.setColorAt(i, r?s.cRust:s.cZinc); } s.fast.instanceColor.needsUpdate=true;
+      const nP=Math.round(L*0.38), patch=new THREE.InstancedMesh(new THREE.CircleGeometry(1,14),M.rust,nP);
+      for(let i=0;i<nP;i++){ const x=s.laps[Math.floor(Math.random()*s.laps.length)]+(Math.random()-.5)*0.3, z= surface==='sseam'? SL/2-1+Math.random()*3 : 2+Math.random()*(SL-4), sc=0.5+Math.random()*1.4; e.position.set(x,ribH+0.03,z); e.rotation.set(-Math.PI/2,0,0); e.scale.set(sc*0.5,sc*1.6,1); e.updateMatrix(); patch.setMatrixAt(i,e.matrix); }
+      s.fast.castShadow=true; g.add(s.fast); g.add(s.fastF); g.add(fastO); g.add(patch); s.patch=patch;
+    } else { // SPF: sweep overlays + pitted foam
+      [[M.primerOv,0.05],[M.flexOv,0.08]].forEach(([mat,dy])=>{ const f=new THREE.Mesh(new THREE.PlaneGeometry(L,SL),mat); f.rotation.x=-Math.PI/2; f.position.set(0,dy,SL/2); g.add(f); });
+      const nP=Math.round(L*0.5), pits=new THREE.InstancedMesh(new THREE.CircleGeometry(1,12),M.spfPit,nP), fix=new THREE.InstancedMesh(new THREE.CircleGeometry(1,12),M.spfPatch,nP);
+      for(let i=0;i<nP;i++){ const x=-L/2+2+Math.random()*(L-4), z=2+Math.random()*(SL-4), sc=0.4+Math.random()*1.2; e.position.set(x,0.03,z); e.rotation.set(-Math.PI/2,0,0); e.scale.set(sc,sc*0.7,1); e.updateMatrix(); pits.setMatrixAt(i,e.matrix); e.position.y=0.04; e.scale.set(sc*1.6,sc*1.2,1); e.updateMatrix(); fix.setMatrixAt(i,e.matrix); }
+      g.add(pits); g.add(fix); s.pits=pits; s.fix=fix;
+    }
+    slopes.push(s); return s;
   }
   const right=makeSlope(1), left=makeSlope(-1);
   const ridgeCap=new THREE.Group(); ridgeCap.position.set(0,H+RISE+0.12,0); g0.add(ridgeCap);
-  [-1,1].forEach(s=>{ const m=box(L,0.08,2.2,M.ridge,0,0,s*1.05); m.rotation.x=s*ANG; ridgeCap.add(m); const o=box(L,0.08,2.2,M.topcoat,0,0.05,s*1.05); o.rotation.x=s*ANG; ridgeCap.add(o); });
-  // HVAC curb — CS-13-MP
-  const hvac=new THREE.Group(); hvac.position.set(18,0,17); right.g.add(hvac); const CW=6, CH=1.4;
-  hvac.add(box(CW,CH,CW,M.curb,0,CH/2,0)); hvac.add(box(7.2,3.2,7.2,M.unit,0,CH+1.6,0)); hvac.add(box(7.4,0.35,7.4,M.unitD,0,CH+3.3,0));
-  (function(){ const fan=new THREE.Mesh(new THREE.CylinderGeometry(2.2,2.2,0.2,24),M.unitD); fan.position.set(0,CH+3.55,0); hvac.add(fan); })();
-  const cFB=box(CW+0.16,1.0,CW+0.16,M.flex,0,0.5,0,false), cFA=box(CW+2.4,0.06,CW+2.4,M.flex,0,0.09,0,false), cPB=box(CW+0.12,1.1,CW+0.12,M.primer,0,0.55,0,false), cPA=box(CW+2.3,0.05,CW+2.3,M.primer,0,0.085,0,false);
-  hvac.add(cPB,cPA,cFB,cFA); hvac.add(box(CW+0.22,CH+0.02,CW+0.22,M.topcoat,0,CH/2+0.01,0,false)); hvac.add(box(CW+2.5,0.06,CW+2.5,M.topcoat,0,0.13,0,false));
-  const solar=makeSolar(left.g, [-34,-24,-14,-4,6,16,26,36],[8,20,32]); solar.visible=false;
+  [-1,1].forEach(sg=>{ const m=box(L,0.08,2.2,metal?M.ridge:M.spf,0,0,sg*1.05); m.rotation.x=sg*ANG; ridgeCap.add(m); const o=box(L,0.08,2.2,M.topcoat,0,0.05,sg*1.05); o.rotation.x=sg*ANG; ridgeCap.add(o);
+    if(!metal){ const f=box(L,0.06,2.2,M.flexOv,0,0.03,sg*1.05,false); f.rotation.x=sg*ANG; ridgeCap.add(f); } });
+
+  // --- detail factories on a slope (local coords). Each returns {g, prim:[], flex:[]} for stage toggling
+  const dets=[];
+  function reg(d){ dets.push(d); return d; }
+  function curbAt(slope,x,z,CW=6,CH=1.4){ const g=new THREE.Group(); g.position.set(x,0,z); slope.g.add(g); const d=curbAssembly(g,CW,CH,metal?'toggle':'sweep',metal); d.g=g; if(!metal){ d.prim=[]; d.flex=[]; }
+    d.unit.add(box(CW+1.2,CW*0.53,CW+1.2,M.unit,0,CW*0.27,0)); d.unit.add(box(CW+1.4,0.35,CW+1.4,M.unitD,0,CW*0.55,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.37,CW*0.37,0.2,24),M.unitD); fan.position.set(0,CW*0.55+0.25,0); d.unit.add(fan); g.userData.unit=d.unit; g.userData.CH=CH; return reg(d); }
+  function pipeAt(slope,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); slope.g.add(g); const d={g,prim:[],flex:[]};
+    const pipe=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.35,3,14),M.iron); pipe.position.y=1.5; g.add(pipe);
+    const boot=new THREE.Mesh(new THREE.CylinderGeometry(0.45,1.1,0.9,14),M.unitD); boot.position.y=0.45; g.add(boot);   // EPDM boot (P-9-MP)
+    d.prim.push(box(2.6,0.05,2.6,M.primer,0,0.2,0,false)); const fr=new THREE.Mesh(new THREE.CylinderGeometry(0.5,1.15,0.92,14),M.flex); fr.position.y=0.47; d.flex.push(fr, box(2.8,0.06,2.8,M.flex,0,0.24,0,false));
+    d.prim.concat(d.flex).forEach(m=>g.add(m)); const tp=new THREE.Mesh(new THREE.CylinderGeometry(0.55,1.2,0.94,14),M.topcoat); tp.position.y=0.49; g.add(tp); g.add(box(3.0,0.06,3.0,M.topcoat,0,0.27,0,false)); return reg(d); }
+  function ventAt(slope,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); slope.g.add(g); const d={g,prim:[],flex:[]};
+    g.add(box(3,1.2,3,M.curb,0,0.6,0)); const neck=new THREE.Mesh(new THREE.CylinderGeometry(0.9,0.9,1.6,16),M.coping); neck.position.y=2.0; g.add(neck); const hood=box(3.2,1.2,2.4,M.coping,0,3.0,0.6); hood.rotation.x=-0.5; g.add(hood);
+    d.prim.push(box(3.12,1.0,3.12,M.primer,0,0.5,0,false), box(5,0.05,5,M.primer,0,0.2,0,false)); d.flex.push(box(3.16,0.9,3.16,M.flex,0,0.45,0,false), box(5.2,0.06,5.2,M.flex,0,0.24,0,false));
+    d.prim.concat(d.flex).forEach(m=>g.add(m)); g.add(box(3.22,1.22,3.22,M.topcoat,0,0.61,0,false)); g.add(box(5.4,0.06,5.4,M.topcoat,0,0.27,0,false)); return reg(d); }
+  function skylightAt(slope,x,z,len=10){ const g=new THREE.Group(); g.position.set(x,0,z); slope.g.add(g); const d={g,prim:[],flex:[]};
+    g.add(box(3.2,0.16,len,M.skyPanel,0,0.12,0)); const rim=box(3.6,0.1,len+0.4,M.coping,0,0.06,0,false); g.add(rim);
+    d.prim.push(box(4.6,0.05,len+1.4,M.primer,0,0.2,0,false)); d.flex.push(box(4.8,0.06,len+1.6,M.flex,0,0.23,0,false)); d.prim.concat(d.flex).forEach(m=>g.add(m));
+    g.add(box(5.0,0.06,len+1.8,M.topcoat,0,0.26,0,false)); g.add(box(3.3,0.06,len+0.1,M.skyPanelT,0,0.21,0,false)); return reg(d); }
+
+  function hatchAt(slope,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); slope.g.add(g); const d={g,prim:[],flex:[]}; const CW=3.2, CH=1.2;
+    g.add(box(CW,CH,CW,M.curb,0,CH/2,0)); const lid=box(CW+0.5,0.25,CW+0.5,M.coping,0,CH+0.45,-0.35); lid.rotation.x=-0.28; g.add(lid);
+    d.prim.push(box(CW+0.12,1.0,CW+0.12,M.primer,0,0.5,0,false), box(CW+2.0,0.05,CW+2.0,M.primer,0,0.2,0,false)); d.flex.push(box(CW+0.16,0.9,CW+0.16,M.flex,0,0.45,0,false), box(CW+2.2,0.06,CW+2.2,M.flex,0,0.23,0,false));
+    d.prim.concat(d.flex).forEach(m=>g.add(m)); g.add(box(CW+0.22,CH+0.02,CW+0.22,M.topcoat,0,CH/2+0.01,0,false)); g.add(box(CW+2.4,0.06,CW+2.4,M.topcoat,0,0.26,0,false)); return reg(d); }
+  let gutters=null;
+  if(cfg.gutters){ gutters=new THREE.Group(); g0.add(gutters); const gd={g:gutters,prim:[],flex:[]};
+    [-1,1].forEach(sg=>{ const z=sg*(W/2+0.45); gutters.add(box(L+0.4,0.9,0.9,M.coping,0,H-0.45,z)); gutters.add(box(L+0.2,0.5,0.6,M.unitD,0,H-0.2,z,false));
+      for(let x=-L/2+10;x<L/2;x+=10){ gutters.add(box(0.1,0.92,0.92,M.joint,x,H-0.45,z,false)); gd.prim.push(box(1.0,0.5,0.7,M.primer,x,H-0.2,z,false)); gd.flex.push(box(1.2,0.52,0.72,M.flex,x,H-0.2,z,false)); gutters.add(box(1.4,0.54,0.74,M.topcoat,x,H-0.2,z,false)); }
+      for(let x=-L/2+20;x<L/2;x+=40){ const ds=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.35,H-1,12),M.coping); ds.position.set(x,(H-1)/2,sg*(W/2+0.85)); gutters.add(ds); const inlet=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.35,0.6,12),M.iron); inlet.position.set(x,H-0.9,z); gutters.add(inlet);
+        gd.flex.push(new THREE.Mesh(new THREE.CylinderGeometry(0.55,0.4,0.62,12),M.flex)); gd.flex[gd.flex.length-1].position.set(x,H-0.88,z); } });
+    gd.prim.concat(gd.flex).forEach(m=>gutters.add(m)); reg(gd); }
+  const placed = cfg.place({right,left,curbAt,pipeAt,ventAt,skylightAt,hatchAt,gutters,SL,L,W,H,RISE});
+  const solar=makeSolar(left.g, cfg.solarCols, cfg.solarRows); solar.visible=false;
   const tmpO=new THREE.Object3D(), tmpM=new THREE.Matrix4();
-  const hots=[
-    {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(18,CH+3.8,17)), show:()=>S.on.curb},
-    {id:'lap',  anchor:()=> right.g.localToWorld(new THREE.Vector3(-27,0.3,26)), show:()=>S.on.lap},
-    {id:'ridge',anchor:()=> new THREE.Vector3(-30,H+RISE+0.4,0), show:()=>S.on.ridge}];
   function applyStage(p){
-    M.rust.opacity = S.cond ? 0.85*(1-p.prep) : 0; M.primer.opacity = 0.55*p.primer;
+    M.rust.opacity = S.cond?0.85*(1-p.prep):0; M.spfPit.opacity = S.cond?0.9*(1-p.prep):0; M.primer.opacity = 0.55*p.primer;
     slopes.forEach(s=>{
+      if(!metal){ s.pits.visible=S.cond&&p.prep<1; s.fix.visible=S.cond&&p.prep>0.3&&p.flex<1; return; }
       if(s._lp!==p.prep || s._lc!==S.cond){ const c=new THREE.Color(); for(let i=0;i<s.rusty.length;i++){ if(s.rusty[i]&&S.cond) c.copy(s.cRust).lerp(s.cZinc,p.prep); else c.copy(s.cZinc); s.fast.setColorAt(i,c);} s.fast.instanceColor.needsUpdate=true; s._lp=p.prep; s._lc=S.cond; }
-      s.laps.forEach((x,i)=>{ tmpO.position.set(x,0.075,SL/2); tmpO.scale.set(1,1,SL); tmpO.rotation.set(0,0,0); tmpO.updateMatrix(); s.lapP.setMatrixAt(i,tmpO.matrix); const len=SL*p.flex; tmpO.position.set(x,0.1,len/2); tmpO.scale.set(1,1,Math.max(0.001,len)); tmpO.updateMatrix(); s.lapF.setMatrixAt(i,tmpO.matrix); });
+      s.laps.forEach((x,i)=>{ tmpO.position.set(x,s.rp?0.0015:s.lapY-0.025,SL/2); tmpO.scale.set(1,1,SL); tmpO.rotation.set(0,0,0); tmpO.updateMatrix(); s.lapP.setMatrixAt(i,tmpO.matrix); const len=SL*p.flex; tmpO.position.set(x,s.rp?0.002:s.lapY,len/2); tmpO.scale.set(1,1,Math.max(0.001,len)); tmpO.updateMatrix(); s.lapF.setMatrixAt(i,tmpO.matrix); });
       s.lapP.instanceMatrix.needsUpdate=true; s.lapF.instanceMatrix.needsUpdate=true; s.lapF.visible=p.flex>0;
       const pX=Math.max(0,Math.min(1,(p.flex-0.35)/0.65)); s.endF.scale.x=Math.max(0.001,pX); s.endF.position.x=-L/2+L*pX/2; s.endF.visible=pX>0; s.ridgeF.scale.x=Math.max(0.001,pX); s.ridgeF.position.x=-L/2+L*pX/2; s.ridgeF.visible=pX>0;
-      for(let i=0;i<s.fz.length;i++){ const on=s.fz[i]<=SL*p.flex; s.fastF.getMatrixAt(i,tmpM); const e=tmpM.elements; const sc=on?1:0.0001; if((e[0]===1)!==on){ tmpO.position.set(e[12],e[13],e[14]); tmpO.scale.set(sc,sc,sc); tmpO.rotation.set(0,0,0); tmpO.updateMatrix(); s.fastF.setMatrixAt(i,tmpO.matrix);} }
+      for(let i=0;i<s.fz.length;i++){ const on=s.fz[i]<=SL*p.flex; s.fastF.getMatrixAt(i,tmpM); const el=tmpM.elements; const sc=on?1:0.0001; if((el[0]===1)!==on){ tmpO.position.set(el[12],el[13],el[14]); tmpO.scale.set(sc,sc,sc); tmpO.rotation.set(0,0,0); tmpO.updateMatrix(); s.fastF.setMatrixAt(i,tmpO.matrix);} }
       s.fastF.instanceMatrix.needsUpdate=true; s.fastF.visible=p.flex>0;
     });
-    cPB.visible=cPA.visible=p.primer>0; const pC=Math.max(0,Math.min(1,(p.flex-0.15)/0.5)); cFA.visible=pC>0; cFA.scale.set(Math.max(0.001,pC),1,Math.max(0.001,pC)); cFB.visible=pC>0.3; const b=Math.max(0.001,(pC-0.3)/0.7); cFB.scale.y=b; cFB.position.y=0.5*b;
-    clipTop.constant = -L/2-4+(L+8)*p.thane; clipFlex.constant=-1000; clipPrim.constant=-1000;
-    hvac.visible=!!S.on.curb; solar.visible=S.solar;
+    const pC=Math.max(0,Math.min(1,(p.flex-0.15)/0.5));
+    dets.forEach(d=>{ d.prim.forEach(m=>m.visible=p.primer>0); d.flex.forEach((m,i)=>{ m.visible=pC>0; const t=Math.max(0.001,Math.min(1,pC*1.5-i*0.15)); m.scale.set(1,t,1); if(m.userData.y0===undefined) m.userData.y0=m.position.y; m.position.y=m.userData.y0*t; }); });
+    if(metal){ clipTop.constant = -L/2-4+(L+8)*p.thane; clipFlex.constant=-1000; clipPrim.constant=-1000; } else { sweepFor(p,-L/2,L/2); }
+    placed.apply(); solar.visible=S.solar;
   }
-  return { extent:{L,W,H:H+RISE}, hots, applyStage };
+  return { extent:{L,W,H:H+RISE}, hots:placed.hots, applyStage };
 }
 
+function buildWarehouse(){ return buildGable({ L:120, W:80, H:20, solarCols:[-34,-24,-14,-4,6,16,26,36], solarRows:[8,20,32],
+  place:({right,left,curbAt,SL,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf'; const c=curbAt(right,18,17);
+    const hots=[
+      {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(18,5.2,17)), show:()=>S.on.curb},
+      {id:'lap',  anchor:()=> right.g.localToWorld(new THREE.Vector3(-27,0.3,26)), show:()=>S.on.lap&&ROOFS[S.roof].surface==='rpanel'},
+      {id:'ridge',anchor:()=> new THREE.Vector3(-30,H+RISE+0.4,0), show:()=>S.on.ridge}];
+    return { hots, apply:()=>{ c.g.visible=!!S.on.curb; } }; } }); }
+
+function buildArena(){ return buildGable({ L:220, W:190, H:44, PITCH:3/12, doors:[-90,-60,-30,0,30,60,90], gutters:true, solarCols:[-90,-70,-50,-30,-10,10,30,50,70,90], solarRows:[20,40,60,80],
+  place:({right,left,curbAt,ventAt,hatchAt,gutters,SL,L,W,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
+    const vents=[[-80,20],[-40,20],[0,20],[40,20],[80,20]].map(([x,z])=>ventAt(left,x,z)); const hatch=hatchAt(right,-95,SL-8); const curbs=[[60,30],[-60,30]].map(([x,z])=>curbAt(right,x,z,10,1.8));
+    const hots=[
+      {id:'sseam', anchor:()=> right.g.localToWorld(new THREE.Vector3(20,0.4,SL*0.55)), show:()=>S.on.sseam&&metal},
+      {id:'gutter', anchor:()=> new THREE.Vector3(-45,H+0.2,W/2+0.45), show:()=>S.on.gutter},
+      {id:'gutterinlet', anchor:()=> new THREE.Vector3(60,H+0.2,W/2+0.45), show:()=>S.on.gutterinlet},
+      {id:'hatch', anchor:()=> right.g.localToWorld(new THREE.Vector3(-95,2.4,SL-8)), show:()=>S.on.hatch},
+      {id:'vent', anchor:()=> left.g.localToWorld(new THREE.Vector3(0,3.8,20)), show:()=>S.on.vent},
+      {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(60,8.2,30)), show:()=>S.on.curb},
+      {id:'ridge',anchor:()=> new THREE.Vector3(-40,H+RISE+0.4,0), show:()=>S.on.ridge}];
+    return { hots, apply:()=>{ vents.forEach(d=>d.g.visible=!!S.on.vent); hatch.g.visible=!!S.on.hatch; curbs.forEach(d=>d.g.visible=!!S.on.curb); if(gutters) gutters.visible=!!(S.on.gutter||S.on.gutterinlet); } }; } }); }
+
+function buildAirport(){ return buildGable({ L:300, W:200, H:52, PITCH:1.5/12, doors:[], gutters:true, solarCols:[-120,-90,-60,-30,0,30,60,90,120], solarRows:[20,45,70],
+  place:({right,left,ventAt,pipeAt,skylightAt,gutters,SL,L,W,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
+    // hangar door on the +x gable end: full-width sliding leaves
+    world.add(box(0.8,H-4,W-10,M.unitD,L/2+0.3,(H-4)/2+2,0,false)); for(let z=-W/2+15;z<W/2-5;z+=20){ world.add(box(1.2,H-6,0.6,M.coping,L/2+0.5,(H-6)/2+2,z,false)); } world.add(box(2,3,W+2,M.coping,L/2+0.6,H-1.5,0,false));
+    world.add(box(40,10,0.4,M.unitD,-100,5,W/2+0.1,false)); world.add(box(0.4,10,30,M.unitD,-L/2-0.1,5,-40,false));
+    const skies=[]; for(let x=-130;x<=130;x+=40){ skies.push(skylightAt(right,x,SL*0.35,14)); skies.push(skylightAt(left,x,SL*0.35,14)); }
+    const vents=[[-100,60],[-40,60],[20,60],[80,60]].map(([x,z])=>ventAt(left,x,z)); const pipes=[[-120,20],[-116,22],[60,25]].map(([x,z])=>pipeAt(right,x,z));
+    const hots=[
+      {id:'sseam', anchor:()=> right.g.localToWorld(new THREE.Vector3(-40,0.4,SL*0.7)), show:()=>S.on.sseam&&metal},
+      {id:'mskylight', anchor:()=> right.g.localToWorld(new THREE.Vector3(30,0.5,SL*0.35)), show:()=>S.on.mskylight},
+      {id:'gutter', anchor:()=> new THREE.Vector3(-85,H+0.2,W/2+0.45), show:()=>S.on.gutter},
+      {id:'gutterinlet', anchor:()=> new THREE.Vector3(-50,H+0.2,W/2+0.45), show:()=>S.on.gutterinlet},
+      {id:'vent', anchor:()=> left.g.localToWorld(new THREE.Vector3(20,3.8,60)), show:()=>S.on.vent},
+      {id:'mpipe', anchor:()=> right.g.localToWorld(new THREE.Vector3(60,3.2,25)), show:()=>S.on.mpipe},
+      {id:'ridge',anchor:()=> new THREE.Vector3(100,H+RISE+0.4,0), show:()=>S.on.ridge}];
+    return { hots, apply:()=>{ skies.forEach(d=>d.g.visible=!!S.on.mskylight); vents.forEach(d=>d.g.visible=!!S.on.vent); pipes.forEach(d=>d.g.visible=!!S.on.mpipe); if(gutters) gutters.visible=!!(S.on.gutter||S.on.gutterinlet); } }; } }); }
+
+function buildManufacturing(){ return buildGable({ L:240, W:100, H:28, doors:[-90,-60,-30,0,30,60,90], solarCols:[-100,-80,-60,-40,-20,0,20,40,60,80,100], solarRows:[10,24,38],
+  place:({right,left,curbAt,pipeAt,ventAt,skylightAt,SL,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
+    const skies=[-84,-52,-20,12,44,76].map(x=>skylightAt(right,x,SL/2+6)); const vents=[[-70,14],[-10,14],[50,14]].map(([x,z])=>ventAt(left,x,z)); const pipes=[[-70,34],[-66,36],[40,32]].map(([x,z])=>pipeAt(left,x,z)); const c=curbAt(right,90,20,8,1.6);
+    const hots=[
+      {id:'sseam', anchor:()=> right.g.localToWorld(new THREE.Vector3(-110,0.4,20)), show:()=>S.on.sseam&&metal},
+      {id:'mskylight', anchor:()=> right.g.localToWorld(new THREE.Vector3(12,0.5,SL/2+6)), show:()=>S.on.mskylight},
+      {id:'vent', anchor:()=> left.g.localToWorld(new THREE.Vector3(-70,3.8,14)), show:()=>S.on.vent},
+      {id:'mpipe', anchor:()=> left.g.localToWorld(new THREE.Vector3(40,3.2,32)), show:()=>S.on.mpipe},
+      {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(90,6.6,20)), show:()=>S.on.curb},
+      {id:'ridge',anchor:()=> new THREE.Vector3(60,H+RISE+0.4,0), show:()=>S.on.ridge}];
+    return { hots, apply:()=>{ skies.forEach(d=>d.g.visible=!!S.on.mskylight); vents.forEach(d=>d.g.visible=!!S.on.vent); pipes.forEach(d=>d.g.visible=!!S.on.mpipe); c.g.visible=!!S.on.curb; } }; } }); }
+
 /* -----------------------------------------------------------------
-   BIG-BOX RETAIL × TPO (full-field pattern)
+   FLAT-ROOF HELPERS (shared by big-box, school, ...)
+----------------------------------------------------------------- */
+function makeBlock(o){ // walls, parapet ring, coping with joints, field membrane, sweep overlays
+  const {L,W,H,PH=3,PT=1,x=0,y=0,z=0,edge='parapet'} = o; const mem=ROOFS[S.roof]; const skip = edge==='metal' ? ['N','S','E','W'] : (o.skip||[]);
+  const g=new THREE.Group(); g.position.set(x,y,z); world.add(g);
+  if(!o.noBase){ g.add(box(L,H,W,M.wall,0,H/2,0)); g.add(box(L+0.2,4,W+0.2,M.wallB,0,2,0)); } else { g.add(box(L,H,W,M.concrete,0,H/2,0)); }
+  const par=new THREE.Group(); par.position.y=H; g.add(par); const cop=new THREE.Group(); par.add(cop);
+  const sides=[{k:'N',w:L,d:PT,x:0,z:-W/2+PT/2,jx:true},{k:'S',w:L,d:PT,x:0,z:W/2-PT/2,jx:true},{k:'W',w:PT,d:W,x:-L/2+PT/2,z:0,jx:false},{k:'E',w:PT,d:W,x:L/2-PT/2,z:0,jx:false}];
+  const tapes=new THREE.Group(); cop.add(tapes);
+  // Metal coping per W-1-TYP: cap with drip legs; at every joint a 4" tape centred on the joint, Flex min 2" beyond the tape (8"),
+  // topcoat min 2" past the Flex (full coping here, per the system warranty); fasteners on the face, none at joints, encapsulated in Flex.
+  sides.filter(sd=>!skip.includes(sd.k)).forEach(sd=>{ par.add(box(sd.w,PH,sd.d,M.wall,sd.x,PH/2,sd.z));
+    const run=new THREE.Group(); run.position.set(sd.x,PH,sd.z); if(!sd.jx) run.rotation.y=Math.PI/2; cop.add(run); const n=sd.jx?L:W, cw=(sd.jx?sd.d:sd.w)+0.5;
+    run.add(box(n+0.4,0.25,cw,M.coping,0,0.12,0)); [-1,1].forEach(sg=>run.add(box(n+0.4,0.5,0.06,M.coping,0,-0.05,sg*(cw/2-0.03),false)));   // cap + drip legs
+    run.add(box(n+0.5,0.06,cw+0.12,M.topcoat,0,0.28,0,false)); [-1,1].forEach(sg=>run.add(box(n+0.5,0.52,0.06,M.topcoat,0,-0.05,sg*(cw/2+0.06),false)));   // topcoat: entire coping
+    const U=(mat,wd,dy,into)=>{ const grp=new THREE.Group(); grp.add(box(wd,0.05,cw+0.1+dy*2,mat,0,0.25+dy,0,false)); [-1,1].forEach(sg=>grp.add(box(wd,0.55,0.05,mat,0,-0.05,sg*(cw/2+0.02+dy),false))); into.add(grp); return grp; };
+    for(let t=-n/2+10;t<n/2;t+=10){ const j=box(0.06,0.3,cw+0.1,M.joint,t,0.12,0,false); run.add(j); const tp=U(M.tape,0.34,0.005,tapes); tp.position.x=t; if(!sd.jx){ tp.position.set(0,0,0); tapes.remove(tp); run.add(tp); tp.position.x=t; tp.userData.tape=true; } U(M.primerOv,0.6,0.012,run).position.x=t; U(M.flexOv,0.68,0.02,run).position.x=t; }
+    for(let t=-n/2+4;t<n/2;t+=3){ if(Math.abs(((t+n/2)%10))<0.8) continue; const f=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.05,8),Math.random()<0.25?M.rustFast:M.fast); f.rotation.x=Math.PI/2; f.position.set(t,-0.1,cw/2+0.0); run.add(f); const dot=new THREE.Mesh(new THREE.CircleGeometry(0.14,12),M.flexOv); dot.position.set(t,-0.1,cw/2+0.03); run.add(dot); const dot2=new THREE.Mesh(new THREE.CircleGeometry(0.16,12),M.topcoat); dot2.position.set(t,-0.1,cw/2+0.07); run.add(dot2); } });
+  // tape pieces live inside rotated runs, so collect them for visibility toggling
+  const tapeList=[]; cop.traverse(o=>{ if(o.userData.tape||o.parent===tapes) tapeList.push(o); });
+  const IL=L-2*PT, IW=W-2*PT; const roof=new THREE.Group(); roof.position.y=H; g.add(roof);
+  const surf = mem.plate==='A'?M.modbit : mem.plate==='C'?M.concrete : mem.plate==='MA'?M.felts : M.membrane;
+  const fld=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),surf); fld.rotation.x=-Math.PI/2; fld.receiveShadow=true; roof.add(fld);
+  if(mem.plate==='MA'){ const gv=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),M.gravel); gv.rotation.x=-Math.PI/2; gv.position.y=0.03; gv.receiveShadow=true; roof.add(gv);
+    const nPb=Math.round(IL*IW/28); const e2=new THREE.Object3D(); [M.pebble,M.pebble2].forEach(pm=>{ const pb=new THREE.InstancedMesh(new THREE.CircleGeometry(0.5,6),pm,nPb); for(let i=0;i<nPb;i++){ e2.position.set(-IL/2+Math.random()*IL,0.04,-IW/2+Math.random()*IW); e2.rotation.set(-Math.PI/2,0,Math.random()*3); const sc=0.4+Math.random()*0.9; e2.scale.set(sc,sc*0.7,1); e2.updateMatrix(); pb.setMatrixAt(i,e2.matrix); } roof.add(pb); }); }
+  const pitch=mem.plate==='A'?3:mem.plate==='C'?20:mem.plate==='MA'?3:10, nS=Math.floor(IL/pitch)-1; const seamMat=mem.plate==='A'?M.lapA:mem.plate==='C'?M.cjoint:mem.plate==='MA'?M.felts:M.seam;
+  const seams=new THREE.InstancedMesh(new THREE.BoxGeometry(mem.plate==='C'?0.3:mem.plate==='A'?0.25:0.35,0.04,IW),seamMat,nS); const mm=new THREE.Matrix4();
+  for(let i=0;i<nS;i++){ mm.makeTranslation(-IL/2+pitch*(i+1),0.02,0); seams.setMatrixAt(i,mm); } roof.add(seams);
+  if(mem.plate==='C'){ const nZ=Math.floor(IW/pitch)-1; const sz=new THREE.InstancedMesh(new THREE.BoxGeometry(IL,0.04,0.3),M.cjoint,nZ); for(let i=0;i<nZ;i++){ mm.makeTranslation(0,0.02,-IW/2+pitch*(i+1)); sz.setMatrixAt(i,mm); } roof.add(sz); }
+  if(edge==='metal'){ // gravel-stop edge metal: flange on the field + fascia down the wall (F-1-TYP)
+    const em=new THREE.Group(); em.position.y=H; g.add(em); o._em=em; const ed=[{w:L+0.6,d:0.9,x:0,z:-W/2+0.15,fx:L+0.6,fd:0.25,fz:-W/2-0.12},{w:L+0.6,d:0.9,x:0,z:W/2-0.15,fx:L+0.6,fd:0.25,fz:W/2+0.12},{w:0.9,d:W+0.6,x:-L/2+0.15,z:0,fx:0.25,fd:W+0.6,fz:0,fxx:-L/2-0.12},{w:0.9,d:W+0.6,x:L/2-0.15,z:0,fx:0.25,fd:W+0.6,fz:0,fxx:L/2+0.12}];
+    ed.forEach(e=>{ em.add(box(e.w,0.12,e.d,M.coping,e.x,0.06,e.z)); em.add(box(e.fx,1.4,e.fd,M.coping,e.fxx!==undefined?e.fxx:e.x,-0.6,e.fz!==undefined&&e.fxx===undefined?e.fz:e.z));
+      em.add(box(e.w+0.1,0.05,e.d+0.1,M.primerOv,e.x,0.14,e.z,false)); em.add(box(e.w+0.2,0.06,e.d+0.2,M.flexOv,e.x,0.17,e.z,false)); em.add(box(e.w+0.3,0.06,e.d+0.3,M.topcoat,e.x,0.2,e.z,false)); }); }
+  function addOverlay(mat,dy,wallH){ const f=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),mat); f.rotation.x=-Math.PI/2; f.position.y=dy; f.receiveShadow=true; roof.add(f);
+    const wl=[{k:'N',w:IL,d:0.05,x:0,z:-IW/2+0.03+dy},{k:'S',w:IL,d:0.05,x:0,z:IW/2-0.03-dy},{k:'W',w:0.05,d:IW,x:-IL/2+0.03+dy,z:0},{k:'E',w:0.05,d:IW,x:IL/2-0.03-dy,z:0}];
+    wl.filter(w=>!skip.includes(w.k)).forEach(w=>roof.add(box(w.w,wallH,w.d,mat,w.x,wallH/2,w.z,false))); }
+  addOverlay(M.primerOv,0.05,1.6); addOverlay(M.flexOv,0.08,1.5); addOverlay(M.topcoat,0.11,PH);   // 18" up the wall for primer/Flex is ASSUMED
+  const stains=new THREE.Group(), fails=new THREE.Group(), patches=new THREE.Group(); roof.add(stains); roof.add(fails); roof.add(patches);
+  const nF=Math.round(IL*IW/1400); for(let i=0;i<nF;i++){ const sx=-IL/2+pitch*(1+Math.floor(Math.random()*nS)); const zz=-IW/2+6+Math.random()*(IW-12); const len=4+Math.random()*6;
+    if(mem.plate==='A'){ const gl=new THREE.Mesh(new THREE.CircleGeometry(1,12),M.granLoss); gl.rotation.x=-Math.PI/2; gl.position.set(sx+(Math.random()-.5)*8,0.035,zz); gl.scale.set(2+Math.random()*4,1.5+Math.random()*3,1); fails.add(gl); patches.add(box(2.4,0.06,len+2,M.patchA,sx,0.045,zz,false)); }
+    else if(mem.plate==='MA'){ const bl=new THREE.Mesh(new THREE.CircleGeometry(1,12),M.blister); bl.rotation.x=-Math.PI/2; bl.position.set(sx+(Math.random()-.5)*8,0.025,zz); bl.scale.set(1.5+Math.random()*3,1+Math.random()*2,1); fails.add(bl); patches.add(box(2.4,0.05,len+2,M.patchA,sx,0.028,zz,false)); }
+    else if(mem.plate==='C'){ const cr=box(0.25,0.04,len*1.6,M.crack,sx+(Math.random()-.5)*6,0.04,zz,false); cr.rotation.y=(Math.random()-.5)*1.2; fails.add(cr); const pc=box(1.2,0.06,len*1.6+1,M.patchC,cr.position.x,0.045,zz,false); pc.rotation.y=cr.rotation.y; patches.add(pc); }
+    else { fails.add(box(0.9,0.05,len,M.stain,sx,0.04,zz,false)); patches.add(box(2.2,0.06,len+2,M.patch,sx,0.045,zz,false)); } }
+  return {g,roof,par,L,W,H,PH,PT,IL,IW,x,z,stains,fails,patches,em:o._em,tapeList};
+}
+function addStain(b,x,z,r=9){ const st=new THREE.Mesh(new THREE.CircleGeometry(r,24),M.stain); st.rotation.x=-Math.PI/2; st.position.set(x+r*0.2,0.035,z-r*0.1); st.scale.set(1.4,1,1); b.stains.add(st); }
+// Curb assembly per CS-1-TYP (flat) / CS-13-MP (metal): (E) curb with (E) flashing skirt and fasteners at the top;
+// Flex from the field up the full curb wall, over the top lip and onto the interior; topcoat over all; unit lifted and reset.
+// mode 'sweep' uses the clipped overlay materials (flat roofs); mode 'toggle' returns prim/flex arrays for stage toggling (gable roofs).
+function curbAssembly(g,CW,CH,mode,metalRoof){ const T=0.15, d={prim:[],flex:[]}; const P=mode==='sweep'?M.primerOv:M.primer, F=mode==='sweep'?M.flexOv:M.flex;
+  [[0,CW/2-T/2],[0,-(CW/2-T/2)]].forEach(([x,z])=>g.add(box(CW,CH,T,M.curb,x,CH/2,z))); [[CW/2-T/2,0],[-(CW/2-T/2),0]].forEach(([x,z])=>g.add(box(T,CH,CW,M.curb,x,CH/2,z)));
+  const skH=CH*0.6; g.add(box(CW+0.12,skH,CW+0.12,M.coping,0,CH-skH/2,0,false)); g.add(box(CW-0.4,0.02,CW-0.4,M.unitD,0,CH-0.02,0,false));   // (E) flashing skirt, curb interior
+  for(let i=0;i<4;i++){ for(let t=-CW/2+1;t<CW/2;t+=CW/3){ const f=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.05,8),M.fast); const a=i*Math.PI/2; f.position.set(Math.sin(a)*(CW/2+0.08)+Math.cos(a)*t,CH-0.25,Math.cos(a)*(CW/2+0.08)-Math.sin(a)*t); f.rotation.set(Math.cos(a)*Math.PI/2,0,Math.sin(a)*Math.PI/2); g.add(f); } }
+  if(metalRoof){ g.add(box(CW+0.5,0.6,CW+0.5,M.coping,0,CH-0.1,0,false)); }   // counterflashing on metal (CS-13-MP)
+  const wrap=(mat,dr,arr)=>{ const w=box(CW+0.16+dr,CH+dr,CW+0.16+dr,mat,0,(CH+dr)/2,0,false); const lip=box(CW-0.42-dr,0.4,CW-0.42-dr,mat,0,CH-0.2,0,false); const apron=box(CW+2.6+dr,0.06,CW+2.6+dr,mat,0,0.09+dr,0,false); [w,lip,apron].forEach(m=>{ g.add(m); if(arr) arr.push(m); }); };
+  wrap(P,0.0,mode==='toggle'?d.prim:null); wrap(F,0.06,mode==='toggle'?d.flex:null); wrap(M.topcoat,0.12,null);
+  const unit=new THREE.Group(); unit.position.y=CH+0.35; g.add(unit); d.unit=unit; return d; }
+function addRTU(b,x,z,CW=8,CH=1.5){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const d=curbAssembly(g,CW,CH,'sweep',false);
+  d.unit.add(box(CW+1.5,CW*0.5,CW+1.5,M.unit,0,CW*0.25,0)); d.unit.add(box(CW+1.7,0.4,CW+1.7,M.unitD,0,CW*0.5+0.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.35,CW*0.35,0.25,24),M.unitD); fan.position.set(0,CW*0.5+0.4,0); d.unit.add(fan); g.userData.unit=d.unit; g.userData.CH=CH; return g; }
+function addRTU_old(b,x,z,CW=8,CH=1.5){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
+  g.add(box(CW,CH,CW,M.curb,0,CH/2,0)); g.add(box(CW+1.5,CW*0.5,CW+1.5,M.unit,0,CH+CW*0.25,0)); g.add(box(CW+1.7,0.4,CW+1.7,M.unitD,0,CH+CW*0.5+0.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.35,CW*0.35,0.25,24),M.unitD); fan.position.set(0,CH+CW*0.5+0.4,0); g.add(fan);
+  g.add(box(CW+0.16,CH,CW+0.16,M.primerOv,0,CH/2,0,false)); g.add(box(CW+0.24,CH,CW+0.24,M.flexOv,0,CH/2,0,false)); g.add(box(CW+0.32,CH+0.02,CW+0.32,M.topcoat,0,CH/2+0.01,0,false)); return g; }
+function addSkylight(b,x,z,CW=6,CH=1.2){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const d=curbAssembly(g,CW,CH,'sweep',false);
+  d.unit.add(box(CW+0.4,0.2,CW+0.4,M.coping,0,0.1,0)); const gl=new THREE.Mesh(new THREE.ConeGeometry(CW*0.74,1.4,4),M.glass); gl.rotation.y=Math.PI/4; gl.position.y=0.9; d.unit.add(gl); g.userData.unit=d.unit; g.userData.CH=CH; return g; }
+// Cast-iron drain per D-1-TYP: (E) bowl set below the field; clamping ring removed and reset in sealant; strainer replaced/primed;
+// Flex encapsulates the ring, extends min 18" out from the drain and 3" down into the bowl past the ring; topcoat extends 1" further into the bowl.
+function addDrain(b,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const RB=1.0;   // bowl radius (ft)
+  const bowl=new THREE.Mesh(new THREE.CylinderGeometry(RB,RB*0.8,0.7,32,1,true),M.unitD); bowl.position.y=-0.34; g.add(bowl); const bfloor=new THREE.Mesh(new THREE.CircleGeometry(RB*0.8,32),M.unitD); bfloor.rotation.x=-Math.PI/2; bfloor.position.y=-0.68; g.add(bfloor);
+  const mouth=new THREE.Mesh(new THREE.CircleGeometry(RB,32),M.unitD); mouth.rotation.x=-Math.PI/2; mouth.position.y=0.025; g.add(mouth);   // opening in the field
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(RB+0.18,0.14,10,36),M.iron); ring.rotation.x=Math.PI/2; ring.position.y=0.1; g.add(ring); g.userData.ring=ring;
+  for(let i=0;i<4;i++){ const a=i*Math.PI/2+Math.PI/4; const bolt=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.16,8),M.fast); bolt.position.set(Math.cos(a)*(RB+0.18),0.22,Math.sin(a)*(RB+0.18)); g.add(bolt); }
+  const dome=new THREE.Mesh(new THREE.SphereGeometry(RB*0.9,14,8,0,Math.PI*2,0,Math.PI/2),new THREE.MeshBasicMaterial({color:0x2E3336,wireframe:true})); dome.position.y=0.12; g.add(dome);   // strainer basket
+  const flange=(mat,rIn,rOut,y,lipDepth)=>{ const m=new THREE.Mesh(new THREE.RingGeometry(rIn,rOut,48),mat); m.rotation.x=-Math.PI/2; m.position.y=y; g.add(m);
+    const lip=new THREE.Mesh(new THREE.CylinderGeometry(rIn,rIn,lipDepth,32,1,true),mat); lip.position.y=y-lipDepth/2; g.add(lip);
+    const over=new THREE.Mesh(new THREE.TorusGeometry(RB+0.18,0.14+ (y-0.1)*0.9+0.03,10,36),mat); over.rotation.x=Math.PI/2; over.position.y=0.1; g.add(over); };
+  flange(M.primerOv,RB-0.02,RB+0.18+1.5,0.075,0.3); flange(M.flexOv,RB-0.05,RB+0.18+1.5,0.10,0.25+0.05); flange(M.topcoat,RB-0.13,RB+0.18+1.6,0.13,0.33+0.08);   // 18" out, 3" in; topcoat 1" further in
+  return g; }
+// Soil stack per P-6-TYP: (E) lead flashing runs up the stack and folds into its top (replace ill-fitting lead); sealant bead at the base;
+// Flex encapsulates the lead and extends inside the stack; topcoat extends past the Flex. Field extent of the Flex is not dimensioned on the drawing (12" ASSUMED).
+function addPipe(b,x,z,r=0.35){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const H=3.0, LT=0.05;
+  const pipe=new THREE.Mesh(new THREE.CylinderGeometry(r,r,H+0.3,20,1,true),M.iron); pipe.position.y=(H+0.3)/2-0.3; g.add(pipe);
+  const leadSleeve=new THREE.Mesh(new THREE.CylinderGeometry(r+LT,r+LT,H-0.05,20,1,true),M.coping); leadSleeve.position.y=(H-0.05)/2; g.add(leadSleeve);   // (E) lead up the stack
+  const leadFold=new THREE.Mesh(new THREE.TorusGeometry(r+LT/2,LT+0.03,8,24),M.coping); leadFold.rotation.x=Math.PI/2; leadFold.position.y=H-0.05; g.add(leadFold);   // folded into the stack top
+  const leadFlange=new THREE.Mesh(new THREE.RingGeometry(r,r+0.8,32),M.coping); leadFlange.rotation.x=-Math.PI/2; leadFlange.position.y=0.05; g.add(leadFlange);   // lead base flange on the field
+  const bead=new THREE.Mesh(new THREE.TorusGeometry(r+LT+0.03,0.05,8,24),M.unitD); bead.rotation.x=Math.PI/2; bead.position.y=0.09; g.add(bead);   // sealant bead
+  const wrap=(mat,dr,top,inside)=>{ const c=new THREE.Mesh(new THREE.CylinderGeometry(r+LT+dr,r+LT+dr,top,20,1,true),mat); c.position.y=top/2; g.add(c);
+    const f=new THREE.Mesh(new THREE.RingGeometry(r+LT+dr,r+1.0+dr,32),mat); f.rotation.x=-Math.PI/2; f.position.y=0.07+dr; g.add(f);
+    if(inside){ const i=new THREE.Mesh(new THREE.CylinderGeometry(r-0.01-dr*0.5,r-0.01-dr*0.5,inside,20,1,true),mat); i.position.y=H-inside/2; g.add(i); const cap=new THREE.Mesh(new THREE.RingGeometry(r-0.01-dr*0.5,r+LT+dr,24),mat); cap.rotation.x=-Math.PI/2; cap.position.y=H+dr; g.add(cap); } };
+  wrap(M.primerOv,0.02,H-0.1,0); wrap(M.flexOv,0.05,H,0.35); wrap(M.topcoat,0.08,H,0.5);   // Flex inside the stack; topcoat past the Flex
+  return g; }
+// Overflow scupper per D-4-TYP: (E) tube through the parapet at roof level with a cant at the wall base; Flex encapsulates the interior of the tube
+// and extends min 12" from the scupper onto the field; Flex base coat continues up the wall; topcoat over all; sealant bead at the exterior termination.
+function addScupper(b,x){ const g=new THREE.Group(); g.position.set(x,0,-b.W/2+b.PT/2); b.par.add(g); const PT=b.PT, SW=2.0, SH=0.9, T=0.06, TL=PT+0.7;
+  // tube: 4 thin walls, open both ends
+  g.add(box(SW+2*T,T,TL,M.iron,0,SH+T/2,0)); g.add(box(SW+2*T,T,TL,M.iron,0,T/2+0.02,0)); [-1,1].forEach(sg=>g.add(box(T,SH,TL,M.iron,sg*(SW/2+T/2),SH/2,0)));
+  g.add(box(3.4,SH+0.5,0.25,M.coping,0,(SH+0.5)/2-0.05,-PT/2-0.3));   // exterior face plate
+  const bead=box(3.5,0.08,0.08,M.unitD,0,SH+0.5,-PT/2-0.42,false); g.add(bead);   // sealant bead at the exterior termination
+  [-1,1].forEach(sg=>{ const cant=box(1.4,0.5,0.5,M.wallB,sg*(SW/2+1.0),0.05,PT/2+0.05); cant.rotation.x=Math.PI/4; g.add(cant); });   // (E) cant either side (wedge)
+  const lining=(mat,dr,ext)=>{ const iw=SW-2*dr-0.02, ih=SH-2*dr-0.02, il=TL-0.02; g.add(box(iw,0.04,il,mat,0,T+dr+0.02,0,false)); g.add(box(iw,0.04,il,mat,0,SH-dr-0.02,0,false)); [-1,1].forEach(sg=>g.add(box(0.04,ih,il,mat,sg*(SW/2-dr-0.02),SH/2,0,false)));   // interior of the tube
+    g.add(box(SW+2*ext,0.06,ext,mat,0,0.04+dr,PT/2+ext/2,false));   // onto the field, 12" out (ext) — plus the roof-side wall face
+    g.add(box(SW+2*ext,SH+0.6,0.06,mat,0,(SH+0.6)/2,PT/2+0.03+dr*0.5,false)); };
+  lining(M.primerOv,0.0,1.0); lining(M.flexOv,0.02,1.0); lining(M.topcoat,0.045,1.1);
+  return g; }
+// Reglet counterflashing at wall per W-11-TYP: (E) wall flashing (base flashing) up the wall to a Fry-type reglet; term bar + sealant 12" o.c. where voids;
+// Flex encapsulates the (E) flashing and extends to the reglet receiver; topcoat encapsulates the Flex; counterflashing removed/reset, sealant bead at the reglet raked and renewed.
+function addWallTie(b,side,len,center){ const g=new THREE.Group(); b.roof.add(g); const isX=side==='W'||side==='E'; const sgn=(side==='W'||side==='N')?-1:1; const off=isX?b.IL/2:b.IW/2; const FH=2.0;   // base flashing / reglet height (ft) — ASSUMED
+  const place=(m,h,t)=>{ if(isX){ m.position.set(sgn*(off-t),h,center); m.scale.set(1,1,len); } else { m.position.set(center,h,sgn*(off-t)); m.scale.set(len,1,1); } g.add(m); return m; };
+  const geo=(w,h)=>new THREE.BoxGeometry(isX?w:1,h,isX?1:w);
+  place(new THREE.Mesh(geo(0.5,0.5),M.wallB),0.25,0.25);                                   // cant strip
+  place(new THREE.Mesh(geo(0.04,FH),M.unitD),FH/2,0.05);                                     // (E) wall flashing up to the reglet
+  const tb=place(new THREE.Mesh(geo(0.08,0.12),M.coping),FH-0.12,0.09);                        // termination bar
+  for(let t=-len/2+0.5;t<len/2;t+=1){ const sc=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,0.06,8),M.fast); if(isX){ sc.rotation.z=Math.PI/2; sc.position.set(sgn*(off-0.13),FH-0.12,center+t);} else { sc.rotation.x=Math.PI/2; sc.position.set(center+t,FH-0.12,sgn*(off-0.13)); } g.add(sc); }   // fasteners 12" o.c.
+  place(new THREE.Mesh(geo(0.05,FH+0.02),M.primerOv),FH/2,0.11);
+  place(new THREE.Mesh(geo(0.05,FH+0.02),M.flexOv),FH/2+0.005,0.16);                          // Flex to the reglet receiver
+  place(new THREE.Mesh(geo(0.05,FH+0.04),M.topcoat),FH/2+0.01,0.21);
+  place(new THREE.Mesh(geo(0.06,0.08),M.joint),FH+0.12,0.0);                                  // reglet groove in the wall
+  place(new THREE.Mesh(geo(0.05,0.06),M.unitD),FH+0.19,0.06);                                 // renewed sealant bead
+  place(new THREE.Mesh(geo(0.06,0.55),M.coping),FH-0.12,0.3);                                 // counterflashing hung from the reglet, over the flashing
+  return g; }
+function addPenthouse(b,x,z,PL,PW,PHt){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
+  g.add(box(PL,PHt,PW,M.wall,0,PHt/2,0)); g.add(box(PL+0.6,0.4,PW+0.6,M.coping,0,PHt+0.15,0)); g.add(box(3,7,0.2,M.unitD,PL/4,3.5,PW/2+0.12,false));
+  const sides=[{w:PL,d:0.06,x:0,z:-PW/2},{w:PL,d:0.06,x:0,z:PW/2},{w:0.06,d:PW,x:-PL/2,z:0},{w:0.06,d:PW,x:PL/2,z:0}];
+  sides.forEach(sd=>{ const ox=sd.w>sd.d?0:(sd.x<0?-1:1), oz=sd.w>sd.d?(sd.z<0?-1:1):0; const at=(t,h,mat,H2,W2,D2)=>g.add(box(W2!==undefined?W2:sd.w+(ox?0:t*2),H2,D2!==undefined?D2:sd.d+(oz?0:t*2),mat,sd.x+ox*t,h,sd.z+oz*t,false));
+    g.add(box(sd.w>sd.d?sd.w+0.5:0.5,0.5,sd.w>sd.d?0.5:sd.d+0.5,M.wallB,sd.x+ox*0.25,0.25,sd.z+oz*0.25,false));
+    at(0.06,0.8,M.primerOv,1.6); at(0.1,0.75,M.flexOv,1.5); at(0.14,0.75,M.topcoat,1.5);
+    g.add(box(sd.w>sd.d?sd.w+0.4:0.16,0.9,sd.w>sd.d?0.16:sd.d+0.4,M.coping,sd.x+ox*0.12,1.95,sd.z+oz*0.12,false)); });
+  return g; }
+function addSleeperRun(b,x0,z0,x1,z1,n){ const g=new THREE.Group(); b.roof.add(g); const dx=(x1-x0)/(n-1), dz=(z1-z0)/(n-1), ang=Math.atan2(x1-x0,z1-z0), len=Math.hypot(x1-x0,z1-z0);
+  for(let i=0;i<n;i++){ const x=x0+dx*i, z=z0+dz*i; const sl=new THREE.Group(); sl.position.set(x,0,z); sl.rotation.y=ang; g.add(sl);
+    sl.add(box(2.4,0.7,1.0,M.wallB,0,0.35,0)); sl.add(box(2.6,0.08,0.4,M.coping,0,0.74,0,false));
+    sl.add(box(2.5,0.5,1.1,M.primerOv,0,0.25,0,false)); sl.add(box(2.6,0.45,1.2,M.flexOv,0,0.225,0,false)); sl.add(box(3.4,0.06,2.0,M.flexOv,0,0.09,0,false)); sl.add(box(2.7,0.46,1.3,M.topcoat,0,0.23,0,false)); sl.add(box(3.5,0.06,2.1,M.topcoat,0,0.12,0,false)); }
+  const pipe=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.3,len+2,12),M.iron); pipe.position.set((x0+x1)/2,1.05,(z0+z1)/2); pipe.rotation.set(0,-Math.atan2(z1-z0,x1-x0),Math.PI/2); g.add(pipe);
+  return g; }
+function addHatch(b,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const CW=3.2, CH=1.2; const d=curbAssembly(g,CW,CH,'sweep',false);
+  const lid=box(CW+0.5,0.25,CW+0.5,M.coping,0,0.3,-0.35); lid.rotation.x=-0.28; d.unit.add(lid); g.userData.unit=d.unit; g.userData.CH=CH; return g; }
+function addBinVent(b,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
+  g.add(box(2.4,1.0,2.4,M.curb,0,0.5,0)); const neck=new THREE.Mesh(new THREE.CylinderGeometry(0.8,0.8,2.2,16),M.coping); neck.position.y=2.1; g.add(neck); const cap=new THREE.Mesh(new THREE.ConeGeometry(1.5,0.8,16),M.coping); cap.position.y=3.5; g.add(cap);
+  g.add(box(2.5,1.0,2.5,M.primerOv,0,0.5,0,false)); g.add(box(2.6,0.95,2.6,M.flexOv,0,0.48,0,false)); g.add(box(2.7,1.02,2.7,M.topcoat,0,0.51,0,false)); return g; }
+function addPost(b,x,z,h=8){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
+  const post=new THREE.Mesh(new THREE.CylinderGeometry(0.45,0.45,h,12),M.iron); post.position.y=h/2; g.add(post); const base=new THREE.Mesh(new THREE.CylinderGeometry(1.0,1.1,0.3,16),M.iron); base.position.y=0.15; g.add(base);
+  const wrap=(mat,dr,h2,y)=>{ const m=new THREE.Mesh(new THREE.CylinderGeometry(0.5+dr,1.15+dr,h2,16),mat); m.position.y=y; g.add(m); const d=new THREE.Mesh(new THREE.RingGeometry(1.1+dr,2.2+dr,32),mat); d.rotation.x=-Math.PI/2; d.position.y=0.06+dr; g.add(d); };
+  wrap(M.primerOv,0.02,1.5,0.75); wrap(M.flexOv,0.05,1.5,0.77); wrap(M.topcoat,0.08,1.5,0.79); return g; }
+function addPitchPan(b,x,z,n=4){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
+  g.add(box(3.2,0.6,2.2,M.coping,0,0.3,0)); g.add(box(3.0,0.5,2.0,M.unitD,0,0.35,0,false));
+  for(let i=0;i<n;i++){ const px=-1.1+i*(2.2/(n-1)), pz=(i%2?0.5:-0.5); const pp=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.16,3.4,10),M.iron); pp.position.set(px,1.7,pz); g.add(pp); }
+  g.add(box(3.3,0.62,2.3,M.primerOv,0,0.31,0,false)); g.add(box(4.6,0.05,3.6,M.primerOv,0,0.075,0,false)); g.add(box(3.4,0.66,2.4,M.flexOv,0,0.33,0,false)); g.add(box(4.8,0.06,3.8,M.flexOv,0,0.1,0,false)); g.add(box(3.5,0.7,2.5,M.topcoat,0,0.35,0,false)); g.add(box(5.0,0.06,4.0,M.topcoat,0,0.13,0,false)); return g; }
+function addExpansionJoint(b,x,z0,z1){ const g=new THREE.Group(); g.position.set(x,0,(z0+z1)/2); b.roof.add(g); const len=z1-z0;
+  [-0.9,0.9].forEach(ox=>{ g.add(box(0.7,1.0,len,M.wallB,ox,0.5,0)); g.add(box(0.76,0.95,len,M.primerOv,ox,0.5,0,false)); g.add(box(0.82,0.9,len,M.flexOv,ox,0.45,0,false)); g.add(box(0.88,0.9,len,M.topcoat,ox,0.45,0,false)); });
+  g.add(box(2.6,0.14,len,M.ejCover,0,1.07,0)); g.add(box(3.6,0.06,len,M.flexOv,0,0.09,0,false)); g.add(box(3.8,0.06,len,M.topcoat,0,0.12,0,false)); return g; }
+function sweepFor(p,x0,x1){ const f=q=>x0-6+(x1-x0+12)*q; clipPrim.constant=f(p.primer); clipFlex.constant=f(p.flex); clipTop.constant=f(p.thane); }
+function condFor(b,p){ if(b.tapeList) b.tapeList.forEach(t=>t.visible = p.prep>=0.5); if(ROOFS[S.roof].plate==='MA'&&!b._noGravelClip){ const x0=(B&&B.gravelSpan?B.gravelSpan[0]:b.x-b.IL/2)-4, x1=(B&&B.gravelSpan?B.gravelSpan[1]:b.x+b.IL/2)+4; clipGravel.constant = -( x0 + (x1-x0)*p.prep ); } M.blister.opacity=S.cond?0.9*(1-p.primer):0; M.stain.opacity=S.cond?0.5*(1-p.prep):0; M.granLoss.opacity=S.cond?0.8*(1-p.prep):0; M.crack.opacity=S.cond?0.9*(1-p.prep):0; const MA=ROOFS[S.roof].plate==='MA'; b.stains.visible=S.cond&&p.prep<1; b.fails.visible=S.cond&&(MA?p.primer<1:p.prep<1); b.patches.visible=S.cond&&p.prep>0.3&&p.flex<1; }
+
+/* -----------------------------------------------------------------
+   BIG-BOX RETAIL (flat)
 ----------------------------------------------------------------- */
 function buildBigBox(){
-  const L=200, W=140, H=26, PH=3, PT=1.0;   // parapet height / thickness
-  const g0=world;
-  g0.add(box(L,H,W,M.wall,0,H/2,0)); g0.add(box(L+0.2,5,W+0.2,M.wallB,0,2.5,0));
-  g0.add(box(70,12,0.4,M.unitD,0,7,W/2+0.15,false));   // storefront glazing band
-  // parapet ring
-  const par=new THREE.Group(); par.position.y=H; g0.add(par);
-  par.add(box(L,PH,PT,M.wall,0,PH/2,-W/2+PT/2)); par.add(box(L,PH,PT,M.wall,0,PH/2,W/2-PT/2)); par.add(box(PT,PH,W,M.wall,-L/2+PT/2,PH/2,0)); par.add(box(PT,PH,W,M.wall,L/2-PT/2,PH/2,0));
-  // coping cap with joints every 10 ft; Flex caps over joints (W-1-TYP), sweep-clipped; topcoat cap
-  const cop=new THREE.Group(); par.add(cop);
-  cop.add(box(L+0.4,0.25,PT+0.5,M.coping,0,PH+0.12,-W/2+PT/2)); cop.add(box(L+0.4,0.25,PT+0.5,M.coping,0,PH+0.12,W/2-PT/2)); cop.add(box(PT+0.5,0.25,W+0.4,M.coping,-L/2+PT/2,PH+0.12,0)); cop.add(box(PT+0.5,0.25,W+0.4,M.coping,L/2-PT/2,PH+0.12,0));
-  for(let x=-L/2+10;x<L/2;x+=10){ [-1,1].forEach(s=>{ cop.add(box(0.12,0.3,PT+0.6,M.joint,x,PH+0.12,s*(W/2-PT/2),false)); cop.add(box(1.2,0.06,PT+0.6,M.flexOv,x,PH+0.29,s*(W/2-PT/2),false)); }); }
-  for(let z=-W/2+10;z<W/2;z+=10){ [-1,1].forEach(s=>{ cop.add(box(PT+0.6,0.3,0.12,M.joint,s*(L/2-PT/2),PH+0.12,z,false)); cop.add(box(PT+0.6,0.06,1.2,M.flexOv,s*(L/2-PT/2),PH+0.29,z,false)); }); }
-  cop.add(box(L+0.5,0.06,PT+0.6,M.topcoat,0,PH+0.33,-W/2+PT/2,false)); cop.add(box(L+0.5,0.06,PT+0.6,M.topcoat,0,PH+0.33,W/2-PT/2,false)); cop.add(box(PT+0.6,0.06,W+0.5,M.topcoat,-L/2+PT/2,PH+0.33,0,false)); cop.add(box(PT+0.6,0.06,W+0.5,M.topcoat,L/2-PT/2,PH+0.33,0,false));
-  // field membrane + seams (10 ft sheets running across z)
-  const IL=L-2*PT, IW=W-2*PT; const roof=new THREE.Group(); roof.position.y=H; g0.add(roof);
-  const fld=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),M.membrane); fld.rotation.x=-Math.PI/2; fld.receiveShadow=true; roof.add(fld);
-  const nS=Math.floor(IL/10)-1; const seams=new THREE.InstancedMesh(new THREE.BoxGeometry(0.35,0.04,IW),M.seam,nS); const mm=new THREE.Matrix4();
-  for(let i=0;i<nS;i++){ mm.makeTranslation(-IL/2+10*(i+1),0.02,0); seams.setMatrixAt(i,mm); } roof.add(seams);
-  // overlays: primer, flex, topcoat over the field and up the parapet inner faces
-  function addOverlay(mat,dy,wallH){ const f=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),mat); f.rotation.x=-Math.PI/2; f.position.y=dy; f.receiveShadow=true; roof.add(f);
-    roof.add(box(IL,wallH,0.05,mat,0,wallH/2,-IW/2+0.03+dy,false)); roof.add(box(IL,wallH,0.05,mat,0,wallH/2,IW/2-0.03-dy,false)); roof.add(box(0.05,wallH,IW,mat,-IL/2+0.03+dy,wallH/2,0,false)); roof.add(box(0.05,wallH,IW,mat,IL/2-0.03-dy,wallH/2,0,false)); }
-  addOverlay(M.primerOv,0.05,1.6); addOverlay(M.flexOv,0.08,1.5); addOverlay(M.topcoat,0.11,PH);   // 18" up the wall for primer/Flex is ASSUMED
-  // existing condition: ponding stains + seam failures; prep: patches
-  const stains=new THREE.Group(), fails=new THREE.Group(), patches=new THREE.Group(); roof.add(stains); roof.add(fails); roof.add(patches);
-  const drainPos=[[-70,-40],[-70,40],[70,-40],[70,40]];
-  drainPos.forEach(([x,z])=>{ const st=new THREE.Mesh(new THREE.CircleGeometry(9,24),M.stain); st.rotation.x=-Math.PI/2; st.position.set(x+2,0.035,z-1); st.scale.set(1.4,1,1); stains.add(st); });
-  for(let i=0;i<14;i++){ const sx=-IL/2+10*(1+Math.floor(Math.random()*nS)); const z=-IW/2+6+Math.random()*(IW-12); const len=4+Math.random()*6; fails.add(box(0.9,0.05,len,M.stain,sx,0.04,z,false)); patches.add(box(2.2,0.06,len+2,M.patch,sx,0.045,z,false)); }
-  // RTUs — CS-1-TYP
-  const rtuPos=[[-40,-30],[10,10],[55,-25]]; const rtus=new THREE.Group(); roof.add(rtus);
-  rtuPos.forEach(([x,z])=>{ const g=new THREE.Group(); g.position.set(x,0,z); rtus.add(g); const CW=8, CH=1.5;
-    g.add(box(CW,CH,CW,M.curb,0,CH/2,0)); g.add(box(9.5,4,9.5,M.unit,0,CH+2,0)); g.add(box(9.7,0.4,9.7,M.unitD,0,CH+4.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(2.8,2.8,0.25,24),M.unitD); fan.position.set(0,CH+4.4,0); g.add(fan);
-    g.add(box(CW+0.16,CH,CW+0.16,M.primerOv,0,CH/2,0,false)); g.add(box(CW+0.24,CH,CW+0.24,M.flexOv,0,CH/2,0,false)); g.add(box(CW+0.32,CH+0.02,CW+0.32,M.topcoat,0,CH/2+0.01,0,false)); });
-  // drains — D-1-TYP
-  const drains=new THREE.Group(); roof.add(drains);
-  drainPos.forEach(([x,z])=>{ const g=new THREE.Group(); g.position.set(x,0,z); drains.add(g);
-    const ring=new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.7,0.3,28),M.iron); ring.position.y=0.15; g.add(ring);
-    const bowl=new THREE.Mesh(new THREE.CylinderGeometry(1.3,1.3,0.06,28),M.unitD); bowl.position.y=0.3; g.add(bowl);
-    const dome=new THREE.Mesh(new THREE.SphereGeometry(0.95,20,12,0,Math.PI*2,0,Math.PI/2),M.iron); dome.position.y=0.3; g.add(dome);
-    const flange=(mat,r,y)=>{ const m=new THREE.Mesh(new THREE.RingGeometry(1.5,r,40),mat); m.rotation.x=-Math.PI/2; m.position.y=y; g.add(m); };
-    flange(M.primerOv,3.1,0.075); flange(M.flexOv,3.2,0.1); flange(M.topcoat,3.3,0.13); });
-  // scuppers — D-4-TYP, through the back (-z) parapet
-  const scupX=[-60,60]; const scups=new THREE.Group(); par.add(scups);
-  scupX.forEach(x=>{ const g=new THREE.Group(); g.position.set(x,0,-W/2+PT/2); scups.add(g);
-    g.add(box(2.2,1.2,PT+0.6,M.iron,0,0.8,0)); g.add(box(1.8,0.8,PT+0.7,M.unitD,0,0.8,0,false)); g.add(box(3.0,1.6,0.4,M.coping,0,0.8,-PT/2-0.3));
-    g.add(box(3.2,1.9,0.12,M.flexOv,0,0.95,PT/2+0.08,false)); g.add(box(3.4,2.0,0.12,M.topcoat,0,1.0,PT/2+0.16,false)); });
-  const solar=makeSolar(roof,[-80,-60,-40,-20,0,20,40,60,80],[-55,-15,25]); solar.visible=false;
+  const b=makeBlock({L:200,W:140,H:26,PH:3}); const {L,W,H,PH,PT}=b;
+  b.g.add(box(70,12,0.4,M.unitD,0,7,W/2+0.15,false));
+  const drainPos=[[-70,-40],[-70,40],[70,-40],[70,40]]; drainPos.forEach(([x,z])=>addStain(b,x,z));
+  const rtuPos=[[-40,-30],[10,10],[55,-25]]; const rtus=new THREE.Group(); b.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(b,x,z)));
+  const drains=new THREE.Group(); b.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(b,x,z)));
+  const scupX=[-60,60]; const scups=new THREE.Group(); b.par.add(scups); scupX.forEach(x=>scups.add(addScupper(b,x)));
+  const solar=makeSolar(b.roof,[-80,-60,-40,-20,0,20,40,60,80],[-55,-15,25]); solar.visible=false;
   const hots=[
     {id:'rtu', anchor:()=> new THREE.Vector3(rtuPos[0][0],H+6.4,rtuPos[0][1]), show:()=>S.on.rtu},
     {id:'drain', anchor:()=> new THREE.Vector3(drainPos[3][0],H+1.2,drainPos[3][1]), show:()=>S.on.drain},
     {id:'scupper', anchor:()=> new THREE.Vector3(scupX[1],H+PH+0.6,-W/2+PT/2), show:()=>S.on.scupper},
     {id:'coping', anchor:()=> new THREE.Vector3(L/2-PT/2,H+PH+0.6,-20), show:()=>S.on.coping}];
-  function applyStage(p){
-    M.stain.opacity = S.cond ? 0.5*(1-p.prep) : 0; stains.visible=fails.visible=S.cond && p.prep<1; patches.visible = S.cond && p.prep>0.3 && p.flex<1;
-    const sweep = q => -L/2-6+(L+12)*q;
-    clipPrim.constant = sweep(p.primer); clipFlex.constant = sweep(p.flex); clipTop.constant = sweep(p.thane);
-    rtus.visible=!!S.on.rtu; drains.visible=!!S.on.drain; scups.visible=!!S.on.scupper; solar.visible=S.solar;
-  }
+  function applyStage(p){ condFor(b,p); sweepFor(p,-L/2,L/2); rtus.visible=!!S.on.rtu; drains.visible=!!S.on.drain; scups.visible=!!S.on.scupper; solar.visible=S.solar; }
+  return { extent:{L,W,H:H+PH}, hots, applyStage };
+}
+
+/* -----------------------------------------------------------------
+   SCHOOL (flat, two wings: classroom wing + taller gym)
+----------------------------------------------------------------- */
+function buildSchool(){
+  const cls=makeBlock({L:220,W:70,H:14,PH:1.5,x:0,z:0,skip:['W']});
+  const gym=makeBlock({L:90,W:110,H:28,PH:2.5,x:-155,z:0});
+  gym.g.add(box(0.4,10,50,M.unitD,45.25,7,20,false));   // entry glazing on the gym's east face, below the classroom roof line
+  const wall=addWallTie(cls,'W',cls.IW,0);
+  const drainPos=[[-60,-15],[30,15],[90,-15]]; drainPos.forEach(([x,z])=>addStain(cls,x,z)); addStain(gym,10,-20);
+  const drains=new THREE.Group(); cls.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(cls,x,z))); const gd=[[-25,30],[25,-30]]; gd.forEach(([x,z])=>drains.add(addDrain(gym,x,z)));
+  const rtuPos=[[-20,12],[60,-12]]; const rtus=new THREE.Group(); cls.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(cls,x,z,7,1.4))); rtus.add(addRTU(gym,0,15,12,1.8));
+  const skyPos=[[-85,-10],[-45,-10],[-5,-10],[35,-10],[75,-10]]; const skies=new THREE.Group(); cls.roof.add(skies); skyPos.forEach(([x,z])=>skies.add(addSkylight(cls,x,z)));
+  const pipePos=[[-70,20],[-66,22],[-62,20],[10,-22],[14,-20],[50,22],[54,24]]; const pipes=new THREE.Group(); cls.roof.add(pipes); pipePos.forEach(([x,z])=>pipes.add(addPipe(cls,x,z)));
+  const solar=makeSolar(gym.roof,[-30,-15,0,15,30],[-40,-10]); solar.visible=false;
+  const H=cls.H, GH=gym.H;
+  const hots=[
+    {id:'wall', anchor:()=> new THREE.Vector3(-cls.IL/2,H+2.6,-10), show:()=>S.on.wall},
+    {id:'pipe', anchor:()=> new THREE.Vector3(pipePos[3][0],H+3.6,pipePos[3][1]), show:()=>S.on.pipe},
+    {id:'skylight', anchor:()=> new THREE.Vector3(skyPos[3][0],H+2.8,skyPos[3][1]), show:()=>S.on.skylight},
+    {id:'drain', anchor:()=> new THREE.Vector3(drainPos[2][0],H+1.2,drainPos[2][1]), show:()=>S.on.drain},
+    {id:'rtu', anchor:()=> new THREE.Vector3(-155,GH+8.5,15), show:()=>S.on.rtu}];
+  function applyStage(p){ condFor(cls,p); condFor(gym,p); sweepFor(p,-200,110); drains.visible=!!S.on.drain; rtus.visible=!!S.on.rtu; skies.visible=!!S.on.skylight; pipes.visible=!!S.on.pipe; wall.visible=!!S.on.wall; solar.visible=S.solar; }
+  return { extent:{L:310,W:110,H:GH+2.5,cx:-45}, hots, applyStage };
+}
+
+/* -----------------------------------------------------------------
+   OFFICE (low-rise, edge metal, penthouse, sleepers)
+----------------------------------------------------------------- */
+function buildOffice(){
+  const b=makeBlock({L:130,W:110,H:46,edge:'metal'}); const {L,W,H}=b;
+  for(let f=0;f<3;f++){ b.g.add(box(L+0.3,6,W+0.3,M.glazing,0,10+f*12,0,false)); }   // ribbon glazing bands
+  const pent=addPenthouse(b,-20,-15,40,28,12);
+  const drainPos=[[-45,-35],[45,-35],[-45,38],[45,38]]; drainPos.forEach(([x,z])=>addStain(b,x,z));
+  const drains=new THREE.Group(); b.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(b,x,z)));
+  const rtuPos=[[30,20],[30,-5]]; const rtus=new THREE.Group(); b.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(b,x,z,7,1.4)));
+  const sleepers=addSleeperRun(b,2,-15,30,-15,5); const sleepers2=addSleeperRun(b,2,-10,26,16,5); const sl=new THREE.Group(); b.roof.add(sl); sl.add(sleepers); sl.add(sleepers2);
+  const pipePos=[[-50,10],[-46,12],[10,35],[14,33]]; const pipes=new THREE.Group(); b.roof.add(pipes); pipePos.forEach(([x,z])=>pipes.add(addPipe(b,x,z)));
+  const solar=makeSolar(b.roof,[-40,-20,0,20,40],[25,40]); solar.visible=false;
+  const hots=[
+    {id:'penthouse', anchor:()=> new THREE.Vector3(-40,H+2.8,-5), show:()=>S.on.penthouse},
+    {id:'edge', anchor:()=> new THREE.Vector3(L/2-0.3,H+0.6,20), show:()=>S.on.edge},
+    {id:'sleeper', anchor:()=> new THREE.Vector3(9,H+1.6,-15), show:()=>S.on.sleeper},
+    {id:'drain', anchor:()=> new THREE.Vector3(drainPos[3][0],H+1.2,drainPos[3][1]), show:()=>S.on.drain},
+    {id:'rtu', anchor:()=> new THREE.Vector3(rtuPos[0][0],H+5.6,rtuPos[0][1]), show:()=>S.on.rtu},
+    {id:'pipe', anchor:()=> new THREE.Vector3(pipePos[0][0],H+3.6,pipePos[0][1]), show:()=>S.on.pipe}];
+  function applyStage(p){ condFor(b,p); sweepFor(p,-L/2,L/2); if(b.em) b.em.visible=!!S.on.edge; pent.visible=!!S.on.penthouse; drains.visible=!!S.on.drain; rtus.visible=!!S.on.rtu; sl.visible=!!S.on.sleeper; pipes.visible=!!S.on.pipe; solar.visible=S.solar; }
+  return { extent:{L,W,H:H+1}, hots, applyStage, edgeVisible:true };
+}
+
+/* -----------------------------------------------------------------
+   HOSPITAL (flat, main block + wing, expansion joint, heavy mechanical)
+----------------------------------------------------------------- */
+function buildHospital(){
+  const main=makeBlock({L:200,W:120,H:48,PH:3.5,x:0,z:0,skip:['W']});
+  const wing=makeBlock({L:90,W:80,H:48,PH:3.5,x:-145,z:-20,skip:['E']});
+  const H=main.H; const {L,W}=main;
+  for(let f=0;f<4;f++){ main.g.add(box(L+0.3,4,W+0.3,M.glazing,0,8+f*11,0,false)); wing.g.add(box(90.3,4,80.3,M.glazing,0,8+f*11,0,false)); }
+  main.g.add(box(60,14,0.5,M.unitD,20,7,W/2+0.2,false)); main.g.add(box(64,1.5,14,M.coping,20,15,W/2+7));   // ER entrance canopy
+  const pents=new THREE.Group(); main.roof.add(pents); pents.add(addPenthouse(main,30,-25,46,30,14)); pents.add(addPenthouse(main,-55,25,24,20,10));
+  const ej=addExpansionJoint(main,-main.IL/2+1.5,-38,38);
+  const drainPos=[[-70,-40],[0,-45],[70,-40],[-70,42],[0,45],[70,42]]; drainPos.forEach(([x,z])=>addStain(main,x,z)); addStain(wing,10,10);
+  const drains=new THREE.Group(); main.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(main,x,z))); [[-25,-20],[25,20]].forEach(([x,z])=>drains.add(addDrain(wing,x,z)));
+  const rtuPos=[[-30,-30],[-5,-30],[70,15],[70,-15]]; const rtus=new THREE.Group(); main.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(main,x,z,9,1.6))); rtus.add(addRTU(wing,0,-15,8,1.5));
+  const panPos=[[10,20],[-30,10],[50,-40]]; const pans=new THREE.Group(); main.roof.add(pans); panPos.forEach(([x,z])=>pans.add(addPitchPan(main,x,z)));
+  const pipePos=[[-80,-20],[-76,-18],[-72,-21],[40,40],[44,42],[-20,45],[85,0],[85,5]]; const pipes=new THREE.Group(); main.roof.add(pipes); pipePos.forEach(([x,z])=>pipes.add(addPipe(main,x,z)));
+  const solar=makeSolar(wing.roof,[-30,-15,0,15,30],[-25,5]); solar.visible=false;
+  const hots=[
+    {id:'pitchpan', anchor:()=> new THREE.Vector3(panPos[0][0],H+3.8,panPos[0][1]), show:()=>S.on.pitchpan},
+    {id:'ej', anchor:()=> new THREE.Vector3(-main.IL/2+1.5,H+1.6,0), show:()=>S.on.ej},
+    {id:'penthouse', anchor:()=> new THREE.Vector3(30,H+15,-25), show:()=>S.on.penthouse},
+    {id:'rtu', anchor:()=> new THREE.Vector3(rtuPos[2][0],H+7.5,rtuPos[2][1]), show:()=>S.on.rtu},
+    {id:'drain', anchor:()=> new THREE.Vector3(drainPos[4][0],H+1.2,drainPos[4][1]), show:()=>S.on.drain},
+    {id:'pipe', anchor:()=> new THREE.Vector3(pipePos[3][0],H+3.6,pipePos[3][1]), show:()=>S.on.pipe},
+    {id:'coping', anchor:()=> new THREE.Vector3(L/2-0.5,H+4.1,-30), show:()=>S.on.coping}];
+  function applyStage(p){ condFor(main,p); condFor(wing,p); sweepFor(p,-190,100); pents.visible=!!S.on.penthouse; ej.visible=!!S.on.ej; drains.visible=!!S.on.drain; rtus.visible=!!S.on.rtu; pans.visible=!!S.on.pitchpan; pipes.visible=!!S.on.pipe; solar.visible=S.solar; }
+  return { extent:{L:290,W:120,H:H+3.5,cx:-45}, hots, applyStage, gravelSpan:[-190,100] };
+}
+
+/* -----------------------------------------------------------------
+   SILO / GRAIN ELEVATOR (concrete bins, cap deck, headhouse, gallery)
+----------------------------------------------------------------- */
+function buildSilo(){
+  const R=14, SH=110, cols=[-30,0,30], rows=[-15,15];
+  const bins=new THREE.Group(); world.add(bins); const wallOv=new THREE.Group(); world.add(wallOv);
+  rows.forEach(z=>cols.forEach(x=>{ const c=new THREE.Mesh(new THREE.CylinderGeometry(R,R,SH,48,1,true),M.concrete); c.position.set(x,SH/2,z); c.castShadow=true; c.receiveShadow=true; bins.add(c);
+    [[M.primerOv,0.04],[M.flexOv,0.08],[M.topcoat,0.12]].forEach(([mat,dr])=>{ const o=new THREE.Mesh(new THREE.CylinderGeometry(R+dr,R+dr,SH-0.2,48,1,true),mat); o.position.set(x,SH/2,z); o.material=mat; wallOv.add(o); });
+    for(let i=0;i<10;i++){ const a=Math.random()*Math.PI*2, h=6+Math.random()*34; const st=new THREE.Mesh(new THREE.PlaneGeometry(0.35+Math.random()*0.3,h),M.streak); st.position.set(x+Math.sin(a)*(R+0.12),SH-h/2-Math.random()*8,z+Math.cos(a)*(R+0.12)); st.rotation.y=a; bins.add(st); } }));
+  // fill between bins with a concrete web so the cluster reads as one structure
+  world.add(box(cols[2]-cols[0]+R*0.4, SH-2, rows[1]-rows[0]+R*0.4, M.concrete, 0, (SH-2)/2, 0));
+  // cap deck (Plate C) sits on top of the bins
+  const cap=makeBlock({L:cols[2]-cols[0]+2*R+2, W:rows[1]-rows[0]+2*R+2, H:4, PH:2.5, y:SH-2, noBase:true}); const H=SH-2+4;
+  const head=new THREE.Group(); cap.roof.add(head); head.add(addPenthouse(cap,-28,0,22,26,34));
+  // conveyor gallery: box carried on pairs of steel posts (P-5-C); legs under the box edges, tied by cross beams; entry from the headhouse
+  const gallery=new THREE.Group(); cap.roof.add(gallery); const GW=10; const legs=[[-14,-GW/2+1],[-14,GW/2-1],[6,-GW/2+1],[6,GW/2-1],[26,-GW/2+1],[26,GW/2-1]]; legs.forEach(([x,z])=>gallery.add(addPost(cap,x,z,9)));
+  [-14,6,26].forEach(x=>gallery.add(box(0.5,0.5,GW-1.4,M.iron,x,8.8,0)));
+  gallery.add(box(52,5,GW,M.coping,6,11.5,0)); gallery.add(box(52.4,0.5,GW+0.4,M.unitD,6,14.2,0,false)); gallery.add(box(6,4,GW-2,M.unitD,-23,11.5,0));
+  const vents=new THREE.Group(); cap.roof.add(vents); rows.forEach(z=>cols.forEach(x=>{ if(x===-30) return; vents.add(addBinVent(cap,x+6,z+6)); }));
+  const hatches=new THREE.Group(); cap.roof.add(hatches); rows.forEach(z=>cols.forEach(x=>{ if(x===-30) return; hatches.add(addHatch(cap,x-5,z-5)); }));
+  const drainPos=[[-8,-16],[30,14]]; drainPos.forEach(([x,z])=>addStain(cap,x,z,4)); const drains=new THREE.Group(); cap.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(cap,x,z)));
+  // base: receiving shed alongside
+  world.add(box(140,22,40,M.wall,0,11,55)); world.add(box(140.2,4,40.2,M.wallB,0,2,55)); world.add(box(140,1,40,M.coping,0,22.5,55));
+  const solar=makeSolar(cap.roof,[-20,0,20],[26]); solar.visible=false;
+  const hots=[
+    {id:'silowall', anchor:()=> new THREE.Vector3(0,SH*0.55,rows[1]+R+0.3), show:()=>S.on.silowall},
+    {id:'penthouse', anchor:()=> new THREE.Vector3(-39,H+20,0), show:()=>S.on.penthouse},
+    {id:'support', anchor:()=> new THREE.Vector3(32,H+3.5,2.6), show:()=>S.on.support},
+    {id:'hatch', anchor:()=> new THREE.Vector3(-5,H+2.4,-20), show:()=>S.on.hatch},
+    {id:'vent', anchor:()=> new THREE.Vector3(36,H+4.6,21), show:()=>S.on.vent},
+    {id:'drain', anchor:()=> new THREE.Vector3(30,H+1.2,14), show:()=>S.on.drain}];
+  function applyStage(p){ condFor(cap,p); M.stain.opacity=S.cond?0.45*(1-p.prep):0; M.streak.opacity=S.cond?0.35*(1-p.prep):0; sweepFor(p,-50,50); wallOv.visible=!!S.on.silowall; head.visible=!!S.on.penthouse; gallery.visible=!!S.on.support; hatches.visible=!!S.on.hatch; vents.visible=!!S.on.vent; drains.visible=!!S.on.drain; solar.visible=S.solar; }
+  return { extent:{L:100,W:70,H:H+5,cx:0,dist:360}, hots, applyStage };
+}
+
+/* -----------------------------------------------------------------
+   HOTEL / SENIOR LIVING (mid-rise, many small penetrations)
+----------------------------------------------------------------- */
+function addCondenser(b,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
+  [-1.6,1.6].forEach(ox=>{ g.add(box(2.4,0.7,1.0,M.wallB,ox,0.35,0)); g.add(box(2.5,0.5,1.1,M.primerOv,ox,0.25,0,false)); g.add(box(2.6,0.45,1.2,M.flexOv,ox,0.225,0,false)); g.add(box(3.4,0.06,2.0,M.flexOv,ox,0.09,0,false)); g.add(box(2.7,0.46,1.3,M.topcoat,ox,0.23,0,false)); g.add(box(3.5,0.06,2.1,M.topcoat,ox,0.12,0,false)); });
+  g.add(box(3.6,0.15,3.2,M.coping,0,0.8,0,false)); g.add(box(3.4,3.0,3.0,M.unit,0,2.4,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(1.3,1.3,0.15,20),M.unitD); fan.position.y=4.0; g.add(fan); return g; }
+function buildHotel(){
+  const b=makeBlock({L:180,W:70,H:66,PH:3.5}); const {L,W,H}=b;
+  for(let f=1;f<6;f++){ b.g.add(box(L+0.3,3.5,W+0.3,M.glazing,0,4+f*10.5,0,false)); b.g.add(box(L+2,0.5,3,M.coping,0,2.2+f*10.5,W/2+1.2,false)); }   // window bands + balcony slabs on the front
+  b.g.add(box(50,12,0.5,M.unitD,-40,6,W/2+0.2,false)); b.g.add(box(54,1.4,12,M.coping,-40,13,W/2+6));   // porte-cochère
+  const pents=new THREE.Group(); b.roof.add(pents); pents.add(addPenthouse(b,-60,0,20,16,12)); pents.add(addPenthouse(b,55,-8,14,16,10));
+  const drainPos=[[-65,-25],[-10,25],[35,-25],[80,25]]; drainPos.forEach(([x,z])=>addStain(b,x,z)); const drains=new THREE.Group(); b.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(b,x,z)));
+  const rtuPos=[[-20,-12],[20,12]]; const rtus=new THREE.Group(); b.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(b,x,z,7,1.4)));
+  const pipePos=[]; for(let x=-80;x<=80;x+=16){ pipePos.push([x,-20],[x+6,-22],[x+3,20]); } const pipes=new THREE.Group(); b.roof.add(pipes); pipePos.forEach(([x,z])=>pipes.add(addPipe(b,x,z,0.28)));
+  const condPos=[[-40,10],[-30,10],[5,-8],[15,-8],[40,10],[50,10],[75,-10]]; const conds=new THREE.Group(); b.roof.add(conds); condPos.forEach(([x,z])=>conds.add(addCondenser(b,x,z)));
+  const solar=makeSolar(b.roof,[-70,-50,-30,30,50,70],[0]); solar.visible=false;
+  const hots=[
+    {id:'penthouse', anchor:()=> new THREE.Vector3(-60,H+13,-8), show:()=>S.on.penthouse},
+    {id:'pipe', anchor:()=> new THREE.Vector3(-29,H+3.6,20), show:()=>S.on.pipe},
+    {id:'sleeper', anchor:()=> new THREE.Vector3(50,H+4.4,10), show:()=>S.on.sleeper},
+    {id:'rtu', anchor:()=> new THREE.Vector3(20,H+5.6,12), show:()=>S.on.rtu},
+    {id:'drain', anchor:()=> new THREE.Vector3(80,H+1.2,25), show:()=>S.on.drain},
+    {id:'coping', anchor:()=> new THREE.Vector3(L/2-0.5,H+4.1,-15), show:()=>S.on.coping}];
+  function applyStage(p){ condFor(b,p); sweepFor(p,-L/2,L/2); pents.visible=!!S.on.penthouse; drains.visible=!!S.on.drain; rtus.visible=!!S.on.rtu; pipes.visible=!!S.on.pipe; conds.visible=!!S.on.sleeper; solar.visible=S.solar; }
+  return { extent:{L,W,H:H+3.5}, hots, applyStage };
+}
+
+/* -----------------------------------------------------------------
+   RESTAURANT (small flat box, mansard screen, kitchen exhaust)
+----------------------------------------------------------------- */
+function addExhaustFan(b,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const CW=4, CH=1.4; const d=curbAssembly(g,CW,CH,'sweep',false);
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.9,1.2,20),M.unit); base.position.y=0.6; d.unit.add(base); const cap=new THREE.Mesh(new THREE.CylinderGeometry(2.3,1.6,1.0,20),M.unitD); cap.position.y=1.7; d.unit.add(cap);
+  const tray=box(CW+1.2,0.3,CW+1.2,M.unitD,0,0.15,0,false); d.unit.add(tray); g.userData.unit=d.unit; g.userData.CH=CH;   // grease containment tray
+  const gs=new THREE.Mesh(new THREE.CircleGeometry(5,24),M.stain); gs.rotation.x=-Math.PI/2; gs.position.set(1,0.036,1); b.stains.add(gs);
+  return g; }
+function buildRestaurant(){
+  const b=makeBlock({L:70,W:50,H:16,PH:2.5,skip:['S']}); const {L,W,H,PH}=b;
+  // mansard screen across the front, sloped, with a fascia sign band
+  const man=box(L+1,6,0.3,M.wallB,0,H+2.2,W/2+1.2); man.rotation.x=0.42; b.g.add(man); b.g.add(box(L+1.4,0.6,2.0,M.coping,0,H+4.6,W/2-0.8));
+  b.g.add(box(L-20,8,0.4,M.glazing,-5,6,W/2+0.15,false)); b.g.add(box(26,0.8,12,M.coping,L/2-14,11,-W/2-6)); [-1,1].forEach(sg=>b.g.add(box(0.5,11,0.5,M.iron,L/2-14+sg*11,5.5,-W/2-11)));   // drive-thru canopy
+  const exh=new THREE.Group(); b.roof.add(exh); exh.add(addExhaustFan(b,-15,-8)); exh.add(addExhaustFan(b,-6,-8));
+  const rtuPos=[[15,5],[15,-12]]; const rtus=new THREE.Group(); b.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(b,x,z,6,1.3)));
+  const drainPos=[[-25,12],[25,12]]; drainPos.forEach(([x,z])=>addStain(b,x,z,5)); const drains=new THREE.Group(); b.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(b,x,z)));
+  const pipePos=[[-22,-14],[-19,-15],[0,10],[3,12],[-28,-2]]; const pipes=new THREE.Group(); b.roof.add(pipes); pipePos.forEach(([x,z])=>pipes.add(addPipe(b,x,z,0.28)));
+  const solar=makeSolar(b.roof,[-25,-10,5,20],[16]); solar.visible=false;
+  const hots=[
+    {id:'exhaust', anchor:()=> new THREE.Vector3(-15,H+4.6,-8), show:()=>S.on.exhaust},
+    {id:'rtu', anchor:()=> new THREE.Vector3(15,H+5,5), show:()=>S.on.rtu},
+    {id:'pipe', anchor:()=> new THREE.Vector3(0,H+3.6,10), show:()=>S.on.pipe},
+    {id:'drain', anchor:()=> new THREE.Vector3(25,H+1.2,12), show:()=>S.on.drain},
+    {id:'coping', anchor:()=> new THREE.Vector3(L/2-0.5,H+PH+0.6,-10), show:()=>S.on.coping}];
+  function applyStage(p){ condFor(b,p); sweepFor(p,-L/2,L/2); exh.visible=!!S.on.exhaust; rtus.visible=!!S.on.rtu; drains.visible=!!S.on.drain; pipes.visible=!!S.on.pipe; solar.visible=S.solar; }
   return { extent:{L,W,H:H+PH}, hots, applyStage };
 }
 
@@ -457,7 +993,8 @@ function makeSolar(parent, cols, rows){
   return solar;
 }
 
-function rebuild(){ disposeGroup(world); B = ROOFS[S.roof].shape==='gable' ? buildWarehouse() : buildBigBox(); buildHots(); goRoof(true); }
+const BUILDERS={ warehouse:buildWarehouse, bigbox:buildBigBox, school:buildSchool, office:buildOffice, manufacturing:buildManufacturing, hospital:buildHospital, arena:buildArena, silo:buildSilo, hotel:buildHotel, airport:buildAirport, restaurant:buildRestaurant };
+function rebuild(){ disposeGroup(world); B = BUILDERS[S.building](); buildHots(); goRoof(true); }
 
 /* =================================================================
    CAMERA
@@ -466,7 +1003,7 @@ const cam={ target:new THREE.Vector3(0,22,0), dist:165, theta:0.62, phi:1.0 };
 const camTo={ ...cam, target:cam.target.clone() }, camFrom={ ...cam, target:cam.target.clone() }; let camT=1;
 const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ease=t=>t<.5?2*t*t:-1+(4-2*t)*t, lerp=(a,b,t)=>a+(b-a)*t;
-function roofDist(){ const e=B?B.extent:{L:120,W:80}; const base=Math.max(e.L,e.W)*1.38; return (canvas.parentElement.clientWidth<canvas.parentElement.clientHeight)? base*1.5 : base; }
+function roofDist(){ const e=B?B.extent:{L:120,W:80}; if(e.dist) return (canvas.parentElement.clientWidth<canvas.parentElement.clientHeight)? e.dist*1.5 : e.dist; const base=Math.max(e.L,e.W)*(e.L>280?1.3:e.L>250?1.15:e.W>150?1.45:1.38); return (canvas.parentElement.clientWidth<canvas.parentElement.clientHeight)? base*1.5 : base; }
 function applyCam(){ const t=camT<1?ease(camT):1; const c= camT<1 ? {dist:lerp(camFrom.dist,camTo.dist,t),theta:lerp(camFrom.theta,camTo.theta,t),phi:lerp(camFrom.phi,camTo.phi,t),target:camFrom.target.clone().lerp(camTo.target,t)} : cam;
   if(camT>=1){ Object.assign(cam,{dist:camTo.dist,theta:camTo.theta,phi:camTo.phi}); cam.target.copy(camTo.target); }
   camera.position.copy(c.target.clone().add(new THREE.Vector3(Math.sin(c.theta)*Math.sin(c.phi),Math.cos(c.phi),Math.cos(c.theta)*Math.sin(c.phi)).multiplyScalar(c.dist))); camera.lookAt(c.target); }
@@ -484,14 +1021,17 @@ function dist2(t){ return Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1]
    HOTSPOTS + VIEWS
 ================================================================= */
 const hotsEl=document.getElementById('hots'); const v3=new THREE.Vector3();
-function buildHots(){ hotsEl.innerHTML=''; B.hots.forEach(h=>{ const d=document.createElement('div'); d.className='hot'; d.innerHTML=`<button>${DETAILS[h.id].name} <span style="opacity:.6;font-weight:500">${DETAILS[h.id].drawing}</span></button><i></i>`; d.querySelector('button').onclick=()=>goDetail(h.id); hotsEl.appendChild(d); h.el=d; }); }
+function buildHots(){ hotsEl.innerHTML=''; B.hots.forEach(h=>{ const d=document.createElement('div'); d.className='hot'; d.innerHTML=`<button>${DET(h.id).name} <span style="opacity:.6;font-weight:500">${DET(h.id).drawing}</span></button><i></i>`; d.querySelector('button').onclick=()=>goDetail(h.id); hotsEl.appendChild(d); h.el=d; }); }
 function placeHots(){ if(!B) return; const r=canvas.getBoundingClientRect(); B.hots.forEach(h=>{ const show=S.view==='roof'&&!!h.show(); h.el.classList.toggle('hide',!show); if(!show) return; v3.copy(h.anchor()).project(camera); h.el.style.left=((v3.x+1)/2*r.width)+'px'; h.el.style.top=((1-v3.y)/2*r.height)+'px'; }); }
-function goDetail(id){ const d=DETAILS[id]; S.view=id; const a=B.hots.find(h=>h.id===id).anchor().clone(); a.y-=d.drop||0; flyTo(a,d.dist,d.theta,d.phi);
+function goDetail(id){ const d=DET(id); S.view=id; const a=B.hots.find(h=>h.id===id).anchor().clone(); secAnchor.copy(a); a.y-=d.drop||0; flyTo(a,d.dist,d.theta,d.phi); document.getElementById('secBtn').style.display='inline-block';
   document.getElementById('viewChip').querySelector('b').textContent='Detail'; document.getElementById('viewName').textContent=`${d.name} · ${d.drawing}`; document.getElementById('backBtn').style.display='inline-block'; document.getElementById('scaleNote').textContent='Stages replay at detail scale'; renderLayers(); }
-function goRoof(instant){ S.view='roof'; const e=B.extent; flyTo(new THREE.Vector3(0,e.H+2,0),roofDist(),0.62,1.0,instant);
+function goRoof(instant){ S.view='roof'; document.getElementById('secBtn').style.display='none'; const e=B.extent; flyTo(new THREE.Vector3(e.cx||0,e.dist?e.H-45:e.H+2,0),roofDist(),0.62,e.dist?1.2:1.0,instant);
   document.getElementById('viewChip').querySelector('b').textContent='Whole roof'; document.getElementById('viewName').textContent=''; document.getElementById('backBtn').style.display='none'; document.getElementById('scaleNote').textContent=''; renderLayers(); }
 document.getElementById('backBtn').onclick=()=>goRoof(false);
-function renderLayers(){ const el=document.getElementById('layers'); if(S.view==='roof'){ el.classList.remove('show'); return; } const d=DETAILS[S.view]; const order=['existing','prep','primer','flex','thane','done']; const cur=order[S.stage];
+const secPlane=new THREE.Plane(new THREE.Vector3(0,0,1),0); let secAnchor=new THREE.Vector3();
+document.getElementById('secBtn').onclick=()=>{ S.section=!S.section; document.getElementById('secBtn').textContent=S.section?'Full view':'Section view'; document.getElementById('secBtn').style.background=S.section?'var(--navy)':'#fff'; document.getElementById('secBtn').style.color=S.section?'#fff':'var(--navy)'; };
+function applySection(){ const on=S.section&&S.view!=='roof'; if(!on){ renderer.clippingPlanes=[]; return; } const dir=secAnchor.clone().sub(camera.position); dir.y=0; dir.normalize(); secPlane.normal.copy(dir); secPlane.constant=-dir.dot(secAnchor); renderer.clippingPlanes=[secPlane]; }
+function renderLayers(){ const el=document.getElementById('layers'); if(S.view==='roof'){ el.classList.remove('show'); return; } const d=DET(S.view); const order=['existing','prep','primer','flex','thane','done']; const cur=order[S.stage];
   const on=k=> order.indexOf(k)<=order.indexOf(cur) && !(k==='thane'&&S.stage<4);
   el.innerHTML=`<h3>${d.name} — layers</h3>`+d.layers.map(l=>`<div class="row ${on(l.k)?'on':''}"><span class="swatch" style="background:${l.k==='thane'?(S.topcoat==='white'?'#F1F0EB':l.color):l.color}"></span>${l.label}</div>`).join('')+`<div class="src">${d.src}</div>`; el.classList.add('show'); }
 
@@ -502,7 +1042,9 @@ const DUR=[0.4,1.6,2.2,3.2,3.2,0.5];
 const stagesOf=()=>ROOFS[S.roof].stages;
 function setStage(n,animate){ n=Math.max(0,Math.min(stagesOf().length-1,n)); S.stage=n; S.prog=animate&&!reduceMotion?0:1; renderStageUI(); renderLayers(); }
 function stageProgress(k){ const i=stagesOf().findIndex(s=>s.key===k); if(S.stage<i) return 0; if(S.stage>i) return 1; return S.prog; }
-function applyStage(){ const p={prep:stageProgress('prep'),primer:stageProgress('primer'),flex:stageProgress('flex'),thane:stageProgress('thane')};
+const LIFTED=new Set();
+function applyStage(){ const p={prep:stageProgress('prep'),primer:stageProgress('primer'),flex:stageProgress('flex'),thane:stageProgress('thane')}; const seat=S.stage>=5?1:(S.stage>=2?0:1);
+  world.traverse(o=>{ if(o.userData&&o.userData.unit){ o.userData.unit.position.y=o.userData.CH+ (seat?0:0.5); } });
   const white=S.topcoat==='white'; M.topcoat.color.set(white?0xF4F3EE:0xDCE0E4); M.topcoat.metalness=white?0.04:0.38; M.topcoat.roughness=white?0.62:0.3; B.applyStage(p); }
 
 /* =================================================================
@@ -530,24 +1072,23 @@ bldSel.onchange=()=>selectBuilding(bldSel.value);
 roofSel.onchange=()=>{ S.roof=roofSel.value; syncUI(); rebuild(); setStage(0,false); renderEstimate(); };
 function syncUI(){ const b=BUILDINGS[S.building], r=ROOFS[S.roof];
   roofSel.innerHTML=''; b.roofs.forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=ROOFS[k].label; roofSel.appendChild(o); }); roofSel.value=S.roof;
-  ['Standing seam','SPF','Mod-bit / BUR','Concrete / LIC'].forEach(l=>{ const o=document.createElement('option'); o.disabled=true; o.textContent=l+' (next)'; roofSel.appendChild(o); });
-  document.getElementById('patternNote').innerHTML=r.patternNote; document.getElementById('condLabel').textContent=r.condLabel; document.getElementById('subTitle').textContent=`${b.label} · ${r.label}`;
-  const dc=document.getElementById('detailChecks'); dc.innerHTML=''; b.details.forEach(k=>{ const l=document.createElement('label'); l.innerHTML=`<input type="checkbox" ${S.on[k]?'checked':''}> ${DETAILS[k].menu}`; l.querySelector('input').onchange=ev=>{ S.on[k]=ev.target.checked; if(!S.on[k]&&S.view===k) goRoof(false); renderEstimate(); }; dc.appendChild(l); });
-  ['Penetrations','Skylights','Gutters','Vents'].forEach(t=>{ const l=document.createElement('label'); l.className='off'; l.innerHTML=`<input type="checkbox" disabled> ${t}`; dc.appendChild(l); });
+  document.getElementById('patternNote').innerHTML=r.patternNote; const wb=document.querySelector('#topcoat button[data-v=white]'); wb.disabled=!!r.noWhite; wb.style.opacity=r.noWhite?.4:1; if(r.noWhite&&S.topcoat==='white'){ S.topcoat='thane'; [...document.getElementById('topcoat').children].forEach(x=>x.classList.toggle('on',x.dataset.v==='thane')); } document.getElementById('condLabel').textContent=r.condLabel; document.getElementById('subTitle').textContent=`${b.label} · ${r.label}`;
+  const dc=document.getElementById('detailChecks'); dc.innerHTML=''; b.details.forEach(k=>{ const l=document.createElement('label'); l.innerHTML=`<input type="checkbox" ${S.on[k]?'checked':''}> ${DET(k).menu}`; l.querySelector('input').onchange=ev=>{ S.on[k]=ev.target.checked; if(!S.on[k]&&S.view===k) goRoof(false); renderEstimate(); }; dc.appendChild(l); });
+  ['Penetrations','Skylights','Gutters','Vents'].filter(t=>!b.details.some(k=>DETAILS[k].menu.toLowerCase().includes(t.toLowerCase().slice(0,5)))).forEach(t=>{ const l=document.createElement('label'); l.className='off'; l.innerHTML=`<input type="checkbox" disabled> ${t}`; dc.appendChild(l); });
   buildStageBar(); }
 
-function estimate(){ const r=ROOFS[S.roof], A=S.sqft, sq=A/100; let flexSq, treated; const on=k=>S.on[k]?1:0;
-  if(r.pattern==='seam'){ const lap=(A/3)*0.5/100, endl=(A/40)*1.0/100, fast=(A/7.5)*0.2/100; flexSq=lap+endl+fast; treated=flexSq*100+on('curb')*60; }
+function estimate(){ const r=ROOFS[S.roof]; const bx=BUILDINGS[S.building]; let A=S.sqft; if(bx.extraSqFt) Object.entries(bx.extraSqFt).forEach(([k,v])=>{ if(S.on[k]) A+=v; }); const sq=A/100; let flexSq, treated; const on=k=>S.on[k]?1:0;
+  if(r.pattern==='seam'){ const lap=(A/(r.surface==='sseam'?2:3))*0.5/100, endl=(A/40)*1.0/100, fast=(A/7.5)*0.2/100; flexSq=lap+endl+fast; treated=flexSq*100+on('curb')*60; }
   else { flexSq=sq*1.06; treated=A*1.06; }   // +6% for parapet walls, curbs and sumps (ASSUMED)
-  const detailGal = on('curb')*2 + on('rtu')*3*2 + on('drain')*4*0.5 + on('scupper')*2*0.5 + (S.solar?24*0.25:0);
+  const detailGal = on('curb')*2 + on('rtu')*3*2 + on('drain')*4*0.5 + on('scupper')*2*0.5 + on('pipe')*7*0.3 + on('skylight')*5*1.5 + on('wall')*3 + on('penthouse')*4 + on('edge')*3 + on('sleeper')*10*0.3 + on('mskylight')*6*1.2 + on('vent')*3*1 + on('mpipe')*3*0.3 + on('pitchpan')*3*1.5 + on('ej')*6 + on('gutter')*44*0.15 + on('gutterinlet')*10*0.4 + on('hatch')*1.5 + on('support')*6*0.5 + on('exhaust')*2*1.5 + (S.solar?24*0.25:0);
   const flexGal=flexSq*r.rates.flexGalPerSq+detailGal, primerGal=treated/r.rates.primerSqFtPerGal, topGal=sq*r.rates.topGalPerSq;
   return { primerGal, flexGal, topGal, system:r.system[S.topcoat] }; }
-function renderEstimate(){ const e=estimate(), r=ROOFS[S.roof]; const f=n=>n<10?n.toFixed(1):Math.round(n).toLocaleString(); const where=r.pattern==='seam'?'seams, laps, fasteners, curb':'full field + details';
+function renderEstimate(){ const e=estimate(), r=ROOFS[S.roof]; const f=n=>n<10?n.toFixed(1):Math.round(n).toLocaleString(); const where=r.pattern==='seam'?'seams, laps, fasteners, curb':(BUILDINGS[S.building].extraSqFt&&S.on.silowall?'deck + silo walls + details':'full field + details');
   document.getElementById('estTable').innerHTML=`<tr><td>RMI system</td><td>${e.system}</td></tr><tr><td>RMI primer</td><td>${f(e.primerGal)} gal</td></tr><tr><td>RMI-Flex (${where})</td><td>${f(e.flexGal)} gal</td></tr><tr><td>${S.topcoat==='white'?'RMI-White Plus':'RMI-Thane'} (full field)</td><td>${f(e.topGal)} gal</td></tr>`; }
 
 document.getElementById('emailBtn').onclick=()=>{ const e=estimate(), b=BUILDINGS[S.building], r=ROOFS[S.roof];
   const payload={ source:'visualize-your-roof', building:b.label, roof:`${r.label} (Plate ${r.plate})`, rmi_system:e.system, existing_condition:{[r.condLabel]:S.cond},
-    details:b.details.filter(k=>S.on[k]).map(k=>`${DETAILS[k].menu} (${DETAILS[k].drawing})`).concat(S.solar?['Solar Post supports (P-1-S-TYP)']:[]), topcoat:S.topcoat==='white'?'RMI-White Plus':'RMI-Thane', roof_sqft:S.sqft,
+    details:b.details.filter(k=>S.on[k]).map(k=>`${DET(k).menu} (${DET(k).drawing})`).concat(S.solar?['Solar Post supports (P-1-S-TYP)']:[]), topcoat:S.topcoat==='white'?'RMI-White Plus':'RMI-Thane', roof_sqft:S.sqft,
     material_estimate_gal:{primer:+e.primerGal.toFixed(1),flex:+e.flexGal.toFixed(1),topcoat:+e.topGal.toFixed(1),basis:'spec-plate coverage rates; detail allowances ASSUMED; no pricing'},
     project_evaluation_prefill:{ existing_roof_system:r.label, detail_drawings_checked:b.details.filter(k=>S.on[k]).map(k=>DETAILS[k].menu.toUpperCase()).concat(S.solar?['SOLAR']:[]) }, contact:{name:'',email:'',phone:''} };
   document.getElementById('payload').textContent=JSON.stringify(payload,null,2); document.getElementById('modal').classList.add('show'); };
@@ -564,7 +1105,7 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize()
   if(S.prog<1){ S.prog=Math.min(1,S.prog+dt/DUR[S.stage]); renderStageUI(); if(S.view!=='roof') renderLayers(); }
   else if(S.playing){ if(S.stage<stagesOf().length-1) setStage(S.stage+1,true); else { S.playing=false; renderStageUI(); } }
   if(camT<1) camT=Math.min(1,camT+dt/1.1);
-  applyCam(); applyStage(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
+  applyCam(); applyStage(); applySection(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
 
 selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame);
 window.__rmi={ S, setStage, goDetail, goRoof, selectBuilding, finishCam:()=>{ camT=1; } };
