@@ -336,7 +336,7 @@ const DETAILS = {
     src:'Assembly per D-4-TYP and D4-1-FT-3D — VERIFIED, including the 12" field extent. Notes: water-test before and after; plastic/ABS scuppers excluded from warranty; exterior termination must be watertight to the building.' },
   wall:   { name:'Wall tie-in, reglet counterflashing', drawing:'W-11-TYP', concept:'W13-FT-26-3D', dist:12, phi:1.15, theta:0.95, drop:1.2, menu:'Wall tie-in',
     layers:[{k:'existing',label:'(E) wall flashing up to a Fry-type reglet with counterflashing; voids fastened with term bar + sealant 12" o.c.',color:'#C9C9C2'},{k:'primer',label:'Rake out (E) sealant at the reglet, new continuous bead; counterflashing removed; clean and prime',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the (E) wall flashing and term bar, extending up to the reglet receiver',color:'#D9A21B'},{k:'thane',label:'Topcoat encapsulates the Flex; counterflashing reset (optionally coated too)',color:'#C3C7CC'}],
-    src:'Assembly per W-11-TYP and W13-FT-26-3D — VERIFIED: Flex runs the full height of the (E) flashing to the reglet, not a fixed band. Flashing height itself varies by wall (24" here, ASSUMED). Note 7: applies to Fry-type reglets; do not damage the receiver.' },
+    src:'Assembly per W-11-TYP and W13-FT-26-3D — VERIFIED: Flex runs the full height of the (E) flashing and on up the wall to the reglet receiver, not a fixed band; term bar fastened 12" o.c.; counterflashing removed and reset. Flashing height varies by wall (24" here, ASSUMED), as are the reglet height, cant, counterflashing lap and coat extents. Note 7: applies to Fry-type reglets; do not damage the receiver.' },
   pipe:   { name:'Soil stack / pipe penetration', drawing:'P-6-TYP', concept:'P3SP-11-FT-3D', dist:8, phi:1.05, theta:0.7, drop:1.8, menu:'Pipes / soil stacks',
     layers:[{k:'existing',label:'(E) stack with lead flashing up the pipe and folded into the top; ill-fitting lead replaced',color:'#C9C9C2'},{k:'primer',label:'Sealant bead at the base; clean and prime lead and field',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the lead from the field to the top and extends inside the stack',color:'#D9A21B'},{k:'thane',label:'Topcoat over the Flex and past it into the stack',color:'#C3C7CC'}],
     src:'Assembly per P-6-TYP and P3SP-11-FT-3D — VERIFIED (lead up the stack and turned into the bore, sealant bead at the base, Flex encapsulates the lead and extends inside the stack, topcoat past the Flex). The drawing is not to scale and gives no dimensions: the 4" stack, 24" height, 14" lead flange, Flex 6" past the flange and 6" down the bore, topcoat 1" past the Flex are all ASSUMED. Note 7: applies equally to conduit, HVAC and refrigeration penetrations.' },
@@ -416,6 +416,7 @@ const clipGravel = new THREE.Plane(new THREE.Vector3(1,0,0), 1000);   // gravel 
 const M = {
   wall:   new THREE.MeshStandardMaterial({color:0xD6D1C6, roughness:.92}),
   wallB:  new THREE.MeshStandardMaterial({color:0x5F6B78, roughness:.9}),
+  wood:   new THREE.MeshStandardMaterial({color:0x8C6B45, roughness:.9}),   // cant strips
   panel:  new THREE.MeshStandardMaterial({color:0x9BA09B, roughness:.72, metalness:.22}),
   rib:    new THREE.MeshStandardMaterial({color:0x8F9490, roughness:.66, metalness:.28}),
   ridge:  new THREE.MeshStandardMaterial({color:0x8C918E, roughness:.6, metalness:.3}),
@@ -485,12 +486,12 @@ let B = null;   // the current built building: { extent, hots, applyStage(p) }
    <layer>__<part> with layer in existing|primer|flex|topcoat. Metres → feet.
    If a file fails to load, the code-drawn geometry stays; nothing breaks.
 ================================================================= */
-const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb', coping:'models/metal-coping-joint-W-1-TYP.glb' };
+const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb', coping:'models/metal-coping-joint-W-1-TYP.glb', wall:'models/reglet-counterflashing-W-11-TYP.glb' };
 const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=null;
 function loadModel(file){ if(modelCache[file]) return modelCache[file];
   modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
 const LAYER_CLIP={primer:clipPrim,flex:clipFlex,topcoat:clipTop};
-function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); if(!['existing','primer','flex','topcoat'].includes(layer)){ o.visible=false; o.userData.helper=true; return; } o.castShadow=o.receiveShadow=true; o.userData.layer=layer; o.userData.tape=/__tape/.test(o.name);
+function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); if(!['existing','primer','flex','topcoat'].includes(layer)){ o.visible=false; o.userData.helper=true; return; } o.castShadow=o.receiveShadow=true; o.userData.layer=layer; o.userData.tape=/__tape/.test(o.name); o.userData.reset=/__counterflashing/.test(o.name);
     const m=o.material.clone(); m.side=THREE.DoubleSide; if(LAYER_CLIP[layer]&&!o.userData.tape){ m.clippingPlanes=[LAYER_CLIP[layer]]; m.clipShadows=true; }   // tape is prep work: shown from the prep stage, never swept if(layer==='primer'){ m.transparent=true; m.opacity=.75; }
     if(layer==='topcoat'){ m.envMapIntensity=1.2; o.userData.topcoat=true; } o.material=m; if(/existing__unit/.test(o.name)) o.userData.lift=true; }); }
 // Place a model instance under `parent` at (x,z), hiding `fallback` (the code-drawn group) once it arrives.
@@ -501,7 +502,7 @@ function mountModel(id,parent,x,z,rotY,fallback,skins){ const file=MODELS[id]; i
     .catch(e=>{ console.warn('model not loaded, keeping code geometry:',file,e.message); });
   return holder; }
 function applyModels(p,seat){ const white=S.topcoat==='white';
-  modelInstances.forEach(h=>{ if(!h.parent) return; h.traverse(o=>{ if(!o.isMesh||o.userData.helper) return; const L=o.userData.layer;
+  modelInstances.forEach(h=>{ if(!h.parent) return; h.traverse(o=>{ if(!o.isMesh||o.userData.helper) return; const L=o.userData.layer; if(o.userData.reset){ o.visible = p.prep<0.5 || p.thane>0; return; }
     if(L==='primer') o.visible= o.userData.tape ? p.prep>=0.5 : p.primer>0; else if(L==='flex') o.visible=p.flex>0; else if(L==='topcoat'){ o.visible=p.thane>0; o.material.color.set(white?0xF4F3EE:0xDCE0E4); o.material.metalness=white?0.04:0.38; o.material.roughness=white?0.62:0.3; }
     if(o.userData.lift){ if(o.userData.y0===undefined) o.userData.y0=o.position.y; o.position.y=o.userData.y0-(seat?6*0.0254:0); } }); }); }
 
@@ -800,19 +801,37 @@ function addScupper(b,x){ const g=new THREE.Group(); g.position.set(x,0,-b.W/2+b
   return g; }
 // Reglet counterflashing at wall per W-11-TYP: (E) wall flashing (base flashing) up the wall to a Fry-type reglet; term bar + sealant 12" o.c. where voids;
 // Flex encapsulates the (E) flashing and extends to the reglet receiver; topcoat encapsulates the Flex; counterflashing removed/reset, sealant bead at the reglet raked and renewed.
-function addWallTie(b,side,len,center){ const g=new THREE.Group(); b.roof.add(g); const isX=side==='W'||side==='E'; const sgn=(side==='W'||side==='N')?-1:1; const off=isX?b.IL/2:b.IW/2; const FH=2.0;   // base flashing / reglet height (ft) — ASSUMED
-  const place=(m,h,t)=>{ if(isX){ m.position.set(sgn*(off-t),h,center); m.scale.set(1,1,len); } else { m.position.set(center,h,sgn*(off-t)); m.scale.set(len,1,1); } g.add(m); return m; };
-  const geo=(w,h)=>new THREE.BoxGeometry(isX?w:1,h,isX?1:w);
-  place(new THREE.Mesh(geo(0.5,0.5),M.wallB),0.25,0.25);                                   // cant strip
-  place(new THREE.Mesh(geo(0.04,FH),M.unitD),FH/2,0.05);                                     // (E) wall flashing up to the reglet
-  const tb=place(new THREE.Mesh(geo(0.08,0.12),M.coping),FH-0.12,0.09);                        // termination bar
-  for(let t=-len/2+0.5;t<len/2;t+=1){ const sc=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,0.06,8),M.fast); if(isX){ sc.rotation.z=Math.PI/2; sc.position.set(sgn*(off-0.13),FH-0.12,center+t);} else { sc.rotation.x=Math.PI/2; sc.position.set(center+t,FH-0.12,sgn*(off-0.13)); } g.add(sc); }   // fasteners 12" o.c.
-  place(new THREE.Mesh(geo(0.05,FH+0.02),M.primerOv),FH/2,0.11);
-  place(new THREE.Mesh(geo(0.05,FH+0.02),M.flexOv),FH/2+0.005,0.16);                          // Flex to the reglet receiver
-  place(new THREE.Mesh(geo(0.05,FH+0.04),M.topcoat),FH/2+0.01,0.21);
-  place(new THREE.Mesh(geo(0.06,0.08),M.joint),FH+0.12,0.0);                                  // reglet groove in the wall
-  place(new THREE.Mesh(geo(0.05,0.06),M.unitD),FH+0.19,0.06);                                 // renewed sealant bead
-  place(new THREE.Mesh(geo(0.06,0.55),M.coping),FH-0.12,0.3);                                 // counterflashing hung from the reglet, over the flashing
+// Wall tie-in per W-11-TYP: (E) base flashing over a cant up to a Fry-type reglet; term bar + sealant 12" o.c. where voids;
+// counterflashing removed at prep and reset with the topcoat; Flex encapsulates the flashing and runs on up the bare wall
+// TO THE REGLET RECEIVER (VERIFIED — not a fixed band); topcoat encapsulates the Flex. The cross-section below is the same one
+// scripts/build_reglet_counterflashing_W-11-TYP.py builds, from the same numbers, so the model splices in without a seam.
+// Sizes are ASSUMED except the 12" screw spacing. `gap` = {at} splices the 4-ft model into the run at that position along the wall.
+const WT={ FH:24, REG:26, CANT:6, T:0.1875, FOOT:10, BAR_H:1, BAR_T:0.125, BAR_TOP:23.5, SCREW_R:0.1875, SCREW_H:0.125, GROOVE_H:0.75, LIP_H:0.75,
+  CF_STAND:1, CF_KNEE:24.5, CF_BOT:20, HEM:0.5, BEAD:0.1875, COAT:0.04, MT:0.04, FIELD:{primer:12,flex:12,topcoat:13} };   // inches
+function addWallTie(b,side,len,center,gap){ const g=new THREE.Group(); b.roof.add(g); const isX=side==='W'||side==='E'; const sgn=(side==='W'||side==='N')?-1:1;
+  const off=(isX?b.IL/2:b.IW/2)+b.PT;   // the true wall face: makeBlock insets the field by PT even on a skipped side, so the abutting wall stands PT beyond it
+  const IN=1/12, W=WT; b.resetParts=b.resetParts||[];
+  // run-local frame like the coping: x along the wall, -z toward the roof, y up; one group per segment, placed on the wall face
+  const runAt=(x0,x1)=>{ const r=new THREE.Group(); const c=(x0+x1)/2; if(isX){ r.position.set(sgn*off,0,center+c); r.rotation.y=sgn<0?-Math.PI/2:Math.PI/2; } else { r.position.set(center+c,0,sgn*off); r.rotation.y=sgn<0?Math.PI:0; } g.add(r); r.userData.len=x1-x0; return r; };
+  const slab=(r,y0,y1,z0,z1,mat,tag)=>{ const m=box(r.userData.len,(z1-z0)*IN,(y1-y0)*IN,mat,0,(z0+z1)/2*IN,-(y0+y1)/2*IN,false); r.add(m); if(tag) b.resetParts.push(m); return m; };   // y = from the wall (toward the roof = local -z), z = height
+  const tilt=(r,p,q,t,mat,tag)=>{ const [y0,z0]=p,[y1,z1]=q; const ln=Math.hypot(y1-y0,z1-z0); const m=box(r.userData.len,t*IN,ln*IN,mat,0,(z0+z1)/2*IN,-(y0+y1)/2*IN,false); m.rotation.x=-Math.atan2(z1-z0,-(y1-y0)); r.add(m); if(tag) b.resetParts.push(m); return m; };   // from-wall is local -z
+  const seg=(x0,x1)=>{ const r=runAt(x0,x1);
+    const cant=new THREE.Shape(); cant.moveTo(0,0); cant.lineTo(W.CANT*IN,0); cant.lineTo(0,W.CANT*IN); cant.closePath();   // CCW; rotateY(90) sends shape-x to local -z, toward the roof
+    const cg=new THREE.ExtrudeGeometry(cant,{depth:r.userData.len,bevelEnabled:false}); cg.rotateY(Math.PI/2); cg.translate(-r.userData.len/2,0,0); const cm=new THREE.Mesh(cg,M.wood); r.add(cm);
+    slab(r,W.CANT,W.FOOT,0,W.T,M.modbit); tilt(r,[W.CANT,W.T/2],[0,W.CANT+W.T/2],W.T,M.modbit); slab(r,0,W.T,W.CANT,W.FH,M.modbit);          // (E) flashing: foot, over the cant, up the wall
+    slab(r,W.T,W.T+W.BAR_T,W.BAR_TOP-W.BAR_H,W.BAR_TOP,M.coping);                                                                         // term bar
+    for(let x=-r.userData.len/2+0.5;x<r.userData.len/2;x+=1){ const sc=new THREE.Mesh(new THREE.CylinderGeometry(W.SCREW_R*IN,W.SCREW_R*IN,W.SCREW_H*IN,8),M.fast); sc.rotation.x=Math.PI/2; sc.position.set(x,(W.BAR_TOP-W.BAR_H/2)*IN,-(W.T+W.BAR_T+W.SCREW_H/2)*IN); r.add(sc); }   // 12" o.c.
+    slab(r,-0.05,0.05,W.REG,W.REG+W.GROOVE_H,M.joint); slab(r,0,W.MT,W.REG-W.LIP_H,W.REG,M.coping);                                        // reglet groove + receiver lip
+    tilt(r,[W.MT/2,W.REG-W.LIP_H],[W.CF_STAND,W.CF_KNEE],W.MT,M.coping,true); slab(r,W.CF_STAND,W.CF_STAND+W.MT,W.CF_BOT,W.CF_KNEE,M.coping,true); tilt(r,[W.CF_STAND,W.CF_BOT],[W.CF_STAND+W.HEM,W.CF_BOT-W.HEM*0.6],W.MT,M.coping,true);   // counterflashing (removed/reset)
+    slab(r,0,W.BEAD*1.6,W.REG+W.GROOVE_H*0.25,W.REG+W.GROOVE_H*0.25+W.BEAD*1.6,M.unitD); slab(r,W.T,W.T+W.BAR_T+W.BEAD,W.BAR_TOP,W.BAR_TOP+W.BEAD,M.unitD);   // new sealant: reglet, term bar
+    [[M.primerOv,1,'primer'],[M.flexOv,2,'flex'],[M.topcoat,3,'topcoat']].forEach(([mat,i,k])=>{ const d0=(i-1)*W.COAT, d1=i*W.COAT;   // coats: field foot, cant, flashing, over the bar, up to the reglet receiver
+      slab(r,W.FOOT+d0,W.FIELD[k],W.T+d0,W.T+d1,mat); slab(r,W.CANT,W.FOOT+d1,W.T+d0,W.T+d1,mat); tilt(r,[W.CANT+d0*0.7,W.T+d0*0.7],[d0*0.7,W.CANT+W.T+d0*0.7],W.COAT,mat);
+      slab(r,W.T+d0,W.T+d1,W.CANT,W.BAR_TOP-W.BAR_H-d1,mat); slab(r,W.T,W.T+W.BAR_T+d1,W.BAR_TOP-W.BAR_H-d1,W.BAR_TOP+d1,mat); slab(r,d0,W.T+W.BAR_T+d1,W.BAR_TOP+d0,W.FH+d1,mat); slab(r,d0,d1,W.FH,W.REG-W.LIP_H,mat); });
+    return r; };
+  // the field stops PT short of the wall: carry the membrane and the three sweep sheets across that strip so the tie-in sits on roof, not on bare block
+  const fill=runAt(-len/2,len/2); fill.add(box(len,0.01,b.PT+0.05,b.fieldPlanes[0].material,0,-0.005,-(b.PT/2),false)); [[M.primerOv,0.05],[M.flexOv,0.08],[M.topcoat,0.11]].forEach(([mat,dy])=>{ fill.add(box(len,0.02,b.PT+0.05,mat,0,dy,-(b.PT/2),false)); });   // membrane flush with the field plane so the flashing foot sits on it
+  const segs = gap ? [[-len/2,gap.at-1.998],[gap.at+1.998,len/2]] : [[-len/2,len/2]]; segs.forEach(([x0,x1])=>seg(x0,x1));   // run over-laps 0.6 mm into the model (flush): the coplanar strip is sub-pixel, and there is no slit and no exposed end-face
+  if(gap){ const fb=seg(gap.at-2,gap.at+2); const r=runAt(gap.at-2,gap.at+2); mountModel('wall',r,0,0,0,fb,{primer:M.primerOv,flex:M.flexOv,flashing:M.modbit,cant:M.wood,term_bar:M.coping,reglet_lip:M.coping,reglet_groove:M.joint,screw:M.fast,counterflashing:M.coping}); }   // model's +y (toward the roof) lands on local -z; skinned to the run's materials so the seams vanish; code stand-in until it loads
   return g; }
 function addPenthouse(b,x,z,PL,PW,PHt){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
   g.add(box(PL,PHt,PW,M.wall,0,PHt/2,0)); g.add(box(PL+0.6,0.4,PW+0.6,M.coping,0,PHt+0.15,0)); g.add(box(3,7,0.2,M.unitD,PL/4,3.5,PW/2+0.12,false));
@@ -845,7 +864,7 @@ function addExpansionJoint(b,x,z0,z1){ const g=new THREE.Group(); g.position.set
   [-0.9,0.9].forEach(ox=>{ g.add(box(0.7,1.0,len,M.wallB,ox,0.5,0)); g.add(box(0.76,0.95,len,M.primerOv,ox,0.5,0,false)); g.add(box(0.82,0.9,len,M.flexOv,ox,0.45,0,false)); g.add(box(0.88,0.9,len,M.topcoat,ox,0.45,0,false)); });
   g.add(box(2.6,0.14,len,M.ejCover,0,1.07,0)); g.add(box(3.6,0.06,len,M.flexOv,0,0.09,0,false)); g.add(box(3.8,0.06,len,M.topcoat,0,0.12,0,false)); return g; }
 function sweepFor(p,x0,x1){ const f=q=>x0-6+(x1-x0+12)*q; clipPrim.constant=f(p.primer); clipFlex.constant=f(p.flex); clipTop.constant=f(p.thane); }
-function condFor(b,p){ if(b.tapeList) b.tapeList.forEach(t=>t.visible = p.prep>=0.5); if(ROOFS[S.roof].plate==='MA'&&!b._noGravelClip){ const x0=(B&&B.gravelSpan?B.gravelSpan[0]:b.x-b.IL/2)-4, x1=(B&&B.gravelSpan?B.gravelSpan[1]:b.x+b.IL/2)+4; clipGravel.constant = -( x0 + (x1-x0)*p.prep ); } M.blister.opacity=S.cond?0.9*(1-p.primer):0; M.stain.opacity=S.cond?0.5*(1-p.prep):0; M.granLoss.opacity=S.cond?0.8*(1-p.prep):0; M.crack.opacity=S.cond?0.9*(1-p.prep):0; const MA=ROOFS[S.roof].plate==='MA'; b.stains.visible=S.cond&&p.prep<1; b.fails.visible=S.cond&&(MA?p.primer<1:p.prep<1); b.patches.visible=S.cond&&p.prep>0.3&&p.flex<1; }
+function condFor(b,p){ if(b.tapeList) b.tapeList.forEach(t=>t.visible = p.prep>=0.5); if(b.resetParts) b.resetParts.forEach(m=>m.visible = p.prep<0.5 || p.thane>0); /* counterflashing: removed at prep, reset with the topcoat */ if(ROOFS[S.roof].plate==='MA'&&!b._noGravelClip){ const x0=(B&&B.gravelSpan?B.gravelSpan[0]:b.x-b.IL/2)-4, x1=(B&&B.gravelSpan?B.gravelSpan[1]:b.x+b.IL/2)+4; clipGravel.constant = -( x0 + (x1-x0)*p.prep ); } M.blister.opacity=S.cond?0.9*(1-p.primer):0; M.stain.opacity=S.cond?0.5*(1-p.prep):0; M.granLoss.opacity=S.cond?0.8*(1-p.prep):0; M.crack.opacity=S.cond?0.9*(1-p.prep):0; const MA=ROOFS[S.roof].plate==='MA'; b.stains.visible=S.cond&&p.prep<1; b.fails.visible=S.cond&&(MA?p.primer<1:p.prep<1); b.patches.visible=S.cond&&p.prep>0.3&&p.flex<1; }
 
 /* -----------------------------------------------------------------
    BIG-BOX RETAIL (flat)
@@ -874,7 +893,7 @@ function buildSchool(){
   const cls=makeBlock({L:220,W:70,H:14,PH:1.5,x:0,z:0,skip:['W']});
   const gym=makeBlock({L:90,W:110,H:28,PH:2.5,x:-155,z:0});
   gym.g.add(box(0.4,10,50,M.unitD,45.25,7,20,false));   // entry glazing on the gym's east face, below the classroom roof line
-  const wall=addWallTie(cls,'W',cls.IW,0);
+  const wall=addWallTie(cls,'W',cls.IW,0,{at:-10});   // W-11-TYP model at the wall hotspot
   const drainPos=[[-60,-15],[30,15],[90,-15]]; drainPos.forEach(([x,z])=>addStain(cls,x,z)); addStain(gym,10,-20);
   const drains=new THREE.Group(); cls.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(cls,x,z))); const gd=[[-25,30],[25,-30]]; gd.forEach(([x,z])=>drains.add(addDrain(gym,x,z)));
   const rtuPos=[[-20,12],[60,-12]]; const rtus=new THREE.Group(); cls.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(cls,x,z,7,1.4))); rtus.add(addRTU(gym,0,15,12,1.8));
@@ -883,7 +902,7 @@ function buildSchool(){
   const solar=makeSolar(gym.roof,[-30,-15,0,15,30],[-40,-10]); solar.visible=false;
   const H=cls.H, GH=gym.H;
   const hots=[
-    {id:'wall', anchor:()=> new THREE.Vector3(-cls.IL/2,H+2.6,-10), show:()=>S.on.wall},
+    {id:'wall', anchor:()=> new THREE.Vector3(-cls.IL/2-cls.PT,H+2.6,-10), show:()=>S.on.wall},
     {id:'pipe', anchor:()=> new THREE.Vector3(pipePos[3][0],H+3.6,pipePos[3][1]), show:()=>S.on.pipe},
     {id:'skylight', anchor:()=> new THREE.Vector3(skyPos[3][0],H+2.8,skyPos[3][1]), show:()=>S.on.skylight},
     {id:'drain', anchor:()=> new THREE.Vector3(drainPos[2][0],H+1.2,drainPos[2][1]), show:()=>S.on.drain},

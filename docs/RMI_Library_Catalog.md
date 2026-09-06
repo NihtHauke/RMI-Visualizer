@@ -145,7 +145,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | Metal coping reset / fixed | W-3-TYP, W-4/5/6-TYP | W1-2-20-3D | All flat systems |
 | Concrete wall / block wall / concrete cap | W-7, W-8, W-9-TYP | — | Concrete, CMU (not brick) |
 | Wall-mounted conduit | W-10-TYP | — | All flat systems |
-| Reglet counterflashing | W-11-TYP | W13-FT-26-3D + 4 variants | All flat systems; 3D notes include metal |
+| Reglet counterflashing — **model** `models/reglet-counterflashing-W-11-TYP.glb` (`scripts/build_reglet_counterflashing_W-11-TYP.py`), a 4-ft section spliced into the school's gym-wall tie-in. Assembly VERIFIED (Flex to the reglet receiver, term bar 12" o.c., counterflashing removed/reset); flashing height 24" and all other sizes ASSUMED | W-11-TYP | W13-FT-26-3D + 4 variants | All flat systems; 3D notes include metal |
 | Surface / fixed counterflashing | W-12, W-13, W-14-TYP | W-11-24-FT-3D + 4 variants | All flat systems |
 | Stucco weep screed | W-15, W-16-TYP | — | Stucco walls |
 | Perimeter edge metal | F-1-TYP | F1-34-FT-3D, F1-FT-8-3D + 4 variants | All flat systems |
@@ -196,6 +196,7 @@ Still ASSUMED (no document in the library):
 - Building-type ↔ roof-type pairing (which roof types to offer for "school" vs "warehouse"). Not an RMI question; I'll draft from public building-stock data and tag it.
 - Roof hatch detail — no drawing in the library; treated as a fixed curb until RMI says otherwise.
 - **W-1-TYP coping: is the whole coping primed** when the topcoat covers the entire coping under the system warranty? The tool primes only the 8" Flex band at each joint (matching the drawing's band logic) but topcoats the whole run.
+- **W-11-TYP wall flashing height.** The drawing runs Flex the full height of the (E) base flashing to the reglet but does not dimension the flashing. The tool uses 24" (reglet 2" above it, counterflashing lapping 4"). If RMI has a typical height or a range, the model and the code run both take it from one constant.
 - **P-6-TYP soil stack dimensions.** The drawing is not to scale and carries no dimensions. The model uses a 4" stack 24" above the roof, 1/16" lead with a 14" base flange turned 1" into the bore, a 3/8" sealant bead, Flex 6" past the flange and 6" down the bore, topcoat 1" past the Flex. All in `scripts/build_lead_soil_stack_P-6-TYP.py` as named constants — correct any of them and rebuild.
 - Per-detail Flex allowance for the material takeoff on metal roofs (how many gallons a curb or a run of side lap consumes). Plates give field rates only.
 
