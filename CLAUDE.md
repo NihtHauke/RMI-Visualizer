@@ -13,11 +13,17 @@ Embedded on Webflow staging at https://roofrmi-update.webflow.io/visualize-your-
 ## Hard rules
 - Commercial buildings only. No residential types.
 - **No pricing anywhere.** The tool outputs a configuration and a material-quantity estimate; dollars come from an RMI rep.
-- Every visual traces to an RMI document: spec plates for field application, detail drawings (2D logic + 3D concept) for assemblies.
-  Anything not in a document is tagged **ASSUMED** in the UI text; a source document always overrides an assumption.
+- Every **detail** visual traces to an RMI document: spec plates for field application patterns and rates, 2D detail drawings for assemblies.
+  Building shells (footprint, height, parapet, penthouse, where the RTUs sit) have no RMI drawings — they are generic commercial archetypes
+  and are not claimed as RMI spec.
+  **The 2D drawing and its notes are the source of truth.** The 3D concept renders in the library were RMI's own attempt to visualize the
+  2D logic in three dimensions — treat them as a helpful reference, not as authority. If a more realistic way of showing the assembly
+  keeps faith with the 2D drawing's logic, sequence and extents, build it that way.
+  Anything not stated in a document (a wrap height, a flange width, an order of operations) is tagged **ASSUMED** in the UI text and the
+  catalog so RMI can fill the gap; a source document always overrides an assumption.
 - Never present an ASSUMED sequence as RMI spec in customer-facing text.
 - Chemistry / formulation data never enters this repo. Product performance data (rates, mils, warranties) is fine.
-- Drawings and plates in `docs/` are RMI's; the tool depicts generic archetypes, never a real client building.
+- The repo is public (GitHub Pages). No RMI PDFs, no chemistry, no client names in it. The tool depicts generic archetypes, never a real client building.
 
 ## Current state (Sept 2026)
 - 11 building types: warehouse, big-box retail, school, office, manufacturing, hospital, arena/gym,
@@ -53,7 +59,10 @@ Embedded on Webflow staging at https://roofrmi-update.webflow.io/visualize-your-
 
 ## The working loop (Claude Code)
 For every detail or code change, in this order:
-1. Read the drawing(s) for the detail in `docs/` (2D logic + 3D concept). Write down the dimensions the drawing gives; anything it doesn't give is ASSUMED.
+1. Read the drawing(s) for the detail (2D logic + 3D concept). **Drawings and plates are NOT in the repo** — the repo is public. Read them from the local library:
+   `C:\Users\hcarr\OneDrive\Documents\Claude\Projects\2024 Master RMI Library\`
+   (2D details under `2024 Detail Drawings\...`, 3D renders under `2024 3D Details\...`, plates under `2024 Specifications\2024 Master Specification Plates\`; `docs/RMI_Library_Catalog.md` maps every detail to its drawing numbers). Never copy PDFs into the repo.
+   Write down the dimensions the drawing gives; anything it doesn't give is ASSUMED.
 2. Write `scripts/build_<detail>_<DRAWING-NO>.py` using `scripts/rmi_blender.py` (see its docstring). Dimensions as named constants at the top with the note they came from.
    Run it headless: `blender -b --python scripts/build_<...>.py` (Blender is at `C:\Program Files\Blender Foundation\Blender 5.1\blender.exe`). Never open .blend files from inside a running Blender session via script — it crashes.
 3. Register the model in `index.html` (`MODELS` map) and give it a mount point + cutout sizes in the builder (see `addDrain` / `addRTU`). The coating cutout must sit just INSIDE the model's own Flex extent; the membrane cutout just inside the model's roof patch.
