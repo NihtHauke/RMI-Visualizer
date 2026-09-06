@@ -191,6 +191,7 @@
 </div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
 (function(){
 'use strict';
@@ -479,6 +480,30 @@ function disposeGroup(g){ g.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }
 
 let B = null;   // the current built building: { extent, hots, applyStage(p) }
 
+/* =================================================================
+   MODELS — Blender-built details (glTF). One file per detail, objects named
+   <layer>__<part> with layer in existing|primer|flex|topcoat. Metres → feet.
+   If a file fails to load, the code-drawn geometry stays; nothing breaks.
+================================================================= */
+const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb' };
+const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=null;
+function loadModel(file){ if(modelCache[file]) return modelCache[file];
+  modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
+const LAYER_CLIP={primer:clipPrim,flex:clipFlex,topcoat:clipTop};
+function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); o.castShadow=o.receiveShadow=true; o.userData.layer=layer;
+    const m=o.material.clone(); m.side=THREE.DoubleSide; if(LAYER_CLIP[layer]){ m.clippingPlanes=[LAYER_CLIP[layer]]; m.clipShadows=true; } if(layer==='primer'){ m.transparent=true; m.opacity=.75; }
+    if(layer==='topcoat'){ m.envMapIntensity=1.2; o.userData.topcoat=true; } o.material=m; if(/existing__unit/.test(o.name)) o.userData.lift=true; }); }
+// Place a model instance under `parent` at (x,z), hiding `fallback` (the code-drawn group) once it arrives.
+function mountModel(id,parent,x,z,rotY,fallback){ const file=MODELS[id]; if(!file) return null; const holder=new THREE.Group(); holder.position.set(x,0,z); holder.rotation.y=rotY||0; parent.add(holder);
+  loadModel(file).then(scene=>{ const inst=scene.clone(true); prepModel(inst); inst.scale.setScalar(M2FT); holder.add(inst); if(fallback) fallback.visible=false; holder.userData.loaded=true; modelInstances.push(holder); })
+    .catch(e=>{ console.warn('model not loaded, keeping code geometry:',file,e.message); });
+  return holder; }
+function applyModels(p,seat){ const white=S.topcoat==='white';
+  modelInstances.forEach(h=>{ if(!h.parent) return; h.traverse(o=>{ if(!o.isMesh) return; const L=o.userData.layer;
+    if(L==='primer') o.visible=p.primer>0; else if(L==='flex') o.visible=p.flex>0; else if(L==='topcoat'){ o.visible=p.thane>0; o.material.color.set(white?0xF4F3EE:0xDCE0E4); o.material.metalness=white?0.04:0.38; o.material.roughness=white?0.62:0.3; }
+    if(o.userData.lift){ if(o.userData.y0===undefined) o.userData.y0=o.position.y; o.position.y=o.userData.y0-(seat?6*0.0254:0); } }); }); }
+
+
 /* -----------------------------------------------------------------
    GABLE METAL / SPF BUILDER (warehouse, manufacturing)
    surface: rpanel (exposed fasteners, 3-ft laps), sseam (2-ft standing
@@ -701,8 +726,8 @@ function curbAssembly(g,CW,CH,mode,metalRoof){ const T=0.15, d={prim:[],flex:[]}
   const wrap=(mat,dr,arr)=>{ const w=box(CW+0.16+dr,CH+dr,CW+0.16+dr,mat,0,(CH+dr)/2,0,false); const lip=box(CW-0.42-dr,0.4,CW-0.42-dr,mat,0,CH-0.2,0,false); const apron=box(CW+2.6+dr,0.06,CW+2.6+dr,mat,0,0.09+dr,0,false); [w,lip,apron].forEach(m=>{ g.add(m); if(arr) arr.push(m); }); };
   wrap(P,0.0,mode==='toggle'?d.prim:null); wrap(F,0.06,mode==='toggle'?d.flex:null); wrap(M.topcoat,0.12,null);
   const unit=new THREE.Group(); unit.position.y=CH+0.35; g.add(unit); d.unit=unit; return d; }
-function addRTU(b,x,z,CW=8,CH=1.5){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const d=curbAssembly(g,CW,CH,'sweep',false);
-  d.unit.add(box(CW+1.5,CW*0.5,CW+1.5,M.unit,0,CW*0.25,0)); d.unit.add(box(CW+1.7,0.4,CW+1.7,M.unitD,0,CW*0.5+0.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.35,CW*0.35,0.25,24),M.unitD); fan.position.set(0,CW*0.5+0.4,0); d.unit.add(fan); g.userData.unit=d.unit; g.userData.CH=CH; return g; }
+function addRTU(b,x,z,CW=8,CH=1.5){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g; if(CW===8&&CH===1.5){ const prim=new THREE.Group(); g.add(prim); mountModel('rtu',g,0,0,0,prim); g=prim; } const d=curbAssembly(g,CW,CH,'sweep',false);
+  d.unit.add(box(CW+1.5,CW*0.5,CW+1.5,M.unit,0,CW*0.25,0)); d.unit.add(box(CW+1.7,0.4,CW+1.7,M.unitD,0,CW*0.5+0.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.35,CW*0.35,0.25,24),M.unitD); fan.position.set(0,CW*0.5+0.4,0); d.unit.add(fan); g.userData.unit=d.unit; g.userData.CH=CH; return gOuter; }
 function addRTU_old(b,x,z,CW=8,CH=1.5){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
   g.add(box(CW,CH,CW,M.curb,0,CH/2,0)); g.add(box(CW+1.5,CW*0.5,CW+1.5,M.unit,0,CH+CW*0.25,0)); g.add(box(CW+1.7,0.4,CW+1.7,M.unitD,0,CH+CW*0.5+0.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.35,CW*0.35,0.25,24),M.unitD); fan.position.set(0,CH+CW*0.5+0.4,0); g.add(fan);
   g.add(box(CW+0.16,CH,CW+0.16,M.primerOv,0,CH/2,0,false)); g.add(box(CW+0.24,CH,CW+0.24,M.flexOv,0,CH/2,0,false)); g.add(box(CW+0.32,CH+0.02,CW+0.32,M.topcoat,0,CH/2+0.01,0,false)); return g; }
@@ -710,7 +735,8 @@ function addSkylight(b,x,z,CW=6,CH=1.2){ const g=new THREE.Group(); g.position.s
   d.unit.add(box(CW+0.4,0.2,CW+0.4,M.coping,0,0.1,0)); const gl=new THREE.Mesh(new THREE.ConeGeometry(CW*0.74,1.4,4),M.glass); gl.rotation.y=Math.PI/4; gl.position.y=0.9; d.unit.add(gl); g.userData.unit=d.unit; g.userData.CH=CH; return g; }
 // Cast-iron drain per D-1-TYP: (E) bowl set below the field; clamping ring removed and reset in sealant; strainer replaced/primed;
 // Flex encapsulates the ring, extends min 18" out from the drain and 3" down into the bowl past the ring; topcoat extends 1" further into the bowl.
-function addDrain(b,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const RB=1.0;   // bowl radius (ft)
+function addDrain(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const RB=1.0;   // bowl radius (ft)
+  const prim=new THREE.Group(); g.add(prim); mountModel('drain',g,0,0,0,prim); const gOuter=g; g=prim;
   const bowl=new THREE.Mesh(new THREE.CylinderGeometry(RB,RB*0.8,0.7,32,1,true),M.unitD); bowl.position.y=-0.34; g.add(bowl); const bfloor=new THREE.Mesh(new THREE.CircleGeometry(RB*0.8,32),M.unitD); bfloor.rotation.x=-Math.PI/2; bfloor.position.y=-0.68; g.add(bfloor);
   const mouth=new THREE.Mesh(new THREE.CircleGeometry(RB,32),M.unitD); mouth.rotation.x=-Math.PI/2; mouth.position.y=0.025; g.add(mouth);   // opening in the field
   const ring=new THREE.Mesh(new THREE.TorusGeometry(RB+0.18,0.14,10,36),M.iron); ring.rotation.x=Math.PI/2; ring.position.y=0.1; g.add(ring); g.userData.ring=ring;
@@ -720,7 +746,7 @@ function addDrain(b,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); b.ro
     const lip=new THREE.Mesh(new THREE.CylinderGeometry(rIn,rIn,lipDepth,32,1,true),mat); lip.position.y=y-lipDepth/2; g.add(lip);
     const over=new THREE.Mesh(new THREE.TorusGeometry(RB+0.18,0.14+ (y-0.1)*0.9+0.03,10,36),mat); over.rotation.x=Math.PI/2; over.position.y=0.1; g.add(over); };
   flange(M.primerOv,RB-0.02,RB+0.18+1.5,0.075,0.3); flange(M.flexOv,RB-0.05,RB+0.18+1.5,0.10,0.25+0.05); flange(M.topcoat,RB-0.13,RB+0.18+1.6,0.13,0.33+0.08);   // 18" out, 3" in; topcoat 1" further in
-  return g; }
+  return gOuter; }
 // Soil stack per P-6-TYP: (E) lead flashing runs up the stack and folds into its top (replace ill-fitting lead); sealant bead at the base;
 // Flex encapsulates the lead and extends inside the stack; topcoat extends past the Flex. Field extent of the Flex is not dimensioned on the drawing (12" ASSUMED).
 function addPipe(b,x,z,r=0.35){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const H=3.0, LT=0.05;
@@ -994,7 +1020,7 @@ function makeSolar(parent, cols, rows){
 }
 
 const BUILDERS={ warehouse:buildWarehouse, bigbox:buildBigBox, school:buildSchool, office:buildOffice, manufacturing:buildManufacturing, hospital:buildHospital, arena:buildArena, silo:buildSilo, hotel:buildHotel, airport:buildAirport, restaurant:buildRestaurant };
-function rebuild(){ disposeGroup(world); B = BUILDERS[S.building](); buildHots(); goRoof(true); }
+function rebuild(){ modelInstances.length=0; disposeGroup(world); B = BUILDERS[S.building](); buildHots(); goRoof(true); }
 
 /* =================================================================
    CAMERA
@@ -1044,7 +1070,7 @@ function setStage(n,animate){ n=Math.max(0,Math.min(stagesOf().length-1,n)); S.s
 function stageProgress(k){ const i=stagesOf().findIndex(s=>s.key===k); if(S.stage<i) return 0; if(S.stage>i) return 1; return S.prog; }
 const LIFTED=new Set();
 function applyStage(){ const p={prep:stageProgress('prep'),primer:stageProgress('primer'),flex:stageProgress('flex'),thane:stageProgress('thane')}; const seat=S.stage>=5?1:(S.stage>=2?0:1);
-  world.traverse(o=>{ if(o.userData&&o.userData.unit){ o.userData.unit.position.y=o.userData.CH+ (seat?0:0.5); } });
+  world.traverse(o=>{ if(o.userData&&o.userData.unit){ o.userData.unit.position.y=o.userData.CH+ (seat?0:0.5); } }); applyModels(p,seat);
   const white=S.topcoat==='white'; M.topcoat.color.set(white?0xF4F3EE:0xDCE0E4); M.topcoat.metalness=white?0.04:0.38; M.topcoat.roughness=white?0.62:0.3; B.applyStage(p); }
 
 /* =================================================================
@@ -1108,7 +1134,7 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize()
   applyCam(); applyStage(); applySection(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
 
 selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame);
-window.__rmi={ S, setStage, goDetail, goRoof, selectBuilding, finishCam:()=>{ camT=1; } };
+window.__rmi={ S, setStage, goDetail, goRoof, selectBuilding, finishCam:()=>{ camT=1; }, world, modelInstances, camera };
 })();
 </script>
 </body>
