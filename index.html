@@ -490,7 +490,7 @@ const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=
 function loadModel(file){ if(modelCache[file]) return modelCache[file];
   modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
 const LAYER_CLIP={primer:clipPrim,flex:clipFlex,topcoat:clipTop};
-function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); o.castShadow=o.receiveShadow=true; o.userData.layer=layer;
+function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); if(!['existing','primer','flex','topcoat'].includes(layer)){ o.visible=false; o.userData.helper=true; return; } o.castShadow=o.receiveShadow=true; o.userData.layer=layer;
     const m=o.material.clone(); m.side=THREE.DoubleSide; if(LAYER_CLIP[layer]){ m.clippingPlanes=[LAYER_CLIP[layer]]; m.clipShadows=true; } if(layer==='primer'){ m.transparent=true; m.opacity=.75; }
     if(layer==='topcoat'){ m.envMapIntensity=1.2; o.userData.topcoat=true; } o.material=m; if(/existing__unit/.test(o.name)) o.userData.lift=true; }); }
 // Place a model instance under `parent` at (x,z), hiding `fallback` (the code-drawn group) once it arrives.
@@ -499,7 +499,7 @@ function mountModel(id,parent,x,z,rotY,fallback){ const file=MODELS[id]; if(!fil
     .catch(e=>{ console.warn('model not loaded, keeping code geometry:',file,e.message); });
   return holder; }
 function applyModels(p,seat){ const white=S.topcoat==='white';
-  modelInstances.forEach(h=>{ if(!h.parent) return; h.traverse(o=>{ if(!o.isMesh) return; const L=o.userData.layer;
+  modelInstances.forEach(h=>{ if(!h.parent) return; h.traverse(o=>{ if(!o.isMesh||o.userData.helper) return; const L=o.userData.layer;
     if(L==='primer') o.visible=p.primer>0; else if(L==='flex') o.visible=p.flex>0; else if(L==='topcoat'){ o.visible=p.thane>0; o.material.color.set(white?0xF4F3EE:0xDCE0E4); o.material.metalness=white?0.04:0.38; o.material.roughness=white?0.62:0.3; }
     if(o.userData.lift){ if(o.userData.y0===undefined) o.userData.y0=o.position.y; o.position.y=o.userData.y0-(seat?6*0.0254:0); } }); }); }
 
