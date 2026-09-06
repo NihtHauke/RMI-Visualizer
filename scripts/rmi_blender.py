@@ -1,7 +1,7 @@
 """
 rmi_blender.py — shared helpers for building RMI detail models in Blender.
 
-Every detail build script starts with:
+Every detail build script starts with (see also Shell, hemisphere, bevel below):
 
     import sys, os; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     from rmi_blender import *
@@ -20,7 +20,7 @@ Rules this file enforces (learned the hard way):
     can never ship inside the .glb.
   * Export is glTF Binary, modifiers applied, visible objects only, saved next to the .blend in models/.
 """
-import bpy, os
+import bpy, os, math
 
 IN = 0.0254          # inches → metres (Blender works in metres; the web app scales to feet)
 LAYERS = ("existing", "primer", "flex", "topcoat")
@@ -66,6 +66,7 @@ LIB = {
     "unit":       lambda: mat("RMI_unit",         (0.86, 0.87, 0.85), 0.7),
     "unitD":      lambda: mat("RMI_unit_dark",    (0.32, 0.36, 0.40), 0.8),
     "wood":       lambda: mat("RMI_wood",         (0.55, 0.42, 0.28), 0.9),
+    "wall":       lambda: mat("RMI_wall",         (0.80, 0.78, 0.74), 0.9),
     "fast":       lambda: mat("RMI_fastener",     (0.72, 0.74, 0.75), 0.4, 0.9),
     "seal":       lambda: mat("RMI_sealant",      (0.25, 0.25, 0.27), 0.6),
     "tape":       lambda: mat("RMI_tape",         (0.82, 0.83, 0.84), 0.5, 0.4),
@@ -119,6 +120,92 @@ def torus(name, layer, R, r, x, y, z, m, seg=64, rings=16):
     bpy.ops.mesh.primitive_torus_add(major_radius=R, minor_radius=r, location=(x, y, z), major_segments=seg, minor_segments=rings)
     o = bpy.context.object; o.data.materials.append(m); link(o, layer, name)
     return o
+
+
+def bevel(o, width, segments=3):
+    b = o.modifiers.new("bevel", "BEVEL"); b.width = width; b.segments = segments
+    return o
+
+
+def hemisphere(name, layer, r, x, y, z, m, segments=16, rings=12, wire=0):
+    """Upper half of a UV sphere. wire>0 turns it into a wire mesh of that strut thickness (drain strainer)."""
+    import bmesh
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=segments, ring_count=rings, radius=r, location=(x, y, z))
+    o = bpy.context.object
+    bm = bmesh.new(); bm.from_mesh(o.data)
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.z < -1e-6], context='VERTS')
+    bm.to_mesh(o.data); bm.free()
+    if wire:
+        w = o.modifiers.new("wire", "WIREFRAME"); w.thickness = wire
+    o.data.materials.append(m); link(o, layer, name)
+    return o
+
+
+class Shell:
+    """Accumulates revolved parts (annular prisms, tori, arbitrary r/z profiles) into ONE mesh so a whole
+    layer can ship as a single object — the hotel roof carries 33 soil stacks, so mesh count matters.
+    Built from raw vertices: nothing to bake, no helpers to delete.
+
+        s = Shell(); s.tube(ro, ri, z0, z1); s.torus(R, r, z); s.emit("flex", "flex", M("flex"))
+    """
+    def __init__(self):
+        self.v, self.f = [], []
+
+    def tube(self, ro, ri, z0, z1, seg=48):
+        """Annular prism ro>ri from z0 to z1; ri=0 gives a solid cylinder. Faces wound outward."""
+        n = len(self.v); cs = [(math.cos(2 * math.pi * i / seg), math.sin(2 * math.pi * i / seg)) for i in range(seg)]
+        solid = ri <= 1e-9
+        O0, O1 = n, n + seg
+        self.v += [(ro * c, ro * s, z0) for c, s in cs] + [(ro * c, ro * s, z1) for c, s in cs]
+        if solid:
+            C0, C1 = n + 2 * seg, n + 2 * seg + 1; self.v += [(0, 0, z0), (0, 0, z1)]
+        else:
+            I0, I1 = n + 2 * seg, n + 3 * seg
+            self.v += [(ri * c, ri * s, z0) for c, s in cs] + [(ri * c, ri * s, z1) for c, s in cs]
+        for i in range(seg):
+            j = (i + 1) % seg
+            self.f.append((O0 + i, O0 + j, O1 + j, O1 + i))            # outer wall
+            if solid:
+                self.f.append((C1, O1 + i, O1 + j)); self.f.append((C0, O0 + j, O0 + i))
+            else:
+                self.f.append((I0 + j, I0 + i, I1 + i, I1 + j))        # inner wall
+                self.f.append((O1 + i, O1 + j, I1 + j, I1 + i))        # top annulus
+                self.f.append((O0 + i, I0 + i, I0 + j, O0 + j))        # bottom annulus
+        return self
+
+    def torus(self, R, r, z, seg=48, rings=12):
+        n = len(self.v)
+        for i in range(seg):
+            a = 2 * math.pi * i / seg; ca, sa = math.cos(a), math.sin(a)
+            for k in range(rings):
+                b = 2 * math.pi * k / rings; cb, sb = math.cos(b), math.sin(b)
+                self.v.append(((R + r * cb) * ca, (R + r * cb) * sa, z + r * sb))
+        for i in range(seg):
+            j = (i + 1) % seg
+            for k in range(rings):
+                l = (k + 1) % rings
+                self.f.append((n + i * rings + k, n + j * rings + k, n + j * rings + l, n + i * rings + l))
+        return self
+
+    def revolve(self, profile, seg=48):
+        """Revolve an open (r, z) polyline about z — a surface with no thickness (drain sump cone)."""
+        n = len(self.v); m = len(profile)
+        for i in range(seg):
+            a = 2 * math.pi * i / seg; ca, sa = math.cos(a), math.sin(a)
+            for (r, z) in profile:
+                self.v.append((r * ca, r * sa, z))
+        for i in range(seg):
+            j = (i + 1) % seg
+            for k in range(m - 1):
+                self.f.append((n + i * m + k, n + j * m + k, n + j * m + k + 1, n + i * m + k + 1))
+        return self
+
+    def emit(self, layer, name, material):
+        me = bpy.data.meshes.new(name); me.from_pydata(self.v, [], self.f); me.validate()
+        for p in me.polygons:                       # smooth the round walls, keep the flat rings crisp
+            p.use_smooth = abs(p.normal.z) < 0.5
+        o = bpy.data.objects.new(name, me); o.data.materials.append(material)
+        return link(o, layer, name)
 
 
 def _override():

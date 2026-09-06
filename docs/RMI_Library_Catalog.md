@@ -113,7 +113,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 ### Curbs & supports
 | Detail | 2D | 3D | Applies to |
 |---|---|---|---|
-| Curb-mounted unit, cap can be lifted | CS-1-TYP | CS1-18-3D, CS1-2-3D, CS1-4-3D + 18 variants | BUR, mod-bit, single-ply |
+| Curb-mounted unit, cap can be lifted — **model** `models/curb-mounted-unit-CS-1-TYP.glb` (`scripts/build_curb_mounted_unit_CS-1-TYP.py`), assembly VERIFIED; curb/unit sizes ASSUMED | CS-1-TYP | CS1-18-3D, CS1-2-3D, CS1-4-3D + 18 variants | BUR, mod-bit, single-ply |
 | Curb-mounted unit, fixed (cannot lift) | CS-2-TYP, CS-3-TYP | CS1-1-18-3D, CS1-2-18-3D | BUR, mod-bit, single-ply |
 | Support curb w/ skirt, BUR | CS-4-BUR, CS-6-BUR | — | BUR, mod-bit |
 | Support curb, single-ply | CS-5-SP, CS-7-SP | — | PVC, EPDM, TPO |
@@ -129,7 +129,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 ### Drains & water
 | Detail | 2D | 3D | Applies to |
 |---|---|---|---|
-| Cast-iron roof drain | D-1-TYP, D-2-TYP | CID-1-21-FT3D, CID-2-21-FT3D, CID-6-21-FT3D | All flat systems |
+| Cast-iron roof drain — **model** `models/cast-iron-drain-D-1-TYP.glb` (`scripts/build_cast_iron_drain_D-1-TYP.py`), assembly + 18"/3"/1" extents VERIFIED; bowl/ring/dish sizes ASSUMED | D-1-TYP, D-2-TYP | CID-1-21-FT3D, CID-2-21-FT3D, CID-6-21-FT3D | All flat systems |
 | Inlet drain | D-3-TYP | — | All flat systems |
 | Overflow / thru-wall scupper | D-4-TYP | D4-1-FT-3D, D4-4-FT-3D, D4-5-FT-3D, D4-11-FT-3D | All flat systems + metal |
 | Wall scupper | D-5-TYP, D-6-TYP (interior wall) | — | All flat systems |
@@ -141,7 +141,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 ### Walls & perimeter
 | Detail | 2D | 3D | Applies to |
 |---|---|---|---|
-| Metal coping joints | W-1-TYP, W-2-TYP | W1-11-FT3D, W1-5-6-FT3D, W1-20-3D | All coping laps/corners |
+| Metal coping joints — **model** `models/metal-coping-joint-W-1-TYP.glb` (`scripts/build_metal_coping_joint_W-1-TYP.py`), a 4-ft parapet section spliced into the big-box east run; 4" tape / 8" Flex / entire-coping topcoat VERIFIED; joint gap, fastener spacing, primer extent ASSUMED | W-1-TYP, W-2-TYP | W1-11-FT3D, W1-5-6-FT3D, W1-20-3D | All coping laps/corners |
 | Metal coping reset / fixed | W-3-TYP, W-4/5/6-TYP | W1-2-20-3D | All flat systems |
 | Concrete wall / block wall / concrete cap | W-7, W-8, W-9-TYP | — | Concrete, CMU (not brick) |
 | Wall-mounted conduit | W-10-TYP | — | All flat systems |
@@ -195,6 +195,7 @@ Still ASSUMED (no document in the library):
 - Wet/dry times between stages for the animation timing — will use the plate cure notes (Thane ~4 hr, White ~3 hr) as pacing cues only.
 - Building-type ↔ roof-type pairing (which roof types to offer for "school" vs "warehouse"). Not an RMI question; I'll draft from public building-stock data and tag it.
 - Roof hatch detail — no drawing in the library; treated as a fixed curb until RMI says otherwise.
+- **W-1-TYP coping: is the whole coping primed** when the topcoat covers the entire coping under the system warranty? The tool primes only the 8" Flex band at each joint (matching the drawing's band logic) but topcoats the whole run.
 - **P-6-TYP soil stack dimensions.** The drawing is not to scale and carries no dimensions. The model uses a 4" stack 24" above the roof, 1/16" lead with a 14" base flange turned 1" into the bore, a 3/8" sealant bead, Flex 6" past the flange and 6" down the bore, topcoat 1" past the Flex. All in `scripts/build_lead_soil_stack_P-6-TYP.py` as named constants — correct any of them and rebuild.
 - Per-detail Flex allowance for the material takeoff on metal roofs (how many gallons a curb or a run of side lap consumes). Plates give field rates only.
 

@@ -19,13 +19,13 @@ What the drawing does NOT say: it is NOT TO SCALE and carries no dimensions at a
 below is therefore ASSUMED and is written out so RMI can correct it. The (E) roof build-up matches
 cast-iron-drain-D-1-TYP so the two read alike on one roof.
 
-Every layer ships as ONE mesh (the hotel roof carries 33 of these), built from annular prisms so
+Every layer ships as ONE mesh (the hotel roof carries 33 of these), built with rmi_blender.Shell so
 there are no boolean helpers to bake or delete.
 """
-import sys, os, math
+import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bpy
-from rmi_blender import IN, M, link, reset_scene, finalize
+from rmi_blender import IN, M, Shell, reset_scene, finalize
 
 # ---------------------------------------------------------------- dimensions (all ASSUMED — see docstring)
 # (E) roof assembly carried by the model. Metric so it sits at exactly the drain model's heights.
@@ -61,55 +61,6 @@ SLEEVE_OR  = STACK_OD / 2 + LEAD_T        # outside of the lead sleeve
 RIM_TOP    = STACK_TOP + LEAD_T           # lead over the rim
 BORE_IR    = STACK_ID / 2 - LEAD_T        # inside of the lead turn-down
 TURN_BOT   = STACK_TOP - TURNDOWN
-
-
-class Shell:
-    """Accumulates annular prisms and tori into one mesh so a whole layer ships as one object."""
-    def __init__(self):
-        self.v, self.f = [], []
-
-    def tube(self, ro, ri, z0, z1, seg=48):
-        """Annular prism ro>ri, z0..z1. ri=0 gives a solid cylinder. Faces wound outward."""
-        n = len(self.v); cs = [(math.cos(2 * math.pi * i / seg), math.sin(2 * math.pi * i / seg)) for i in range(seg)]
-        solid = ri <= 1e-9
-        O0, O1 = n, n + seg
-        self.v += [(ro * c, ro * s, z0) for c, s in cs] + [(ro * c, ro * s, z1) for c, s in cs]
-        if solid:
-            C0, C1 = n + 2 * seg, n + 2 * seg + 1; self.v += [(0, 0, z0), (0, 0, z1)]
-        else:
-            I0, I1 = n + 2 * seg, n + 3 * seg
-            self.v += [(ri * c, ri * s, z0) for c, s in cs] + [(ri * c, ri * s, z1) for c, s in cs]
-        for i in range(seg):
-            j = (i + 1) % seg
-            self.f.append((O0 + i, O0 + j, O1 + j, O1 + i))            # outer wall
-            if solid:
-                self.f.append((C1, O1 + i, O1 + j)); self.f.append((C0, O0 + j, O0 + i))
-            else:
-                self.f.append((I0 + j, I0 + i, I1 + i, I1 + j))        # inner wall
-                self.f.append((O1 + i, O1 + j, I1 + j, I1 + i))        # top annulus
-                self.f.append((O0 + i, I0 + i, I0 + j, O0 + j))        # bottom annulus
-        return self
-
-    def torus(self, R, r, z, seg=40, rings=12):
-        n = len(self.v)
-        for i in range(seg):
-            a = 2 * math.pi * i / seg; ca, sa = math.cos(a), math.sin(a)
-            for k in range(rings):
-                b = 2 * math.pi * k / rings; cb, sb = math.cos(b), math.sin(b)
-                self.v.append(((R + r * cb) * ca, (R + r * cb) * sa, z + r * sb))
-        for i in range(seg):
-            j = (i + 1) % seg
-            for k in range(rings):
-                l = (k + 1) % rings
-                self.f.append((n + i * rings + k, n + j * rings + k, n + j * rings + l, n + i * rings + l))
-        return self
-
-    def emit(self, layer, name, material):
-        me = bpy.data.meshes.new(name); me.from_pydata(self.v, [], self.f); me.validate()
-        for p in me.polygons:                       # smooth the round walls, keep the flat rings crisp
-            p.use_smooth = abs(p.normal.z) < 0.5
-        o = bpy.data.objects.new(name, me); o.data.materials.append(material)
-        return link(o, layer, name)
 
 
 def coating(layer, i):

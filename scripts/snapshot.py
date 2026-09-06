@@ -34,6 +34,29 @@ def serve(port):
     return httpd
 
 
+def unlocked(path):
+    """Windows image viewers (and the app's file panel) hold PNGs open, which makes the next write fail with
+    EINVAL. Remove the old file if we can; otherwise hand back a fresh name so the run still completes."""
+    try:
+        if path.exists():
+            path.unlink()
+        return path
+    except OSError:
+        alt = path.with_name(f"{path.stem}-{int(time.time()) % 10000}{path.suffix}")
+        print("locked, writing", alt.name, "instead")
+        return alt
+
+
+def save_png(page, path):
+    path = unlocked(path)
+    for attempt in range(3):
+        try:
+            page.screenshot(path=str(path), timeout=60000); return path
+        except OSError:
+            time.sleep(0.5); path = unlocked(path)
+    page.screenshot(path=str(path), timeout=60000); return path
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--building", default="bigbox")
@@ -74,9 +97,7 @@ def main():
             for i, name in enumerate(STAGES):
                 page.evaluate(f"window.__rmi.setStage({i}, true); window.__rmi.S.prog = 1;")
                 page.wait_for_timeout(700)
-                f = OUT / f"{tag}-{i+1}-{name}.png"
-                page.screenshot(path=str(f), timeout=60000)
-                files.append(f)
+                files.append(save_png(page, OUT / f"{tag}-{i+1}-{name}.png"))
             browser.close()
     finally:
         httpd.shutdown()
@@ -93,7 +114,7 @@ def main():
             sheet.paste(im, (x, y))
             d.rectangle([x, y, x + 260, y + 34], fill="#12213A")
             d.text((x + 10, y + 8), f"{i+1}. {STAGES[i]}", fill="white")
-        sheet_path = OUT / f"{tag}-sheet.png"
+        sheet_path = unlocked(OUT / f"{tag}-sheet.png")
         sheet.save(sheet_path)
         print("contact sheet:", sheet_path)
     except ImportError:

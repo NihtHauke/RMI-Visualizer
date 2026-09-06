@@ -369,7 +369,7 @@ const DETAILS = {
     src:'Curb per CS-1-TYP (vents and ducts named in note 7) — VERIFIED. Grease must be removed before priming (plates: no RMI over contaminants); degreasing method is ASSUMED.' },
   coping: { name:'Parapet and metal coping', drawing:'W-1-TYP', concept:'W1-11-FT3D', dist:9, phi:1.05, theta:2.4, drop:0.4, menu:'Parapet / coping',
     layers:[{k:'existing',label:'(E) metal coping with open joints and loose fasteners; damaged sections replaced, fasteners at joints relocated',color:'#C9C9C2'},{k:'primer',label:'4" tape centred on each joint (2" each side, no voids); loose fasteners replaced with oversize stainless + EPDM washers; prime',color:'#E8D7A6'},{k:'flex',label:'Flex over the tape, min 2" beyond it on both sides and down both faces; every fastener encapsulated',color:'#D9A21B'},{k:'thane',label:'Topcoat min 2" past the Flex — or the entire coping under the system warranty; vertical faces may need multiple coats',color:'#C3C7CC'}],
-    src:'Assembly per W-1-TYP and W1-11-FT3D — VERIFIED, including the 4" tape / 2" Flex / 2" topcoat extents. Note 7: coping must meet code and SMACNA for wind uplift or it is excluded from warranty. Applies to all coping laps, joints, corners and transitions.' }
+    src:'Assembly per W-1-TYP and W1-11-FT3D — VERIFIED, including the 4" tape / 2" Flex / 2" topcoat extents. Note 7: coping must meet code and SMACNA for wind uplift or it is excluded from warranty. Applies to all coping laps, joints, corners and transitions. The model is a 4-ft parapet section: the open-joint gap, fastener spacing and coat thicknesses are ASSUMED; the topcoat shows the entire-coping (system warranty) option.' }
 };
 
 function DET(id){ const d=DETAILS[id]; const o=d.byRoof&&d.byRoof[S.roof]; return o?Object.assign({},d,o):d; }
@@ -485,23 +485,24 @@ let B = null;   // the current built building: { extent, hots, applyStage(p) }
    <layer>__<part> with layer in existing|primer|flex|topcoat. Metres → feet.
    If a file fails to load, the code-drawn geometry stays; nothing breaks.
 ================================================================= */
-const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb' };
+const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb', coping:'models/metal-coping-joint-W-1-TYP.glb' };
 const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=null;
 function loadModel(file){ if(modelCache[file]) return modelCache[file];
   modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
 const LAYER_CLIP={primer:clipPrim,flex:clipFlex,topcoat:clipTop};
-function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); if(!['existing','primer','flex','topcoat'].includes(layer)){ o.visible=false; o.userData.helper=true; return; } o.castShadow=o.receiveShadow=true; o.userData.layer=layer;
-    const m=o.material.clone(); m.side=THREE.DoubleSide; if(LAYER_CLIP[layer]){ m.clippingPlanes=[LAYER_CLIP[layer]]; m.clipShadows=true; } if(layer==='primer'){ m.transparent=true; m.opacity=.75; }
+function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); if(!['existing','primer','flex','topcoat'].includes(layer)){ o.visible=false; o.userData.helper=true; return; } o.castShadow=o.receiveShadow=true; o.userData.layer=layer; o.userData.tape=/__tape/.test(o.name);
+    const m=o.material.clone(); m.side=THREE.DoubleSide; if(LAYER_CLIP[layer]&&!o.userData.tape){ m.clippingPlanes=[LAYER_CLIP[layer]]; m.clipShadows=true; }   // tape is prep work: shown from the prep stage, never swept if(layer==='primer'){ m.transparent=true; m.opacity=.75; }
     if(layer==='topcoat'){ m.envMapIntensity=1.2; o.userData.topcoat=true; } o.material=m; if(/existing__unit/.test(o.name)) o.userData.lift=true; }); }
 // Place a model instance under `parent` at (x,z), hiding `fallback` (the code-drawn group) once it arrives.
-// `fieldMat` (optional) re-skins the model's existing__membrane patch with the block's field material so it matches the roof type.
-function mountModel(id,parent,x,z,rotY,fallback,fieldMat){ const file=MODELS[id]; if(!file) return null; const holder=new THREE.Group(); holder.position.set(x,0,z); holder.rotation.y=rotY||0; parent.add(holder);
-  loadModel(file).then(scene=>{ const inst=scene.clone(true); prepModel(inst); if(fieldMat) inst.traverse(o=>{ if(o.isMesh&&/^existing__membrane/.test(o.name)) o.material=fieldMat; }); inst.scale.setScalar(M2FT); holder.add(inst); if(fallback) fallback.visible=false; holder.userData.loaded=true; modelInstances.push(holder); })
+// `skins` (optional) maps a model part name to a scene material, e.g. {membrane: field material} so the model's roof patch matches the roof type,
+// or {parapet: M.wall} so a parapet section matches the building.
+function mountModel(id,parent,x,z,rotY,fallback,skins){ const file=MODELS[id]; if(!file) return null; const holder=new THREE.Group(); holder.position.set(x,0,z); holder.rotation.y=rotY||0; parent.add(holder);
+  loadModel(file).then(scene=>{ const inst=scene.clone(true); prepModel(inst); if(skins) inst.traverse(o=>{ if(!o.isMesh) return; const part=(o.name.split('__')[1]||'').replace(/\.\d+$/,''); const k=Object.keys(skins).find(k=>part===k||part.startsWith(k+'_')); if(k) o.material=skins[k]; }); inst.scale.setScalar(M2FT); holder.add(inst); if(fallback) fallback.visible=false; holder.userData.loaded=true; modelInstances.push(holder); })
     .catch(e=>{ console.warn('model not loaded, keeping code geometry:',file,e.message); });
   return holder; }
 function applyModels(p,seat){ const white=S.topcoat==='white';
   modelInstances.forEach(h=>{ if(!h.parent) return; h.traverse(o=>{ if(!o.isMesh||o.userData.helper) return; const L=o.userData.layer;
-    if(L==='primer') o.visible=p.primer>0; else if(L==='flex') o.visible=p.flex>0; else if(L==='topcoat'){ o.visible=p.thane>0; o.material.color.set(white?0xF4F3EE:0xDCE0E4); o.material.metalness=white?0.04:0.38; o.material.roughness=white?0.62:0.3; }
+    if(L==='primer') o.visible= o.userData.tape ? p.prep>=0.5 : p.primer>0; else if(L==='flex') o.visible=p.flex>0; else if(L==='topcoat'){ o.visible=p.thane>0; o.material.color.set(white?0xF4F3EE:0xDCE0E4); o.material.metalness=white?0.04:0.38; o.material.roughness=white?0.62:0.3; }
     if(o.userData.lift){ if(o.userData.y0===undefined) o.userData.y0=o.position.y; o.position.y=o.userData.y0-(seat?6*0.0254:0); } }); }); }
 
 
@@ -681,13 +682,21 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
   const tapes=new THREE.Group(); cop.add(tapes);
   // Metal coping per W-1-TYP: cap with drip legs; at every joint a 4" tape centred on the joint, Flex min 2" beyond the tape (8"),
   // topcoat min 2" past the Flex (full coping here, per the system warranty); fasteners on the face, none at joints, encapsulated in Flex.
-  sides.filter(sd=>!skip.includes(sd.k)).forEach(sd=>{ par.add(box(sd.w,PH,sd.d,M.wall,sd.x,PH/2,sd.z));
+  const cm=o.copingModel;   // {k:'E', at:-20}: splice the Blender coping-joint model (a 4-ft parapet section) into that side's run at world x (N/S) or z (E/W)
+  sides.filter(sd=>!skip.includes(sd.k)).forEach(sd=>{ const mt = cm&&cm.k===sd.k ? (sd.jx?cm.at:-cm.at) : null;   // run-local centre of the modelled section
     const run=new THREE.Group(); run.position.set(sd.x,PH,sd.z); if(!sd.jx) run.rotation.y=Math.PI/2; cop.add(run); const n=sd.jx?L:W, cw=(sd.jx?sd.d:sd.w)+0.5;
-    run.add(box(n+0.4,0.25,cw,M.coping,0,0.12,0)); [-1,1].forEach(sg=>run.add(box(n+0.4,0.5,0.06,M.coping,0,-0.05,sg*(cw/2-0.03),false)));   // cap + drip legs
-    run.add(box(n+0.5,0.06,cw+0.12,M.topcoat,0,0.28,0,false)); [-1,1].forEach(sg=>run.add(box(n+0.5,0.52,0.06,M.topcoat,0,-0.05,sg*(cw/2+0.06),false)));   // topcoat: entire coping
+    // cap + drip legs, and topcoat over the entire coping — per segment: the whole run, or two pieces either side of the model's 4-ft gap
+    const capAt=(grp,x0,x1,eL,eR)=>{ const len=x1-x0, cx=(x0+x1)/2, tl=len+eL+eR, tc=cx+(eR-eL)/2; grp.add(box(len,0.25,cw,M.coping,cx,0.12,0)); [-1,1].forEach(sg=>grp.add(box(len,0.5,0.06,M.coping,cx,-0.05,sg*(cw/2-0.03),false)));
+      grp.add(box(tl,0.06,cw+0.12,M.topcoat,tc,0.28,0,false)); [-1,1].forEach(sg=>grp.add(box(tl,0.62,0.06,M.topcoat,tc,0,sg*(cw/2+0.06),false))); };   // legs run the full height to the top overlay (no notch at the corner)   // topcoat overlay runs 0.05 past the run ends but stops flush at the model's gap (coplanar overlap z-fights)
+    const segs = mt===null ? [[-n/2-0.2,n/2+0.2]] : [[-n/2-0.2,mt-2],[mt+2,n/2+0.2]]; segs.forEach(([x0,x1])=>capAt(run,x0,x1, x0<-n/2?0.05:0, x1>n/2?0.05:0));
+    if(mt===null) par.add(box(sd.w,PH,sd.d,M.wall,sd.x,PH/2,sd.z)); else segs.forEach(([x0,x1])=>{ const a0=Math.max(x0,-n/2), a1=Math.min(x1,n/2); run.add(box(a1-a0,PH,PT,M.wall,(a0+a1)/2,-PH/2,0)); });   // parapet wall, leaving the gap
     const U=(mat,wd,dy,into)=>{ const grp=new THREE.Group(); grp.add(box(wd,0.05,cw+0.1+dy*2,mat,0,0.25+dy,0,false)); [-1,1].forEach(sg=>grp.add(box(wd,0.55,0.05,mat,0,-0.05,sg*(cw/2+0.02+dy),false))); into.add(grp); return grp; };
-    for(let t=-n/2+10;t<n/2;t+=10){ const j=box(0.06,0.3,cw+0.1,M.joint,t,0.12,0,false); run.add(j); const tp=U(M.tape,0.34,0.005,tapes); tp.position.x=t; if(!sd.jx){ tp.position.set(0,0,0); tapes.remove(tp); run.add(tp); tp.position.x=t; tp.userData.tape=true; } U(M.primerOv,0.6,0.012,run).position.x=t; U(M.flexOv,0.68,0.02,run).position.x=t; }
-    for(let t=-n/2+4;t<n/2;t+=3){ if(Math.abs(((t+n/2)%10))<0.8) continue; const f=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.05,8),Math.random()<0.25?M.rustFast:M.fast); f.rotation.x=Math.PI/2; f.position.set(t,-0.1,cw/2+0.0); run.add(f); const dot=new THREE.Mesh(new THREE.CircleGeometry(0.14,12),M.flexOv); dot.position.set(t,-0.1,cw/2+0.03); run.add(dot); const dot2=new THREE.Mesh(new THREE.CircleGeometry(0.16,12),M.topcoat); dot2.position.set(t,-0.1,cw/2+0.07); run.add(dot2); } });
+    for(let t=-n/2+10;t<n/2;t+=10){ if(mt!==null&&Math.abs(t-mt)<2) continue; const j=box(0.06,0.3,cw+0.1,M.joint,t,0.12,0,false); run.add(j); const tp=U(M.tape,0.34,0.005,tapes); tp.position.x=t; if(!sd.jx){ tp.position.set(0,0,0); tapes.remove(tp); run.add(tp); tp.position.x=t; tp.userData.tape=true; } U(M.primerOv,0.6,0.012,run).position.x=t; U(M.flexOv,0.68,0.02,run).position.x=t; }
+    for(let t=-n/2+4;t<n/2;t+=3){ if(Math.abs(((t+n/2)%10))<0.8) continue; if(mt!==null&&Math.abs(t-mt)<=2.1) continue; const f=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.05,8),Math.random()<0.25?M.rustFast:M.fast); f.rotation.x=Math.PI/2; f.position.set(t,-0.1,cw/2+0.0); run.add(f); const dot=new THREE.Mesh(new THREE.CircleGeometry(0.14,12),M.flexOv); dot.position.set(t,-0.1,cw/2+0.03); run.add(dot); const dot2=new THREE.Mesh(new THREE.CircleGeometry(0.16,12),M.topcoat); dot2.position.set(t,-0.1,cw/2+0.07); run.add(dot2); }
+    if(mt!==null){ // code-drawn stand-in for the gap, hidden once the model arrives; the model's z=0 is roof level, so drop it by PH under the run
+      const fb=new THREE.Group(); run.add(fb); capAt(fb,mt-2,mt+2,0,0); fb.add(box(0.06,0.3,cw+0.1,M.joint,mt,0.12,0,false)); fb.add(box(4,PH,PT,M.wall,mt,-PH/2,0));
+      const tp=U(M.tape,0.34,0.005,fb); tp.position.x=mt; tp.userData.tape=true; U(M.primerOv,0.6,0.012,fb).position.x=mt; U(M.flexOv,0.68,0.02,fb).position.x=mt;
+      const h=mountModel('coping',run,mt,0,0,fb,{parapet:M.wall,cap:M.coping,leg:M.coping}); if(h) h.position.y=-PH; } });
   // tape pieces live inside rotated runs, so collect them for visibility toggling
   const tapeList=[]; cop.traverse(o=>{ if(o.userData.tape||o.parent===tapes) tapeList.push(o); });
   const IL=L-2*PT, IW=W-2*PT; const roof=new THREE.Group(); roof.position.y=H; g.add(roof);
@@ -703,7 +712,7 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
     const em=new THREE.Group(); em.position.y=H; g.add(em); o._em=em; const ed=[{w:L+0.6,d:0.9,x:0,z:-W/2+0.15,fx:L+0.6,fd:0.25,fz:-W/2-0.12},{w:L+0.6,d:0.9,x:0,z:W/2-0.15,fx:L+0.6,fd:0.25,fz:W/2+0.12},{w:0.9,d:W+0.6,x:-L/2+0.15,z:0,fx:0.25,fd:W+0.6,fz:0,fxx:-L/2-0.12},{w:0.9,d:W+0.6,x:L/2-0.15,z:0,fx:0.25,fd:W+0.6,fz:0,fxx:L/2+0.12}];
     ed.forEach(e=>{ em.add(box(e.w,0.12,e.d,M.coping,e.x,0.06,e.z)); em.add(box(e.fx,1.4,e.fd,M.coping,e.fxx!==undefined?e.fxx:e.x,-0.6,e.fz!==undefined&&e.fxx===undefined?e.fz:e.z));
       em.add(box(e.w+0.1,0.05,e.d+0.1,M.primerOv,e.x,0.14,e.z,false)); em.add(box(e.w+0.2,0.06,e.d+0.2,M.flexOv,e.x,0.17,e.z,false)); em.add(box(e.w+0.3,0.06,e.d+0.3,M.topcoat,e.x,0.2,e.z,false)); }); }
-  function addOverlay(mat,dy,wallH){ const f=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),mat); f.rotation.x=-Math.PI/2; f.position.y=dy; f.receiveShadow=true; roof.add(f); f.userData.kind='coat'; fieldPlanes.push(f);
+  function addOverlay(mat,dy,wallH){ const f=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),mat); f.rotation.x=-Math.PI/2; f.position.y=dy; f.receiveShadow=true; roof.add(f); f.userData.kind='coat'; f.userData.top=(mat===M.topcoat); fieldPlanes.push(f);
     const wl=[{k:'N',w:IL,d:0.05,x:0,z:-IW/2+0.03+dy},{k:'S',w:IL,d:0.05,x:0,z:IW/2-0.03-dy},{k:'W',w:0.05,d:IW,x:-IL/2+0.03+dy,z:0},{k:'E',w:0.05,d:IW,x:IL/2-0.03-dy,z:0}];
     wl.filter(w=>!skip.includes(w.k)).forEach(w=>roof.add(box(w.w,wallH,w.d,mat,w.x,wallH/2,w.z,false))); }
   addOverlay(M.primerOv,0.05,1.6); addOverlay(M.flexOv,0.08,1.5); addOverlay(M.topcoat,0.11,PH);   // 18" up the wall for primer/Flex is ASSUMED
@@ -717,13 +726,15 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
 }
 const BLOCKS=[];
 // Punch holes in a block's field layers where loaded models carry their own patch of roof (avoids the field sheets flooding a drain sump).
-// Two hole sizes: the membrane gets a hole the size of the model's roof patch; the coating sheets get a smaller hole that sits just
-// inside the model's own Flex/topcoat, so there is no visible gap between the two.
+// Three hole sizes: the membrane gets a hole the size of the model's roof patch; the primer/Flex sheets get a hole ~2.5" inside the
+// model's own Flex (the sheets float ~1" above the roof, so at the oblique detail camera the strip seen under the far hole edge must be
+// model Flex, not bare patch); the topcoat sheet's hole is 1" smaller again so nothing lies under *its* edge — otherwise the Flex sheet
+// shows as a thin yellow arc on the far side at the finished stage.
 function applyCutouts(b){ if(!b.cutouts.length) return;
-  const build=(kind)=>{ const sh=new THREE.Shape(); sh.moveTo(-b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,b.IW/2); sh.lineTo(-b.IL/2,b.IW/2); sh.closePath();
-    b.cutouts.forEach(c=>{ const h=new THREE.Path(); const r=kind==='mem'?c.rMem:c.rCoat, hh=kind==='mem'?c.hMem:c.hCoat; if(r){ h.absarc(c.x,-c.z,r,0,Math.PI*2,true); } else { h.moveTo(c.x-hh,-c.z-hh); h.lineTo(c.x-hh,-c.z+hh); h.lineTo(c.x+hh,-c.z+hh); h.lineTo(c.x+hh,-c.z-hh); h.closePath(); } sh.holes.push(h); });
+  const build=(kind,shrink=0)=>{ const sh=new THREE.Shape(); sh.moveTo(-b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,b.IW/2); sh.lineTo(-b.IL/2,b.IW/2); sh.closePath();
+    b.cutouts.forEach(c=>{ const h=new THREE.Path(); const r=(kind==='mem'?c.rMem:c.rCoat)-shrink, hh=(kind==='mem'?c.hMem:c.hCoat)-shrink; if(kind==='mem'?c.rMem:c.rCoat){ h.absarc(c.x,-c.z,r,0,Math.PI*2,true); } else { h.moveTo(c.x-hh,-c.z-hh); h.lineTo(c.x-hh,-c.z+hh); h.lineTo(c.x+hh,-c.z+hh); h.lineTo(c.x+hh,-c.z-hh); h.closePath(); } sh.holes.push(h); });
     return new THREE.ShapeGeometry(sh,24); };
-  const gm=build('mem'), gc=build('coat'); b.fieldPlanes.forEach(pl=>{ pl.geometry.dispose(); pl.geometry= pl.userData.kind==='mem'?gm:gc; }); }
+  const gm=build('mem'), gc=build('coat'), gt=build('coat',1/12); b.fieldPlanes.forEach(pl=>{ pl.geometry.dispose(); pl.geometry= pl.userData.kind==='mem'?gm : pl.userData.top?gt : gc; }); }
 function addStain(b,x,z,r=9){ const st=new THREE.Mesh(new THREE.CircleGeometry(r,24),M.stain); st.rotation.x=-Math.PI/2; st.position.set(x+r*0.2,0.035,z-r*0.1); st.scale.set(1.4,1,1); b.stains.add(st); }
 // Curb assembly per CS-1-TYP (flat) / CS-13-MP (metal): (E) curb with (E) flashing skirt and fasteners at the top;
 // Flex from the field up the full curb wall, over the top lip and onto the interior; topcoat over all; unit lifted and reset.
@@ -736,7 +747,7 @@ function curbAssembly(g,CW,CH,mode,metalRoof){ const T=0.15, d={prim:[],flex:[]}
   const wrap=(mat,dr,arr)=>{ const w=box(CW+0.16+dr,CH+dr,CW+0.16+dr,mat,0,(CH+dr)/2,0,false); const lip=box(CW-0.42-dr,0.4,CW-0.42-dr,mat,0,CH-0.2,0,false); const apron=box(CW+2.6+dr,0.06,CW+2.6+dr,mat,0,0.09+dr,0,false); [w,lip,apron].forEach(m=>{ g.add(m); if(arr) arr.push(m); }); };
   wrap(P,0.0,mode==='toggle'?d.prim:null); wrap(F,0.06,mode==='toggle'?d.flex:null); wrap(M.topcoat,0.12,null);
   const unit=new THREE.Group(); unit.position.y=CH+0.35; g.add(unit); d.unit=unit; return d; }
-function addRTU(b,x,z,CW=8,CH=1.5){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g; if(CW===8&&CH===1.5){ const prim=new THREE.Group(); g.add(prim); if(mountModel('rtu',g,0,0,0,prim)) b.cutouts.push({x,z,hMem:6.4,hCoat:5.4}); g=prim; } const d=curbAssembly(g,CW,CH,'sweep',false);
+function addRTU(b,x,z,CW=8,CH=1.5){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g; if(CW===8&&CH===1.5){ const prim=new THREE.Group(); g.add(prim); if(mountModel('rtu',g,0,0,0,prim,{membrane:b.fieldPlanes[0].material})) b.cutouts.push({x,z,hMem:6.4,hCoat:5.3}); g=prim; } const d=curbAssembly(g,CW,CH,'sweep',false);
   d.unit.add(box(CW+1.5,CW*0.5,CW+1.5,M.unit,0,CW*0.25,0)); d.unit.add(box(CW+1.7,0.4,CW+1.7,M.unitD,0,CW*0.5+0.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.35,CW*0.35,0.25,24),M.unitD); fan.position.set(0,CW*0.5+0.4,0); d.unit.add(fan); g.userData.unit=d.unit; g.userData.CH=CH; return gOuter; }
 function addRTU_old(b,x,z,CW=8,CH=1.5){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
   g.add(box(CW,CH,CW,M.curb,0,CH/2,0)); g.add(box(CW+1.5,CW*0.5,CW+1.5,M.unit,0,CH+CW*0.25,0)); g.add(box(CW+1.7,0.4,CW+1.7,M.unitD,0,CH+CW*0.5+0.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.35,CW*0.35,0.25,24),M.unitD); fan.position.set(0,CH+CW*0.5+0.4,0); g.add(fan);
@@ -746,7 +757,7 @@ function addSkylight(b,x,z,CW=6,CH=1.2){ const g=new THREE.Group(); g.position.s
 // Cast-iron drain per D-1-TYP: (E) bowl set below the field; clamping ring removed and reset in sealant; strainer replaced/primed;
 // Flex encapsulates the ring, extends min 18" out from the drain and 3" down into the bowl past the ring; topcoat extends 1" further into the bowl.
 function addDrain(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const RB=1.0;   // bowl radius (ft)
-  const prim=new THREE.Group(); g.add(prim); if(mountModel('drain',g,0,0,0,prim)) b.cutouts.push({x,z,rMem:2.45,rCoat:1.92}); const gOuter=g; g=prim;
+  const prim=new THREE.Group(); g.add(prim); if(mountModel('drain',g,0,0,0,prim,{membrane:b.fieldPlanes[0].material})) b.cutouts.push({x,z,rMem:2.45,rCoat:1.8}); const gOuter=g; g=prim;   // membrane hole just inside the model's 30" patch; coating hole 2.5" inside its 24" Flex
   const bowl=new THREE.Mesh(new THREE.CylinderGeometry(RB,RB*0.8,0.7,32,1,true),M.unitD); bowl.position.y=-0.34; g.add(bowl); const bfloor=new THREE.Mesh(new THREE.CircleGeometry(RB*0.8,32),M.unitD); bfloor.rotation.x=-Math.PI/2; bfloor.position.y=-0.68; g.add(bfloor);
   const mouth=new THREE.Mesh(new THREE.CircleGeometry(RB,32),M.unitD); mouth.rotation.x=-Math.PI/2; mouth.position.y=0.025; g.add(mouth);   // opening in the field
   const ring=new THREE.Mesh(new THREE.TorusGeometry(RB+0.18,0.14,10,36),M.iron); ring.rotation.x=Math.PI/2; ring.position.y=0.1; g.add(ring); g.userData.ring=ring;
@@ -761,7 +772,7 @@ function addDrain(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof
 // Flex encapsulates the lead and extends inside the stack; topcoat extends past the Flex. The drawing is not to scale and carries no dimensions —
 // every size in the model is ASSUMED (see scripts/build_lead_soil_stack_P-6-TYP.py). Model: 4" stack 24" up, 14" lead flange, Flex 13" out / 6" into the bore, topcoat 1" past.
 function addPipe(b,x,z,r=0.35){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const H=3.0, LT=0.05;
-  const prim=new THREE.Group(); g.add(prim); if(mountModel('pipe',g,0,0,0,prim,b.fieldPlanes[0].material)) b.cutouts.push({x,z,rMem:1.30,rCoat:0.875}); const gOuter=g; g=prim;   // membrane hole just inside the model's 16" patch; coating hole 2.5" inside its 13" Flex (the field sheets float ~1" up, so a 1" margin shows bare patch at the far edge)
+  const prim=new THREE.Group(); g.add(prim); if(mountModel('pipe',g,0,0,0,prim,{membrane:b.fieldPlanes[0].material})) b.cutouts.push({x,z,rMem:1.30,rCoat:0.875}); const gOuter=g; g=prim;   // membrane hole just inside the model's 16" patch; coating hole 2.5" inside its 13" Flex (the field sheets float ~1" up, so a 1" margin shows bare patch at the far edge)
   const pipe=new THREE.Mesh(new THREE.CylinderGeometry(r,r,H+0.3,20,1,true),M.iron); pipe.position.y=(H+0.3)/2-0.3; g.add(pipe);
   const leadSleeve=new THREE.Mesh(new THREE.CylinderGeometry(r+LT,r+LT,H-0.05,20,1,true),M.coping); leadSleeve.position.y=(H-0.05)/2; g.add(leadSleeve);   // (E) lead up the stack
   const leadFold=new THREE.Mesh(new THREE.TorusGeometry(r+LT/2,LT+0.03,8,24),M.coping); leadFold.rotation.x=Math.PI/2; leadFold.position.y=H-0.05; g.add(leadFold);   // folded into the stack top
@@ -838,7 +849,7 @@ function condFor(b,p){ if(b.tapeList) b.tapeList.forEach(t=>t.visible = p.prep>=
    BIG-BOX RETAIL (flat)
 ----------------------------------------------------------------- */
 function buildBigBox(){
-  const b=makeBlock({L:200,W:140,H:26,PH:3}); const {L,W,H,PH,PT}=b;
+  const b=makeBlock({L:200,W:140,H:26,PH:3, copingModel:{k:'E',at:-20}}); const {L,W,H,PH,PT}=b;   // coping model at the coping hotspot
   b.g.add(box(70,12,0.4,M.unitD,0,7,W/2+0.15,false));
   const drainPos=[[-70,-40],[-70,40],[70,-40],[70,40]]; drainPos.forEach(([x,z])=>addStain(b,x,z));
   const rtuPos=[[-40,-30],[10,10],[55,-25]]; const rtus=new THREE.Group(); b.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(b,x,z)));

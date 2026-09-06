@@ -46,6 +46,7 @@ Embedded on Webflow staging at https://roofrmi-update.webflow.io/visualize-your-
 - Planned split: `src/` for JS modules, `models/` for `.glb` + `.blend`, `scripts/` for Blender build scripts, `textures/`, `docs/`.
 - Three.js r128 from cdnjs; fonts from Google Fonts. Keep the grid tracks `minmax(0,1fr)` — a `1fr` track let the canvas grow the layout inside the Webflow iframe (fixed bug, don't regress).
 - Test with Playwright + swiftshader; `window.__rmi` exposes `S`, `setStage`, `goDetail`, `goRoof`, `selectBuilding`, `finishCam` for scripted screenshots.
+- `scripts/snapshot.py --building <b> --detail <id> [--section]`: `<id>` must be a detail that building lists (`goDetail` throws otherwise, e.g. office has no `coping`). It retries around Windows file locks on the PNGs.
 
 ## Blender model conventions (for the detail rebuild)
 - One `.blend` + one `.glb` per detail in `models/`, named `<detail>-<DRAWING-NO>.glb` (e.g. `cast-iron-drain-D-1-TYP.glb`).
@@ -74,8 +75,12 @@ Setup once: `pip install playwright pillow && playwright install chromium`. `sna
 ## Lessons already learned (don't repeat)
 - The glTF exporter writes hidden objects. Cutters/boolean helpers must be baked and deleted before export (`finalize()` does this). The loader also ignores any mesh not named `<layer>__...`.
 - Roof field sheets are flat planes an inch above the deck; a model with a recessed part (drain sump) needs a cutout in those sheets or the sweep covers it.
+- Cutout margins: the field coating sheets float ~1" above the roof, so at the oblique detail camera you see ~1.7" of ground under the far edge of a hole. The primer/Flex hole must sit **≥2.5" inside** the model's own Flex extent (not "just inside"), and the topcoat sheet's hole is 1" smaller again (`applyCutouts`), otherwise the Flex sheet shows as a yellow arc at the finished stage.
 - CSS grid tracks must be `minmax(0,1fr)`; a bare `1fr` let the canvas grow the layout inside the Webflow iframe.
 - Blender's `.blend1` backups are git-ignored; keep it that way.
+- A model spliced into a code-drawn run (the W-1-TYP coping section) must copy the run's cross-section exactly, and its coat boxes must be the same shape as the run's overlay boxes — any coplanar overlap or a filled-vs-notched corner shows as a bright line at the seams in the finished stage.
+- Every shipped model has a build script in `scripts/` (`build_<detail>_<DRAWING-NO>.py`). Regenerate, never hand-edit a `.blend`. `rmi_blender.Shell` builds revolved parts as one mesh per layer (cheap when a roof carries dozens of instances); `box`/`cyl`/`torus` + `helper`/`cut` for the rest. Blender's cone `radius1` is the BOTTOM.
+- The field overlay sheets float ~1" up, so a model's roof patch must be re-skinned with the block's field material (`mountModel(..., {membrane: b.fieldPlanes[0].material})`) or it shows as a grey disc on mod-bit/concrete roofs.
 
 ## Working style
 Heath prefers short answers and things he can look at. Build one detail, show it in the tool, adjust, then the next.
