@@ -7,7 +7,9 @@ TYPICAL, 11/05/24) with W1-11-FT3D (EXISTING / NEW METAL COPING – CONCEPT DRAW
 The model is a 4-ft SECTION OF PARAPET with one coping joint in the middle. The app splices it into a
 coping run, so the cap / leg / topcoat cross-sections match the code-drawn run exactly (18" cap, 3" thick,
 6" drip legs, topcoat to the run's overlay surface) — change those and the seams will show.
-x runs along the parapet; -y is the OUTSIDE face (run-local +z in the app, where the fasteners go).
+x runs along the parapet; -y is the OUTSIDE face, which the loader maps to run-local +z in the app.
+That axis points outward on the S and E runs only, so the app turns the section round on N and W —
+keep the model symmetric about x=0 (it is) or that rotation will show.
 
 What the 2D drawing says (VERIFIED):
   * Check for damaged components; replace damaged or broken components.

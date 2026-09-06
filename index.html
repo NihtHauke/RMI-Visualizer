@@ -685,6 +685,7 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
   const cm=o.copingModel;   // {k:'E', at:-20}: splice the Blender coping-joint model (a 4-ft parapet section) into that side's run at world x (N/S) or z (E/W)
   sides.filter(sd=>!skip.includes(sd.k)).forEach(sd=>{ const mt = cm&&cm.k===sd.k ? (sd.jx?cm.at:-cm.at) : null;   // run-local centre of the modelled section
     const run=new THREE.Group(); run.position.set(sd.x,PH,sd.z); if(!sd.jx) run.rotation.y=Math.PI/2; cop.add(run); const n=sd.jx?L:W, cw=(sd.jx?sd.d:sd.w)+0.5;
+    const out=Math.sign(sd.jx?sd.z:sd.x)||1;   // run-local +z is world +z on N/S and world +x on W/E, so it points outward only on S and E; fasteners always go on the OUTSIDE face
     // cap + drip legs, and topcoat over the entire coping — per segment: the whole run, or two pieces either side of the model's 4-ft gap
     const capAt=(grp,x0,x1,eL,eR)=>{ const len=x1-x0, cx=(x0+x1)/2, tl=len+eL+eR, tc=cx+(eR-eL)/2; grp.add(box(len,0.25,cw,M.coping,cx,0.12,0)); [-1,1].forEach(sg=>grp.add(box(len,0.5,0.06,M.coping,cx,-0.05,sg*(cw/2-0.03),false)));
       grp.add(box(tl,0.06,cw+0.12,M.topcoat,tc,0.28,0,false)); [-1,1].forEach(sg=>grp.add(box(tl,0.62,0.06,M.topcoat,tc,0,sg*(cw/2+0.06),false))); };   // legs run the full height to the top overlay (no notch at the corner)   // topcoat overlay runs 0.05 past the run ends but stops flush at the model's gap (coplanar overlap z-fights)
@@ -692,11 +693,12 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
     if(mt===null) par.add(box(sd.w,PH,sd.d,M.wall,sd.x,PH/2,sd.z)); else segs.forEach(([x0,x1])=>{ const a0=Math.max(x0,-n/2), a1=Math.min(x1,n/2); run.add(box(a1-a0,PH,PT,M.wall,(a0+a1)/2,-PH/2,0)); });   // parapet wall, leaving the gap
     const U=(mat,wd,dy,into)=>{ const grp=new THREE.Group(); grp.add(box(wd,0.05,cw+0.1+dy*2,mat,0,0.25+dy,0,false)); [-1,1].forEach(sg=>grp.add(box(wd,0.55,0.05,mat,0,-0.05,sg*(cw/2+0.02+dy),false))); into.add(grp); return grp; };
     for(let t=-n/2+10;t<n/2;t+=10){ if(mt!==null&&Math.abs(t-mt)<2) continue; const j=box(0.06,0.3,cw+0.1,M.joint,t,0.12,0,false); run.add(j); const tp=U(M.tape,0.34,0.005,tapes); tp.position.x=t; if(!sd.jx){ tp.position.set(0,0,0); tapes.remove(tp); run.add(tp); tp.position.x=t; tp.userData.tape=true; } U(M.primerOv,0.6,0.012,run).position.x=t; U(M.flexOv,0.68,0.02,run).position.x=t; }
-    for(let t=-n/2+4;t<n/2;t+=3){ if(Math.abs(((t+n/2)%10))<0.8) continue; if(mt!==null&&Math.abs(t-mt)<=2.1) continue; const f=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.05,8),Math.random()<0.25?M.rustFast:M.fast); f.rotation.x=Math.PI/2; f.position.set(t,-0.1,cw/2+0.0); run.add(f); const dot=new THREE.Mesh(new THREE.CircleGeometry(0.14,12),M.flexOv); dot.position.set(t,-0.1,cw/2+0.03); run.add(dot); const dot2=new THREE.Mesh(new THREE.CircleGeometry(0.16,12),M.topcoat); dot2.position.set(t,-0.1,cw/2+0.07); run.add(dot2); }
+    for(let t=-n/2+4;t<n/2;t+=3){ if(Math.abs(((t+n/2)%10))<0.8) continue; if(mt!==null&&Math.abs(t-mt)<=2.1) continue; const f=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.05,8),Math.random()<0.25?M.rustFast:M.fast); f.rotation.x=Math.PI/2; f.position.set(t,-0.1,out*cw/2); run.add(f);
+      [[0.14,M.flexOv,0.03],[0.16,M.topcoat,0.07]].forEach(([r,mat,dz])=>{ const dot=new THREE.Mesh(new THREE.CircleGeometry(r,12),mat); dot.position.set(t,-0.1,out*(cw/2+dz)); dot.rotation.y=out<0?Math.PI:0; run.add(dot); }); }
     if(mt!==null){ // code-drawn stand-in for the gap, hidden once the model arrives; the model's z=0 is roof level, so drop it by PH under the run
       const fb=new THREE.Group(); run.add(fb); capAt(fb,mt-2,mt+2,0,0); fb.add(box(0.06,0.3,cw+0.1,M.joint,mt,0.12,0,false)); fb.add(box(4,PH,PT,M.wall,mt,-PH/2,0));
       const tp=U(M.tape,0.34,0.005,fb); tp.position.x=mt; tp.userData.tape=true; U(M.primerOv,0.6,0.012,fb).position.x=mt; U(M.flexOv,0.68,0.02,fb).position.x=mt;
-      const h=mountModel('coping',run,mt,0,0,fb,{parapet:M.wall,cap:M.coping,leg:M.coping}); if(h) h.position.y=-PH; } });
+      const h=mountModel('coping',run,mt,0,out<0?Math.PI:0,fb,{parapet:M.wall,cap:M.coping,leg:M.coping}); if(h) h.position.y=-PH; } });   // model's fastener face is run-local +z; turn it round where that faces in (it is symmetric along the run)
   // tape pieces live inside rotated runs, so collect them for visibility toggling
   const tapeList=[]; cop.traverse(o=>{ if(o.userData.tape||o.parent===tapes) tapeList.push(o); });
   const IL=L-2*PT, IW=W-2*PT; const roof=new THREE.Group(); roof.position.y=H; g.add(roof);
@@ -1072,7 +1074,8 @@ function dist2(t){ return Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1]
 const hotsEl=document.getElementById('hots'); const v3=new THREE.Vector3();
 function buildHots(){ hotsEl.innerHTML=''; B.hots.forEach(h=>{ const d=document.createElement('div'); d.className='hot'; d.innerHTML=`<button>${DET(h.id).name} <span style="opacity:.6;font-weight:500">${DET(h.id).drawing}</span></button><i></i>`; d.querySelector('button').onclick=()=>goDetail(h.id); hotsEl.appendChild(d); h.el=d; }); }
 function placeHots(){ if(!B) return; const r=canvas.getBoundingClientRect(); B.hots.forEach(h=>{ const show=S.view==='roof'&&!!h.show(); h.el.classList.toggle('hide',!show); if(!show) return; v3.copy(h.anchor()).project(camera); h.el.style.left=((v3.x+1)/2*r.width)+'px'; h.el.style.top=((1-v3.y)/2*r.height)+'px'; }); }
-function goDetail(id){ const d=DET(id); S.view=id; const a=B.hots.find(h=>h.id===id).anchor().clone(); secAnchor.copy(a); a.y-=d.drop||0; flyTo(a,d.dist,d.theta,d.phi); document.getElementById('secBtn').style.display='inline-block';
+function goDetail(id){ const d=DET(id); const h=B&&B.hots.find(h=>h.id===id); if(!h){ console.warn(`no '${id}' hotspot on this building; it has: ${B?B.hots.map(x=>x.id).join(', '):'none'}`); return false; }
+  S.view=id; const a=h.anchor().clone(); secAnchor.copy(a); a.y-=d.drop||0; flyTo(a,d.dist,d.theta,d.phi); document.getElementById('secBtn').style.display='inline-block';
   document.getElementById('viewChip').querySelector('b').textContent='Detail'; document.getElementById('viewName').textContent=`${d.name} · ${d.drawing}`; document.getElementById('backBtn').style.display='inline-block'; document.getElementById('scaleNote').textContent='Stages replay at detail scale'; renderLayers(); }
 function goRoof(instant){ S.view='roof'; document.getElementById('secBtn').style.display='none'; const e=B.extent; flyTo(new THREE.Vector3(e.cx||0,e.dist?e.H-45:e.H+2,0),roofDist(),0.62,e.dist?1.2:1.0,instant);
   document.getElementById('viewChip').querySelector('b').textContent='Whole roof'; document.getElementById('viewName').textContent=''; document.getElementById('backBtn').style.display='none'; document.getElementById('scaleNote').textContent=''; renderLayers(); }
@@ -1157,7 +1160,7 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize()
   applyCam(); applyStage(); applySection(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
 
 selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame);
-window.__rmi={ S, setStage, goDetail, goRoof, selectBuilding, finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS };
+window.__rmi={ S, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS };
 })();
 </script>
 </body>

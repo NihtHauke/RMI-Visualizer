@@ -10,6 +10,8 @@ Usage (from the repo root):
     python scripts/snapshot.py --building bigbox                 # whole-roof view only
     python scripts/snapshot.py --building bigbox --detail rtu --section   # section view on
 
+A --detail the building does not carry is skipped with a message listing the ones it does have.
+
 One-time setup:
     pip install playwright pillow
     playwright install chromium
@@ -89,7 +91,14 @@ def main():
             if args.topcoat == "white":
                 page.evaluate("document.querySelector('#topcoat button[data-v=white]').click()")
             if args.detail:
-                page.evaluate(f"window.__rmi.goDetail('{args.detail}'); window.__rmi.finishCam();")
+                # goDetail returns false when this building has no such hotspot (e.g. office has no coping,
+                # it uses edge metal). Nothing to photograph, so say which details it does have and stop.
+                if page.evaluate(f"window.__rmi.goDetail('{args.detail}') === false"):
+                    have = ", ".join(page.evaluate("window.__rmi.details()")) or "none"
+                    print(f"skipped: {args.building} has no '{args.detail}' hotspot. It has: {have}")
+                    browser.close()
+                    return
+                page.evaluate("window.__rmi.finishCam();")
                 page.wait_for_timeout(800)
                 if args.section:
                     page.click("#secBtn")

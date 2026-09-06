@@ -46,7 +46,7 @@ Embedded on Webflow staging at https://roofrmi-update.webflow.io/visualize-your-
 - Planned split: `src/` for JS modules, `models/` for `.glb` + `.blend`, `scripts/` for Blender build scripts, `textures/`, `docs/`.
 - Three.js r128 from cdnjs; fonts from Google Fonts. Keep the grid tracks `minmax(0,1fr)` — a `1fr` track let the canvas grow the layout inside the Webflow iframe (fixed bug, don't regress).
 - Test with Playwright + swiftshader; `window.__rmi` exposes `S`, `setStage`, `goDetail`, `goRoof`, `selectBuilding`, `finishCam` for scripted screenshots.
-- `scripts/snapshot.py --building <b> --detail <id> [--section]`: `<id>` must be a detail that building lists (`goDetail` throws otherwise, e.g. office has no `coping`). It retries around Windows file locks on the PNGs.
+- `scripts/snapshot.py --building <b> --detail <id> [--section]`: a `<id>` the building does not carry (office has no `coping`) is skipped with a message listing the ones it does have. It retries around Windows file locks on the PNGs.
 
 ## Blender model conventions (for the detail rebuild)
 - One `.blend` + one `.glb` per detail in `models/`, named `<detail>-<DRAWING-NO>.glb` (e.g. `cast-iron-drain-D-1-TYP.glb`).
@@ -78,6 +78,7 @@ Setup once: `pip install playwright pillow && playwright install chromium`. `sna
 - Cutout margins: the field coating sheets float ~1" above the roof, so at the oblique detail camera you see ~1.7" of ground under the far edge of a hole. The primer/Flex hole must sit **≥2.5" inside** the model's own Flex extent (not "just inside"), and the topcoat sheet's hole is 1" smaller again (`applyCutouts`), otherwise the Flex sheet shows as a yellow arc at the finished stage.
 - CSS grid tracks must be `minmax(0,1fr)`; a bare `1fr` let the canvas grow the layout inside the Webflow iframe.
 - Blender's `.blend1` backups are git-ignored; keep it that way.
+- Coping runs are built in a run-local frame where +z is world +z on N/S and world +x on W/E, so it points OUTWARD only on S and E. Anything one-sided (fasteners, and a spliced model's fastener face) needs the `out` sign, or it lands on the inside face of half the building.
 - A model spliced into a code-drawn run (the W-1-TYP coping section) must copy the run's cross-section exactly, and its coat boxes must be the same shape as the run's overlay boxes — any coplanar overlap or a filled-vs-notched corner shows as a bright line at the seams in the finished stage.
 - Every shipped model has a build script in `scripts/` (`build_<detail>_<DRAWING-NO>.py`). Regenerate, never hand-edit a `.blend`. `rmi_blender.Shell` builds revolved parts as one mesh per layer (cheap when a roof carries dozens of instances); `box`/`cyl`/`torus` + `helper`/`cut` for the rest. Blender's cone `radius1` is the BOTTOM.
 - The field overlay sheets float ~1" up, so a model's roof patch must be re-skinned with the block's field material (`mountModel(..., {membrane: b.fieldPlanes[0].material})`) or it shows as a grey disc on mod-bit/concrete roofs.
