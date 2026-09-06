@@ -339,7 +339,7 @@ const DETAILS = {
     src:'Assembly per W-11-TYP and W13-FT-26-3D — VERIFIED: Flex runs the full height of the (E) flashing to the reglet, not a fixed band. Flashing height itself varies by wall (24" here, ASSUMED). Note 7: applies to Fry-type reglets; do not damage the receiver.' },
   pipe:   { name:'Soil stack / pipe penetration', drawing:'P-6-TYP', concept:'P3SP-11-FT-3D', dist:8, phi:1.05, theta:0.7, drop:1.8, menu:'Pipes / soil stacks',
     layers:[{k:'existing',label:'(E) stack with lead flashing up the pipe and folded into the top; ill-fitting lead replaced',color:'#C9C9C2'},{k:'primer',label:'Sealant bead at the base; clean and prime lead and field',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the lead from the field to the top and extends inside the stack',color:'#D9A21B'},{k:'thane',label:'Topcoat over the Flex and past it into the stack',color:'#C3C7CC'}],
-    src:'Assembly per P-6-TYP and P3SP-11-FT-3D — VERIFIED (lead encapsulation, Flex inside the stack, topcoat past the Flex). Field extent of the Flex is not dimensioned; 12" ASSUMED. Note 7: applies equally to conduit, HVAC and refrigeration penetrations.' },
+    src:'Assembly per P-6-TYP and P3SP-11-FT-3D — VERIFIED (lead up the stack and turned into the bore, sealant bead at the base, Flex encapsulates the lead and extends inside the stack, topcoat past the Flex). The drawing is not to scale and gives no dimensions: the 4" stack, 24" height, 14" lead flange, Flex 6" past the flange and 6" down the bore, topcoat 1" past the Flex are all ASSUMED. Note 7: applies equally to conduit, HVAC and refrigeration penetrations.' },
   skylight:{ name:'Curb-mounted skylight', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:18, phi:1.15, theta:0.8, drop:2.0, menu:'Skylights',
     layers:[{k:'existing',label:'Existing curb and skylight frame',color:'#C9C9C2'},{k:'primer',label:'Primer on curb wall and field',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb to the frame',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
     src:'Assembly per CS-1-TYP, which names skylight domes in note 7 — VERIFIED. Flex up the full curb and over the top to the interior; dome lifted and reset.' },
@@ -485,7 +485,7 @@ let B = null;   // the current built building: { extent, hots, applyStage(p) }
    <layer>__<part> with layer in existing|primer|flex|topcoat. Metres → feet.
    If a file fails to load, the code-drawn geometry stays; nothing breaks.
 ================================================================= */
-const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb' };
+const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb' };
 const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=null;
 function loadModel(file){ if(modelCache[file]) return modelCache[file];
   modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
@@ -494,8 +494,9 @@ function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometr
     const m=o.material.clone(); m.side=THREE.DoubleSide; if(LAYER_CLIP[layer]){ m.clippingPlanes=[LAYER_CLIP[layer]]; m.clipShadows=true; } if(layer==='primer'){ m.transparent=true; m.opacity=.75; }
     if(layer==='topcoat'){ m.envMapIntensity=1.2; o.userData.topcoat=true; } o.material=m; if(/existing__unit/.test(o.name)) o.userData.lift=true; }); }
 // Place a model instance under `parent` at (x,z), hiding `fallback` (the code-drawn group) once it arrives.
-function mountModel(id,parent,x,z,rotY,fallback){ const file=MODELS[id]; if(!file) return null; const holder=new THREE.Group(); holder.position.set(x,0,z); holder.rotation.y=rotY||0; parent.add(holder);
-  loadModel(file).then(scene=>{ const inst=scene.clone(true); prepModel(inst); inst.scale.setScalar(M2FT); holder.add(inst); if(fallback) fallback.visible=false; holder.userData.loaded=true; modelInstances.push(holder); })
+// `fieldMat` (optional) re-skins the model's existing__membrane patch with the block's field material so it matches the roof type.
+function mountModel(id,parent,x,z,rotY,fallback,fieldMat){ const file=MODELS[id]; if(!file) return null; const holder=new THREE.Group(); holder.position.set(x,0,z); holder.rotation.y=rotY||0; parent.add(holder);
+  loadModel(file).then(scene=>{ const inst=scene.clone(true); prepModel(inst); if(fieldMat) inst.traverse(o=>{ if(o.isMesh&&/^existing__membrane/.test(o.name)) o.material=fieldMat; }); inst.scale.setScalar(M2FT); holder.add(inst); if(fallback) fallback.visible=false; holder.userData.loaded=true; modelInstances.push(holder); })
     .catch(e=>{ console.warn('model not loaded, keeping code geometry:',file,e.message); });
   return holder; }
 function applyModels(p,seat){ const white=S.topcoat==='white';
@@ -757,8 +758,10 @@ function addDrain(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof
   flange(M.primerOv,RB-0.02,RB+0.18+1.5,0.075,0.3); flange(M.flexOv,RB-0.05,RB+0.18+1.5,0.10,0.25+0.05); flange(M.topcoat,RB-0.13,RB+0.18+1.6,0.13,0.33+0.08);   // 18" out, 3" in; topcoat 1" further in
   return gOuter; }
 // Soil stack per P-6-TYP: (E) lead flashing runs up the stack and folds into its top (replace ill-fitting lead); sealant bead at the base;
-// Flex encapsulates the lead and extends inside the stack; topcoat extends past the Flex. Field extent of the Flex is not dimensioned on the drawing (12" ASSUMED).
-function addPipe(b,x,z,r=0.35){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const H=3.0, LT=0.05;
+// Flex encapsulates the lead and extends inside the stack; topcoat extends past the Flex. The drawing is not to scale and carries no dimensions —
+// every size in the model is ASSUMED (see scripts/build_lead_soil_stack_P-6-TYP.py). Model: 4" stack 24" up, 14" lead flange, Flex 13" out / 6" into the bore, topcoat 1" past.
+function addPipe(b,x,z,r=0.35){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const H=3.0, LT=0.05;
+  const prim=new THREE.Group(); g.add(prim); if(mountModel('pipe',g,0,0,0,prim,b.fieldPlanes[0].material)) b.cutouts.push({x,z,rMem:1.30,rCoat:0.875}); const gOuter=g; g=prim;   // membrane hole just inside the model's 16" patch; coating hole 2.5" inside its 13" Flex (the field sheets float ~1" up, so a 1" margin shows bare patch at the far edge)
   const pipe=new THREE.Mesh(new THREE.CylinderGeometry(r,r,H+0.3,20,1,true),M.iron); pipe.position.y=(H+0.3)/2-0.3; g.add(pipe);
   const leadSleeve=new THREE.Mesh(new THREE.CylinderGeometry(r+LT,r+LT,H-0.05,20,1,true),M.coping); leadSleeve.position.y=(H-0.05)/2; g.add(leadSleeve);   // (E) lead up the stack
   const leadFold=new THREE.Mesh(new THREE.TorusGeometry(r+LT/2,LT+0.03,8,24),M.coping); leadFold.rotation.x=Math.PI/2; leadFold.position.y=H-0.05; g.add(leadFold);   // folded into the stack top
@@ -768,7 +771,7 @@ function addPipe(b,x,z,r=0.35){ const g=new THREE.Group(); g.position.set(x,0,z)
     const f=new THREE.Mesh(new THREE.RingGeometry(r+LT+dr,r+1.0+dr,32),mat); f.rotation.x=-Math.PI/2; f.position.y=0.07+dr; g.add(f);
     if(inside){ const i=new THREE.Mesh(new THREE.CylinderGeometry(r-0.01-dr*0.5,r-0.01-dr*0.5,inside,20,1,true),mat); i.position.y=H-inside/2; g.add(i); const cap=new THREE.Mesh(new THREE.RingGeometry(r-0.01-dr*0.5,r+LT+dr,24),mat); cap.rotation.x=-Math.PI/2; cap.position.y=H+dr; g.add(cap); } };
   wrap(M.primerOv,0.02,H-0.1,0); wrap(M.flexOv,0.05,H,0.35); wrap(M.topcoat,0.08,H,0.5);   // Flex inside the stack; topcoat past the Flex
-  return g; }
+  return gOuter; }
 // Overflow scupper per D-4-TYP: (E) tube through the parapet at roof level with a cant at the wall base; Flex encapsulates the interior of the tube
 // and extends min 12" from the scupper onto the field; Flex base coat continues up the wall; topcoat over all; sealant bead at the exterior termination.
 function addScupper(b,x){ const g=new THREE.Group(); g.position.set(x,0,-b.W/2+b.PT/2); b.par.add(g); const PT=b.PT, SW=2.0, SH=0.9, T=0.06, TL=PT+0.7;

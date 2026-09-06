@@ -101,7 +101,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 ### Penetrations
 | Detail | 2D logic drawing | 3D concept | Applies to |
 |---|---|---|---|
-| Pipe / soil stack / conduit (lead flashing) | P-6-TYP | P3SP-11-FT-3D, P3SP-2-FT-3D, P3SP-14-FT-3D | BUR, mod-bit (notes say equally applies to conduit, HVAC, refrigeration lines) |
+| Pipe / soil stack / conduit (lead flashing) — **model** `models/lead-soil-stack-P-6-TYP.glb` (`scripts/build_lead_soil_stack_P-6-TYP.py`). Assembly VERIFIED to P-6-TYP; every dimension ASSUMED (drawing is NTS with no dimensions) | P-6-TYP | P3SP-11-FT-3D, P3SP-2-FT-3D, P3SP-14-FT-3D | BUR, mod-bit (notes say equally applies to conduit, HVAC, refrigeration lines) |
 | Pipe penetration, BUR | P-1-BUR | P1BUR-1-FT-3D (roof jack) | BUR, mod-bit |
 | Pipe penetration, single-ply | P-2-SP, P-3-SP | P3SP-3-2-FT-3D | PVC, EPDM, TPO |
 | Pipe penetration, concrete deck | P-4-C, P-5-C, P-7-C | — | Direct over concrete; P-5/P-7 cover circular supports (site screen, solar, mechanical) |
@@ -195,6 +195,7 @@ Still ASSUMED (no document in the library):
 - Wet/dry times between stages for the animation timing — will use the plate cure notes (Thane ~4 hr, White ~3 hr) as pacing cues only.
 - Building-type ↔ roof-type pairing (which roof types to offer for "school" vs "warehouse"). Not an RMI question; I'll draft from public building-stock data and tag it.
 - Roof hatch detail — no drawing in the library; treated as a fixed curb until RMI says otherwise.
+- **P-6-TYP soil stack dimensions.** The drawing is not to scale and carries no dimensions. The model uses a 4" stack 24" above the roof, 1/16" lead with a 14" base flange turned 1" into the bore, a 3/8" sealant bead, Flex 6" past the flange and 6" down the bore, topcoat 1" past the Flex. All in `scripts/build_lead_soil_stack_P-6-TYP.py` as named constants — correct any of them and rebuild.
 - Per-detail Flex allowance for the material takeoff on metal roofs (how many gallons a curb or a run of side lap consumes). Plates give field rates only.
 
 ---
