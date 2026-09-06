@@ -51,6 +51,23 @@ Embedded on Webflow staging at https://roofrmi-update.webflow.io/visualize-your-
 - Export: glTF Binary, apply modifiers, Draco compression on. Keep textures at 1K–2K.
 - Order of rebuild: the eight VERIFIED details first, then the remaining twenty in the order the buildings need them.
 
+## The working loop (Claude Code)
+For every detail or code change, in this order:
+1. Read the drawing(s) for the detail in `docs/` (2D logic + 3D concept). Write down the dimensions the drawing gives; anything it doesn't give is ASSUMED.
+2. Write `scripts/build_<detail>_<DRAWING-NO>.py` using `scripts/rmi_blender.py` (see its docstring). Dimensions as named constants at the top with the note they came from.
+   Run it headless: `blender -b --python scripts/build_<...>.py` (Blender is at `C:\Program Files\Blender Foundation\Blender 5.1\blender.exe`). Never open .blend files from inside a running Blender session via script — it crashes.
+3. Register the model in `index.html` (`MODELS` map) and give it a mount point + cutout sizes in the builder (see `addDrain` / `addRTU`). The coating cutout must sit just INSIDE the model's own Flex extent; the membrane cutout just inside the model's roof patch.
+4. Visual check: `python scripts/snapshot.py --building <b> --detail <id>` (and `--section`). Open the contact sheet and LOOK at every stage. Fix anything wrong before pushing. Zero console errors is the bar.
+5. `git add . && git commit -m "<what changed>" && git push`. Pages updates in about a minute.
+6. Update the detail's line in `docs/RMI_Library_Catalog.md` (model file, VERIFIED/ASSUMED) and tell Heath what moved from ASSUMED to VERIFIED.
+Setup once: `pip install playwright pillow && playwright install chromium`. `snapshots/` is git-ignored.
+
+## Lessons already learned (don't repeat)
+- The glTF exporter writes hidden objects. Cutters/boolean helpers must be baked and deleted before export (`finalize()` does this). The loader also ignores any mesh not named `<layer>__...`.
+- Roof field sheets are flat planes an inch above the deck; a model with a recessed part (drain sump) needs a cutout in those sheets or the sweep covers it.
+- CSS grid tracks must be `minmax(0,1fr)`; a bare `1fr` let the canvas grow the layout inside the Webflow iframe.
+- Blender's `.blend1` backups are git-ignored; keep it that way.
+
 ## Working style
 Heath prefers short answers and things he can look at. Build one detail, show it in the tool, adjust, then the next.
 When a drawing changes something from ASSUMED to VERIFIED, say so explicitly.
