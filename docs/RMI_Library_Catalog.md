@@ -158,7 +158,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | Lap seam (BUR/single-ply) | F-4-TYP | F4-1-24-3D, F4-2-24-3D, F4-4-24-3D, F4-8-24-3D, F4-10-24-3D | All flat systems |
 | Tape seam | F-5-TYP | — | All flat systems |
 | **Metal end lap** | F-6-TYP, F-7-TYP | F6-10-23-3D, F6-19-23-3D, F6-19-28-3D | Metal panels |
-| **R-panel side lap** | F-8-TYP | F8-2-FT-3D, F8-10-FT-3D + 6 variants | Metal panels |
+| **R-panel side lap** — **model** `models/rpanel-side-lap-F-8-TYP.glb` (`scripts/build_rpanel_side_lap_F-8-TYP.py`), a 16" x 6-ft panel section spliced into the warehouse's right slope at the lap hotspot (the first model on a sloped metal roof). Assembly VERIFIED: two panels lapped at a major rib, fastened through the crest, sealant at the voids, Flex encapsulating lap and fasteners crest to flat both sides, topcoat over all; rib profile, lap lips, fastener spacing (12" o.c.), Flex extent past the rib base (2") and coat thicknesses ASSUMED | F-8-TYP | F8-2-FT-3D, F8-10-FT-3D + 6 variants | Metal panels |
 | **Standing seam (S-seam)** | F-9-TYP, F-20-TYP | B-1-F10-22-3D | Metal panels |
 | **Trapezoid panel** | F-10-TYP | F10-FT-22-3D, F10-FT-3-3D, F10-FT-6-3D, F10-FT-18-3D | Metal panels |
 | Metal overlay panel | F-11-TYP | — | Metal panels |
@@ -200,6 +200,7 @@ Still ASSUMED (no document in the library):
 - **D-4-TYP scupper sizes and exterior termination.** The drawing is NTS: the tool uses a 16" x 5" sheet-metal tube with a 2" exterior collar and runs the sealant bead round the whole collar (the drawing shows the bead only at the bottom). Is the 12" field extent measured from the cant toe (as modelled) or from the wall? All in `scripts/build_overflow_scupper_D-4-TYP.py` as named constants.
 - **Parapet base flashing height.** D-4-TYP draws the Flex base coat the full height of the (E) wall flashing up to the coping, so every parapet in the tool now shows a 6" cant, base flashing and Flex/topcoat to the coping (previously an 18" band). Cant size and flashing height are ASSUMED (`PB` in index.html).
 - **P-6-TYP soil stack dimensions.** The drawing is not to scale and carries no dimensions. The model uses a 4" stack 24" above the roof, 1/16" lead with a 14" base flange turned 1" into the bore, a 3/8" sealant bead, Flex 6" past the flange and 6" down the bore, topcoat 1" past the Flex. All in `scripts/build_lead_soil_stack_P-6-TYP.py` as named constants — correct any of them and rebuild.
+- **F-8-TYP side lap sizes.** The drawing is NTS and dimensions nothing. The model uses a 6.6" x 1.32" rib with a 3" crest, lap fasteners at 12" o.c. through the crest, Flex 2" past the rib base onto the flat (primer the same band) and sealant beads at both lap edges. Does RMI specify a minimum Flex extent past the rib and a lap-fastener spacing? All in `scripts/build_rpanel_side_lap_F-8-TYP.py` and `LAP` in index.html as named constants.
 - Per-detail Flex allowance for the material takeoff on metal roofs (how many gallons a curb or a run of side lap consumes). Plates give field rates only.
 
 ---

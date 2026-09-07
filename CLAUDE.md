@@ -34,8 +34,8 @@ Embedded on Webflow staging at https://roofrmi-update.webflow.io/visualize-your-
   and **full-field** (everything else: primer, Flex, topcoat over the whole roof). Two roof-specific pre-stages: gravel removal, ballast removal.
 - 28 detail types, keyed to drawing numbers. Eight are rebuilt to their drawings and VERIFIED:
   curb CS-1-TYP / CS-13-MP, drain D-1-TYP, soil stack P-6-TYP, coping W-1-TYP, reglet W-11-TYP,
-  R-panel lap F-8-TYP, standing seam F-9-TYP, scupper D-4-TYP. Six ship as Blender models in `models/` (curb, drain, soil stack, coping,
-  reglet, scupper); the rest are generic code geometry pending the same treatment.
+  R-panel lap F-8-TYP, standing seam F-9-TYP, scupper D-4-TYP. Seven ship as Blender models in `models/` (curb, drain, soil stack, coping,
+  reglet, scupper, R-panel side lap); the rest are generic code geometry pending the same treatment.
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## Code layout
@@ -88,6 +88,9 @@ Setup once: `pip install playwright pillow && playwright install chromium`. `sna
 - Cameras: `python scripts/snapshot.py --building <b> --detail <id> --cam dist,theta,phi[,drop] --stages 4,6` tries a camera without editing `DETAILS` (it writes `window.__rmi.DETAILS[id]`). At the finished stage everything is topcoat-grey and a frontal view has no depth cues — judge a camera on stages 1 and 4, then check 6.
 - Every parapet run carries a cant + base flashing + full-height coats (`parapetBase`, constants in `PB`). A wall-mounted model that splices into a parapet (`makeBlock` `splices:[{k,at,id}]`) must draw that same base from the same numbers, or the seams show; `build_overflow_scupper_D-4-TYP.py` is the pattern. A splice that hides with a checkbox needs a plug (see `setScuppers`) or the parapet shows a hole.
 - The field overlay sheets float ~1" up, so a model's roof patch must be re-skinned with the block's field material (`mountModel(..., {membrane: b.fieldPlanes[0].material})`) or it shows as a grey disc on mod-bit/concrete roofs.
+- Metal (gable) roofs sweep only the topcoat; `buildGable`'s `applyStage` used to park `clipFlex`/`clipPrim` at -1000, which clips away any model's primer/Flex there. They now sit at +1000. A model on a slope is skinned with the slope's `M.*` materials (`panel`, `rib`, `fastener`, `rust`, `sealant`, `primer`, `flex`, `topcoat`) and its holder gets `userData.gate={flex:z0/SL}` so its Flex appears when the lap strip has swept down to it (`applyModels` honours the gate). `M.rust` on a model's rust discs fades them through prep for free.
+- Splicing into a panel run (`cfg.lapModel` in `buildGable`): the field and topcoat sheets get a hole (`slopeSheet`), the rib and lap `InstancedMesh`es carry one extra instance so the bay's rib is drawn as two pieces, purlin fasteners inside the bay are dropped and rust patches keep off that lap. The lap coat profiles come from `LAP` + `lapProfile()` and the build script's `lap_profile()` — same numbers or the bay ends show.
+- `prepModel`'s primer-opacity statement was the third swallowed-by-`//` casualty; model primer now renders at 75% opacity as intended (checked on the coping).
 
 ## Working style
 Heath prefers short answers and things he can look at. Build one detail, show it in the tool, adjust, then the next.

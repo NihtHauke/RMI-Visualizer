@@ -298,9 +298,9 @@ const DETAILS = {
   curb:   { name:'Curb-mounted HVAC unit', drawing:'CS-13-MP', concept:'CS13-1-8-3D', dist:21, phi:1.18, theta:0.85, drop:4.6, menu:'HVAC curb', byRoof:{ spf:{ drawing:'SPF-12-TYP', concept:'B-1-SPF-1-3D', src:'Assembly per SPF-12-TYP (HVAC curb). Wrap height is ASSUMED.' } },
     layers:[{k:'existing',label:'(E) metal curb, flashing skirt and counterflashing; unit lifted',color:'#AEB3B0'},{k:'primer',label:'Primer on curb, flashing and the panel around it',color:'#E8D7A6'},{k:'flex',label:'Flex from the panel up the full curb wall, over the top, onto the interior',color:'#D9A21B'},{k:'thane',label:'Topcoat over all; counterflashing and unit reset after cure',color:'#C3C7CC'}],
     src:'Assembly per CS-13-MP and CS13-1-8-3D — VERIFIED: Flex up the full curb wall and over the top to the interior, counterflashing above, unit lifted and reset after cure.' },
-  lap:    { name:'R-panel side lap', drawing:'F-8-TYP', concept:'F8-2-FT-3D', dist:9, phi:1.15, theta:0.5, drop:0.3, menu:'Side laps',
+  lap:    { name:'R-panel side lap', drawing:'F-8-TYP', concept:'F8-2-FT-3D', dist:3.5, phi:1.2, theta:0.95, drop:0.2, menu:'Side laps',
     layers:[{k:'existing',label:'(E) min 24 ga. panels lapped at a major rib, fastened through the crest; rust treated, damaged/loose fasteners replaced',color:'#AEB3B0'},{k:'primer',label:'Bead of approved sealant at all voids; clean and prime the lap and fasteners',color:'#E8D7A6'},{k:'flex',label:'Flex fully encapsulates the lap rib and its fasteners, rib to flat on both sides',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything; optional Flex base coat to the whole field',color:'#C3C7CC'}],
-    src:'Assembly per F-8-TYP and F8-2-FT-3D — VERIFIED: the lap is the rib, and the Flex wraps the whole rib profile. Note 12: ill-fitting panels with excessive movement can void the warranty; note 10: rust with pinholes must be patched or replaced.' },
+    src:'Assembly per F-8-TYP with F8-2-FT-3D / F8-10-FT-3D — VERIFIED: two panels overlap at a major rib and are fastened through the crest; sealant bead at the voids; Flex fully encapsulates the fasteners and the lap, crest to flat both sides; topcoat over all; a Flex base coat to the field is optional. Note 12: ill-fitting panels with excessive movement can void the warranty; note 10: rust with pinholes must be patched or replaced. The model is a 16" x 6-ft panel section: the rib profile, 24 ga. drawn at 0.05", the 1" / 3/4" lap lips, lap fasteners at 12" o.c., Flex 2" past the rib base and the coat thicknesses are ASSUMED.' },
   sseam:  { name:'Standing seam', drawing:'F-9-TYP', concept:'B-1-F10-22-3D', dist:7, phi:1.15, theta:0.5, drop:0.2, menu:'Standing seams',
     layers:[{k:'existing',label:'(E) min 24 ga. panels with a crimped double-lock seam; loose or improper crimps re-crimped to the manufacturer\'s profile',color:'#AEB3B0'},{k:'primer',label:'Rust treated per RMI approved application; clean and prime the seam',color:'#E8D7A6'},{k:'flex',label:'Flex fully encapsulates the standing seam — over the cap, down both legs and onto the flat',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything; optional Flex base coat to the whole field',color:'#C3C7CC'}],
     src:'Assembly per F-9-TYP (and F-20-TYP for seam laps) and B-1-F10-22-3D — VERIFIED. Note 11: loose or improper crimping creates voids and can void the warranty; note 10: rust with pinholes must be patched or replaced.' },
@@ -331,7 +331,7 @@ const DETAILS = {
   drain:  { name:'Cast-iron roof drain', drawing:'D-1-TYP', concept:'CID-1-21-FT3D', dist:9, phi:1.05, theta:0.6, drop:0.6, menu:'Drains',
     layers:[{k:'existing',label:'(E) cast-iron bowl, clamping ring and strainer; damaged strainers replaced, rust treated',color:'#C9C9C2'},{k:'primer',label:'(E) flashing trimmed, sealant bead to the bowl; clean and prime',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the ring, min 18" out from the drain and 3" down into the bowl past the ring',color:'#D9A21B'},{k:'thane',label:'Topcoat extends 1" further into the bowl than the Flex; ring reset in sealant, strainer painted',color:'#C3C7CC'}],
     src:'Assembly per D-1-TYP and CID-1-21-FT3D — VERIFIED, including the 18" / 3" / 1" extents. Notes: water-test after install; plastic/ABS drains excluded from warranty.' },
-  scupper:{ name:'Overflow scupper', drawing:'D-4-TYP', concept:'D4-1-FT-3D', dist:5, phi:1.12, theta:0.45, drop:2.6, menu:'Scuppers',
+  scupper:{ name:'Overflow scupper', drawing:'D-4-TYP', concept:'D4-1-FT-3D', dist:5, phi:1.35, theta:0.45, drop:2.6, menu:'Scuppers',
     layers:[{k:'existing',label:'(E) scupper tube through the parapet above the (E) cant, (E) wall flashing; damaged components replaced, rust treated',color:'#C9C9C2'},{k:'primer',label:'Clean and prime tube, wall and field; sealant bead at the exterior termination',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the interior of the tube and extends min 12" onto the field; base coat continues up the wall',color:'#D9A21B'},{k:'thane',label:'Topcoat over the tube interior, wall and field',color:'#C3C7CC'}],
     src:'Assembly per D-4-TYP and D4-1-FT-3D — VERIFIED: the tube sits above the (E) cant, Flex encapsulates the tube interior and extends min 12" onto the field, the base coat continues up the (E) wall flashing, topcoat over all, sealant bead at the exterior termination. Notes: water-test before and after; plastic/ABS scuppers excluded from warranty; the exterior must be watertight to the building. The model is a 4-ft parapet section: the 16" x 5" tube, exterior collar with the bead run all round, the tube bottom bent down over the cant, 6" cant, flashing height and coat thicknesses are ASSUMED.' },
   wall:   { name:'Wall tie-in, reglet counterflashing', drawing:'W-11-TYP', concept:'W13-FT-26-3D', dist:5.5, phi:1.2, theta:1.45, drop:1.0, menu:'Wall tie-in',
@@ -486,13 +486,13 @@ let B = null;   // the current built building: { extent, hots, applyStage(p) }
    <layer>__<part> with layer in existing|primer|flex|topcoat. Metres → feet.
    If a file fails to load, the code-drawn geometry stays; nothing breaks.
 ================================================================= */
-const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb', coping:'models/metal-coping-joint-W-1-TYP.glb', wall:'models/reglet-counterflashing-W-11-TYP.glb', scupper:'models/overflow-scupper-D-4-TYP.glb' };
+const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb', coping:'models/metal-coping-joint-W-1-TYP.glb', wall:'models/reglet-counterflashing-W-11-TYP.glb', scupper:'models/overflow-scupper-D-4-TYP.glb', lap:'models/rpanel-side-lap-F-8-TYP.glb' };
 const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=null;
 function loadModel(file){ if(modelCache[file]) return modelCache[file];
   modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
 const LAYER_CLIP={primer:clipPrim,flex:clipFlex,topcoat:clipTop};
-function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); if(!['existing','primer','flex','topcoat'].includes(layer)){ o.visible=false; o.userData.helper=true; return; } o.castShadow=o.receiveShadow=true; o.userData.layer=layer; o.userData.tape=/__tape/.test(o.name); o.userData.reset=/__counterflashing/.test(o.name);
-    const m=o.material.clone(); m.side=THREE.DoubleSide; if(LAYER_CLIP[layer]&&!o.userData.tape){ m.clippingPlanes=[LAYER_CLIP[layer]]; m.clipShadows=true; }   // tape is prep work: shown from the prep stage, never swept if(layer==='primer'){ m.transparent=true; m.opacity=.75; }
+function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); if(!['existing','primer','flex','topcoat'].includes(layer)){ o.visible=false; o.userData.helper=true; return; } o.castShadow=o.receiveShadow=true; o.userData.layer=layer; o.userData.tape=/__(tape|sealant)/.test(o.name); o.userData.reset=/__counterflashing/.test(o.name);
+    const m=o.material.clone(); m.side=THREE.DoubleSide; if(LAYER_CLIP[layer]&&!o.userData.tape){ m.clippingPlanes=[LAYER_CLIP[layer]]; m.clipShadows=true; }   /* tape and sealant are prep work: shown from the prep stage, never swept */ if(layer==='primer'){ m.transparent=true; m.opacity=.75; }
     if(layer==='topcoat'){ m.envMapIntensity=1.2; o.userData.topcoat=true; } o.material=m; if(/existing__unit/.test(o.name)) o.userData.lift=true; }); }
 // Place a model instance under `parent` at (x,z), hiding `fallback` (the code-drawn group) once it arrives.
 // `skins` (optional) maps a model part name to a scene material, e.g. {membrane: field material} so the model's roof patch matches the roof type,
@@ -502,8 +502,8 @@ function mountModel(id,parent,x,z,rotY,fallback,skins){ const file=MODELS[id]; i
     .catch(e=>{ console.warn('model not loaded, keeping code geometry:',file,e.message); });
   return holder; }
 function applyModels(p,seat){ const white=S.topcoat==='white';
-  modelInstances.forEach(h=>{ if(!h.parent) return; h.traverse(o=>{ if(!o.isMesh||o.userData.helper) return; const L=o.userData.layer; if(o.userData.reset){ o.visible = p.prep<0.5 || p.thane>0; return; }
-    if(L==='primer') o.visible= o.userData.tape ? p.prep>=0.5 : p.primer>0; else if(L==='flex') o.visible=p.flex>0; else if(L==='topcoat'){ o.visible=p.thane>0; o.material.color.set(white?0xF4F3EE:0xDCE0E4); o.material.metalness=white?0.04:0.38; o.material.roughness=white?0.62:0.3; }
+  modelInstances.forEach(h=>{ if(!h.parent) return; const gt=h.userData.gate||{}; h.traverse(o=>{ if(!o.isMesh||o.userData.helper) return; const L=o.userData.layer; if(o.userData.reset){ o.visible = p.prep<0.5 || p.thane>0; return; }
+    if(L==='primer') o.visible= o.userData.tape ? p.prep>=0.5 : p.primer>(gt.primer||0); else if(L==='flex') o.visible=p.flex>(gt.flex||0); else if(L==='topcoat'){ o.visible=p.thane>0; o.material.color.set(white?0xF4F3EE:0xDCE0E4); o.material.metalness=white?0.04:0.38; o.material.roughness=white?0.62:0.3; }
     if(o.userData.lift){ if(o.userData.y0===undefined) o.userData.y0=o.position.y; o.position.y=o.userData.y0-(seat?6*0.0254:0); } }); }); }
 
 
@@ -512,6 +512,16 @@ function applyModels(p,seat){ const white=S.topcoat==='white';
    surface: rpanel (exposed fasteners, 3-ft laps), sseam (2-ft standing
    seams, concealed clips), spf (foam over the deck, full-field pattern)
 ----------------------------------------------------------------- */
+// R-panel side lap per F-8-TYP: two panels overlap at a major rib, fastened through the crest; Flex fully encapsulates the lap and its
+// fasteners, crest to flat both sides; topcoat over all. The overlays on every lap rib are the rib trapezoid offset by each coat's thickness
+// with a flat foot (primer/Flex 2" past the rib base — ASSUMED), and the Blender section (scripts/build_rpanel_side_lap_F-8-TYP.py) that
+// splices into the warehouse's slope is built from these same numbers — keep the two in step or the seams show at the bay ends.
+const LAP={ B:6.6, T:3, H:1.32, TP:0.08, TF:0.30, TT:0.36, FOOT:2, BAY_W:16, BAY_L:72 };   // inches; B/T/H is the app's trap(0.55,0.25,0.11) ft rib
+function lapProfile(off,foot){ const hw=LAP.B/2, tw=LAP.T/2, H=LAP.H, ln=Math.hypot(tw-hw,H), nx=H/ln, ny=(hw-tw)/ln; const p0=[hw+off*nx,off*ny], p1=[tw+off*nx,H+off*ny]; const xs=y=>p0[0]+(y-p0[1])*(p1[0]-p0[0])/(p1[1]-p0[1]);
+  const right=[[foot,0],[foot,off],[xs(off),off],[xs(H+off),H+off]]; return right.slice().reverse().map(([x,y])=>[-x/12,y/12]).concat(right.map(([x,y])=>[x/12,y/12])); }   /* closed (x,y) polygon in feet */
+// A slope sheet (L x SL, drawn flat then rotated -90 about x) with one rectangular bay cut out; bay in slope coords (x0..x1 across, z0..z1 down-slope).
+function slopeSheet(L,SL,bay){ const sh=new THREE.Shape(); sh.moveTo(-L/2,-SL/2); sh.lineTo(L/2,-SL/2); sh.lineTo(L/2,SL/2); sh.lineTo(-L/2,SL/2); sh.closePath();
+  const h=new THREE.Path(); h.moveTo(bay.x0,SL/2-bay.z1); h.lineTo(bay.x0,SL/2-bay.z0); h.lineTo(bay.x1,SL/2-bay.z0); h.lineTo(bay.x1,SL/2-bay.z1); h.closePath(); sh.holes.push(h); return new THREE.ShapeGeometry(sh); }
 function buildGable(cfg){
   const {L,W,H,PITCH=1/12} = cfg; const RUN=W/2, RISE=RUN*PITCH, SL=Math.sqrt(RUN*RUN+RISE*RISE), ANG=Math.atan(PITCH);
   if(cfg.pitchLabel) cfg.pitchLabel(PITCH);
@@ -534,28 +544,42 @@ function buildGable(cfg){
       // standing seam: double-lock profile (vertical legs with a crimped cap); Flex shell fully encapsulates the seam down to the flat both sides
       const SEAM=[[-0.07,0],[-0.07,0.2],[-0.13,0.2],[-0.13,0.26],[0.13,0.26],[0.13,0.2],[0.07,0.2],[0.07,0]];
       const SHELL=(o,f)=>[[-(0.16+f),0],[-(0.16+f),0.03+o],[-(0.12+o),0.03+o],[-(0.12+o),0.2],[-(0.18+o),0.2],[-(0.18+o),0.31+o],[0.18+o,0.31+o],[0.18+o,0.2],[0.12+o,0.2],[0.12+o,0.03+o],[0.16+f,0.03+o],[0.16+f,0]];
-      const nR=Math.floor(L/ribPitch); const ribG = surface==='rpanel' ? trap(0.55,0.25,ribH,SL) : poly(SEAM,SL); const ribGO = surface==='rpanel' ? trap(0.62,0.32,ribH+0.03,SL) : poly(SHELL(0.1,0.34),SL);
-      const ribs=new THREE.InstancedMesh(ribG,M.rib,nR), ribsO=new THREE.InstancedMesh(ribGO,M.topcoat,nR); const ribY = 0, ribYO = 0.002;
-      for(let i=0;i<nR;i++){ const x=-L/2+ribPitch/2+i*ribPitch; mm.makeTranslation(x,ribY,SL/2); ribs.setMatrixAt(i,mm); mm.makeTranslation(x,ribYO,SL/2); ribsO.setMatrixAt(i,mm); }
-      ribs.castShadow=true; ribs.receiveShadow=true; g.add(ribs); g.add(ribsO);
       for(let i=1;i<L/lapPitch;i++) s.laps.push(-L/2+ribPitch/2+Math.round(i*lapPitch/ribPitch)*ribPitch );   // laps sit on a rib (R-panel) or are the seam itself (standing seam)
-      const lapY = 0.002;
-      const lapG = surface==='rpanel' ? trap(0.95,0.45,ribH+0.09,1) : poly(SHELL(0.06,0.3),1);   // Flex fully encapsulates the lap rib / standing seam, down to the flat
-      const lapGP = surface==='rpanel' ? trap(0.85,0.38,ribH+0.06,1) : poly(SHELL(0.03,0.26),1);
-      s.lapP=new THREE.InstancedMesh(lapGP,M.primer,s.laps.length); s.lapF=new THREE.InstancedMesh(lapG,M.flex,s.laps.length); const lapO=new THREE.InstancedMesh(surface==='rpanel'?trap(1.05,0.5,ribH+0.12,1):poly(SHELL(0.1,0.34),1),M.topcoat,s.laps.length);
-      s.laps.forEach((x,i)=>{ mm.makeScale(1,1,SL); mm.setPosition(x,0.003,SL/2); lapO.setMatrixAt(i,mm); }); g.add(s.lapP); g.add(s.lapF); g.add(lapO); s.lapY=lapY; s.rp=true;
+      // R-panel lap model bay (F-8-TYP): the field sheets, the lap rib and its overlays stop at the bay and the Blender section fills it
+      const lm=cfg.lapModel; const bay = surface==='rpanel'&&lm&&lm.slope===(sign>0?'right':'left') ? (()=>{ const x=s.laps.reduce((p,q)=>Math.abs(q-lm.x)<Math.abs(p-lm.x)?q:p); return {x,z:lm.z,x0:x-LAP.BAY_W/24,x1:x+LAP.BAY_W/24,z0:lm.z-LAP.BAY_L/24,z1:lm.z+LAP.BAY_L/24,i:Math.round(x+L/2-ribPitch/2),j:s.laps.indexOf(x)}; })() : null; s.bay=bay;
+      if(bay){ [pl,ov].forEach(m=>{ m.geometry.dispose(); m.geometry=slopeSheet(L,SL,bay); }); }
+      const seg=(im,k,x,y,za,zb,gl)=>{ mm.makeScale(1,1,(zb-za)/gl); mm.setPosition(x,y,(za+zb)/2); im.setMatrixAt(k,mm); };   /* an instance of geometry length gl cut down to za..zb */
+      const nR=Math.floor(L/ribPitch), nRi=nR+(bay?1:0); const ribG = surface==='rpanel' ? trap(0.55,0.25,ribH,SL) : poly(SEAM,SL); const ribGO = surface==='rpanel' ? trap(0.62,0.32,ribH+0.03,SL) : poly(SHELL(0.1,0.34),SL);
+      const ribs=new THREE.InstancedMesh(ribG,M.rib,nRi), ribsO=new THREE.InstancedMesh(ribGO,M.topcoat,nRi); const ribY = 0, ribYO = 0.002;
+      for(let i=0;i<nR;i++){ const x=-L/2+ribPitch/2+i*ribPitch; if(bay&&i===bay.i){ seg(ribs,i,x,ribY,0,bay.z0,SL); seg(ribs,nR,x,ribY,bay.z1,SL,SL); seg(ribsO,i,x,ribYO,0,bay.z0,SL); seg(ribsO,nR,x,ribYO,bay.z1,SL,SL); continue; } mm.makeTranslation(x,ribY,SL/2); ribs.setMatrixAt(i,mm); mm.makeTranslation(x,ribYO,SL/2); ribsO.setMatrixAt(i,mm); }
+      ribs.castShadow=true; ribs.receiveShadow=true; g.add(ribs); g.add(ribsO);
+      const lapY = 0.002; const LP=lapProfile, hw=LAP.B/2;
+      const lapG = surface==='rpanel' ? poly(LP(LAP.TP+LAP.TF,hw+LAP.FOOT+LAP.TF),1) : poly(SHELL(0.06,0.3),1);   // Flex fully encapsulates the lap rib / standing seam, down to the flat
+      const lapGP = surface==='rpanel' ? poly(LP(LAP.TP,hw+LAP.FOOT),1) : poly(SHELL(0.03,0.26),1);
+      const lapGO = surface==='rpanel' ? poly(LP(LAP.TP+LAP.TF+LAP.TT,hw+LAP.FOOT+LAP.TF+LAP.TT),1) : poly(SHELL(0.1,0.34),1);
+      const nL=s.laps.length+(bay?1:0); s.lapP=new THREE.InstancedMesh(lapGP,M.primer,nL); s.lapF=new THREE.InstancedMesh(lapG,M.flex,nL); const lapO=new THREE.InstancedMesh(lapGO,M.topcoat,nL);
+      s.laps.forEach((x,i)=>{ if(bay&&i===bay.j){ seg(lapO,i,x,0.003,0,bay.z0,1); seg(lapO,nL-1,x,0.003,bay.z1,SL,1); return; } mm.makeScale(1,1,SL); mm.setPosition(x,0.003,SL/2); lapO.setMatrixAt(i,mm); }); g.add(s.lapP); g.add(s.lapF); g.add(lapO); s.lapY=lapY; s.rp=true;
       const eY=(surface==='sseam'?0.3:ribH)+0.02; s.endP=box(L,0.05,1.0,M.primer,0,eY,SL/2,false); s.endF=box(L,0.06,1.0,M.flex,0,eY+0.01,SL/2,false); g.add(s.endP); g.add(s.endF);
       s.ridgeP=box(L,0.05,1.6,M.primer,0,eY+0.03,0.8,false); s.ridgeF=box(L,0.06,1.6,M.flex,0,eY+0.04,0.8,false); g.add(s.ridgeP); g.add(s.ridgeF);
       g.add(box(L,0.06,1.05,M.topcoat,0,eY+0.045,SL/2,false)); g.add(box(L,0.06,1.65,M.topcoat,0,eY+0.075,0.8,false));
-      // exposed fasteners: every purlin on R-panel; only the end-lap row on standing seam (clips are concealed)
+      // exposed fasteners: every purlin on R-panel; only the end-lap row on standing seam (clips are concealed). The lap model carries its own inside the bay.
       const rows=[]; if(surface==='sseam'){ rows.push(SL/2-0.7); } else { for(let z=4;z<SL-1;z+=5) rows.push(z); }
-      const cols=[]; if(surface==='rpanel'){ for(let i=0;i<nR;i++) cols.push(-L/2+ribPitch/2+i*ribPitch); } else { for(let x=-L/2+1.5;x<L/2;x+=1.5) cols.push(x); } const nF=rows.length*cols.length; const fy = surface==='rpanel'?ribH+0.02:0.1;
+      const cols=[]; if(surface==='rpanel'){ for(let i=0;i<nR;i++) cols.push(-L/2+ribPitch/2+i*ribPitch); } else { for(let x=-L/2+1.5;x<L/2;x+=1.5) cols.push(x); }
+      const fp=[]; rows.forEach(z=>cols.forEach(x=>{ if(bay&&Math.abs(x-bay.x)<0.01&&z>bay.z0-0.2&&z<bay.z1+0.2) return; fp.push([x,z]); })); const nF=fp.length; const fy = surface==='rpanel'?ribH+0.02:0.1;
       s.fast=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.13,0.13,0.09,10),M.fast,nF); const fr = surface==='rpanel'?0.17:0.3; s.fastF=new THREE.InstancedMesh(new THREE.CylinderGeometry(fr,fr+0.04,0.06,14),M.flex,nF); const fastO=new THREE.InstancedMesh(new THREE.CylinderGeometry(fr+0.03,fr+0.07,0.06,14),M.topcoat,nF);
-      let k=0; rows.forEach(z=>cols.forEach(x=>{ mm.makeTranslation(x,fy,z); s.fast.setMatrixAt(k,mm); mm.makeTranslation(x,fy+0.02,z); s.fastF.setMatrixAt(k,mm); mm.makeTranslation(x,fy+0.05,z); fastO.setMatrixAt(k,mm); s.fz.push(z); k++; }));
+      let k=0; fp.forEach(([x,z])=>{ mm.makeTranslation(x,fy,z); s.fast.setMatrixAt(k,mm); mm.makeTranslation(x,fy+0.02,z); s.fastF.setMatrixAt(k,mm); mm.makeTranslation(x,fy+0.05,z); fastO.setMatrixAt(k,mm); s.fz.push(z); k++; });
       s.cRust=new THREE.Color(0x8A4A22); s.cZinc=new THREE.Color(0xB9BEC0); for(let i=0;i<nF;i++){ const r=Math.random()<0.28; s.rusty.push(r); s.fast.setColorAt(i, r?s.cRust:s.cZinc); } s.fast.instanceColor.needsUpdate=true;
-      const nP=Math.round(L*0.38), patch=new THREE.InstancedMesh(new THREE.CircleGeometry(1,14),M.rust,nP);
-      for(let i=0;i<nP;i++){ const x=s.laps[Math.floor(Math.random()*s.laps.length)]+(Math.random()-.5)*0.3, z= surface==='sseam'? SL/2-1+Math.random()*3 : 2+Math.random()*(SL-4), sc=0.5+Math.random()*1.4; e.position.set(x,ribH+0.03,z); e.rotation.set(-Math.PI/2,0,0); e.scale.set(sc*0.5,sc*1.6,1); e.updateMatrix(); patch.setMatrixAt(i,e.matrix); }
+      const nP=Math.round(L*0.38), patch=new THREE.InstancedMesh(new THREE.CircleGeometry(1,14),M.rust,nP); const pool=bay?s.laps.filter((_,i)=>i!==bay.j):s.laps;   /* the model carries its own rust inside the bay */
+      for(let i=0;i<nP;i++){ const x=pool[Math.floor(Math.random()*pool.length)]+(Math.random()-.5)*0.3, z= surface==='sseam'? SL/2-1+Math.random()*3 : 2+Math.random()*(SL-4), sc=0.5+Math.random()*1.4; e.position.set(x,ribH+0.03,z); e.rotation.set(-Math.PI/2,0,0); e.scale.set(sc*0.5,sc*1.6,1); e.updateMatrix(); patch.setMatrixAt(i,e.matrix); }
       s.fast.castShadow=true; g.add(s.fast); g.add(s.fastF); g.add(fastO); g.add(patch); s.patch=patch;
+      if(bay){   // code stand-in for the bay until the model loads (pan, rib, the three lap overlays), toggled like the other gable details
+        const fb=new THREE.Group(); fb.position.set(bay.x,0,bay.z); g.add(fb); const bl=bay.z1-bay.z0, bw=bay.x1-bay.x0, d={g:fb,prim:[],flex:[]};
+        const pan=new THREE.Mesh(new THREE.PlaneGeometry(bw,bl),M.panel); pan.rotation.x=-Math.PI/2; fb.add(pan); const ovp=new THREE.Mesh(new THREE.PlaneGeometry(bw,bl),M.topcoat); ovp.rotation.x=-Math.PI/2; ovp.position.y=0.03; fb.add(ovp);
+        fb.add(new THREE.Mesh(trap(0.55,0.25,ribH,bl),M.rib)); const pP=new THREE.Mesh(poly(LP(LAP.TP,hw+LAP.FOOT),bl),M.primer); pP.position.y=0.0015; const pF=new THREE.Mesh(poly(LP(LAP.TP+LAP.TF,hw+LAP.FOOT+LAP.TF),bl),M.flex); pF.position.y=0.002; const pO=new THREE.Mesh(poly(LP(LAP.TP+LAP.TF+LAP.TT,hw+LAP.FOOT+LAP.TF+LAP.TT),bl),M.topcoat); pO.position.y=0.003;
+        d.prim.push(pP); d.flex.push(pF); fb.add(pP); fb.add(pF); fb.add(pO); s.fbDet=d;
+        const holder=mountModel('lap',g,bay.x,bay.z,0,fb,{panel:M.panel,rib:M.rib,fastener:M.fast,rust:M.rust,sealant:M.joint,primer:M.primer,flex:M.flex,topcoat:M.topcoat});   // skinned to the slope's materials so the seams vanish
+        if(holder) holder.userData.gate={flex:bay.z0/SL};   // its Flex appears once the lap strip has swept down to the bay
+      }
     } else { // SPF: sweep overlays + pitted foam
       [[M.primerOv,0.05],[M.flexOv,0.08]].forEach(([mat,dy])=>{ const f=new THREE.Mesh(new THREE.PlaneGeometry(L,SL),mat); f.rotation.x=-Math.PI/2; f.position.set(0,dy,SL/2); g.add(f); });
       const nP=Math.round(L*0.5), pits=new THREE.InstancedMesh(new THREE.CircleGeometry(1,12),M.spfPit,nP), fix=new THREE.InstancedMesh(new THREE.CircleGeometry(1,12),M.spfPatch,nP);
@@ -570,7 +594,7 @@ function buildGable(cfg){
     if(!metal){ const f=box(L,0.06,2.2,M.flexOv,0,0.03,sg*1.05,false); f.rotation.x=sg*ANG; ridgeCap.add(f); } });
 
   // --- detail factories on a slope (local coords). Each returns {g, prim:[], flex:[]} for stage toggling
-  const dets=[];
+  const dets=[]; slopes.forEach(s=>{ if(s.fbDet) dets.push(s.fbDet); });
   function reg(d){ dets.push(d); return d; }
   function curbAt(slope,x,z,CW=6,CH=1.4){ const g=new THREE.Group(); g.position.set(x,0,z); slope.g.add(g); const d=curbAssembly(g,CW,CH,metal?'toggle':'sweep',metal); d.g=g; if(!metal){ d.prim=[]; d.flex=[]; }
     d.unit.add(box(CW+1.2,CW*0.53,CW+1.2,M.unit,0,CW*0.27,0)); d.unit.add(box(CW+1.4,0.35,CW+1.4,M.unitD,0,CW*0.55,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.37,CW*0.37,0.2,24),M.unitD); fan.position.set(0,CW*0.55+0.25,0); d.unit.add(fan); g.userData.unit=d.unit; g.userData.CH=CH; return reg(d); }
@@ -607,7 +631,8 @@ function buildGable(cfg){
     slopes.forEach(s=>{
       if(!metal){ s.pits.visible=S.cond&&p.prep<1; s.fix.visible=S.cond&&p.prep>0.3&&p.flex<1; return; }
       if(s._lp!==p.prep || s._lc!==S.cond){ const c=new THREE.Color(); for(let i=0;i<s.rusty.length;i++){ if(s.rusty[i]&&S.cond) c.copy(s.cRust).lerp(s.cZinc,p.prep); else c.copy(s.cZinc); s.fast.setColorAt(i,c);} s.fast.instanceColor.needsUpdate=true; s._lp=p.prep; s._lc=S.cond; }
-      s.laps.forEach((x,i)=>{ tmpO.position.set(x,s.rp?0.0015:s.lapY-0.025,SL/2); tmpO.scale.set(1,1,SL); tmpO.rotation.set(0,0,0); tmpO.updateMatrix(); s.lapP.setMatrixAt(i,tmpO.matrix); const len=SL*p.flex; tmpO.position.set(x,s.rp?0.002:s.lapY,len/2); tmpO.scale.set(1,1,Math.max(0.001,len)); tmpO.updateMatrix(); s.lapF.setMatrixAt(i,tmpO.matrix); });
+      const len=SL*p.flex, yP=s.rp?0.0015:s.lapY-0.025, yF=s.rp?0.002:s.lapY, put=(im,k,x,y,za,zb)=>{ tmpO.position.set(x,y,(za+zb)/2); tmpO.scale.set(1,1,Math.max(0.001,zb-za)); tmpO.rotation.set(0,0,0); tmpO.updateMatrix(); im.setMatrixAt(k,tmpO.matrix); };
+      s.laps.forEach((x,i)=>{ const b=s.bay; if(b&&i===b.j){ const n=s.laps.length; put(s.lapP,i,x,yP,0,b.z0); put(s.lapP,n,x,yP,b.z1,SL); put(s.lapF,i,x,yF,0,Math.min(len,b.z0)); put(s.lapF,n,x,yF,b.z1,Math.max(b.z1,len)); } else { put(s.lapP,i,x,yP,0,SL); put(s.lapF,i,x,yF,0,len); } });
       s.lapP.instanceMatrix.needsUpdate=true; s.lapF.instanceMatrix.needsUpdate=true; s.lapF.visible=p.flex>0;
       const pX=Math.max(0,Math.min(1,(p.flex-0.35)/0.65)); s.endF.scale.x=Math.max(0.001,pX); s.endF.position.x=-L/2+L*pX/2; s.endF.visible=pX>0; s.ridgeF.scale.x=Math.max(0.001,pX); s.ridgeF.position.x=-L/2+L*pX/2; s.ridgeF.visible=pX>0;
       for(let i=0;i<s.fz.length;i++){ const on=s.fz[i]<=SL*p.flex; s.fastF.getMatrixAt(i,tmpM); const el=tmpM.elements; const sc=on?1:0.0001; if((el[0]===1)!==on){ tmpO.position.set(el[12],el[13],el[14]); tmpO.scale.set(sc,sc,sc); tmpO.rotation.set(0,0,0); tmpO.updateMatrix(); s.fastF.setMatrixAt(i,tmpO.matrix);} }
@@ -615,17 +640,17 @@ function buildGable(cfg){
     });
     const pC=Math.max(0,Math.min(1,(p.flex-0.15)/0.5));
     dets.forEach(d=>{ d.prim.forEach(m=>m.visible=p.primer>0); d.flex.forEach((m,i)=>{ m.visible=pC>0; const t=Math.max(0.001,Math.min(1,pC*1.5-i*0.15)); m.scale.set(1,t,1); if(m.userData.y0===undefined) m.userData.y0=m.position.y; m.position.y=m.userData.y0*t; }); });
-    if(metal){ clipTop.constant = -L/2-4+(L+8)*p.thane; clipFlex.constant=-1000; clipPrim.constant=-1000; } else { sweepFor(p,-L/2,L/2); }
+    if(metal){ clipTop.constant = -L/2-4+(L+8)*p.thane; clipFlex.constant=1000; clipPrim.constant=1000; /* nothing is swept on metal: a model's primer/Flex stay whole */ } else { sweepFor(p,-L/2,L/2); }
     placed.apply(); solar.visible=S.solar;
   }
   return { extent:{L,W,H:H+RISE}, hots:placed.hots, applyStage };
 }
 
-function buildWarehouse(){ return buildGable({ L:120, W:80, H:20, solarCols:[-34,-24,-14,-4,6,16,26,36], solarRows:[8,20,32],
+function buildWarehouse(){ return buildGable({ L:120, W:80, H:20, lapModel:{slope:'right',x:-27,z:26.5}, solarCols:[-34,-24,-14,-4,6,16,26,36], solarRows:[8,20,32],
   place:({right,left,curbAt,SL,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf'; const c=curbAt(right,18,17);
     const hots=[
       {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(18,5.2,17)), show:()=>S.on.curb},
-      {id:'lap',  anchor:()=> right.g.localToWorld(new THREE.Vector3(-27,0.3,26)), show:()=>S.on.lap&&ROOFS[S.roof].surface==='rpanel'},
+      {id:'lap',  anchor:()=> right.g.localToWorld(right.bay?new THREE.Vector3(right.bay.x,0.3,right.bay.z):new THREE.Vector3(-27,0.3,26)), show:()=>S.on.lap&&ROOFS[S.roof].surface==='rpanel'},
       {id:'ridge',anchor:()=> new THREE.Vector3(-30,H+RISE+0.4,0), show:()=>S.on.ridge}];
     return { hots, apply:()=>{ c.g.visible=!!S.on.curb; } }; } }); }
 

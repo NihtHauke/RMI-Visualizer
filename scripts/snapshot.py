@@ -10,6 +10,7 @@ Usage (from the repo root):
     python scripts/snapshot.py --building bigbox                 # whole-roof view only
     python scripts/snapshot.py --building bigbox --detail rtu --section   # section view on
     python scripts/snapshot.py --building bigbox --detail coping --cam 7,1.75,1.1 --stages 6   # try a camera, one stage
+    python scripts/snapshot.py --building warehouse --roof sseam                  # a roof other than the building's first
 
 A --detail the building does not carry is skipped with a message listing the ones it does have.
 
@@ -64,6 +65,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--building", default="bigbox")
     ap.add_argument("--detail", default=None, help="detail id, e.g. drain, rtu, coping, pipe")
+    ap.add_argument("--roof", default=None, help="roof id to switch to after the building loads, e.g. sseam, spf (default: the building's first)")
     ap.add_argument("--section", action="store_true", help="turn on Section view in detail mode")
     ap.add_argument("--topcoat", default="thane", choices=["thane", "white"])
     ap.add_argument("--port", type=int, default=8765)
@@ -78,7 +80,7 @@ def main():
 
     OUT.mkdir(exist_ok=True)
     httpd = serve(args.port)
-    tag = f"{args.building}-{args.detail or 'roof'}{'-section' if args.section else ''}"
+    tag = f"{args.building}{'-' + args.roof if args.roof else ''}-{args.detail or 'roof'}{'-section' if args.section else ''}"
     files = []
     errors = []
     try:
@@ -92,6 +94,9 @@ def main():
             page.wait_for_timeout(3000)
             page.evaluate(f"window.__rmi.selectBuilding('{args.building}'); window.__rmi.finishCam();")
             page.wait_for_timeout(3500)  # models load async
+            if args.roof:
+                page.evaluate(f"const r=document.getElementById('roof'); r.value='{args.roof}'; r.dispatchEvent(new Event('change')); window.__rmi.finishCam();")
+                page.wait_for_timeout(3500)
             if args.topcoat == "white":
                 page.evaluate("document.querySelector('#topcoat button[data-v=white]').click()")
             if args.detail:
