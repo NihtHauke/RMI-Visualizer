@@ -331,10 +331,10 @@ const DETAILS = {
   drain:  { name:'Cast-iron roof drain', drawing:'D-1-TYP', concept:'CID-1-21-FT3D', dist:9, phi:1.05, theta:0.6, drop:0.6, menu:'Drains',
     layers:[{k:'existing',label:'(E) cast-iron bowl, clamping ring and strainer; damaged strainers replaced, rust treated',color:'#C9C9C2'},{k:'primer',label:'(E) flashing trimmed, sealant bead to the bowl; clean and prime',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the ring, min 18" out from the drain and 3" down into the bowl past the ring',color:'#D9A21B'},{k:'thane',label:'Topcoat extends 1" further into the bowl than the Flex; ring reset in sealant, strainer painted',color:'#C3C7CC'}],
     src:'Assembly per D-1-TYP and CID-1-21-FT3D — VERIFIED, including the 18" / 3" / 1" extents. Notes: water-test after install; plastic/ABS drains excluded from warranty.' },
-  scupper:{ name:'Overflow scupper', drawing:'D-4-TYP', concept:'D4-1-FT-3D', dist:8, phi:1.05, theta:0.35, drop:3.0, menu:'Scuppers',
-    layers:[{k:'existing',label:'(E) scupper tube through the parapet at roof level, (E) cant and wall flashing; damaged components replaced, rust treated',color:'#C9C9C2'},{k:'primer',label:'Clean and prime tube, wall and field; sealant bead at the exterior termination',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the interior of the tube and extends min 12" onto the field; base coat continues up the wall',color:'#D9A21B'},{k:'thane',label:'Topcoat over the tube interior, wall and field',color:'#C3C7CC'}],
-    src:'Assembly per D-4-TYP and D4-1-FT-3D — VERIFIED, including the 12" field extent. Notes: water-test before and after; plastic/ABS scuppers excluded from warranty; exterior termination must be watertight to the building.' },
-  wall:   { name:'Wall tie-in, reglet counterflashing', drawing:'W-11-TYP', concept:'W13-FT-26-3D', dist:12, phi:1.15, theta:0.95, drop:1.2, menu:'Wall tie-in',
+  scupper:{ name:'Overflow scupper', drawing:'D-4-TYP', concept:'D4-1-FT-3D', dist:5, phi:1.12, theta:0.45, drop:2.6, menu:'Scuppers',
+    layers:[{k:'existing',label:'(E) scupper tube through the parapet above the (E) cant, (E) wall flashing; damaged components replaced, rust treated',color:'#C9C9C2'},{k:'primer',label:'Clean and prime tube, wall and field; sealant bead at the exterior termination',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the interior of the tube and extends min 12" onto the field; base coat continues up the wall',color:'#D9A21B'},{k:'thane',label:'Topcoat over the tube interior, wall and field',color:'#C3C7CC'}],
+    src:'Assembly per D-4-TYP and D4-1-FT-3D — VERIFIED: the tube sits above the (E) cant, Flex encapsulates the tube interior and extends min 12" onto the field, the base coat continues up the (E) wall flashing, topcoat over all, sealant bead at the exterior termination. Notes: water-test before and after; plastic/ABS scuppers excluded from warranty; the exterior must be watertight to the building. The model is a 4-ft parapet section: the 16" x 5" tube, exterior collar with the bead run all round, the tube bottom bent down over the cant, 6" cant, flashing height and coat thicknesses are ASSUMED.' },
+  wall:   { name:'Wall tie-in, reglet counterflashing', drawing:'W-11-TYP', concept:'W13-FT-26-3D', dist:5.5, phi:1.2, theta:1.45, drop:1.0, menu:'Wall tie-in',
     layers:[{k:'existing',label:'(E) wall flashing up to a Fry-type reglet with counterflashing; voids fastened with term bar + sealant 12" o.c.',color:'#C9C9C2'},{k:'primer',label:'Rake out (E) sealant at the reglet, new continuous bead; counterflashing removed; clean and prime',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the (E) wall flashing and term bar, extending up to the reglet receiver',color:'#D9A21B'},{k:'thane',label:'Topcoat encapsulates the Flex; counterflashing reset (optionally coated too)',color:'#C3C7CC'}],
     src:'Assembly per W-11-TYP and W13-FT-26-3D — VERIFIED: Flex runs the full height of the (E) flashing and on up the wall to the reglet receiver, not a fixed band; term bar fastened 12" o.c.; counterflashing removed and reset. Flashing height varies by wall (24" here, ASSUMED), as are the reglet height, cant, counterflashing lap and coat extents. Note 7: applies to Fry-type reglets; do not damage the receiver.' },
   pipe:   { name:'Soil stack / pipe penetration', drawing:'P-6-TYP', concept:'P3SP-11-FT-3D', dist:8, phi:1.05, theta:0.7, drop:1.8, menu:'Pipes / soil stacks',
@@ -367,7 +367,7 @@ const DETAILS = {
   exhaust:{ name:'Kitchen exhaust fan curb', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:12, phi:1.1, theta:0.7, drop:2.4, menu:'Kitchen exhaust',
     layers:[{k:'existing',label:'Existing fan curb with grease staining on the membrane',color:'#C9C9C2'},{k:'primer',label:'Primer on curb and degreased field',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb and across the field',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything; grease guard reinstalled',color:'#C3C7CC'}],
     src:'Curb per CS-1-TYP (vents and ducts named in note 7) — VERIFIED. Grease must be removed before priming (plates: no RMI over contaminants); degreasing method is ASSUMED.' },
-  coping: { name:'Parapet and metal coping', drawing:'W-1-TYP', concept:'W1-11-FT3D', dist:9, phi:1.05, theta:2.4, drop:0.4, menu:'Parapet / coping',
+  coping: { name:'Parapet and metal coping', drawing:'W-1-TYP', concept:'W1-11-FT3D', dist:6, phi:0.95, theta:1.85, drop:0.4, menu:'Parapet / coping',
     layers:[{k:'existing',label:'(E) metal coping with open joints and loose fasteners; damaged sections replaced, fasteners at joints relocated',color:'#C9C9C2'},{k:'primer',label:'4" tape centred on each joint (2" each side, no voids); loose fasteners replaced with oversize stainless + EPDM washers; prime',color:'#E8D7A6'},{k:'flex',label:'Flex over the tape, min 2" beyond it on both sides and down both faces; every fastener encapsulated',color:'#D9A21B'},{k:'thane',label:'Topcoat min 2" past the Flex — or the entire coping under the system warranty; vertical faces may need multiple coats',color:'#C3C7CC'}],
     src:'Assembly per W-1-TYP and W1-11-FT3D — VERIFIED, including the 4" tape / 2" Flex / 2" topcoat extents. Note 7: coping must meet code and SMACNA for wind uplift or it is excluded from warranty. Applies to all coping laps, joints, corners and transitions. The model is a 4-ft parapet section: the open-joint gap, fastener spacing and coat thicknesses are ASSUMED; the topcoat shows the entire-coping (system warranty) option.' }
 };
@@ -486,7 +486,7 @@ let B = null;   // the current built building: { extent, hots, applyStage(p) }
    <layer>__<part> with layer in existing|primer|flex|topcoat. Metres → feet.
    If a file fails to load, the code-drawn geometry stays; nothing breaks.
 ================================================================= */
-const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb', coping:'models/metal-coping-joint-W-1-TYP.glb', wall:'models/reglet-counterflashing-W-11-TYP.glb' };
+const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb', coping:'models/metal-coping-joint-W-1-TYP.glb', wall:'models/reglet-counterflashing-W-11-TYP.glb', scupper:'models/overflow-scupper-D-4-TYP.glb' };
 const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=null;
 function loadModel(file){ if(modelCache[file]) return modelCache[file];
   modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
@@ -683,23 +683,27 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
   const tapes=new THREE.Group(); cop.add(tapes);
   // Metal coping per W-1-TYP: cap with drip legs; at every joint a 4" tape centred on the joint, Flex min 2" beyond the tape (8"),
   // topcoat min 2" past the Flex (full coping here, per the system warranty); fasteners on the face, none at joints, encapsulated in Flex.
-  const cm=o.copingModel;   // {k:'E', at:-20}: splice the Blender coping-joint model (a 4-ft parapet section) into that side's run at world x (N/S) or z (E/W)
-  sides.filter(sd=>!skip.includes(sd.k)).forEach(sd=>{ const mt = cm&&cm.k===sd.k ? (sd.jx?cm.at:-cm.at) : null;   // run-local centre of the modelled section
+  // Splices: {k:'E', at:-20, id:'coping'} puts the Blender coping-joint model (a 4-ft parapet section) into that side's run at world x (N/S) or z (E/W);
+  // {k:'N', at:60, id:'scupper'} the overflow-scupper section. Every splice takes a 4-ft bay out of the parapet wall; only 'coping' interrupts the coping run.
+  const splices=(o.splices||[]).concat(o.copingModel?[Object.assign({id:'coping'},o.copingModel)]:[]);
+  const segsAround=(gaps,a,b)=>{ const s=[]; let x=a; gaps.slice().sort((p,q)=>p-q).forEach(g=>{ s.push([x,g-2]); x=g+2; }); s.push([x,b]); return s; };
+  sides.filter(sd=>!skip.includes(sd.k)).forEach(sd=>{ const loc=s=>sd.jx?s.at:-s.at;   /* run-local centre of a spliced section */ const cops=splices.filter(s=>s.k===sd.k&&s.id==='coping').map(loc), bays=splices.filter(s=>s.k===sd.k).map(loc);
     const run=new THREE.Group(); run.position.set(sd.x,PH,sd.z); if(!sd.jx) run.rotation.y=Math.PI/2; cop.add(run); const n=sd.jx?L:W, cw=(sd.jx?sd.d:sd.w)+0.5;
     const out=Math.sign(sd.jx?sd.z:sd.x)||1;   // run-local +z is world +z on N/S and world +x on W/E, so it points outward only on S and E; fasteners always go on the OUTSIDE face
     // cap + drip legs, and topcoat over the entire coping — per segment: the whole run, or two pieces either side of the model's 4-ft gap
     const capAt=(grp,x0,x1,eL,eR)=>{ const len=x1-x0, cx=(x0+x1)/2, tl=len+eL+eR, tc=cx+(eR-eL)/2; grp.add(box(len,0.25,cw,M.coping,cx,0.12,0)); [-1,1].forEach(sg=>grp.add(box(len,0.5,0.06,M.coping,cx,-0.05,sg*(cw/2-0.03),false)));
       grp.add(box(tl,0.06,cw+0.12,M.topcoat,tc,0.28,0,false)); [-1,1].forEach(sg=>grp.add(box(tl,0.62,0.06,M.topcoat,tc,0,sg*(cw/2+0.06),false))); };   // legs run the full height to the top overlay (no notch at the corner)   // topcoat overlay runs 0.05 past the run ends but stops flush at the model's gap (coplanar overlap z-fights)
-    const segs = mt===null ? [[-n/2-0.2,n/2+0.2]] : [[-n/2-0.2,mt-2],[mt+2,n/2+0.2]]; segs.forEach(([x0,x1])=>capAt(run,x0,x1, x0<-n/2?0.05:0, x1>n/2?0.05:0));
-    if(mt===null) par.add(box(sd.w,PH,sd.d,M.wall,sd.x,PH/2,sd.z)); else segs.forEach(([x0,x1])=>{ const a0=Math.max(x0,-n/2), a1=Math.min(x1,n/2); run.add(box(a1-a0,PH,PT,M.wall,(a0+a1)/2,-PH/2,0)); });   // parapet wall, leaving the gap
+    segsAround(cops,-n/2-0.2,n/2+0.2).forEach(([x0,x1])=>capAt(run,x0,x1, x0<-n/2?0.05:0, x1>n/2?0.05:0));
+    segsAround(bays,-n/2,n/2).forEach(([a0,a1])=>run.add(box(a1-a0,PH,PT,M.wall,(a0+a1)/2,-PH/2,0)));   // parapet wall, leaving every spliced bay open
+    splices.filter(s=>s.k===sd.k&&s.id==='scupper').forEach(s=>{ const p=box(4,PH,PT,M.wall,loc(s),-PH/2,0); p.visible=false; run.add(p); s._plugWall=p; });   // fills the bay when scuppers are switched off
     const U=(mat,wd,dy,into)=>{ const grp=new THREE.Group(); grp.add(box(wd,0.05,cw+0.1+dy*2,mat,0,0.25+dy,0,false)); [-1,1].forEach(sg=>grp.add(box(wd,0.55,0.05,mat,0,-0.05,sg*(cw/2+0.02+dy),false))); into.add(grp); return grp; };
-    for(let t=-n/2+10;t<n/2;t+=10){ if(mt!==null&&Math.abs(t-mt)<2) continue; const j=box(0.06,0.3,cw+0.1,M.joint,t,0.12,0,false); run.add(j); const tp=U(M.tape,0.34,0.005,tapes); tp.position.x=t; if(!sd.jx){ tp.position.set(0,0,0); tapes.remove(tp); run.add(tp); tp.position.x=t; tp.userData.tape=true; } U(M.primerOv,0.6,0.012,run).position.x=t; U(M.flexOv,0.68,0.02,run).position.x=t; }
-    for(let t=-n/2+4;t<n/2;t+=3){ if(Math.abs(((t+n/2)%10))<0.8) continue; if(mt!==null&&Math.abs(t-mt)<=2.1) continue; const f=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.05,8),Math.random()<0.25?M.rustFast:M.fast); f.rotation.x=Math.PI/2; f.position.set(t,-0.1,out*cw/2); run.add(f);
+    for(let t=-n/2+10;t<n/2;t+=10){ if(cops.some(mt=>Math.abs(t-mt)<2)) continue; const j=box(0.06,0.3,cw+0.1,M.joint,t,0.12,0,false); run.add(j); const tp=U(M.tape,0.34,0.005,tapes); tp.position.x=t; if(!sd.jx){ tp.position.set(0,0,0); tapes.remove(tp); run.add(tp); tp.position.x=t; tp.userData.tape=true; } U(M.primerOv,0.6,0.012,run).position.x=t; U(M.flexOv,0.68,0.02,run).position.x=t; }
+    for(let t=-n/2+4;t<n/2;t+=3){ if(Math.abs(((t+n/2)%10))<0.8) continue; if(cops.some(mt=>Math.abs(t-mt)<=2.1)) continue; const f=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.05,8),Math.random()<0.25?M.rustFast:M.fast); f.rotation.x=Math.PI/2; f.position.set(t,-0.1,out*cw/2); run.add(f);
       [[0.14,M.flexOv,0.03],[0.16,M.topcoat,0.07]].forEach(([r,mat,dz])=>{ const dot=new THREE.Mesh(new THREE.CircleGeometry(r,12),mat); dot.position.set(t,-0.1,out*(cw/2+dz)); dot.rotation.y=out<0?Math.PI:0; run.add(dot); }); }
-    if(mt!==null){ // code-drawn stand-in for the gap, hidden once the model arrives; the model's z=0 is roof level, so drop it by PH under the run
+    cops.forEach(mt=>{ // code-drawn stand-in for the gap, hidden once the model arrives; the model's z=0 is roof level, so drop it by PH under the run
       const fb=new THREE.Group(); run.add(fb); capAt(fb,mt-2,mt+2,0,0); fb.add(box(0.06,0.3,cw+0.1,M.joint,mt,0.12,0,false)); fb.add(box(4,PH,PT,M.wall,mt,-PH/2,0));
       const tp=U(M.tape,0.34,0.005,fb); tp.position.x=mt; tp.userData.tape=true; U(M.primerOv,0.6,0.012,fb).position.x=mt; U(M.flexOv,0.68,0.02,fb).position.x=mt;
-      const h=mountModel('coping',run,mt,0,out<0?Math.PI:0,fb,{parapet:M.wall,cap:M.coping,leg:M.coping}); if(h) h.position.y=-PH; } });   // model's fastener face is run-local +z; turn it round where that faces in (it is symmetric along the run)
+      const h=mountModel('coping',run,mt,0,out<0?Math.PI:0,fb,{parapet:M.wall,cap:M.coping,leg:M.coping}); if(h) h.position.y=-PH; }); });   // model's fastener face is run-local +z; turn it round where that faces in (it is symmetric along the run)
   // tape pieces live inside rotated runs, so collect them for visibility toggling
   const tapeList=[]; cop.traverse(o=>{ if(o.userData.tape||o.parent===tapes) tapeList.push(o); });
   const IL=L-2*PT, IW=W-2*PT; const roof=new THREE.Group(); roof.position.y=H; g.add(roof);
@@ -715,17 +719,18 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
     const em=new THREE.Group(); em.position.y=H; g.add(em); o._em=em; const ed=[{w:L+0.6,d:0.9,x:0,z:-W/2+0.15,fx:L+0.6,fd:0.25,fz:-W/2-0.12},{w:L+0.6,d:0.9,x:0,z:W/2-0.15,fx:L+0.6,fd:0.25,fz:W/2+0.12},{w:0.9,d:W+0.6,x:-L/2+0.15,z:0,fx:0.25,fd:W+0.6,fz:0,fxx:-L/2-0.12},{w:0.9,d:W+0.6,x:L/2-0.15,z:0,fx:0.25,fd:W+0.6,fz:0,fxx:L/2+0.12}];
     ed.forEach(e=>{ em.add(box(e.w,0.12,e.d,M.coping,e.x,0.06,e.z)); em.add(box(e.fx,1.4,e.fd,M.coping,e.fxx!==undefined?e.fxx:e.x,-0.6,e.fz!==undefined&&e.fxx===undefined?e.fz:e.z));
       em.add(box(e.w+0.1,0.05,e.d+0.1,M.primerOv,e.x,0.14,e.z,false)); em.add(box(e.w+0.2,0.06,e.d+0.2,M.flexOv,e.x,0.17,e.z,false)); em.add(box(e.w+0.3,0.06,e.d+0.3,M.topcoat,e.x,0.2,e.z,false)); }); }
-  function addOverlay(mat,dy,wallH){ const f=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),mat); f.rotation.x=-Math.PI/2; f.position.y=dy; f.receiveShadow=true; roof.add(f); f.userData.kind='coat'; f.userData.top=(mat===M.topcoat); fieldPlanes.push(f);
-    const wl=[{k:'N',w:IL,d:0.05,x:0,z:-IW/2+0.03+dy},{k:'S',w:IL,d:0.05,x:0,z:IW/2-0.03-dy},{k:'W',w:0.05,d:IW,x:-IL/2+0.03+dy,z:0},{k:'E',w:0.05,d:IW,x:IL/2-0.03-dy,z:0}];
-    wl.filter(w=>!skip.includes(w.k)).forEach(w=>roof.add(box(w.w,wallH,w.d,mat,w.x,wallH/2,w.z,false))); }
-  addOverlay(M.primerOv,0.05,1.6); addOverlay(M.flexOv,0.08,1.5); addOverlay(M.topcoat,0.11,PH);   // 18" up the wall for primer/Flex is ASSUMED
+  function addOverlay(mat,dy){ const f=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),mat); f.rotation.x=-Math.PI/2; f.position.y=dy; f.receiveShadow=true; roof.add(f); f.userData.kind='coat'; f.userData.top=(mat===M.topcoat); fieldPlanes.push(f); }
+  addOverlay(M.primerOv,0.05); addOverlay(M.flexOv,0.08); addOverlay(M.topcoat,0.11);   // the parapet walls get cant, base flashing and coats from parapetBase below
   const stains=new THREE.Group(), fails=new THREE.Group(), patches=new THREE.Group(); roof.add(stains); roof.add(fails); roof.add(patches);
   const nF=Math.round(IL*IW/1400); for(let i=0;i<nF;i++){ const sx=-IL/2+pitch*(1+Math.floor(Math.random()*nS)); const zz=-IW/2+6+Math.random()*(IW-12); const len=4+Math.random()*6;
     if(mem.plate==='A'){ const gl=new THREE.Mesh(new THREE.CircleGeometry(1,12),M.granLoss); gl.rotation.x=-Math.PI/2; gl.position.set(sx+(Math.random()-.5)*8,0.035,zz); gl.scale.set(2+Math.random()*4,1.5+Math.random()*3,1); fails.add(gl); patches.add(box(2.4,0.06,len+2,M.patchA,sx,0.045,zz,false)); }
     else if(mem.plate==='MA'){ const bl=new THREE.Mesh(new THREE.CircleGeometry(1,12),M.blister); bl.rotation.x=-Math.PI/2; bl.position.set(sx+(Math.random()-.5)*8,0.025,zz); bl.scale.set(1.5+Math.random()*3,1+Math.random()*2,1); fails.add(bl); patches.add(box(2.4,0.05,len+2,M.patchA,sx,0.028,zz,false)); }
     else if(mem.plate==='C'){ const cr=box(0.25,0.04,len*1.6,M.crack,sx+(Math.random()-.5)*6,0.04,zz,false); cr.rotation.y=(Math.random()-.5)*1.2; fails.add(cr); const pc=box(1.2,0.06,len*1.6+1,M.patchC,cr.position.x,0.045,zz,false); pc.rotation.y=cr.rotation.y; patches.add(pc); }
     else { fails.add(box(0.9,0.05,len,M.stain,sx,0.04,zz,false)); patches.add(box(2.2,0.06,len+2,M.patch,sx,0.045,zz,false)); } }
-  const blk={g,roof,par,L,W,H,PH,PT,IL,IW,x,z,stains,fails,patches,em:o._em,tapeList,fieldPlanes,cutouts}; BLOCKS.push(blk); return blk;
+  const blk={g,roof,par,L,W,H,PH,PT,IL,IW,x,z,stains,fails,patches,em:o._em,tapeList,fieldPlanes,cutouts,scuppers:[]};
+  sides.filter(sd=>!skip.includes(sd.k)).forEach(sd=>{ const nIn=sd.jx?IL:IW; parapetBase(blk,sd.k,segsAround(splices.filter(s=>s.k===sd.k&&s.id==='scupper').map(s=>s.at),-nIn/2,nIn/2),roof); });   // cant + base flashing + coats inside every parapet, minus the scupper bays
+  splices.filter(s=>s.id==='scupper').forEach(s=>addScupperAt(blk,s));
+  BLOCKS.push(blk); return blk;
 }
 const BLOCKS=[];
 // Punch holes in a block's field layers where loaded models carry their own patch of roof (avoids the field sheets flooding a drain sump).
@@ -788,17 +793,40 @@ function addPipe(b,x,z,r=0.35){ let g=new THREE.Group(); g.position.set(x,0,z); 
   return gOuter; }
 // Overflow scupper per D-4-TYP: (E) tube through the parapet at roof level with a cant at the wall base; Flex encapsulates the interior of the tube
 // and extends min 12" from the scupper onto the field; Flex base coat continues up the wall; topcoat over all; sealant bead at the exterior termination.
-function addScupper(b,x){ const g=new THREE.Group(); g.position.set(x,0,-b.W/2+b.PT/2); b.par.add(g); const PT=b.PT, SW=2.0, SH=0.9, T=0.06, TL=PT+0.7;
-  // tube: 4 thin walls, open both ends
-  g.add(box(SW+2*T,T,TL,M.iron,0,SH+T/2,0)); g.add(box(SW+2*T,T,TL,M.iron,0,T/2+0.02,0)); [-1,1].forEach(sg=>g.add(box(T,SH,TL,M.iron,sg*(SW/2+T/2),SH/2,0)));
-  g.add(box(3.4,SH+0.5,0.25,M.coping,0,(SH+0.5)/2-0.05,-PT/2-0.3));   // exterior face plate
-  const bead=box(3.5,0.08,0.08,M.unitD,0,SH+0.5,-PT/2-0.42,false); g.add(bead);   // sealant bead at the exterior termination
-  [-1,1].forEach(sg=>{ const cant=box(1.4,0.5,0.5,M.wallB,sg*(SW/2+1.0),0.05,PT/2+0.05); cant.rotation.x=Math.PI/4; g.add(cant); });   // (E) cant either side (wedge)
-  const lining=(mat,dr,ext)=>{ const iw=SW-2*dr-0.02, ih=SH-2*dr-0.02, il=TL-0.02; g.add(box(iw,0.04,il,mat,0,T+dr+0.02,0,false)); g.add(box(iw,0.04,il,mat,0,SH-dr-0.02,0,false)); [-1,1].forEach(sg=>g.add(box(0.04,ih,il,mat,sg*(SW/2-dr-0.02),SH/2,0,false)));   // interior of the tube
-    g.add(box(SW+2*ext,0.06,ext,mat,0,0.04+dr,PT/2+ext/2,false));   // onto the field, 12" out (ext) — plus the roof-side wall face
-    g.add(box(SW+2*ext,SH+0.6,0.06,mat,0,(SH+0.6)/2,PT/2+0.03+dr*0.5,false)); };
-  lining(M.primerOv,0.0,1.0); lining(M.flexOv,0.02,1.0); lining(M.topcoat,0.045,1.1);
-  return g; }
+// Parapet base, drawn inside every parapet run: (E) cant with the (E) base flashing (the roof membrane carried up the wall) over it, then the
+// three coats — field foot, over the cant, up the flashing to the coping. Per D-4-TYP / W-11-TYP the Flex base coat runs the full height of
+// the (E) flashing (VERIFIED — this replaces the old 18" band); the 6" cant, 10" foot, full-height flashing and 2"/3" coat feet are ASSUMED.
+// Same numbers as scripts/build_overflow_scupper_D-4-TYP.py, whose 4-ft section splices into this run — keep the two in step or the seams show.
+const PB={ CANT:6, FT:0.1875, FOOT:10, COAT:0.25, FIELD:{primer:12,flex:12,topcoat:13} };   // inches
+// Run-local frame on a wall face `off` from the block centre: x along the wall, -z toward the roof, y up; y = from the wall, z = height (inches) in slab/tilt.
+function wallFrame(b,side,off,into){ const isX=side==='W'||side==='E', sgn=(side==='W'||side==='N')?-1:1, IN=1/12;
+  const runAt=(x0,x1,parent)=>{ const r=new THREE.Group(); const c=(x0+x1)/2; if(isX){ r.position.set(sgn*off,0,c); r.rotation.y=sgn<0?-Math.PI/2:Math.PI/2; } else { r.position.set(c,0,sgn*off); r.rotation.y=sgn<0?Math.PI:0; } (parent||into).add(r); r.userData.len=x1-x0; return r; };
+  const slab=(r,y0,y1,z0,z1,mat,tag)=>{ const m=box(r.userData.len,(z1-z0)*IN,(y1-y0)*IN,mat,0,(z0+z1)/2*IN,-(y0+y1)/2*IN,false); r.add(m); if(tag) b.resetParts.push(m); return m; };
+  const tilt=(r,p,q,t,mat,tag)=>{ const [y0,z0]=p,[y1,z1]=q; const ln=Math.hypot(y1-y0,z1-z0); const m=box(r.userData.len,t*IN,ln*IN,mat,0,(z0+z1)/2*IN,-(y0+y1)/2*IN,false); m.rotation.x=-Math.atan2(z1-z0,-(y1-y0)); r.add(m); if(tag) b.resetParts.push(m); return m; };
+  const cant=(r,c)=>{ const sh=new THREE.Shape(); sh.moveTo(0,0); sh.lineTo(c*IN,0); sh.lineTo(0,c*IN); sh.closePath(); /* CCW; rotateY(90) sends shape-x to local -z, toward the roof */ const cg=new THREE.ExtrudeGeometry(sh,{depth:r.userData.len,bevelEnabled:false}); cg.rotateY(Math.PI/2); cg.translate(-r.userData.len/2,0,0); const m=new THREE.Mesh(cg,M.wood); r.add(m); return m; };
+  return {runAt,slab,tilt,cant,IN}; }
+function parapetBase(b,side,segs,into){ const F=wallFrame(b,side,(side==='W'||side==='E')?b.IL/2:b.IW/2,into); const surf=b.fieldPlanes[0].material; const P=PB, top=b.PH*12-0.1, runs=[];
+  segs.forEach(([x0,x1])=>{ if(x1-x0<0.01) return; const r=F.runAt(x0,x1); runs.push(r); F.cant(r,P.CANT);
+    F.slab(r,P.CANT,P.FOOT,0,P.FT,surf); F.tilt(r,[P.CANT,P.FT/2],[0,P.CANT+P.FT/2],P.FT,surf); F.slab(r,0,P.FT,P.CANT,b.PH*12,surf);   // (E) base flashing: foot, over the cant, up the wall
+    [[M.primerOv,1,'primer'],[M.flexOv,2,'flex'],[M.topcoat,3,'topcoat']].forEach(([mat,i,k])=>{ const d0=(i-1)*P.COAT, d1=i*P.COAT, c=P.CANT+P.FT/2+P.FT/Math.SQRT2+Math.SQRT2*(d0+P.COAT/2);   /* this coat's centre-line over the cant: y+z=c */
+      F.slab(r,P.FOOT+d0,P.FIELD[k],P.FT+d0,P.FT+d1,mat); F.slab(r,P.CANT,P.FOOT+d1,P.FT+d0,P.FT+d1,mat); F.tilt(r,[c-(P.FT+d0+P.COAT/2),P.FT+d0+P.COAT/2],[d0+P.COAT/2,c-(d0+P.COAT/2)],P.COAT,mat); F.slab(r,P.FT+d0,P.FT+d1,P.CANT,top,mat); }); });
+  return runs; }
+// Overflow scupper per D-4-TYP (concept D4-1-FT-3D): the (E) tube through the parapet above the (E) cant; Flex encapsulates the tube interior and
+// runs 12" onto the field (VERIFIED), the base coat continues up the (E) wall flashing, topcoat over all; sealant bead at the exterior termination.
+// The model (scripts/build_overflow_scupper_D-4-TYP.py) is a 4-ft parapet section spliced into the block's parapet at world `s.at` on side `s.k`;
+// the code stand-in below shows the bare assembly until it loads. Sizes are ASSUMED (see the build script) and shared through SC / PB.
+const SC={ TW:16, TH:5, MT:0.08, EXT:1, COLLAR:2 };   // inches: clear opening, sheet metal, projection past the exterior face, collar plate margin
+function addScupperAt(b,s){ const P=PB, IN=1/12, PTi=b.PT*12, PHi=b.PH*12; const sg=new THREE.Group(); b.roof.add(sg); const F=wallFrame(b,s.k,(s.k==='W'||s.k==='E')?b.IL/2:b.IW/2,sg); const r=F.runAt(s.at-2,s.at+2);
+  const slope=P.CANT+P.FT/2+P.FT/Math.SQRT2, z0=slope+SC.MT/Math.SQRT2-P.FT-SC.MT/2, xo=SC.TW/2+SC.MT, zt=z0+SC.TH+2*SC.MT;   // tube bottom sheet underside, outer half-width, top of the top sheet (same maths as the build script)
+  const fb=new THREE.Group(); sg.add(fb); const fr=F.runAt(s.at-2,s.at+2,fb); const seg=(x0,x1,y0,y1,zz0,zz1,mat)=>{ const m=box((x1-x0)*IN,(zz1-zz0)*IN,(y1-y0)*IN,mat,(x0+x1)/2*IN,(zz0+zz1)/2*IN,-(y0+y1)/2*IN,false); fr.add(m); return m; };
+  seg(-24,-xo,-PTi,0,0,PHi,M.wall); seg(xo,24,-PTi,0,0,PHi,M.wall); seg(-xo,xo,-PTi,0,0,z0,M.wall); seg(-xo,xo,-PTi,0,zt,PHi,M.wall);   // parapet round the tube
+  seg(-xo,xo,-PTi-SC.EXT,P.FT,z0,z0+SC.MT,M.coping); seg(-xo,xo,-PTi-SC.EXT,P.FT,zt-SC.MT,zt,M.coping); seg(-xo,-SC.TW/2,-PTi-SC.EXT,P.FT,z0,zt,M.coping); seg(SC.TW/2,xo,-PTi-SC.EXT,P.FT,z0,zt,M.coping);   // tube
+  seg(-xo-SC.COLLAR,xo+SC.COLLAR,-PTi-SC.MT,-PTi,z0-SC.COLLAR,zt+SC.COLLAR,M.coping);   // exterior collar (solid in the stand-in)
+  parapetBase(b,s.k,[[s.at-2,s.at+2]],fb);
+  const surf=b.fieldPlanes[0].material; mountModel('scupper',r,0,0,0,fb,{parapet:M.wall,flashing:surf,cant:M.wood,primer:M.primerOv,flex:M.flexOv});   // skinned to the run's materials so the seams vanish
+  const plug=parapetBase(b,s.k,[[s.at-2,s.at+2]],b.roof); if(s._plugWall) plug.push(s._plugWall); plug.forEach(p=>p.visible=false);   // fills the bay when scuppers are switched off
+  b.scuppers.push({g:sg,plug}); return sg; }
+function setScuppers(b,on){ b.scuppers.forEach(sc=>{ sc.g.visible=on; sc.plug.forEach(p=>p.visible=!on); }); }
 // Reglet counterflashing at wall per W-11-TYP: (E) wall flashing (base flashing) up the wall to a Fry-type reglet; term bar + sealant 12" o.c. where voids;
 // Flex encapsulates the (E) flashing and extends to the reglet receiver; topcoat encapsulates the Flex; counterflashing removed/reset, sealant bead at the reglet raked and renewed.
 // Wall tie-in per W-11-TYP: (E) base flashing over a cant up to a Fry-type reglet; term bar + sealant 12" o.c. where voids;
@@ -808,16 +836,11 @@ function addScupper(b,x){ const g=new THREE.Group(); g.position.set(x,0,-b.W/2+b
 // Sizes are ASSUMED except the 12" screw spacing. `gap` = {at} splices the 4-ft model into the run at that position along the wall.
 const WT={ FH:24, REG:26, CANT:6, T:0.1875, FOOT:10, BAR_H:1, BAR_T:0.125, BAR_TOP:23.5, SCREW_R:0.1875, SCREW_H:0.125, GROOVE_H:0.75, LIP_H:0.75,
   CF_STAND:1, CF_KNEE:24.5, CF_BOT:20, HEM:0.5, BEAD:0.1875, COAT:0.04, MT:0.04, FIELD:{primer:12,flex:12,topcoat:13} };   // inches
-function addWallTie(b,side,len,center,gap){ const g=new THREE.Group(); b.roof.add(g); const isX=side==='W'||side==='E'; const sgn=(side==='W'||side==='N')?-1:1;
+function addWallTie(b,side,len,center,gap){ const g=new THREE.Group(); b.roof.add(g); const isX=side==='W'||side==='E';
   const off=(isX?b.IL/2:b.IW/2)+b.PT;   // the true wall face: makeBlock insets the field by PT even on a skipped side, so the abutting wall stands PT beyond it
   const IN=1/12, W=WT; b.resetParts=b.resetParts||[];
-  // run-local frame like the coping: x along the wall, -z toward the roof, y up; one group per segment, placed on the wall face
-  const runAt=(x0,x1)=>{ const r=new THREE.Group(); const c=(x0+x1)/2; if(isX){ r.position.set(sgn*off,0,center+c); r.rotation.y=sgn<0?-Math.PI/2:Math.PI/2; } else { r.position.set(center+c,0,sgn*off); r.rotation.y=sgn<0?Math.PI:0; } g.add(r); r.userData.len=x1-x0; return r; };
-  const slab=(r,y0,y1,z0,z1,mat,tag)=>{ const m=box(r.userData.len,(z1-z0)*IN,(y1-y0)*IN,mat,0,(z0+z1)/2*IN,-(y0+y1)/2*IN,false); r.add(m); if(tag) b.resetParts.push(m); return m; };   // y = from the wall (toward the roof = local -z), z = height
-  const tilt=(r,p,q,t,mat,tag)=>{ const [y0,z0]=p,[y1,z1]=q; const ln=Math.hypot(y1-y0,z1-z0); const m=box(r.userData.len,t*IN,ln*IN,mat,0,(z0+z1)/2*IN,-(y0+y1)/2*IN,false); m.rotation.x=-Math.atan2(z1-z0,-(y1-y0)); r.add(m); if(tag) b.resetParts.push(m); return m; };   // from-wall is local -z
-  const seg=(x0,x1)=>{ const r=runAt(x0,x1);
-    const cant=new THREE.Shape(); cant.moveTo(0,0); cant.lineTo(W.CANT*IN,0); cant.lineTo(0,W.CANT*IN); cant.closePath();   // CCW; rotateY(90) sends shape-x to local -z, toward the roof
-    const cg=new THREE.ExtrudeGeometry(cant,{depth:r.userData.len,bevelEnabled:false}); cg.rotateY(Math.PI/2); cg.translate(-r.userData.len/2,0,0); const cm=new THREE.Mesh(cg,M.wood); r.add(cm);
+  const F=wallFrame(b,side,off,g); const runAt=(x0,x1)=>F.runAt(center+x0,center+x1), slab=F.slab, tilt=F.tilt;   // run-local frame like the coping: x along the wall, -z toward the roof, y up
+  const seg=(x0,x1)=>{ const r=runAt(x0,x1); F.cant(r,W.CANT);
     slab(r,W.CANT,W.FOOT,0,W.T,M.modbit); tilt(r,[W.CANT,W.T/2],[0,W.CANT+W.T/2],W.T,M.modbit); slab(r,0,W.T,W.CANT,W.FH,M.modbit);          // (E) flashing: foot, over the cant, up the wall
     slab(r,W.T,W.T+W.BAR_T,W.BAR_TOP-W.BAR_H,W.BAR_TOP,M.coping);                                                                         // term bar
     for(let x=-r.userData.len/2+0.5;x<r.userData.len/2;x+=1){ const sc=new THREE.Mesh(new THREE.CylinderGeometry(W.SCREW_R*IN,W.SCREW_R*IN,W.SCREW_H*IN,8),M.fast); sc.rotation.x=Math.PI/2; sc.position.set(x,(W.BAR_TOP-W.BAR_H/2)*IN,-(W.T+W.BAR_T+W.SCREW_H/2)*IN); r.add(sc); }   // 12" o.c.
@@ -870,19 +893,18 @@ function condFor(b,p){ if(b.tapeList) b.tapeList.forEach(t=>t.visible = p.prep>=
    BIG-BOX RETAIL (flat)
 ----------------------------------------------------------------- */
 function buildBigBox(){
-  const b=makeBlock({L:200,W:140,H:26,PH:3, copingModel:{k:'E',at:-20}}); const {L,W,H,PH,PT}=b;   // coping model at the coping hotspot
+  const scupX=[-60,60]; const b=makeBlock({L:200,W:140,H:26,PH:3, splices:[{k:'E',at:-20,id:'coping'}].concat(scupX.map(x=>({k:'N',at:x,id:'scupper'})))}); const {L,W,H,PH,PT}=b;   // coping model at the coping hotspot, scupper models on the north parapet
   b.g.add(box(70,12,0.4,M.unitD,0,7,W/2+0.15,false));
   const drainPos=[[-70,-40],[-70,40],[70,-40],[70,40]]; drainPos.forEach(([x,z])=>addStain(b,x,z));
   const rtuPos=[[-40,-30],[10,10],[55,-25]]; const rtus=new THREE.Group(); b.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(b,x,z)));
   const drains=new THREE.Group(); b.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(b,x,z)));
-  const scupX=[-60,60]; const scups=new THREE.Group(); b.par.add(scups); scupX.forEach(x=>scups.add(addScupper(b,x)));
   const solar=makeSolar(b.roof,[-80,-60,-40,-20,0,20,40,60,80],[-55,-15,25]); solar.visible=false;
   const hots=[
     {id:'rtu', anchor:()=> new THREE.Vector3(rtuPos[0][0],H+6.4,rtuPos[0][1]), show:()=>S.on.rtu},
     {id:'drain', anchor:()=> new THREE.Vector3(drainPos[3][0],H+1.2,drainPos[3][1]), show:()=>S.on.drain},
     {id:'scupper', anchor:()=> new THREE.Vector3(scupX[1],H+PH+0.6,-W/2+PT/2), show:()=>S.on.scupper},
     {id:'coping', anchor:()=> new THREE.Vector3(L/2-PT/2,H+PH+0.6,-20), show:()=>S.on.coping}];
-  function applyStage(p){ condFor(b,p); sweepFor(p,-L/2,L/2); rtus.visible=!!S.on.rtu; drains.visible=!!S.on.drain; scups.visible=!!S.on.scupper; solar.visible=S.solar; }
+  function applyStage(p){ condFor(b,p); sweepFor(p,-L/2,L/2); rtus.visible=!!S.on.rtu; drains.visible=!!S.on.drain; setScuppers(b,!!S.on.scupper); solar.visible=S.solar; }
   return { extent:{L,W,H:H+PH}, hots, applyStage };
 }
 
@@ -1179,7 +1201,7 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize()
   applyCam(); applyStage(); applySection(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
 
 selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame);
-window.__rmi={ S, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS };
+window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS };
 })();
 </script>
 </body>

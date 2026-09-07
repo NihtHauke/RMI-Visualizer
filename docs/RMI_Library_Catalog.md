@@ -131,7 +131,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 |---|---|---|---|
 | Cast-iron roof drain — **model** `models/cast-iron-drain-D-1-TYP.glb` (`scripts/build_cast_iron_drain_D-1-TYP.py`), assembly + 18"/3"/1" extents VERIFIED; bowl/ring/dish sizes ASSUMED | D-1-TYP, D-2-TYP | CID-1-21-FT3D, CID-2-21-FT3D, CID-6-21-FT3D | All flat systems |
 | Inlet drain | D-3-TYP | — | All flat systems |
-| Overflow / thru-wall scupper | D-4-TYP | D4-1-FT-3D, D4-4-FT-3D, D4-5-FT-3D, D4-11-FT-3D | All flat systems + metal |
+| Overflow / thru-wall scupper — **model** `models/overflow-scupper-D-4-TYP.glb` (`scripts/build_overflow_scupper_D-4-TYP.py`), a 4-ft parapet section spliced into the big-box north parapet (both scuppers). VERIFIED: tube above the (E) cant, Flex encapsulates the tube interior and extends min 12" onto the field, base coat up the (E) wall flashing, topcoat over all, sealant bead at the exterior termination. ASSUMED: 16" x 5" tube, 1" exterior projection, 2" collar with the bead run all round, bottom bent 3" over the cant, 6" cant, full-height flashing, coat thicknesses | D-4-TYP | D4-1-FT-3D, D4-4-FT-3D, D4-5-FT-3D, D4-11-FT-3D | All flat systems + metal |
 | Wall scupper | D-5-TYP, D-6-TYP (interior wall) | — | All flat systems |
 | Metal gutter seams | W-7-TYP (filed under drains) | D-7-FT-24-3D, D-7-2-24-3D, D-7-11-24-3D | Metal gutters |
 | Gutter inlet / downspout | D-8-TYP | D8-9-FT-3D, D8-FT-13-3D | BUR through metal |
@@ -197,6 +197,8 @@ Still ASSUMED (no document in the library):
 - Roof hatch detail — no drawing in the library; treated as a fixed curb until RMI says otherwise.
 - **W-1-TYP coping: is the whole coping primed** when the topcoat covers the entire coping under the system warranty? The tool primes only the 8" Flex band at each joint (matching the drawing's band logic) but topcoats the whole run.
 - **W-11-TYP wall flashing height.** The drawing runs Flex the full height of the (E) base flashing to the reglet but does not dimension the flashing. The tool uses 24" (reglet 2" above it, counterflashing lapping 4"). If RMI has a typical height or a range, the model and the code run both take it from one constant.
+- **D-4-TYP scupper sizes and exterior termination.** The drawing is NTS: the tool uses a 16" x 5" sheet-metal tube with a 2" exterior collar and runs the sealant bead round the whole collar (the drawing shows the bead only at the bottom). Is the 12" field extent measured from the cant toe (as modelled) or from the wall? All in `scripts/build_overflow_scupper_D-4-TYP.py` as named constants.
+- **Parapet base flashing height.** D-4-TYP draws the Flex base coat the full height of the (E) wall flashing up to the coping, so every parapet in the tool now shows a 6" cant, base flashing and Flex/topcoat to the coping (previously an 18" band). Cant size and flashing height are ASSUMED (`PB` in index.html).
 - **P-6-TYP soil stack dimensions.** The drawing is not to scale and carries no dimensions. The model uses a 4" stack 24" above the roof, 1/16" lead with a 14" base flange turned 1" into the bore, a 3/8" sealant bead, Flex 6" past the flange and 6" down the bore, topcoat 1" past the Flex. All in `scripts/build_lead_soil_stack_P-6-TYP.py` as named constants — correct any of them and rebuild.
 - Per-detail Flex allowance for the material takeoff on metal roofs (how many gallons a curb or a run of side lap consumes). Plates give field rates only.
 

@@ -34,7 +34,8 @@ Embedded on Webflow staging at https://roofrmi-update.webflow.io/visualize-your-
   and **full-field** (everything else: primer, Flex, topcoat over the whole roof). Two roof-specific pre-stages: gravel removal, ballast removal.
 - 28 detail types, keyed to drawing numbers. Eight are rebuilt to their drawings and VERIFIED:
   curb CS-1-TYP / CS-13-MP, drain D-1-TYP, soil stack P-6-TYP, coping W-1-TYP, reglet W-11-TYP,
-  R-panel lap F-8-TYP, standing seam F-9-TYP, scupper D-4-TYP. The rest are generic code geometry pending the same treatment.
+  R-panel lap F-8-TYP, standing seam F-9-TYP, scupper D-4-TYP. Six ship as Blender models in `models/` (curb, drain, soil stack, coping,
+  reglet, scupper); the rest are generic code geometry pending the same treatment.
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## Code layout
@@ -84,6 +85,8 @@ Setup once: `pip install playwright pillow && playwright install chromium`. `sna
 - `index.html` is one-line-per-function in places. Never append a `//` comment to a replaced fragment unless it is the true end of the line — twice now a trailing comment swallowed the rest of a function (`condFor`, `tilt`) and took the whole page down. Use `/* */` mid-line, and run `node --check` on the extracted inline script before a snapshot.
 - Every `skins` entry passed to `mountModel` must exist in `M`. A missing one (`M.wood` did not exist) assigns `undefined` as a mesh material, which crashes three's render loop — the page then silently shows the roof view in every snapshot.
 - makeBlock insets the field by `PT` on every side, including a skipped (parapet-less) side. A wall tie-in on such a side sits at `IL/2 + PT`, not `IL/2`, and needs a filler strip of field material across that inch-per-foot ledge (`addWallTie` does this).
+- Cameras: `python scripts/snapshot.py --building <b> --detail <id> --cam dist,theta,phi[,drop] --stages 4,6` tries a camera without editing `DETAILS` (it writes `window.__rmi.DETAILS[id]`). At the finished stage everything is topcoat-grey and a frontal view has no depth cues — judge a camera on stages 1 and 4, then check 6.
+- Every parapet run carries a cant + base flashing + full-height coats (`parapetBase`, constants in `PB`). A wall-mounted model that splices into a parapet (`makeBlock` `splices:[{k,at,id}]`) must draw that same base from the same numbers, or the seams show; `build_overflow_scupper_D-4-TYP.py` is the pattern. A splice that hides with a checkbox needs a plug (see `setScuppers`) or the parapet shows a hole.
 - The field overlay sheets float ~1" up, so a model's roof patch must be re-skinned with the block's field material (`mountModel(..., {membrane: b.fieldPlanes[0].material})`) or it shows as a grey disc on mod-bit/concrete roofs.
 
 ## Working style

@@ -9,6 +9,7 @@ Usage (from the repo root):
     python scripts/snapshot.py --building bigbox --detail drain
     python scripts/snapshot.py --building bigbox                 # whole-roof view only
     python scripts/snapshot.py --building bigbox --detail rtu --section   # section view on
+    python scripts/snapshot.py --building bigbox --detail coping --cam 7,1.75,1.1 --stages 6   # try a camera, one stage
 
 A --detail the building does not carry is skipped with a message listing the ones it does have.
 
@@ -68,7 +69,10 @@ def main():
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument("--width", type=int, default=1400)
     ap.add_argument("--height", type=int, default=860)
+    ap.add_argument("--cam", default=None, help="override the detail camera: dist,theta,phi[,drop] (tune DETAILS[...] without editing index.html)")
+    ap.add_argument("--stages", default=None, help="comma list of stage numbers to shoot, e.g. 4,6 (default: all six)")
     args = ap.parse_args()
+    want = {int(x) - 1 for x in args.stages.split(",")} if args.stages else set(range(len(STAGES)))
 
     from playwright.sync_api import sync_playwright
 
@@ -91,6 +95,10 @@ def main():
             if args.topcoat == "white":
                 page.evaluate("document.querySelector('#topcoat button[data-v=white]').click()")
             if args.detail:
+                if args.cam:
+                    v = [float(x) for x in args.cam.split(",")]
+                    keys = ["dist", "theta", "phi", "drop"][:len(v)]
+                    page.evaluate("([id,o])=>Object.assign(window.__rmi.DETAILS[id],o)", [args.detail, dict(zip(keys, v))])
                 # goDetail returns false when this building has no such hotspot (e.g. office has no coping,
                 # it uses edge metal). Nothing to photograph, so say which details it does have and stop.
                 if page.evaluate(f"window.__rmi.goDetail('{args.detail}') === false"):
@@ -104,6 +112,8 @@ def main():
                     page.click("#secBtn")
                     page.wait_for_timeout(500)
             for i, name in enumerate(STAGES):
+                if i not in want:
+                    continue
                 page.evaluate(f"window.__rmi.setStage({i}, true); window.__rmi.S.prog = 1;")
                 page.wait_for_timeout(700)
                 files.append(save_png(page, OUT / f"{tag}-{i+1}-{name}.png"))
@@ -116,10 +126,12 @@ def main():
         from PIL import Image, ImageDraw
         ims = [Image.open(f) for f in files]
         w, h = ims[0].size
-        sheet = Image.new("RGB", (w * 3, h * 2), "white")
+        shot = sorted(want)
+        cols = min(3, len(shot)); rows = (len(shot) + cols - 1) // cols
+        sheet = Image.new("RGB", (w * cols, h * rows), "white")
         d = ImageDraw.Draw(sheet)
-        for i, im in enumerate(ims):
-            x, y = (i % 3) * w, (i // 3) * h
+        for n, (i, im) in enumerate(zip(shot, ims)):
+            x, y = (n % cols) * w, (n // cols) * h
             sheet.paste(im, (x, y))
             d.rectangle([x, y, x + 260, y + 34], fill="#12213A")
             d.text((x + 10, y + 8), f"{i+1}. {STAGES[i]}", fill="white")
