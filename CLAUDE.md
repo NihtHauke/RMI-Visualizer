@@ -34,8 +34,8 @@ Embedded on Webflow staging at https://roofrmi-update.webflow.io/visualize-your-
   and **full-field** (everything else: primer, Flex, topcoat over the whole roof). Two roof-specific pre-stages: gravel removal, ballast removal.
 - 28 detail types, keyed to drawing numbers. Eight are rebuilt to their drawings and VERIFIED:
   curb CS-1-TYP / CS-13-MP, drain D-1-TYP, soil stack P-6-TYP, coping W-1-TYP, reglet W-11-TYP,
-  R-panel lap F-8-TYP, standing seam F-9-TYP, scupper D-4-TYP. Seven ship as Blender models in `models/` (curb, drain, soil stack, coping,
-  reglet, scupper, R-panel side lap); the rest are generic code geometry pending the same treatment.
+  R-panel lap F-8-TYP, standing seam F-9-TYP, scupper D-4-TYP. Eight ship as Blender models in `models/` (curb, drain, soil stack, coping,
+  reglet, scupper, R-panel side lap, standing seam); the rest are generic code geometry pending the same treatment.
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## Code layout
@@ -91,6 +91,9 @@ Setup once: `pip install playwright pillow && playwright install chromium`. `sna
 - Metal (gable) roofs sweep only the topcoat; `buildGable`'s `applyStage` used to park `clipFlex`/`clipPrim` at -1000, which clips away any model's primer/Flex there. They now sit at +1000. A model on a slope is skinned with the slope's `M.*` materials (`panel`, `rib`, `fastener`, `rust`, `sealant`, `primer`, `flex`, `topcoat`) and its holder gets `userData.gate={flex:z0/SL}` so its Flex appears when the lap strip has swept down to it (`applyModels` honours the gate). `M.rust` on a model's rust discs fades them through prep for free.
 - Splicing into a panel run (`cfg.lapModel` in `buildGable`): the field and topcoat sheets get a hole (`slopeSheet`), the rib and lap `InstancedMesh`es carry one extra instance so the bay's rib is drawn as two pieces, purlin fasteners inside the bay are dropped and rust patches keep off that lap. The lap coat profiles come from `LAP` + `lapProfile()` and the build script's `lap_profile()` — same numbers or the bay ends show.
 - `prepModel`'s primer-opacity statement was the third swallowed-by-`//` casualty; model primer now renders at 75% opacity as intended (checked on the coping).
+- A model part named `<layer>__..._before_...` / `..._after_...` is swapped by `applyModels` at the halfway point of the prep stage — the way the standing seam's loose cap is re-crimped (F-9-TYP note 11). Use it for prep work that CHANGES geometry; `M.rust`'s fade covers prep work that only changes colour.
+- A spliced model must cover its whole bay with no butt lines: the standing seam's two pans left a hairline at x=0 and an open slot between the seam legs, and the concealed clip underneath showed through both. One continuous pan sheet under the seam fixed it. Anything meant to be hidden inside an assembly needs the assembly to actually be closed.
+- Judge a detail camera on the stage where the geometry reads, not the finished stage — and check the sun. On standing seam the seam's own shadow is a 1-ft band on a 2-ft pitch, and at some thetas the seam's lit face is the same value as the pan, so a correct model looks like a flat stripe. `theta` near the seam's own direction (0.45 on the manufacturing slope) gives depth; the Section view is the clearest shot of a seam assembly.
 - A contact sheet used to sign off a detail must be shot with the **default** camera (`snapshot.py --building <b> --detail <id>`, no `--cam`). `--cam` is for hunting a camera only; a sheet shot with an override proves nothing about what a visitor sees when they click the hotspot, and it hides anchor/framing bugs. Once a camera is chosen, write it into `DETAILS` and re-shoot without `--cam`.
 
 ## Working style
