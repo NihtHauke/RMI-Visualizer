@@ -11,6 +11,9 @@ Usage (from the repo root):
     python scripts/snapshot.py --building bigbox --detail rtu --section   # section view on
     python scripts/snapshot.py --building bigbox --detail coping --cam 7,1.75,1.1 --stages 6   # try a camera, one stage
     python scripts/snapshot.py --building warehouse --roof sseam                  # a roof other than the building's first
+    python scripts/snapshot.py --building bigbox --photos a.jpg,b.png --width 1366 --height 768
+        # prospect-photo panel: loads the files, pins the first photo to the building's details, shoots the split
+        # layout at laptop size, then clicks the first pin and shoots the detail it zooms to (<tag>-pin.png)
 
 A --detail the building does not carry is skipped with a message listing the ones it does have.
 
@@ -73,6 +76,7 @@ def main():
     ap.add_argument("--height", type=int, default=860)
     ap.add_argument("--cam", default=None, help="override the detail camera: dist,theta,phi[,drop] (tune DETAILS[...] without editing index.html)")
     ap.add_argument("--stages", default=None, help="comma list of stage numbers to shoot, e.g. 4,6 (default: all six)")
+    ap.add_argument("--photos", default=None, help="comma list of image files to load into the Prospect photos panel (JPG/PNG/HEIC); pins the first one")
     args = ap.parse_args()
     want = {int(x) - 1 for x in args.stages.split(",")} if args.stages else set(range(len(STAGES)))
 
@@ -80,7 +84,11 @@ def main():
 
     OUT.mkdir(exist_ok=True)
     httpd = serve(args.port)
-    tag = f"{args.building}{'-' + args.roof if args.roof else ''}-{args.detail or 'roof'}{'-section' if args.section else ''}"
+    tag = f"{args.building}{'-' + args.roof if args.roof else ''}-{args.detail or 'roof'}{'-section' if args.section else ''}{'-photos' if args.photos else ''}"
+    photos = [str(Path(f.strip()).resolve()) for f in args.photos.split(",")] if args.photos else []
+    for f in photos:
+        if not Path(f).exists():
+            raise SystemExit(f"no such photo: {f}")
     files = []
     errors = []
     try:
@@ -97,6 +105,20 @@ def main():
             if args.roof:
                 page.evaluate(f"const r=document.getElementById('roof'); r.value='{args.roof}'; r.dispatchEvent(new Event('change')); window.__rmi.finishCam();")
                 page.wait_for_timeout(3500)
+            if photos:
+                page.evaluate("window.__rmiQuiet = true")
+                page.set_input_files("#photoInput", photos)
+                page.wait_for_timeout(2500)  # decode (a HEIC pulls the converter from cdnjs first)
+                have = page.evaluate("window.__rmi.details()")
+                want_pins = ([args.detail] if args.detail else []) + [d for d in have if d != args.detail]
+                spots = [(0.64, 0.5), (0.28, 0.74), (0.11, 0.58)]
+                for (x, y), d in zip(spots, want_pins[:3]):
+                    page.evaluate("([x,y,d])=>window.__rmi.photos.pin(0,x,y,d)", [x, y, d])
+                page.evaluate("window.__rmi.finishCam()")  # opening the panel refits the whole-roof camera; skip the fly (slow under swiftshader)
+                page.wait_for_timeout(300)
+                st = page.evaluate("window.__rmi.photos.state()")
+                for ph in st["photos"]:
+                    print(f"photo {ph['name']}: {ph['status']} {ph['w']}x{ph['h']} pins={[p['drawing'] for p in ph['pins']]}")
             if args.topcoat == "white":
                 page.evaluate("document.querySelector('#topcoat button[data-v=white]').click()")
             if args.detail:
@@ -122,6 +144,14 @@ def main():
                 page.evaluate(f"window.__rmi.setStage({i}, true); window.__rmi.S.prog = 1;")
                 page.wait_for_timeout(700)
                 files.append(save_png(page, OUT / f"{tag}-{i+1}-{name}.png"))
+            if photos:
+                # click the first pin: the 3D view should fly to that detail with the panel still open
+                page.evaluate("window.__rmi.photos.click(0,0); window.__rmi.finishCam();")
+                page.wait_for_timeout(800)
+                pin_png = save_png(page, OUT / f"{tag}-pin.png")
+                print("pin click ->", page.evaluate("window.__rmi.S.view"), "wrote", pin_png)
+                pay = page.evaluate("window.__rmi.payload()")
+                print("payload.prospect_photos:", pay.get("prospect_photos"))
             browser.close()
     finally:
         httpd.shutdown()
