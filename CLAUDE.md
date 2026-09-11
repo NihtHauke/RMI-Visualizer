@@ -8,11 +8,31 @@ stage. One Three.js scene: whole roof (macro) with click-to-zoom details (micro)
 a material estimate, a photo panel for the prospect's own roof, and a summary that pre-fills RMI's
 Project Evaluation form.
 
-Direction (Sept 2026): hosting moves to Cloudflare Pages behind Cloudflare Access (RMI email login),
-the repo goes private, and the address becomes a roofrmi.com subdomain. Phases: (1) private hosting +
-local photo panel with pins that link to details; (2) saved prospects in R2; (3) a temporary view-only
-"share live" link for guests. Not building meeting audio/video or photo-to-3D reconstruction.
-Detail models continue in parallel; nothing in the detail pipeline changes.
+Direction (10 Sept 2026): the final product is a DESKTOP APPLICATION, not a website. Electron wraps the existing
+index.html + models into an installer (Windows first; Mac if needed) that reps install and run offline in its own
+window. No hosting, no login, no server. Prospect photos load from the rep's machine into a photo panel with pins
+that link to details; saved prospects are local files (laptop or shared folder — TBD). Presenting is Zoom screen
+share; no share-live link. Drawings may be bundled in the app later. GitHub is source-only and goes private;
+Pages is a temporary review build until the first installer ships. Detail models continue in parallel;
+nothing in the detail pipeline changes.
+
+Team asks (11 Sept 2026), in build order after the installer:
+1. Photo panel — rep loads prospect photos from disk; pins on a photo link to details; in memory only in v1.
+2. Drawing panel — a "Drawing" button in detail view shows the RMI 2D drawing (zoomable), the application steps
+   in plain language from the drawing notes (ASSUMED steps say so), and the 3D concept on a second tab. Drawings
+   are rendered to images at build time from a local folder (`drawings/`, git-ignored until the repo is private)
+   and bundled in the installer.
+3. PDF export — one click: cover, configuration, six stage images with text, one page per selected detail
+   (3D view + steps + drawing), material estimate (NO pricing), photos with pins, ASSUMED notes, pre-filled
+   Project Evaluation appendix; per-section toggles. Use Electron's printToPDF and canvas captures.
+4. EagleView import — parse the report XML (POINTS x,y,z ft; LINES typed PARAPET/EAVE/FLASHING/OTHER; FACES type
+   ROOF with POLYGON path of line ids and elevation, and ROOFPENETRATION with unroundedsize) into a prospect
+   building: facets as levels at their elevations, parapets/eaves/flashing lines as the matching details,
+   penetrations placed exactly and classified by area (<1 sq ft pipe/vent; 1–10 curb/hatch; 10–30 RTU/skylight;
+   >30 large equipment) as a best guess the rep confirms; estimate from the measured totals. Label the roof
+   with report number and date; unconfirmed types stay ASSUMED. Report files are client data: local prospect
+   folder only, never committed; a sample lives outside the repo for testing.
+5. Saved prospects — configuration + photos + report + confirmations as a local file per prospect.
 
 Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pages, `index.html` at repo root).
 **Never publish to the roofrmi.com production domain.**
@@ -30,8 +50,10 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   catalog so RMI can fill the gap; a source document always overrides an assumption.
 - Never present an ASSUMED sequence as RMI spec in customer-facing text.
 - Chemistry / formulation data never enters this repo. Product performance data (rates, mils, warranties) is fine.
-- Until the repo is private: no RMI PDFs, no client names, no real buildings in it. Chemistry never. The generic buildings are
-  archetypes; prospect photos (phase 1+) are the only real-roof content and never become part of the archetypes.
+- Until the repo is private and Pages is off: no RMI PDFs, no client names, no real buildings in it. Chemistry never. The generic
+  buildings are archetypes; prospect photos are the only real-roof content and never become part of the archetypes.
+- Everything must keep working from a local folder with no network: no CDN dependencies once packaged (vendor
+  three.js and GLTFLoader into the repo), no absolute URLs, model paths relative to index.html.
 
 ## Current state (Sept 2026)
 - 11 building types: warehouse, big-box retail, school, office, manufacturing, hospital, arena/gym,
@@ -54,10 +76,6 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Planned split: `src/` for JS modules, `models/` for `.glb` + `.blend`, `scripts/` for Blender build scripts, `textures/`, `docs/`.
 - Three.js r128 from cdnjs; fonts from Google Fonts. Keep the grid tracks `minmax(0,1fr)` — a `1fr` track let the canvas grow the layout inside the Webflow iframe (fixed bug, don't regress).
 - Test with Playwright + swiftshader; `window.__rmi` exposes `S`, `setStage`, `goDetail`, `goRoof`, `selectBuilding`, `finishCam` for scripted screenshots.
-- Prospect photos panel (phase 1, in `index.html` under "PROSPECT PHOTOS"): `#app.photos` adds a third grid column (`minmax(0,1fr)`) with the panel;
-  photos are object URLs in memory (`PH.list`), pins are image fractions `{x,y,detail,drawing}`, nothing is persisted. HEIC is converted
-  client-side by heic2any pulled from cdnjs only when a HEIC arrives. `window.__rmi.photos` (`open/add/pin/click/clear/state/summary`)
-  and `window.__rmi.payload()` drive it from scripts; `snapshot.py --photos a.jpg,b.png --width 1366 --height 768` shoots the split layout.
 
 ## Blender model conventions (for the detail rebuild)
 - One `.blend` + one `.glb` per detail in `models/`, named `<detail>-<DRAWING-NO>.glb` (e.g. `cast-iron-drain-D-1-TYP.glb`).
