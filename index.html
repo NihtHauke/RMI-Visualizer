@@ -557,7 +557,9 @@ let B = null;   // the current built building: { extent, hots, applyStage(p) }
    <layer>__<part> with layer in existing|primer|flex|topcoat. Metres → feet.
    If a file fails to load, the code-drawn geometry stays; nothing breaks.
 ================================================================= */
-const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb', coping:'models/metal-coping-joint-W-1-TYP.glb', wall:'models/reglet-counterflashing-W-11-TYP.glb', scupper:'models/overflow-scupper-D-4-TYP.glb', lap:'models/rpanel-side-lap-F-8-TYP.glb', sseam:'models/standing-seam-F-9-TYP.glb' };
+const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb', coping:'models/metal-coping-joint-W-1-TYP.glb', wall:'models/reglet-counterflashing-W-11-TYP.glb', scupper:'models/overflow-scupper-D-4-TYP.glb', lap:'models/rpanel-side-lap-F-8-TYP.glb', sseam:'models/standing-seam-F-9-TYP.glb',
+  /* CS-1-TYP note 7: the same curb assembly carries hatches, skylight domes, vents and ducts — four units on one curb (scripts/rmi_curb.py) */
+  hatch:'models/roof-hatch-CS-1-TYP.glb', skylight:'models/curb-skylight-CS-1-TYP.glb', exhaust:'models/kitchen-exhaust-fan-CS-1-TYP.glb', binvent:'models/bin-vent-CS-1-TYP.glb' };
 const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=null;
 function loadModel(file){ if(modelCache[file]) return modelCache[file];
   modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
@@ -863,8 +865,11 @@ function addRTU(b,x,z,CW=8,CH=1.5){ let g=new THREE.Group(); g.position.set(x,0,
 function addRTU_old(b,x,z,CW=8,CH=1.5){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
   g.add(box(CW,CH,CW,M.curb,0,CH/2,0)); g.add(box(CW+1.5,CW*0.5,CW+1.5,M.unit,0,CH+CW*0.25,0)); g.add(box(CW+1.7,0.4,CW+1.7,M.unitD,0,CH+CW*0.5+0.1,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.35,CW*0.35,0.25,24),M.unitD); fan.position.set(0,CH+CW*0.5+0.4,0); g.add(fan);
   g.add(box(CW+0.16,CH,CW+0.16,M.primerOv,0,CH/2,0,false)); g.add(box(CW+0.24,CH,CW+0.24,M.flexOv,0,CH/2,0,false)); g.add(box(CW+0.32,CH+0.02,CW+0.32,M.topcoat,0,CH/2+0.01,0,false)); return g; }
-function addSkylight(b,x,z,CW=6,CH=1.2){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const d=curbAssembly(g,CW,CH,'sweep',false);
-  d.unit.add(box(CW+0.4,0.2,CW+0.4,M.coping,0,0.1,0)); const gl=new THREE.Mesh(new THREE.ConeGeometry(CW*0.74,1.4,4),M.glass); gl.rotation.y=Math.PI/4; gl.position.y=0.9; d.unit.add(gl); g.userData.unit=d.unit; g.userData.CH=CH; return g; }
+// Curb-mounted skylight per CS-1-TYP note 7 ("SKYLIGHTS DOMES") — same curb and coatings as the RTU, dome on top.
+function addSkylight(b,x,z,CW=6,CH=1.2){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g;
+  if(CW===6&&CH===1.2){ const prim=new THREE.Group(); g.add(prim); if(mountModel('skylight',g,0,0,0,prim,{membrane:b.fieldPlanes[0].material})) b.cutouts.push({x,z,hMem:5.15,hCoat:4.30}); g=prim; }   /* membrane hole just inside the model's 10.5-ft patch; coating hole just inside its 9-ft Flex apron */
+  const d=curbAssembly(g,CW,CH,'sweep',false);
+  d.unit.add(box(CW+0.4,0.2,CW+0.4,M.coping,0,0.1,0)); const gl=new THREE.Mesh(new THREE.ConeGeometry(CW*0.74,1.4,4),M.glass); gl.rotation.y=Math.PI/4; gl.position.y=0.9; d.unit.add(gl); g.userData.unit=d.unit; g.userData.CH=CH; return gOuter; }
 // Cast-iron drain per D-1-TYP: (E) bowl set below the field; clamping ring removed and reset in sealant; strainer replaced/primed;
 // Flex encapsulates the ring, extends min 18" out from the drain and 3" down into the bowl past the ring; topcoat extends 1" further into the bowl.
 function addDrain(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const RB=1.0;   // bowl radius (ft)
@@ -973,11 +978,22 @@ function addSleeperRun(b,x0,z0,x1,z1,n){ const g=new THREE.Group(); b.roof.add(g
     sl.add(box(2.5,0.5,1.1,M.primerOv,0,0.25,0,false)); sl.add(box(2.6,0.45,1.2,M.flexOv,0,0.225,0,false)); sl.add(box(3.4,0.06,2.0,M.flexOv,0,0.09,0,false)); sl.add(box(2.7,0.46,1.3,M.topcoat,0,0.23,0,false)); sl.add(box(3.5,0.06,2.1,M.topcoat,0,0.12,0,false)); }
   const pipe=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.3,len+2,12),M.iron); pipe.position.set((x0+x1)/2,1.05,(z0+z1)/2); pipe.rotation.set(0,-Math.atan2(z1-z0,x1-x0),Math.PI/2); g.add(pipe);
   return g; }
-function addHatch(b,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const CW=3.2, CH=1.2; const d=curbAssembly(g,CW,CH,'sweep',false);
-  const lid=box(CW+0.5,0.25,CW+0.5,M.coping,0,0.3,-0.35); lid.rotation.x=-0.28; d.unit.add(lid); g.userData.unit=d.unit; g.userData.CH=CH; return g; }
-function addBinVent(b,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
+// Roof hatch per CS-1-TYP note 7 ("ACCESS HATCH, SMOKE HATCH") — same curb and coatings as the RTU, lid on top.
+// Only the silo calls this, and the silo is exposed concrete, where CS-12-CON / CS-14-CON govern: the curb, skirt and nailer
+// are skinned to concrete and the patch to the silo's own field. ASSUMED — flagged in the catalog.
+function addHatch(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g; const CW=3.2, CH=1.2;
+  const prim=new THREE.Group(); g.add(prim);
+  if(mountModel('hatch',g,0,0,0,prim,{membrane:b.fieldPlanes[0].material,curb_wall:M.concrete,flashing_skirt:M.concrete,nailer:M.concrete})) b.cutouts.push({x,z,hMem:3.75,hCoat:2.90});
+  g=prim; const d=curbAssembly(g,CW,CH,'sweep',false);
+  const lid=box(CW+0.5,0.25,CW+0.5,M.coping,0,0.3,-0.35); lid.rotation.x=-0.28; d.unit.add(lid); g.userData.unit=d.unit; g.userData.CH=CH; return gOuter; }
+// Bin vent per CS-1-TYP note 7 ("VENTS, DUCTS") — same curb and coatings as the RTU, neck and rain cap on top.
+// Silo only: exposed concrete, so CS-12-CON governs and the curb is skinned to concrete (ASSUMED, flagged in the catalog).
+function addBinVent(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g;
+  const prim=new THREE.Group(); g.add(prim);
+  if(mountModel('binvent',g,0,0,0,prim,{membrane:b.fieldPlanes[0].material,curb_wall:M.concrete,flashing_skirt:M.concrete,nailer:M.concrete})) b.cutouts.push({x,z,hMem:3.35,hCoat:2.50});
+  g=prim;
   g.add(box(2.4,1.0,2.4,M.curb,0,0.5,0)); const neck=new THREE.Mesh(new THREE.CylinderGeometry(0.8,0.8,2.2,16),M.coping); neck.position.y=2.1; g.add(neck); const cap=new THREE.Mesh(new THREE.ConeGeometry(1.5,0.8,16),M.coping); cap.position.y=3.5; g.add(cap);
-  g.add(box(2.5,1.0,2.5,M.primerOv,0,0.5,0,false)); g.add(box(2.6,0.95,2.6,M.flexOv,0,0.48,0,false)); g.add(box(2.7,1.02,2.7,M.topcoat,0,0.51,0,false)); return g; }
+  g.add(box(2.5,1.0,2.5,M.primerOv,0,0.5,0,false)); g.add(box(2.6,0.95,2.6,M.flexOv,0,0.48,0,false)); g.add(box(2.7,1.02,2.7,M.topcoat,0,0.51,0,false)); return gOuter; }
 function addPost(b,x,z,h=8){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
   const post=new THREE.Mesh(new THREE.CylinderGeometry(0.45,0.45,h,12),M.iron); post.position.y=h/2; g.add(post); const base=new THREE.Mesh(new THREE.CylinderGeometry(1.0,1.1,0.3,16),M.iron); base.position.y=0.15; g.add(base);
   const wrap=(mat,dr,h2,y)=>{ const m=new THREE.Mesh(new THREE.CylinderGeometry(0.5+dr,1.15+dr,h2,16),mat); m.position.y=y; g.add(m); const d=new THREE.Mesh(new THREE.RingGeometry(1.1+dr,2.2+dr,32),mat); d.rotation.x=-Math.PI/2; d.position.y=0.06+dr; g.add(d); };
@@ -1108,7 +1124,7 @@ function buildSilo(){
   [-14,6,26].forEach(x=>gallery.add(box(0.5,0.5,GW-1.4,M.iron,x,8.8,0)));
   gallery.add(box(52,5,GW,M.coping,6,11.5,0)); gallery.add(box(52.4,0.5,GW+0.4,M.unitD,6,14.2,0,false)); gallery.add(box(6,4,GW-2,M.unitD,-23,11.5,0));
   const vents=new THREE.Group(); cap.roof.add(vents); rows.forEach(z=>cols.forEach(x=>{ if(x===-30) return; vents.add(addBinVent(cap,x+6,z+6)); }));
-  const hatches=new THREE.Group(); cap.roof.add(hatches); rows.forEach(z=>cols.forEach(x=>{ if(x===-30) return; hatches.add(addHatch(cap,x-5,z-5)); }));
+  const hatches=new THREE.Group(); cap.roof.add(hatches); rows.forEach(z=>cols.forEach(x=>{ if(x===-30) return; hatches.add(addHatch(cap,x-5,z-8)); }));
   const drainPos=[[-8,-16],[30,14]]; drainPos.forEach(([x,z])=>addStain(cap,x,z,4)); const drains=new THREE.Group(); cap.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(cap,x,z)));
   // base: receiving shed alongside
   world.add(box(140,22,40,M.wall,0,11,55)); world.add(box(140.2,4,40.2,M.wallB,0,2,55)); world.add(box(140,1,40,M.coping,0,22.5,55));
@@ -1117,7 +1133,7 @@ function buildSilo(){
     {id:'silowall', anchor:()=> new THREE.Vector3(0,SH*0.55,rows[1]+R+0.3), show:()=>S.on.silowall},
     {id:'penthouse', anchor:()=> new THREE.Vector3(-39,H+20,0), show:()=>S.on.penthouse},
     {id:'support', anchor:()=> new THREE.Vector3(32,H+3.5,2.6), show:()=>S.on.support},
-    {id:'hatch', anchor:()=> new THREE.Vector3(-5,H+2.4,-20), show:()=>S.on.hatch},
+    {id:'hatch', anchor:()=> new THREE.Vector3(-5,H+2.4,-23), show:()=>S.on.hatch},
     {id:'vent', anchor:()=> new THREE.Vector3(36,H+4.6,21), show:()=>S.on.vent},
     {id:'drain', anchor:()=> new THREE.Vector3(30,H+1.2,14), show:()=>S.on.drain}];
   function applyStage(p){ condFor(cap,p); M.stain.opacity=S.cond?0.45*(1-p.prep):0; M.streak.opacity=S.cond?0.35*(1-p.prep):0; sweepFor(p,-50,50); wallOv.visible=!!S.on.silowall; head.visible=!!S.on.penthouse; gallery.visible=!!S.on.support; hatches.visible=!!S.on.hatch; vents.visible=!!S.on.vent; drains.visible=!!S.on.drain; solar.visible=S.solar; }
@@ -1154,11 +1170,15 @@ function buildHotel(){
 /* -----------------------------------------------------------------
    RESTAURANT (small flat box, mansard screen, kitchen exhaust)
 ----------------------------------------------------------------- */
-function addExhaustFan(b,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const CW=4, CH=1.4; const d=curbAssembly(g,CW,CH,'sweep',false);
+// Kitchen exhaust fan per CS-1-TYP note 7 ("VENTS, DUCTS", "HVAC") — same curb and coatings as the RTU, upblast fan and
+// grease tray on top. Grease comes off before priming: no RMI material goes over a contaminant.
+function addExhaustFan(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g; const CW=4, CH=1.4;
+  const prim=new THREE.Group(); g.add(prim); if(mountModel('exhaust',g,0,0,0,prim,{membrane:b.fieldPlanes[0].material})) b.cutouts.push({x,z,hMem:4.15,hCoat:3.30});
+  g=prim; const d=curbAssembly(g,CW,CH,'sweep',false);
   const base=new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.9,1.2,20),M.unit); base.position.y=0.6; d.unit.add(base); const cap=new THREE.Mesh(new THREE.CylinderGeometry(2.3,1.6,1.0,20),M.unitD); cap.position.y=1.7; d.unit.add(cap);
   const tray=box(CW+1.2,0.3,CW+1.2,M.unitD,0,0.15,0,false); d.unit.add(tray); g.userData.unit=d.unit; g.userData.CH=CH;   // grease containment tray
   const gs=new THREE.Mesh(new THREE.CircleGeometry(5,24),M.stain); gs.rotation.x=-Math.PI/2; gs.position.set(1,0.036,1); b.stains.add(gs);
-  return g; }
+  return gOuter; }
 function buildRestaurant(){
   const b=makeBlock({L:70,W:50,H:16,PH:2.5,skip:['S']}); const {L,W,H,PH}=b;
   // mansard screen across the front, sloped, with a fascia sign band

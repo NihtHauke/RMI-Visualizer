@@ -74,7 +74,19 @@ LIB = {
     "flex":       lambda: mat("RMI_Flex",         (0.85, 0.62, 0.10), 0.45),
     "thane":      lambda: mat("RMI_Thane",        (0.82, 0.85, 0.88), 0.3, 0.6),
     "white":      lambda: mat("RMI_White",        (0.96, 0.96, 0.94), 0.5),
+    "glazing":    lambda: mat_glass("RMI_glazing", (0.80, 0.89, 0.93), 0.45),
 }
+
+
+def mat_glass(name, rgb, alpha=0.45, rough=0.12):
+    """Translucent material (skylight domes). glTF picks up Alpha from the Principled BSDF."""
+    m = mat(name, rgb, rough, 0.0)
+    m.node_tree.nodes["Principled BSDF"].inputs["Alpha"].default_value = alpha
+    try:
+        m.blend_method = 'BLEND'
+    except (AttributeError, TypeError):
+        pass
+    return m
 
 
 def M(key):
