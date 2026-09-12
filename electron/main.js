@@ -1,8 +1,9 @@
 // RMI Roof Visualizer — Electron main process.
 // Opens index.html (the same file GitHub Pages serves) in a plain window: no menu bar, no browser chrome.
 // Everything the page needs (three.js, GLTFLoader, fonts, models) is on relative paths, so it runs offline.
-const { app, BrowserWindow, Menu, shell } = require('electron');
+const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 const TITLE = 'RMI Roof Visualizer';
 const WIN = { width: 1400, height: 900, minWidth: 1024, minHeight: 640 };
@@ -53,6 +54,23 @@ if (!app.requestSingleInstanceLock()) {
     if (win) { if (win.isMinimized()) win.restore(); win.focus(); }
   });
   Menu.setApplicationMenu(null);
+  // Prospect photos: the page asks for a native open dialog (window.rmiDesktop.pickPhotos) and gets the files back as
+  // bytes. They are read once into the page's memory; nothing is copied, cached or written anywhere (phase 1: in memory only).
+  ipcMain.handle('rmi:pick-photos', async (e) => {
+    const win = BrowserWindow.fromWebContents(e.sender);
+    const r = await dialog.showOpenDialog(win, {
+      title: 'Add prospect photos',
+      properties: ['openFile', 'multiSelections'],
+      filters: [{ name: 'Photos (JPG, PNG, HEIC)', extensions: ['jpg', 'jpeg', 'png', 'heic', 'heif'] }, { name: 'All files', extensions: ['*'] }],
+    });
+    if (r.canceled) return [];
+    const out = [];
+    for (const fp of r.filePaths) {
+      try { const data = await fs.promises.readFile(fp); out.push({ name: path.basename(fp), size: data.length, data }); }
+      catch (err) { out.push({ name: path.basename(fp), size: 0, data: null, error: err.message }); }
+    }
+    return out;
+  });
   app.whenReady().then(createWindow);
   app.on('window-all-closed', () => app.quit());
 }

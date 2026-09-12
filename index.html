@@ -238,7 +238,7 @@
     </div>
     <div class="pins" id="ppins"></div>
     <div class="pthumbs" id="pthumbs"></div>
-    <div class="pnote">Photos and pins live in this browser tab only. They are not uploaded or saved anywhere and are gone when the tab closes. The configuration email carries file names and pinned detail numbers, never the images.</div>
+    <div class="pnote">Photos and pins live in this window only. They are not uploaded or saved anywhere and are gone when it closes. The configuration email carries file names and pinned detail numbers, never the images.</div>
   </section>
 
   <footer>
@@ -1295,7 +1295,12 @@ const phEl = { app:document.getElementById('app'), stage:document.getElementById
 function phOpen(on){ if(on===undefined) on=!phEl.app.classList.contains('photos'); phEl.app.classList.toggle('photos',on); phEl.btn.classList.toggle('on',on); phEl.railBtn.textContent=on?'Close photo panel':'Open photo panel';
   requestAnimationFrame(()=>{ if(on) phFit(); if(S.view==='roof') goRoof(false); }); }   // the 3D view just changed width; refit the whole-roof camera to it
 phEl.btn.onclick=()=>phOpen(); phEl.railBtn.onclick=()=>{ phOpen(); document.getElementById('rail').classList.remove('open'); }; document.getElementById('photoClose').onclick=()=>phOpen(false);
-document.getElementById('photoAdd').onclick=()=>phEl.input.click(); document.getElementById('photoAdd2').onclick=()=>phEl.input.click();
+// "Add photos": the desktop app (Electron) has a native dialog on window.rmiDesktop; the browser build uses the hidden file input. Same page, one code path after this.
+const phMime=n=>/\.png$/i.test(n)?'image/png':/\.hei[cf]$/i.test(n)?'image/heic':'image/jpeg';
+function phPick(){ const d=window.rmiDesktop; if(!(d&&d.pickPhotos)) return phEl.input.click();
+  d.pickPhotos().then(list=>{ const files=(list||[]).filter(f=>f.data).map(f=>new File([f.data],f.name,{type:phMime(f.name)})); (list||[]).filter(f=>!f.data).forEach(f=>console.warn('photo not read:',f.name,f.error||''));
+    if(files.length) phAdd(files); }).catch(err=>{ console.warn('desktop photo picker failed, using the browser picker:',err&&err.message); phEl.input.click(); }); }
+document.getElementById('photoAdd').onclick=phPick; document.getElementById('photoAdd2').onclick=phPick;
 phEl.input.onchange=()=>{ phAdd([...phEl.input.files]); phEl.input.value=''; };
 document.getElementById('photoClear').onclick=()=>{ if(!PH.list.length) return; if(!window.__rmiQuiet&&!confirm(`Clear ${PH.list.length} photo${PH.list.length>1?'s':''} and their pins?`)) return; phClear(); };
 function phClear(){ PH.list.forEach(p=>{ if(p.url) URL.revokeObjectURL(p.url); }); PH.list=[]; PH.cur=-1; PH.temp=null; phRender(); }

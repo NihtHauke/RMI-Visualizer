@@ -108,7 +108,7 @@ def main():
             if photos:
                 page.evaluate("window.__rmiQuiet = true")
                 page.set_input_files("#photoInput", photos)
-                page.wait_for_timeout(2500)  # decode (a HEIC pulls the converter from cdnjs first)
+                page.wait_for_timeout(2500)  # decode (a HEIC loads the vendored heic2any converter first)
                 have = page.evaluate("window.__rmi.details()")
                 want_pins = ([args.detail] if args.detail else []) + [d for d in have if d != args.detail]
                 spots = [(0.64, 0.5), (0.28, 0.74), (0.11, 0.58)]
