@@ -1,0 +1,19 @@
+{
+  "name": "rmi-roof-visualizer",
+  "productName": "RMI Roof Visualizer",
+  "version": "0.1.0",
+  "description": "RMI fluid-applied roofing system — presentation tool for RMI sales reps",
+  "private": true,
+  "main": "electron/main.js",
+  "author": "RMI",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^44.3.0",
+    "electron-builder": "^26.15.3"
+  }
+}

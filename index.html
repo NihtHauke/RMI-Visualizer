@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>RMI · Visualize your roof — mockup v2</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
 <style>
   :root{
     --navy:#12213A; --navy-2:#1C3255; --ink:#22303F; --mute:#6B7684;
@@ -23,13 +22,13 @@
   #app{display:grid;position:fixed;inset:0;height:100%;overflow:hidden;grid-template-columns:var(--rail) minmax(0,1fr);grid-template-rows:56px minmax(0,1fr) var(--foot);
        grid-template-areas:"head head" "rail view" "rail foot"}
   header{grid-area:head;background:var(--navy);color:#fff;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:3px solid var(--gold)}
-  header .mark{font-family:"Barlow Semi Condensed";font-weight:700;font-size:22px;letter-spacing:.5px}
+  header .mark{font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-weight:700;font-size:22px;letter-spacing:.5px}
   header .mark b{color:var(--gold)}
   header .sub{font-size:14px;opacity:.8}
   header .mock{margin-left:auto;font-size:12px;border:1px solid rgba(255,255,255,.35);padding:3px 8px;border-radius:3px;opacity:.85}
 
   aside{grid-area:rail;min-height:0;background:#fff;border-right:1px solid var(--line);overflow-y:auto;padding:16px 18px 24px}
-  aside h2{font-family:"Barlow Semi Condensed";font-size:15px;font-weight:700;margin:18px 0 8px;color:var(--navy)}
+  aside h2{font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:15px;font-weight:700;margin:18px 0 8px;color:var(--navy)}
   aside h2:first-child{margin-top:0}
   .field{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
   .field select,.field input[type=number]{border:1px solid var(--line);border-radius:3px;padding:4px 6px;background:#fff;max-width:160px;font-size:13px}
@@ -70,7 +69,7 @@
   .hot.hide{display:none}
   .layers{position:absolute;right:12px;bottom:12px;width:240px;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:3px;padding:10px 12px;font-size:12.5px;display:none}
   .layers.show{display:block}
-  .layers h3{margin:0 0 6px;font-size:13px;font-family:"Barlow Semi Condensed";color:var(--navy)}
+  .layers h3{margin:0 0 6px;font-size:13px;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;color:var(--navy)}
   .layers .row{display:flex;align-items:center;gap:8px;padding:4px 0;color:var(--mute)}
   .layers .row.on{color:var(--ink);font-weight:600}
   .layers .row .swatch{width:26px;height:10px;border-radius:1px;flex:none}
@@ -81,7 +80,7 @@
   .stagebar{display:flex;gap:6px;align-items:stretch}
   .stagebar button{flex:1;border:1px solid var(--line);background:#fff;border-radius:3px;padding:7px 6px;text-align:left;cursor:pointer;line-height:1.15;position:relative;overflow:hidden}
   .stagebar button small{display:block;color:var(--mute);font-size:11px}
-  .stagebar button b{font-size:13px;font-family:"Barlow Semi Condensed";color:var(--navy)}
+  .stagebar button b{font-size:13px;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;color:var(--navy)}
   .stagebar button.on{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy)}
   .stagebar button.done{background:#F6F7F8}
   .stagebar button .bar{position:absolute;left:0;bottom:0;height:3px;background:var(--gold);width:0}
@@ -91,14 +90,14 @@
   .controls .step{display:flex;gap:4px}
   .controls .step button{padding:6px 10px}
   .desc{padding:12px 18px 12px 14px;border-left:1px solid var(--line);font-size:13px;line-height:1.4;overflow:auto}
-  .desc h3{margin:0 0 4px;font-size:15px;font-family:"Barlow Semi Condensed";color:var(--navy);display:flex;gap:8px;align-items:center}
+  .desc h3{margin:0 0 4px;font-size:15px;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;color:var(--navy);display:flex;gap:8px;align-items:center}
   .desc p{margin:0 0 4px}
   .desc .src{color:var(--mute);font-size:12px}
 
   .modal{position:fixed;inset:0;background:rgba(18,33,58,.55);display:none;align-items:center;justify-content:center;z-index:20}
   .modal.show{display:flex}
   .modal .box{background:#fff;width:min(560px,92vw);max-height:86vh;overflow:auto;border-radius:4px;padding:18px 20px;border-top:4px solid var(--gold)}
-  .modal h3{margin:0 0 6px;font-family:"Barlow Semi Condensed";color:var(--navy)}
+  .modal h3{margin:0 0 6px;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;color:var(--navy)}
   .modal p{font-size:13px;color:var(--mute);margin:0 0 10px}
   .modal pre{background:#F4F5F7;border:1px solid var(--line);padding:10px;font-size:12px;overflow:auto;border-radius:3px}
   .modal .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
@@ -110,7 +109,7 @@
   #app.photos{grid-template-columns:var(--rail) minmax(0,1fr) minmax(0,1fr);grid-template-areas:"head head head" "rail view photo" "rail foot foot"}
   #app.photos #photos{display:flex}
   .phead{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);flex:none}
-  .phead h3{margin:0;font-family:"Barlow Semi Condensed";font-size:15px;color:var(--navy)}
+  .phead h3{margin:0;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:15px;color:var(--navy)}
   .phead .cnt{font-size:12px;color:var(--mute)}
   .phead .sp{flex:1}
   .pbtn{border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:3px;padding:4px 9px;cursor:pointer;font-size:12.5px;font-weight:600;white-space:nowrap}
@@ -262,8 +261,8 @@
   <div class="actions"><button class="ghost" id="copyBtn">Copy</button><button id="closeBtn">Close</button></div>
 </div></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="vendor/three.min.js"></script>
+<script src="vendor/GLTFLoader.js"></script>
 <script>
 (function(){
 'use strict';
@@ -1318,8 +1317,8 @@ async function phLoad(p,f){ PH.busy++; phBusy();
 function phImage(url){ return new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=rej; im.src=url; }); }
 async function phDecodable(blob){ try{ const b=await createImageBitmap(blob); b.close&&b.close(); return true; }catch(e){ return false; } }
 let heicLib=null;
-function phHeic(blob){ // Chrome and Edge do not decode HEIC; pull the converter from the same CDN the app already trusts, only when a HEIC arrives.
-  heicLib=heicLib||new Promise((res,rej)=>{ if(window.heic2any) return res(window.heic2any); const sc=document.createElement('script'); sc.src='https://cdnjs.cloudflare.com/ajax/libs/heic2any/0.0.4/heic2any.min.js'; sc.onload=()=>res(window.heic2any); sc.onerror=()=>rej(new Error('heic2any')); document.head.appendChild(sc); });
+function phHeic(blob){ // Chrome and Edge do not decode HEIC; load the bundled converter only when a HEIC arrives (1.3 MB, so not up front).
+  heicLib=heicLib||new Promise((res,rej)=>{ if(window.heic2any) return res(window.heic2any); const sc=document.createElement('script'); sc.src='vendor/heic2any.min.js'; sc.onload=()=>res(window.heic2any); sc.onerror=()=>rej(new Error('heic2any')); document.head.appendChild(sc); });
   return heicLib.then(h=>h({blob, toType:'image/jpeg', quality:0.9})).then(r=>Array.isArray(r)?r[0]:r); }
 function phBusy(){ let b=phEl.stage.querySelector('.busy'); if(PH.busy&&!b){ b=document.createElement('div'); b.className='busy'; b.textContent='Reading photos…'; phEl.stage.appendChild(b); } else if(!PH.busy&&b) b.remove(); }
 function phSelect(i){ PH.cur=i; PH.temp=null; phRender(); }

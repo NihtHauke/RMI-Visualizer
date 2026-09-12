@@ -1,0 +1,8 @@
+/* Barlow + Barlow Semi Condensed (Jeremy Tribby, SIL Open Font License 1.1 — see OFL.txt).
+   Latin subset, woff2, served locally so the app runs with no network. */
+@font-face{font-family:"Barlow";font-style:normal;font-weight:400;font-display:swap;src:url(Barlow-400.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:500;font-display:swap;src:url(Barlow-500.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:600;font-display:swap;src:url(Barlow-600.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:700;font-display:swap;src:url(Barlow-700.woff2) format("woff2")}
+@font-face{font-family:"Barlow Semi Condensed";font-style:normal;font-weight:600;font-display:swap;src:url(BarlowSemiCondensed-600.woff2) format("woff2")}
+@font-face{font-family:"Barlow Semi Condensed";font-style:normal;font-weight:700;font-display:swap;src:url(BarlowSemiCondensed-700.woff2) format("woff2")}

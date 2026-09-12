@@ -1,3 +1,5 @@
-*.blend1 
-snapshots/ 
+*.blend1
+snapshots/
 __pycache__/
+node_modules/
+dist/

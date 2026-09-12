@@ -74,7 +74,10 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   Stage progress `p = {prep, primer, flex, thane}` drives everything; flat roofs use world-space clipping planes to "sweep"
   overlays across x; metal roofs animate seam strips along the slope.
 - Planned split: `src/` for JS modules, `models/` for `.glb` + `.blend`, `scripts/` for Blender build scripts, `textures/`, `docs/`.
-- Three.js r128 from cdnjs; fonts from Google Fonts. Keep the grid tracks `minmax(0,1fr)` — a `1fr` track let the canvas grow the layout inside the Webflow iframe (fixed bug, don't regress).
+- Three.js r128 + GLTFLoader, heic2any and the Barlow woff2 fonts are vendored in `vendor/` (no CDN, no Google Fonts).
+  `electron/main.js` + `electron/preload.js` wrap the same `index.html`; `npm start` runs it, `npm run dist` builds the Windows
+  installer into `dist/` (electron-builder.yml; `.blend` files are excluded). `RMI_DEBUG=1` mirrors the page console to stdout;
+  F12 opens DevTools. The web build (Pages, snapshot.py) is unchanged — same file, no fork. Keep the grid tracks `minmax(0,1fr)` — a `1fr` track let the canvas grow the layout inside the Webflow iframe (fixed bug, don't regress).
 - Test with Playwright + swiftshader; `window.__rmi` exposes `S`, `setStage`, `goDetail`, `goRoof`, `selectBuilding`, `finishCam` for scripted screenshots.
 
 ## Blender model conventions (for the detail rebuild)
