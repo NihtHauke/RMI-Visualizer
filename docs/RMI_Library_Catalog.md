@@ -1,6 +1,7 @@
 # RMI Master Library → Roof Visualizer Catalog
 
 Source: `2024_Master_RMI_Library.zip` (296 files, read 2026-09-04). Status tags: **VERIFIED** = taken directly from an RMI document in the library. **ASSUMED** = my inference, correct me.
+§3c is the per-detail sync table against the tool; §5 collects every open question in one place.
 
 ---
 
@@ -94,7 +95,69 @@ If the user enters approximate roof size, the configuration can carry a quantity
 
 Dollar figures never appear in the tool; they come from an RMI sales rep or contractor.
 
-## 3. MICRO table — detail assemblies (VERIFIED drawing index)
+## 3c. The details in the tool (one row per entry in `DETAILS`)
+
+This is the sync table: every clickable detail in `index.html`, in source order. **Menu label** is what the rep
+sees; the id in brackets is the key in `DETAILS` and in each building's `details` list. **Drawings** gives the
+detail's own drawing and 3D concept plus any `byRoof` override the tool swaps in when the roof type changes.
+**Status** and **ASSUMED** are copied from that detail's own `src` text in the code — nothing in those two
+columns is a new judgement. "No VERIFIED tag" means the tool cites the drawing but has not claimed the
+assembly is verified against it.
+
+**The shared curb core.** CS-1-TYP note 7, quoted from the drawing and VERIFIED: "DETAIL EQUALLY APPLIES TO ALL
+CURB MOUNTED UNITS THAT CAN BE LIFTED INCLUDING VENTS, DUCTS, SOIL STACKS, CONDUIT PENETRATIONS, HVAC,
+REFRIGERATION PENETRATIONS, ACCESS HATCH, SMOKE HATCH, SKYLIGHTS DOMES." The RTU, roof hatch, curb-mounted
+skylight, kitchen exhaust fan and bin vent are therefore one assembly with a different unit on top, and they
+share one build core, `scripts/rmi_curb.py`. Coating sequence VERIFIED for all five: clean, prepare and prime;
+RMI-Flex flashing coat up the curb, over the top and turned down to the interior of the curb, encapsulating the
+(E) flashing; RMI-Thane or RMI-White over all; unit lifted and reset on stainless screws with EPDM washers after
+full cure. Note 8 scopes CS-1-TYP to BUR, modified bitumen, EPDM, PVC and TPO — exposed concrete is CS-12-CON
+(liftable) / CS-14-CON (fixed), exposed metal curbs are CS-13-MP / CS-15-MP. The drawing is NOT TO SCALE and
+carries no dimensions, so every number in every curb model is ASSUMED and every one is a named constant in
+`scripts/rmi_curb.py`: curb footprint and height (taken from the footprint the app already drew at that
+hotspot), wall and skirt thickness, where the skirt starts, the nailer, fastener size and 12" o.c. spacing, the
+sealant bead, the 18" Flex apron onto the field (the same figure the RTU and D-1-TYP drain models use), the 3"
+turn-down inside the curb, and all coat thicknesses.
+
+`DETAILS` carries **25** entries. CLAUDE.md says 28. The difference looks like the two `byRoof` variants that
+show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post toggle, which is not in
+`DETAILS` — worth confirming before that number is quoted to anyone.
+
+| Menu label (id) | Drawings — incl. by-roof overrides | Model | Status | ASSUMED, per the tool's own text |
+|---|---|---|---|---|
+| HVAC curb (`curb`) | CS-13-MP · 3D CS13-1-8-3D · SPF → SPF-12-TYP, 3D B-1-SPF-1-3D | — code geometry | **VERIFIED** assembly: Flex up the full curb wall and over the top to the interior, counterflashing above, unit lifted and reset after cure | Wrap height on the SPF variant |
+| Side laps (`lap`) | F-8-TYP · 3D F8-2-FT-3D | `rpanel-side-lap-F-8-TYP.glb` | **VERIFIED**: two panels lapped at a major rib, fastened through the crest, sealant at the voids, Flex encapsulating lap and fasteners crest to flat both sides, topcoat over all, field Flex optional | Rib profile; 24 ga. drawn at 0.05"; the 1" / 3/4" lap lips; lap fasteners at 12" o.c.; Flex 2" past the rib base; coat thicknesses |
+| Standing seams (`sseam`) | F-9-TYP, F-20-TYP for seam laps · 3D B-1-F10-22-3D | `standing-seam-F-9-TYP.glb` | **VERIFIED**: crimped double-lock seam, vertical legs under a folded cap, clips concealed, Flex a shell over the cap, down both legs and onto the flat, topcoat over all. Note 11 re-crimping shown as a prep step | Drawing is NTS with no dimensions: seam silhouette (1.68" legs 2.4" tall under a 3.12" cap); 0.05" sheet; which cap laps over which; the interlocking plies inside the cap; concealed clip at 24" o.c.; Flex extent onto the flat; coat thicknesses |
+| Skylight panels (`mskylight`) | F-12-TYP · no 3D render · SPF → no drawing, treated as a curb per SPF-12-TYP | — code geometry | Per F-12-TYP; no VERIFIED tag | The geometry itself (no 3D concept render); the SPF treatment |
+| Vents (`vent`) | Plate D · no 3D render · SPF → SPF-16-TYP · concrete → **Bin vent**, CS-12-CON | `bin-vent-CS-1-TYP.glb` on the silo | **ASSUMED** on metal: no dedicated vent drawing for metal roofs in the library | The whole metal assembly; wrap height on SPF; the concrete case treated as a curb per CS-12-CON |
+| Pipes (`mpipe`) | P-9-MP, EPDM boot; P-10-MP is the metal-jack alternative · no 3D render · SPF → SPF-3-TYP | — code geometry | Per P-9-MP; no VERIFIED tag | Wrap height on the SPF variant |
+| Gutters (`gutter`) | W-7-TYP · 3D D-7-FT-24-3D | — code geometry | Per W-7-TYP; no VERIFIED tag. Standard exterior gutters carry a material-only warranty per Plate MP | — |
+| Downspout inlets (`gutterinlet`) | D-8-TYP · 3D D8-9-FT-3D | — code geometry | Per D-8-TYP; no VERIFIED tag | — |
+| Roof hatch (`hatch`) | CS-15-MP on metal · CS-1-TYP note 7 on flat · SPF → SPF-12-TYP · concrete → **Manway / bin hatch**, CS-14-CON | `roof-hatch-CS-1-TYP.glb` on the silo | **VERIFIED** that access and smoke hatches are curb-mounted units, named in CS-1-TYP note 7; on metal it is the CS-15-MP fixed curb | Hatch-specific wrap on SPF; lid size and 2" thickness, the 22° it stands open, hinge, hold-open arm, handle; the concrete skinning of the CS-1-TYP curb; plus the shared curb numbers above |
+| Ridge cap (`ridge`) | F-21-M-TYP · no 3D render · SPF → SPF-2-TYP | — code geometry | Per F-21-M-TYP; geometry **ASSUMED** | The geometry itself (no 3D concept render yet) |
+| HVAC curbs (`rtu`) | CS-1-TYP · 3D CS1-18-3D | `curb-mounted-unit-CS-1-TYP.glb` | **VERIFIED**. Note 7: the same detail covers vents, ducts, soil stacks, conduit, refrigeration lines, access and smoke hatches, skylight domes | Curb and unit sizes; nailer; skirt height; the (E) roof build-up |
+| Drains (`drain`) | D-1-TYP · 3D CID-1-21-FT3D | `cast-iron-drain-D-1-TYP.glb` | **VERIFIED**, including the 18" out / 3" down / 1" topcoat extents. Water-test after install; plastic and ABS drains excluded from warranty | Bowl, clamping-ring and dish sizes |
+| Scuppers (`scupper`) | D-4-TYP · 3D D4-1-FT-3D | `overflow-scupper-D-4-TYP.glb` | **VERIFIED**: tube above the (E) cant, Flex encapsulating the tube interior and min 12" onto the field, base coat up the (E) wall flashing, topcoat over all, sealant bead at the exterior termination | 16" x 5" tube; exterior collar with the bead run all round; the tube bottom bent down over the cant; 6" cant; flashing height; coat thicknesses |
+| Wall tie-in (`wall`) | W-11-TYP · 3D W13-FT-26-3D | `reglet-counterflashing-W-11-TYP.glb` | **VERIFIED**: Flex the full height of the (E) flashing up to the reglet receiver, not a fixed band; term bar 12" o.c.; counterflashing removed and reset. Note 7 applies to Fry-type reglets | Flashing height, 24" used here; reglet height; cant; counterflashing lap; coat extents |
+| Pipes / soil stacks (`pipe`) | P-6-TYP · 3D P3SP-11-FT-3D | `lead-soil-stack-P-6-TYP.glb` | **VERIFIED**: lead up the stack and turned into the bore, sealant bead at the base, Flex encapsulating the lead and extending inside the stack, topcoat past the Flex. Note 7 covers conduit, HVAC and refrigeration penetrations | Drawing is NTS with no dimensions: 4" stack; 24" height; 14" lead flange; Flex 6" past the flange and 6" down the bore; topcoat 1" past the Flex |
+| Skylights (`skylight`) | CS-1-TYP, note 7 names skylight domes · 3D CS1-18-3D | `curb-skylight-CS-1-TYP.glb` | **VERIFIED**: Flex up the full curb and over the top to the interior; dome lifted and reset | Dome rise; retainer frame; condensation gutter; plus the shared curb numbers above |
+| Edge metal (`edge`) | F-1-TYP · 3D F1-34-FT-3D | — code geometry | Per F-1-TYP; no VERIFIED tag | Flange width |
+| Penthouse walls (`penthouse`) | W-13-TYP, fixed counterflashing · 3D W-11-24-FT-3D | — code geometry | Per W-13-TYP; no VERIFIED tag | Flex height on the wall |
+| Sleeper supports (`sleeper`) | CS-8-TYP · 3D CS8-2-19-3D | — code geometry | Per CS-8-TYP; no VERIFIED tag | Wrap height |
+| Pipe clusters (`pitchpan`) | P-8-TYP, chem curb / pitch pan · 3D PP-1-FT-3D | — code geometry | Per P-8-TYP; no VERIFIED tag | Fill depth |
+| Expansion joint (`ej`) | A-3-TYP, EPDM/PVC/TPO · no 3D render | — code geometry | Per A-3-TYP; geometry **ASSUMED** | The geometry itself (no 3D concept render) |
+| Silo walls (`silowall`) | W-7-TYP, concrete and CMU walls · no 3D render | — code geometry | Per W-7-TYP, with vertical field application on silos per the Longview grain terminal project | Sequence and coverage on curved walls |
+| Gallery supports (`support`) | P-5-C / P-7-C, circular supports on concrete · no 3D render | — code geometry | Per P-5-C / P-7-C; no VERIFIED tag | Wrap height |
+| Kitchen exhaust (`exhaust`) | CS-1-TYP, note 7 names vents and ducts · 3D CS1-18-3D | `kitchen-exhaust-fan-CS-1-TYP.glb` | **VERIFIED** curb. Grease must be removed before priming — the plates allow no RMI material over contaminants | The degreasing method; fan housing, cowl, grease tray and motor sizes; plus the shared curb numbers above |
+| Parapet / coping (`coping`) | W-1-TYP · 3D W1-11-FT3D | `metal-coping-joint-W-1-TYP.glb` | **VERIFIED**, including the 4" tape / 2" Flex / 2" topcoat extents. Note 7: coping must meet code and SMACNA for wind uplift or it is excluded from warranty | Open-joint gap; fastener spacing; coat thicknesses. The topcoat shows the entire-coping (system warranty) option |
+
+**Not in `DETAILS`:** Solar Post supports is a separate toggle (`S.solar`) — drawings P-1-S-TYP, P-2-S-TYP and
+P-3-S-TYP, no 3D render, code geometry. It appears in the emailed configuration as "Solar Post supports
+(P-1-S-TYP)".
+
+**12 of the 25 carry a Blender model**; the other 13 are generic code geometry pending the same treatment.
+
+## 3d. MICRO table — the library's own drawing index
 
 Each row = one detail the user can click into. 2D = the logic drawing (section + notes). 3D = the concept render to model from. "Applies to" is quoted from the drawing notes.
 
@@ -114,10 +177,10 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | Detail | 2D | 3D | Applies to |
 |---|---|---|---|
 | Curb-mounted unit, cap can be lifted — **model** `models/curb-mounted-unit-CS-1-TYP.glb` (`scripts/build_curb_mounted_unit_CS-1-TYP.py`), assembly VERIFIED; curb/unit sizes ASSUMED. Four more units are derived from the same curb (rows below) | CS-1-TYP | CS1-18-3D, CS1-2-3D, CS1-4-3D + 18 variants | BUR, mod-bit, single-ply |
-| **Roof hatch** — **model** `models/roof-hatch-CS-1-TYP.glb` (`scripts/build_roof_hatch_CS-1-TYP.py`), a 3.2-ft curb with the lid standing open, mounted at all four hatch positions on the silo cap. Note 7 names "ACCESS HATCH, SMOKE HATCH" — VERIFIED, the hatch is a curb-mounted unit, not the fixed curb it was guessed to be. The curb, the coatings and every dimension they carry come from the shared core `scripts/rmi_curb.py`. CS-1-TYP note 7 is VERIFIED and quoted there: "DETAIL EQUALLY APPLIES TO ALL CURB MOUNTED UNITS THAT CAN BE LIFTED INCLUDING VENTS, DUCTS, SOIL STACKS, CONDUIT PENETRATIONS, HVAC, REFRIGERATION PENETRATIONS, ACCESS HATCH, SMOKE HATCH, SKYLIGHTS DOMES" — so these four units and the RTU are one assembly with a different unit on top. Coating sequence VERIFIED: clean/prepare/prime, RMI-Flex flashing coat up the curb, over the top and turned down to the interior of the curb encapsulating the (E) flashing, RMI-Thane or RMI-White over all, unit lifted and reset on stainless screws with EPDM washers. The drawing is NOT TO SCALE and carries no dimensions, so every number is ASSUMED: curb footprint and height (taken from the footprint the app already drew at that hotspot), wall/skirt thickness, skirt start, nailer, fastener size and 12" o.c. spacing, sealant bead, the 18" Flex apron onto the field (the same figure the RTU and D-1-TYP drain models use), the 3" turn-down inside the curb, and all coat thicknesses. SUBSTRATE: the silo is exposed concrete, where CS-14-CON (fixed) / CS-12-CON (liftable) govern rather than CS-1-TYP — note 8 scopes CS-1-TYP to BUR / mod-bit / EPDM / PVC / TPO. The app skins the curb, skirt, nailer and roof patch to concrete there; the sheet-metal skirt geometry remains and is ASSUMED. Lid size, 2" thickness, the 22° it stands open, hinge, hold-open arm and handle are ASSUMED | CS-1-TYP note 7; CS-14-CON / CS-12-CON on concrete; CS-15-MP on metal | — | All curb-mounted hatches |
-| **Curb-mounted skylight** — **model** `models/curb-skylight-CS-1-TYP.glb` (`scripts/build_curb_skylight_CS-1-TYP.py`), a 6-ft curb with an acrylic dome, mounted at all five skylight positions on the school. Note 7 names "SKYLIGHTS DOMES" — VERIFIED. The school is mod-bit or TPO, so CS-1-TYP governs directly (note 8). The curb, the coatings and every dimension they carry come from the shared core `scripts/rmi_curb.py`. CS-1-TYP note 7 is VERIFIED and quoted there: "DETAIL EQUALLY APPLIES TO ALL CURB MOUNTED UNITS THAT CAN BE LIFTED INCLUDING VENTS, DUCTS, SOIL STACKS, CONDUIT PENETRATIONS, HVAC, REFRIGERATION PENETRATIONS, ACCESS HATCH, SMOKE HATCH, SKYLIGHTS DOMES" — so these four units and the RTU are one assembly with a different unit on top. Coating sequence VERIFIED: clean/prepare/prime, RMI-Flex flashing coat up the curb, over the top and turned down to the interior of the curb encapsulating the (E) flashing, RMI-Thane or RMI-White over all, unit lifted and reset on stainless screws with EPDM washers. The drawing is NOT TO SCALE and carries no dimensions, so every number is ASSUMED: curb footprint and height (taken from the footprint the app already drew at that hotspot), wall/skirt thickness, skirt start, nailer, fastener size and 12" o.c. spacing, sealant bead, the 18" Flex apron onto the field (the same figure the RTU and D-1-TYP drain models use), the 3" turn-down inside the curb, and all coat thicknesses. Dome rise, retainer frame and condensation gutter are ASSUMED | CS-1-TYP | CS1-18-3D | BUR, mod-bit, single-ply |
-| **Kitchen exhaust fan** — **model** `models/kitchen-exhaust-fan-CS-1-TYP.glb` (`scripts/build_kitchen_exhaust_CS-1-TYP.py`), a 4-ft curb with an upblast fan and a grease containment tray, mounted at both exhaust positions on the restaurant. Note 7 names "VENTS, DUCTS" and "HVAC" — VERIFIED. The restaurant is TPO or mod-bit, so CS-1-TYP governs directly (note 8). The curb, the coatings and every dimension they carry come from the shared core `scripts/rmi_curb.py`. CS-1-TYP note 7 is VERIFIED and quoted there: "DETAIL EQUALLY APPLIES TO ALL CURB MOUNTED UNITS THAT CAN BE LIFTED INCLUDING VENTS, DUCTS, SOIL STACKS, CONDUIT PENETRATIONS, HVAC, REFRIGERATION PENETRATIONS, ACCESS HATCH, SMOKE HATCH, SKYLIGHTS DOMES" — so these four units and the RTU are one assembly with a different unit on top. Coating sequence VERIFIED: clean/prepare/prime, RMI-Flex flashing coat up the curb, over the top and turned down to the interior of the curb encapsulating the (E) flashing, RMI-Thane or RMI-White over all, unit lifted and reset on stainless screws with EPDM washers. The drawing is NOT TO SCALE and carries no dimensions, so every number is ASSUMED: curb footprint and height (taken from the footprint the app already drew at that hotspot), wall/skirt thickness, skirt start, nailer, fastener size and 12" o.c. spacing, sealant bead, the 18" Flex apron onto the field (the same figure the RTU and D-1-TYP drain models use), the 3" turn-down inside the curb, and all coat thicknesses. Grease must come off before priming — no RMI material goes over a contaminant — but the degreasing method is ASSUMED. Fan housing, cowl, tray and motor housing sizes are ASSUMED | CS-1-TYP | CS1-18-3D | BUR, mod-bit, single-ply |
-| **Bin vent** — **model** `models/bin-vent-CS-1-TYP.glb` (`scripts/build_bin_vent_CS-1-TYP.py`), a 2.4-ft curb with a vent neck and conical rain cap, mounted at all four vent positions on the silo cap. Note 7 opens its list with "VENTS, DUCTS" — VERIFIED. The curb, the coatings and every dimension they carry come from the shared core `scripts/rmi_curb.py`. CS-1-TYP note 7 is VERIFIED and quoted there: "DETAIL EQUALLY APPLIES TO ALL CURB MOUNTED UNITS THAT CAN BE LIFTED INCLUDING VENTS, DUCTS, SOIL STACKS, CONDUIT PENETRATIONS, HVAC, REFRIGERATION PENETRATIONS, ACCESS HATCH, SMOKE HATCH, SKYLIGHTS DOMES" — so these four units and the RTU are one assembly with a different unit on top. Coating sequence VERIFIED: clean/prepare/prime, RMI-Flex flashing coat up the curb, over the top and turned down to the interior of the curb encapsulating the (E) flashing, RMI-Thane or RMI-White over all, unit lifted and reset on stainless screws with EPDM washers. The drawing is NOT TO SCALE and carries no dimensions, so every number is ASSUMED: curb footprint and height (taken from the footprint the app already drew at that hotspot), wall/skirt thickness, skirt start, nailer, fastener size and 12" o.c. spacing, sealant bead, the 18" Flex apron onto the field (the same figure the RTU and D-1-TYP drain models use), the 3" turn-down inside the curb, and all coat thicknesses. SUBSTRATE: exposed concrete, so CS-12-CON governs rather than CS-1-TYP; both carry the same note 7 list and the same coating sequence, and CS-12-CON has no (E) sheet-metal flashing to encapsulate. The app skins the curb and patch to concrete; the skirt geometry remains and is ASSUMED. Neck, rain cap, its three standoffs and the bird screen are ASSUMED | CS-12-CON; CS-1-TYP note 7 | — | Exposed concrete (silo) |
+| **Roof hatch** — **model** `models/roof-hatch-CS-1-TYP.glb` (`scripts/build_roof_hatch_CS-1-TYP.py`), a 3.2-ft curb with the lid standing open, at all four hatch positions on the silo cap. Shared curb core and its ASSUMED numbers in §3c. On the silo's exposed concrete CS-14-CON / CS-12-CON govern, and the app skins the curb and patch to concrete — ASSUMED | CS-1-TYP note 7; CS-14-CON / CS-12-CON on concrete; CS-15-MP on metal | — | All curb-mounted hatches |
+| **Curb-mounted skylight** — **model** `models/curb-skylight-CS-1-TYP.glb` (`scripts/build_curb_skylight_CS-1-TYP.py`), a 6-ft curb with an acrylic dome, at all five skylight positions on the school. Note 7 names SKYLIGHTS DOMES — VERIFIED. The school is mod-bit or TPO, so CS-1-TYP governs directly per note 8. Shared curb core and its ASSUMED numbers in §3c | CS-1-TYP | CS1-18-3D | BUR, mod-bit, single-ply |
+| **Kitchen exhaust fan** — **model** `models/kitchen-exhaust-fan-CS-1-TYP.glb` (`scripts/build_kitchen_exhaust_CS-1-TYP.py`), a 4-ft curb with an upblast fan and a grease containment tray, at both exhaust positions on the restaurant. Note 7 names VENTS, DUCTS and HVAC — VERIFIED. TPO or mod-bit, so CS-1-TYP governs directly per note 8. Shared curb core and its ASSUMED numbers in §3c | CS-1-TYP | CS1-18-3D | BUR, mod-bit, single-ply |
+| **Bin vent** — **model** `models/bin-vent-CS-1-TYP.glb` (`scripts/build_bin_vent_CS-1-TYP.py`), a 2.4-ft curb with a vent neck and conical rain cap, at all four vent positions on the silo cap. Note 7 opens its list with VENTS, DUCTS — VERIFIED. Exposed concrete, so CS-12-CON governs: same note 7 list and same coating sequence, but no (E) sheet-metal flashing to encapsulate. The app skins the curb and patch to concrete — ASSUMED. Shared curb core and its ASSUMED numbers in §3c | CS-12-CON; CS-1-TYP note 7 | — | Exposed concrete (silo) |
 | Curb-mounted unit, fixed (cannot lift) | CS-2-TYP, CS-3-TYP | CS1-1-18-3D, CS1-2-18-3D | BUR, mod-bit, single-ply |
 | Support curb w/ skirt, BUR | CS-4-BUR, CS-6-BUR | — | BUR, mod-bit |
 | Support curb, single-ply | CS-5-SP, CS-7-SP | — | PVC, EPDM, TPO |
@@ -194,23 +257,82 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | Detail assemblies would need a "generic ASSUMED" placeholder | Not needed — every category has a 2D logic drawing and most have a 3D concept render | Detail + 3D folders |
 | Solar Post would be a placeholder | Has three 2D details (P-1/2/3-S-TYP); no 3D render yet | Solar folder |
 
-Still ASSUMED (no document in the library):
-- Application **order within a detail** (e.g. does the pipe get Flex before or after the field around it). Drawings show the finished assembly, not the sequence. I'll simulate: prep → primer → Flex on the penetration/flashing → Flex field (if full-field roof) → topcoat everything.
-- Wet/dry times between stages for the animation timing — will use the plate cure notes (Thane ~4 hr, White ~3 hr) as pacing cues only.
-- Building-type ↔ roof-type pairing (which roof types to offer for "school" vs "warehouse"). Not an RMI question; I'll draft from public building-stock data and tag it.
-- ~~Roof hatch detail — no drawing in the library.~~ RESOLVED: CS-1-TYP note 7 names ACCESS HATCH and SMOKE HATCH in the list of curb-mounted units the detail applies to, so the hatch is the standard curb assembly with a lid. Still open: the **arena's hatch sits on a metal roof slope**, where CS-15-MP (fixed metal) governs — a different assembly, with the (E) fasteners removed and new 24 ga. skirt metal extending a min. 4" over the RMI system, Flex to the underside of the (E) vertical metal. That is the next curb model; the arena hatch is code geometry until then.
-- **W-1-TYP coping: is the whole coping primed** when the topcoat covers the entire coping under the system warranty? The tool primes only the 8" Flex band at each joint (matching the drawing's band logic) but topcoats the whole run.
-- **W-11-TYP wall flashing height.** The drawing runs Flex the full height of the (E) base flashing to the reglet but does not dimension the flashing. The tool uses 24" (reglet 2" above it, counterflashing lapping 4"). If RMI has a typical height or a range, the model and the code run both take it from one constant.
-- **How far the Flex runs onto the field from a curb, and how far it turns down inside.** CS-1-TYP says only "EXTEND TO INTERIOR OF CURB" with no dimension. Every curb model uses 18" onto the field and a 3" turn-down, both ASSUMED, both single constants in `scripts/rmi_curb.py`.
-- **D-4-TYP scupper sizes and exterior termination.** The drawing is NTS: the tool uses a 16" x 5" sheet-metal tube with a 2" exterior collar and runs the sealant bead round the whole collar (the drawing shows the bead only at the bottom). Is the 12" field extent measured from the cant toe (as modelled) or from the wall? All in `scripts/build_overflow_scupper_D-4-TYP.py` as named constants.
-- **Parapet base flashing height.** D-4-TYP draws the Flex base coat the full height of the (E) wall flashing up to the coping, so every parapet in the tool now shows a 6" cant, base flashing and Flex/topcoat to the coping (previously an 18" band). Cant size and flashing height are ASSUMED (`PB` in index.html).
-- **P-6-TYP soil stack dimensions.** The drawing is not to scale and carries no dimensions. The model uses a 4" stack 24" above the roof, 1/16" lead with a 14" base flange turned 1" into the bore, a 3/8" sealant bead, Flex 6" past the flange and 6" down the bore, topcoat 1" past the Flex. All in `scripts/build_lead_soil_stack_P-6-TYP.py` as named constants — correct any of them and rebuild.
-- **F-8-TYP side lap sizes.** The drawing is NTS and dimensions nothing. The model uses a 6.6" x 1.32" rib with a 3" crest, lap fasteners at 12" o.c. through the crest, Flex 2" past the rib base onto the flat (primer the same band) and sealant beads at both lap edges. Does RMI specify a minimum Flex extent past the rib and a lap-fastener spacing? All in `scripts/build_rpanel_side_lap_F-8-TYP.py` and `LAP` in index.html as named constants.
-- Per-detail Flex allowance for the material takeoff on metal roofs (how many gallons a curb or a run of side lap consumes). Plates give field rates only.
+## 5. Open questions for RMI
+
+Everything the tool had to decide without a document behind it, in one place. Each item says what the tool
+currently does and where the number lives, so an answer is a one-line change. Nothing here is customer-facing
+as RMI spec — the UI tags all of it ASSUMED.
+
+### Sequencing and process
+
+1. **Application order within a detail.** Does the pipe get Flex before or after the field around it? The
+   drawings show the finished assembly, not the sequence. The tool simulates prep → primer → Flex on the
+   penetration or flashing → Flex field (if a full-field roof) → topcoat everything.
+2. **Wet and dry times between stages.** Used only to pace the animation, from the plate cure notes
+   (Thane about 4 hr, White about 3 hr). Not presented as spec.
+3. **W-1-TYP coping: is the whole coping primed** when the topcoat covers the entire coping under the system
+   warranty? The tool primes only the 8" Flex band at each joint, matching the drawing's band logic, but
+   topcoats the whole run.
+4. **Degreasing method before priming a kitchen exhaust curb.** The plates are clear that no RMI material goes
+   over a contaminant, but not how the grease comes off.
+
+### Dimensions the drawings do not give
+
+5. **How far Flex runs onto the field from a curb, and how far it turns down inside.** CS-1-TYP says only
+   "EXTEND TO INTERIOR OF CURB", with no dimension. Every curb model uses 18" onto the field and a 3"
+   turn-down. Both are single constants in `scripts/rmi_curb.py`, so both change in one place.
+6. **W-11-TYP wall flashing height.** The drawing runs Flex the full height of the (E) base flashing to the
+   reglet but does not dimension the flashing. The tool uses 24", with the reglet 2" above it and the
+   counterflashing lapping 4". A typical height or a range would settle the model and the code run together.
+7. **Parapet base flashing height.** D-4-TYP draws the Flex base coat the full height of the (E) wall flashing
+   up to the coping, so every parapet now shows a 6" cant, base flashing, and Flex and topcoat to the coping.
+   Cant size and flashing height are assumed (`PB` in index.html).
+8. **D-4-TYP scupper sizes and exterior termination.** The drawing is NTS. The tool uses a 16" x 5" sheet-metal
+   tube with a 2" exterior collar and runs the sealant bead round the whole collar, where the drawing shows the
+   bead only at the bottom. Also: is the 12" field extent measured from the cant toe, as modelled, or from the
+   wall? All named constants in `scripts/build_overflow_scupper_D-4-TYP.py`.
+9. **P-6-TYP soil stack dimensions.** Not to scale, no dimensions. The model uses a 4" stack 24" above the roof,
+   1/16" lead with a 14" base flange turned 1" into the bore, a 3/8" sealant bead, Flex 6" past the flange and
+   6" down the bore, and topcoat 1" past the Flex. All named constants in
+   `scripts/build_lead_soil_stack_P-6-TYP.py`.
+10. **F-8-TYP side lap sizes.** NTS and dimensions nothing. The model uses a 6.6" x 1.32" rib with a 3" crest,
+    lap fasteners at 12" o.c. through the crest, Flex 2" past the rib base onto the flat with primer on the same
+    band, and sealant beads at both lap edges. Does RMI specify a minimum Flex extent past the rib, and a
+    lap-fastener spacing? Constants in `scripts/build_rpanel_side_lap_F-8-TYP.py` and `LAP` in index.html.
+11. **F-9-TYP standing seam sizes.** The drawing is explicitly not to scale and carries no dimensions, and says
+    the seam configuration may vary. The model uses a generic 24" o.c. double lock: 1.68" legs 2.4" tall under a
+    3.12" cap, sheet drawn at 0.05", concealed clips at 24" o.c. Constants in
+    `scripts/build_standing_seam_F-9-TYP.py` and `SEAM` in index.html.
+
+### Details with no drawing behind them
+
+12. **Roof vents on metal roofs.** No dedicated vent drawing in the library; the tool falls back to Plate D for
+    metal ducts, vents and curbs, and the assembly is assumed. SPF has SPF-16-TYP; exposed concrete is treated
+    as a curb per CS-12-CON.
+13. **Flush-mounted skylight panels on SPF.** No SPF skylight drawing; treated as a curb per SPF-12-TYP.
+14. **The arena's roof hatch sits on a metal roof slope**, where CS-15-MP (fixed metal) governs. That is a
+    different assembly from the CS-1-TYP curb: the (E) fasteners come out and new 24 ga. skirt metal extends a
+    minimum 4" over the RMI system, with Flex to the underside of the (E) vertical metal. It is the next curb
+    model; the arena hatch is code geometry until then.
+15. **Wrap heights on the SPF variants** of the HVAC curb (SPF-12-TYP), pipe penetration (SPF-3-TYP) and roof
+    hatch (SPF-12-TYP), and on the sleeper support (CS-8-TYP), gallery support (P-5-C / P-7-C) and penthouse
+    wall (W-13-TYP). Each is a single number in the builder.
+16. **Ridge cap and expansion joint geometry.** F-21-M-TYP and A-3-TYP have no 3D concept render, so the shapes
+    in the tool are assumed.
+17. **Vertical application on silo walls.** W-7-TYP covers concrete and CMU walls, but sequence and coverage on
+    a curved silo wall come from the Longview grain terminal project rather than a drawing.
+
+### Takeoff
+
+18. **Per-detail Flex allowance for the material estimate**, especially on metal roofs: how many gallons a curb,
+    or a run of side lap, actually consumes. The plates give field rates only, so the tool's per-detail
+    allowances are assumed and labelled as such in the UI.
+19. **Building type to roof type pairing** (which roof types to offer for a school versus a warehouse). Not an
+    RMI question; drafted from public building-stock data and tagged.
 
 ---
 
-## 5. Recommended first vertical slice
+## 6. Recommended first vertical slice
 
 **Warehouse × R-panel metal roof × one curb-mounted HVAC unit.**
 
@@ -228,7 +350,7 @@ Zoom target: the curb (CS-13-MP / CS13-1-8-3D) and one side lap (F-8-TYP / F8-2-
 
 ---
 
-## 6. What to put in the project's Files (not all 296)
+## 7. What to put in the project's Files (not all 296)
 
 - All 17 spec plates (macro source of truth)
 - The 2D logic drawing + one "FT" 3D render for each detail in the first slice, then add per detail as we build
