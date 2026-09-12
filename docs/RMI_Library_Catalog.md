@@ -134,7 +134,7 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 | Gutters (`gutter`) | W-7-TYP · 3D D-7-FT-24-3D | — code geometry | Per W-7-TYP; no VERIFIED tag. Standard exterior gutters carry a material-only warranty per Plate MP | — |
 | Downspout inlets (`gutterinlet`) | D-8-TYP · 3D D8-9-FT-3D | — code geometry | Per D-8-TYP; no VERIFIED tag | — |
 | Roof hatch (`hatch`) | CS-15-MP on metal · CS-1-TYP note 7 on flat · SPF → SPF-12-TYP · concrete → **Manway / bin hatch**, CS-14-CON | `roof-hatch-CS-1-TYP.glb` on the silo | **VERIFIED** that access and smoke hatches are curb-mounted units, named in CS-1-TYP note 7; on metal it is the CS-15-MP fixed curb | Hatch-specific wrap on SPF; lid size and 2" thickness, the 22° it stands open, hinge, hold-open arm, handle; the concrete skinning of the CS-1-TYP curb; plus the shared curb numbers above |
-| Ridge cap (`ridge`) | F-21-M-TYP · no 3D render · SPF → SPF-2-TYP | — code geometry | Per F-21-M-TYP; geometry **ASSUMED** | The geometry itself (no 3D concept render yet) |
+| Ridge cap (`ridge`) | F-21-M-TYP · no 3D render · SPF → SPF-2-TYP | `metal-ridge-cap-F-21-M-TYP.glb` on the warehouse | **VERIFIED**: (E) ridge cap over the (E) metal panel, metal closure at the panel end set in sealant or tape with a ribbon of sealant at any voids, closure fasteners, RMI-Flex at the cap, RMI-Thane over all. Note 12 is the only dimension the drawing gives: closures recessed a minimum 6" under the cap or flashing metal, else add flat stock — the model recesses 7.8". Note 11: closures tight fitting, edges sealed before the Flex. Note 13: no foam closures without written approval | No 3D concept render exists, so everything else: the 4-ft section; the 6" cap lap and its joggled end; the closure 18" from the ridge, its 3" width and the rectangular notches where the ribs pass; fasteners at 12" o.c.; how far the Flex turns over the cap edge and runs onto the panel; all coat thicknesses. Built for a 1:12 gable — the warehouse — so a different pitch needs a rebuild |
 | HVAC curbs (`rtu`) | CS-1-TYP · 3D CS1-18-3D | `curb-mounted-unit-CS-1-TYP.glb` | **VERIFIED**. Note 7: the same detail covers vents, ducts, soil stacks, conduit, refrigeration lines, access and smoke hatches, skylight domes | Curb and unit sizes; nailer; skirt height; the (E) roof build-up |
 | Drains (`drain`) | D-1-TYP · 3D CID-1-21-FT3D | `cast-iron-drain-D-1-TYP.glb` | **VERIFIED**, including the 18" out / 3" down / 1" topcoat extents. Water-test after install; plastic and ABS drains excluded from warranty | Bowl, clamping-ring and dish sizes |
 | Scuppers (`scupper`) | D-4-TYP · 3D D4-1-FT-3D | `overflow-scupper-D-4-TYP.glb` | **VERIFIED**: tube above the (E) cant, Flex encapsulating the tube interior and min 12" onto the field, base coat up the (E) wall flashing, topcoat over all, sealant bead at the exterior termination | 16" x 5" tube; exterior collar with the bead run all round; the tube bottom bent down over the cant; 6" cant; flashing height; coat thicknesses |
@@ -155,7 +155,7 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 P-3-S-TYP, no 3D render, code geometry. It appears in the emailed configuration as "Solar Post supports
 (P-1-S-TYP)".
 
-**12 of the 25 carry a Blender model**; the other 13 are generic code geometry pending the same treatment.
+**13 of the 25 carry a Blender model**; the other 12 are generic code geometry pending the same treatment.
 
 ## 3d. MICRO table — the library's own drawing index
 
@@ -236,7 +236,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | SPF field repair | F-17-TYP | — | SPF |
 | Polyester-reinforced lap | F-18-TYP | — | All flat + concrete |
 | Metal lap, stiffener bare | F-19-TYP | — | Metal |
-| **Metal ridge cap** | F-21-M-TYP | — | Metal panels |
+| **Metal ridge cap** — **model** `models/metal-ridge-cap-F-21-M-TYP.glb` (`scripts/build_metal_ridge_cap_F-21-M-TYP.py`), a 4-ft section of ridge spliced into the code-drawn cap on the warehouse, the way the F-8-TYP lap splices into the slope. Cap over the panel, metal closure at the panel end set in sealant, closure fasteners, Flex over the cap lap and turned over both cap edges onto the panel, topcoat over all — VERIFIED, with note 12's 6" minimum closure recess the only dimension on the drawing. No 3D concept render exists, so the rest is ASSUMED; see §3c | F-21-M-TYP | — (none in the library) | Metal panels |
 
 ### Accessories, SPF-specific, concrete repairs
 | Detail | 2D | 3D | Applies to |
@@ -317,8 +317,11 @@ as RMI spec — the UI tags all of it ASSUMED.
 15. **Wrap heights on the SPF variants** of the HVAC curb (SPF-12-TYP), pipe penetration (SPF-3-TYP) and roof
     hatch (SPF-12-TYP), and on the sleeper support (CS-8-TYP), gallery support (P-5-C / P-7-C) and penthouse
     wall (W-13-TYP). Each is a single number in the builder.
-16. **Ridge cap and expansion joint geometry.** F-21-M-TYP and A-3-TYP have no 3D concept render, so the shapes
-    in the tool are assumed.
+16. **Ridge cap and expansion joint: no 3D concept render.** A-3-TYP still has none, so the expansion joint
+    shape is assumed. F-21-M-TYP is now modelled to its 2D drawing, but with no render to check the massing
+    against, these are open: is a 6" cap lap right, and is the closure typically nearer the ridge than the
+    18" the model uses? Note 12 only sets the minimum recess, not the position. Constants in
+    `scripts/build_metal_ridge_cap_F-21-M-TYP.py`.
 17. **Vertical application on silo walls.** W-7-TYP covers concrete and CMU walls, but sequence and coverage on
     a curved silo wall come from the Longview grain terminal project rather than a drawing.
 

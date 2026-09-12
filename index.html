@@ -395,7 +395,7 @@ const DETAILS = {
     src:'Access and smoke hatches are named in CS-1-TYP note 7 (flat roofs) — VERIFIED; on metal, CS-15-MP fixed curb. Flex up the full curb and over the top; hatch lifted and reset.', byRoof:{ spf:{ drawing:'SPF-12-TYP', src:'Curb per SPF-12-TYP. Hatch-specific wrap is ASSUMED.' }, concrete:{ name:'Manway / bin hatch', drawing:'CS-14-CON', src:'Fixed curb on exposed concrete per CS-14-CON.' } } },
   ridge:  { name:'Ridge cap', drawing:'F-21-M-TYP', concept:'—', dist:12, phi:1.0, theta:0.2, drop:0, menu:'Ridge cap', byRoof:{ spf:{ drawing:'SPF-2-TYP', src:'Assembly per SPF-2-TYP (ridge).' } },
     layers:[{k:'existing',label:'Existing ridge cap and closures',color:'#AEB3B0'},{k:'primer',label:'Primer on cap laps and fasteners',color:'#E8D7A6'},{k:'flex',label:'Flex over cap laps and both edges',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
-    src:'Assembly per F-21-M-TYP. No 3D concept render yet; geometry here is ASSUMED.' },
+    src:'Assembly per F-21-M-TYP — VERIFIED: (E) ridge cap over the (E) metal panel with a metal closure at the panel end, the closure set in sealant or tape with a ribbon of sealant at any voids, closure fasteners through the cap, RMI-Flex at the cap and RMI-Thane over all. Note 12 gives the one dimension on the drawing: closures must be recessed a minimum 6\" under the ridge cap or flashing metal, or additional flat stock flashing is added — the model recesses the closure 7.8\". Note 11: confirm closures are present and tight fitting, replace ill-fitting ones and seal their edges before the Flex goes on. Note 13: foam closures are not permissible without prior written approval from RMI. There is no 3D concept render for this detail, so everything else is ASSUMED: the 4-ft section, the 6\" cap lap and its joggled end, the closure 18\" from the ridge and its 3\" width, the notches where the ribs pass, fasteners at 12\" o.c., how far the Flex turns over the cap edge and runs onto the panel, and every coat thickness.' },
   rtu:    { name:'Curb-mounted RTU', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:22, phi:1.15, theta:0.8, drop:5.0, menu:'HVAC curbs',
     layers:[{k:'existing',label:'(E) curb with (E) flashing skirt and fasteners at the top; unit lifted',color:'#C9C9C2'},{k:'primer',label:'Clean, repair and prime the curb and field per the plate',color:'#E8D7A6'},{k:'flex',label:'Flex from the field up the full curb wall, over the top, onto the interior — encapsulating the (E) flashing',color:'#D9A21B'},{k:'thane',label:'Topcoat over all; unit reset with stainless screws and EPDM washers after full cure',color:'#C3C7CC'}],
     src:'Assembly per CS-1-TYP and CS13-1-8-3D — VERIFIED. Note 7: the same detail applies to vents, ducts, soil stacks, conduit, refrigeration lines, access and smoke hatches, and skylight domes.' },
@@ -559,7 +559,7 @@ let B = null;   // the current built building: { extent, hots, applyStage(p) }
 ================================================================= */
 const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb', coping:'models/metal-coping-joint-W-1-TYP.glb', wall:'models/reglet-counterflashing-W-11-TYP.glb', scupper:'models/overflow-scupper-D-4-TYP.glb', lap:'models/rpanel-side-lap-F-8-TYP.glb', sseam:'models/standing-seam-F-9-TYP.glb',
   /* CS-1-TYP note 7: the same curb assembly carries hatches, skylight domes, vents and ducts — four units on one curb (scripts/rmi_curb.py) */
-  hatch:'models/roof-hatch-CS-1-TYP.glb', skylight:'models/curb-skylight-CS-1-TYP.glb', exhaust:'models/kitchen-exhaust-fan-CS-1-TYP.glb', binvent:'models/bin-vent-CS-1-TYP.glb' };
+  ridge:'models/metal-ridge-cap-F-21-M-TYP.glb', hatch:'models/roof-hatch-CS-1-TYP.glb', skylight:'models/curb-skylight-CS-1-TYP.glb', exhaust:'models/kitchen-exhaust-fan-CS-1-TYP.glb', binvent:'models/bin-vent-CS-1-TYP.glb' };
 const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=null;
 function loadModel(file){ if(modelCache[file]) return modelCache[file];
   modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
@@ -593,7 +593,8 @@ const LAP={ B:6.6, T:3, H:1.32, TP:0.08, TF:0.30, TT:0.36, FOOT:2, BAY_W:16, BAY
 // Standing seam per F-9-TYP: a crimped double-lock seam (vertical legs under a folded cap, clips concealed) with the
 // Flex a shell over the whole seam — cap, both legs, onto the flat. The Blender section that splices into the
 // manufacturing slope (scripts/build_standing_seam_F-9-TYP.py) is built from the SEAM / SHELL profiles below.
-const SEAMD={ BAY_W:24, BAY_L:72 };   // inches; the seam model's bay — one full 24"-o.c. panel width x 6 ft
+const SEAMD={ BAY_W:24, BAY_L:72 };   /* inches; the seam model's bay — one full 24"-o.c. panel width x 6 ft */
+const RIDGED={ BAY_W:48 };   // inches; the seam model's bay — one full 24"-o.c. panel width x 6 ft
 function lapProfile(off,foot){ const hw=LAP.B/2, tw=LAP.T/2, H=LAP.H, ln=Math.hypot(tw-hw,H), nx=H/ln, ny=(hw-tw)/ln; const p0=[hw+off*nx,off*ny], p1=[tw+off*nx,H+off*ny]; const xs=y=>p0[0]+(y-p0[1])*(p1[0]-p0[0])/(p1[1]-p0[1]);
   const right=[[foot,0],[foot,off],[xs(off),off],[xs(H+off),H+off]]; return right.slice().reverse().map(([x,y])=>[-x/12,y/12]).concat(right.map(([x,y])=>[x/12,y/12])); }   /* closed (x,y) polygon in feet */
 // A slope sheet (L x SL, drawn flat then rotated -90 about x) with one rectangular bay cut out; bay in slope coords (x0..x1 across, z0..z1 down-slope).
@@ -638,8 +639,12 @@ function buildGable(cfg){
       const nL=s.laps.length+(bay?1:0); s.lapP=new THREE.InstancedMesh(lapGP,M.primer,nL); s.lapF=new THREE.InstancedMesh(lapG,M.flex,nL); const lapO=new THREE.InstancedMesh(lapGO,M.topcoat,nL);
       s.laps.forEach((x,i)=>{ if(bay&&i===bay.j){ seg(lapO,i,x,0.003,0,bay.z0,1); seg(lapO,nL-1,x,0.003,bay.z1,SL,1); return; } mm.makeScale(1,1,SL); mm.setPosition(x,0.003,SL/2); lapO.setMatrixAt(i,mm); }); g.add(s.lapP); g.add(s.lapF); g.add(lapO); s.lapY=lapY; s.rp=true;
       const eY=(surface==='sseam'?0.3:ribH)+0.02; s.endP=box(L,0.05,1.0,M.primer,0,eY,SL/2,false); s.endF=box(L,0.06,1.0,M.flex,0,eY+0.01,SL/2,false); g.add(s.endP); g.add(s.endF);
-      s.ridgeP=box(L,0.05,1.6,M.primer,0,eY+0.03,0.8,false); s.ridgeF=box(L,0.06,1.6,M.flex,0,eY+0.04,0.8,false); g.add(s.ridgeP); g.add(s.ridgeF);
-      g.add(box(L,0.06,1.05,M.topcoat,0,eY+0.045,SL/2,false)); g.add(box(L,0.06,1.65,M.topcoat,0,eY+0.075,0.8,false));
+      // Ridge band per F-21-M-TYP: the Flex sits at the CAP EDGE and runs out onto the panel from there — the cap
+      // covers 0..2.15 ft from the ridge, so a band at the ridge itself was hidden under it. Same numbers as the
+      // model's own panel band (BAND_LEN/BAND_Y in build_metal_ridge_cap_F-21-M-TYP.py) so the bay ends meet flush.
+      const RB0=2.15, RBL=0.85, RBc=RB0+RBL/2;
+      s.ridgeP=box(L,0.05,RBL,M.primer,0,eY+0.03,RBc,false); s.ridgeF=box(L,0.06,RBL,M.flex,0,eY+0.04,RBc,false); g.add(s.ridgeP); g.add(s.ridgeF);
+      g.add(box(L,0.06,1.05,M.topcoat,0,eY+0.045,SL/2,false)); g.add(box(L,0.10,RBL+0.06,M.topcoat,0,eY+0.045,RBc,false));   /* encloses the primer and Flex bands on every face — their edges are exposed at the cap edge */
       // exposed fasteners: every purlin on R-panel; only the end-lap row on standing seam (clips are concealed). The lap model carries its own inside the bay.
       const rows=[]; if(surface==='sseam'){ rows.push(SL/2-0.7); } else { for(let z=4;z<SL-1;z+=5) rows.push(z); }
       const cols=[]; if(surface==='rpanel'){ for(let i=0;i<nR;i++) cols.push(-L/2+ribPitch/2+i*ribPitch); } else { for(let x=-L/2+1.5;x<L/2;x+=1.5) cols.push(x); }
@@ -670,8 +675,20 @@ function buildGable(cfg){
   }
   const right=makeSlope(1), left=makeSlope(-1);
   const ridgeCap=new THREE.Group(); ridgeCap.position.set(0,H+RISE+0.12,0); g0.add(ridgeCap);
-  [-1,1].forEach(sg=>{ const m=box(L,0.08,2.2,metal?M.ridge:M.spf,0,0,sg*1.05); m.rotation.x=sg*ANG; ridgeCap.add(m); const o=box(L,0.08,2.2,M.topcoat,0,0.05,sg*1.05); o.rotation.x=sg*ANG; ridgeCap.add(o);
-    if(!metal){ const f=box(L,0.06,2.2,M.flexOv,0,0.03,sg*1.05,false); f.rotation.x=sg*ANG; ridgeCap.add(f); } });
+  // F-21-M-TYP model bay: a 4-ft length of the cap is left out and the Blender section fills it, the same way the
+  // F-8-TYP lap section fills a bay in the slope. The model carries the app's own cap numbers (2.2 ft run, 1.05 ft
+  // offset, 0.08 ft thick, 0.12 ft above the ridge) so the bay ends meet the run flush — change them together.
+  const rm = (metal&&cfg.ridgeModel) ? {x:cfg.ridgeModel.x, w:RIDGED.BAY_W/12} : null;
+  const capRuns = rm ? [[-L/2,rm.x-rm.w/2],[rm.x+rm.w/2,L/2]] : [[-L/2,L/2]];
+  [-1,1].forEach(sg=>{ capRuns.forEach(([x0,x1])=>{ const len=x1-x0, cx=(x0+x1)/2;
+    const m=box(len,0.08,2.2,metal?M.ridge:M.spf,cx,0,sg*1.05); m.rotation.x=sg*ANG; ridgeCap.add(m); const o=box(len,0.08,2.2,M.topcoat,cx,0.05,sg*1.05); o.rotation.x=sg*ANG; ridgeCap.add(o);
+    if(!metal){ const f=box(len,0.06,2.2,M.flexOv,cx,0.03,sg*1.05,false); f.rotation.x=sg*ANG; ridgeCap.add(f); } }); });
+  if(rm){   // code stand-in for the bay until the model arrives, then the F-21-M-TYP section
+    const fb=new THREE.Group(); fb.position.set(rm.x,0,0); ridgeCap.add(fb);
+    [-1,1].forEach(sg=>{ const m=box(rm.w,0.08,2.2,M.ridge,0,0,sg*1.05); m.rotation.x=sg*ANG; fb.add(m); const o=box(rm.w,0.08,2.2,M.topcoat,0,0.05,sg*1.05); o.rotation.x=sg*ANG; fb.add(o); });
+    const h=mountModel('ridge',ridgeCap,rm.x,0,0,fb,{cap:M.ridge,closure:M.curb,fastener:M.fast,sealant:M.joint,primer:M.primer,flex:M.flex,topcoat:M.topcoat});
+    if(h) h.userData.gate={flex:0.35+0.65*((rm.x+L/2)/L)};   // its Flex lands when the ridge strip has swept along to the bay
+  }
 
   // --- detail factories on a slope (local coords). Each returns {g, prim:[], flex:[]} for stage toggling
   const dets=[]; slopes.forEach(s=>{ if(s.fbDet) dets.push(s.fbDet); });
@@ -726,12 +743,12 @@ function buildGable(cfg){
   return { extent:{L,W,H:H+RISE}, hots:placed.hots, applyStage };
 }
 
-function buildWarehouse(){ return buildGable({ L:120, W:80, H:20, lapModel:{slope:'right',x:-27,z:26.5}, solarCols:[-34,-24,-14,-4,6,16,26,36], solarRows:[8,20,32],
+function buildWarehouse(){ return buildGable({ L:120, W:80, H:20, lapModel:{slope:'right',x:-27,z:26.5}, ridgeModel:{x:-30}, solarCols:[-34,-24,-14,-4,6,16,26,36], solarRows:[8,20,32],
   place:({right,left,curbAt,SL,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf'; const c=curbAt(right,18,17);
     const hots=[
       {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(18,5.2,17)), show:()=>S.on.curb},
       {id:'lap',  anchor:()=> right.g.localToWorld(right.bay?new THREE.Vector3(right.bay.x,0.3,right.bay.z):new THREE.Vector3(-27,0.3,26)), show:()=>S.on.lap&&ROOFS[S.roof].surface==='rpanel'},
-      {id:'ridge',anchor:()=> new THREE.Vector3(-30,H+RISE+0.4,0), show:()=>S.on.ridge}];
+      {id:'ridge',anchor:()=> new THREE.Vector3(-30,H+RISE+0.4,0), show:()=>S.on.ridge}];   /* the F-21-M-TYP bay sits here */
     return { hots, apply:()=>{ c.g.visible=!!S.on.curb; } }; } }); }
 
 function buildArena(){ return buildGable({ L:220, W:190, H:44, PITCH:3/12, doors:[-90,-60,-30,0,30,60,90], gutters:true, solarCols:[-90,-70,-50,-30,-10,10,30,50,70,90], solarRows:[20,40,60,80],
