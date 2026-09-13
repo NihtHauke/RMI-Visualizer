@@ -102,6 +102,10 @@ For every detail or code change, in this order:
 4. Visual check: `python scripts/snapshot.py --building <b> --detail <id>` (and `--section`). Open the contact sheet and LOOK at every stage. Fix anything wrong before pushing. Zero console errors is the bar.
 5. `git add . && git commit -m "<what changed>" && git push`. Pages updates in about a minute.
 6. Update the detail's line in `docs/RMI_Library_Catalog.md` (model file, VERIFIED/ASSUMED) and tell Heath what moved from ASSUMED to VERIFIED.
+
+**Every task ends in `docs/TRACKER.md`** (the single project status page): update the row(s) the task touched — detail,
+feature or housekeeping item — and add one dated line at the top of its Update log. Do it in the same commit as the work,
+not a follow-up commit. Per-drawing ASSUMED questions stay in the catalog; the tracker links to them.
 Setup once: `pip install playwright pillow && playwright install chromium`. `snapshots/` is git-ignored.
 
 ## Lessons already learned (don't repeat)
