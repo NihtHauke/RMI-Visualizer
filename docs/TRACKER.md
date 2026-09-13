@@ -92,6 +92,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 
 Newest first, one line each.
 
+- 2026-09-12 — CLAUDE.md direction: Pages goes off at What's left step 6 (repo private) before any RMI drawing is committed, not when the first installer ships; the installer replaces the review link for reps
 - 2026-09-12 — Repo private, Pages off and transfer to an RMI org folded into one step (§2 #7) just before the drawing panel, which it blocks; #12 is now bundled drawings, code signing, wide rollout
 - 2026-09-12 — Webflow re-test dropped (desktop program, nothing hosted on roofrmi.com); repo transfer reworded to an RMI-owned GitHub org at the same time as going private; stale #4 reference fixed
 - 2026-09-12 — CLAUDE.md Blender conventions: rebuild order now points to the §1 details table (curb variants share the CS-1 pattern; gutter pairs with inlet)

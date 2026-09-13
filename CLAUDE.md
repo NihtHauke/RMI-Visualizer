@@ -12,8 +12,9 @@ Direction (10 Sept 2026): the final product is a DESKTOP APPLICATION, not a webs
 index.html + models into an installer (Windows first; Mac if needed) that reps install and run offline in its own
 window. No hosting, no login, no server. Prospect photos load from the rep's machine into a photo panel with pins
 that link to details; saved prospects are local files (laptop or shared folder — TBD). Presenting is Zoom screen
-share; no share-live link. Drawings may be bundled in the app later. GitHub is source-only and goes private;
-Pages is a temporary review build until the first installer ships. Detail models continue in parallel;
+share; no share-live link. Drawings may be bundled in the app later. GitHub is source-only and goes private.
+GitHub Pages is temporary for team review and goes off at step 6 (repo private), before any RMI drawing is
+committed. The installer replaces the review link for reps. Detail models continue in parallel;
 nothing in the detail pipeline changes.
 
 Team asks (11 Sept 2026), in build order after the installer:
