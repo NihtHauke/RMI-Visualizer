@@ -111,7 +111,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Materials come from one shared library: `RMI_Flex`, `RMI_Thane`, `RMI_White`, `RMI_primer`, `RMI_castiron`, `RMI_coping_metal`,
   `RMI_membrane`, `RMI_modbit`, `RMI_concrete`, `RMI_tape`, `RMI_sealant`, `RMI_fastener`. Change a material once, every detail follows.
 - Export: glTF Binary, apply modifiers, Draco compression on. Keep textures at 1K–2K.
-- Order of rebuild: the eight VERIFIED details first, then the remaining twenty in the order the buildings need them.
+- Remaining models follow the TRACKER.md details table; curb variants (vents, hatch, exhaust) share the CS-1 pattern, gutter pairs with inlet.
 
 ## The working loop (Claude Code)
 For every detail or code change, in this order:
