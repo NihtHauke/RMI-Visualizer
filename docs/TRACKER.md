@@ -65,7 +65,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 | 3 | Fine-tuning | OPEN | Labels, fastener size, camera pass, silo headhouse/shed |
 | 4 | Textures | NOT STARTED | `textures/` folder (planned layout) |
 | 5 | Catalog alignment and 25-item dropdown | OPEN | Catalog rows ↔ the 25 `DETAILS` entries |
-| 6 | Webflow re-test and repo transfer | OPEN | |
+| 6 | Transfer repo to an RMI-owned GitHub organization | OPEN | Do at the same time as going private, so RMI controls collaborator access. Until then the repo stays under nihthauke for team review |
 | 7 | ASSUMED questions to RMI | OPEN | [Catalog §5](RMI_Library_Catalog.md#5-open-questions-for-rmi); each answer moves an item to VERIFIED |
 | 8 | Drawing panel | NOT STARTED | 2D drawing (zoomable), plain-language steps (ASSUMED steps say so), 3D concept tab. Images rendered at build time from `drawings/` (git-ignored) |
 | 9 | PDF export | NOT STARTED | Electron `printToPDF` + canvas captures; cover, config, six stages, one page per detail, estimate (no pricing), photos, ASSUMED notes, Project Evaluation appendix; per-section toggles |
@@ -79,7 +79,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 
 - [x] Add `drawings/` and `prospects/` to `.gitignore` before any drawing or prospect record is copied in (nothing tracked under either)
 - [ ] Decide where saved prospects live: rep laptop or shared folder
-- [ ] Keep a sample EagleView report outside the repo for testing #4
+- [ ] Keep a sample EagleView report outside the repo for testing EagleView import (§2 #10)
 - [ ] Mac installer, only if needed
 - [ ] Split `index.html` into `src/` JS modules (planned layout; `models/`, `scripts/`, `docs/` exist; textures are §2 #4)
 - [x] Refresh CLAUDE.md "Current state" to match §1 and §2
@@ -92,6 +92,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 
 Newest first, one line each.
 
+- 2026-09-12 — Webflow re-test dropped (desktop program, nothing hosted on roofrmi.com); repo transfer reworded to an RMI-owned GitHub org at the same time as going private; stale #4 reference fixed
 - 2026-09-12 — CLAUDE.md Blender conventions: rebuild order now points to the §1 details table (curb variants share the CS-1 pattern; gutter pairs with inlet)
 - 2026-09-12 — `drawings/` and `prospects/` git-ignored (nothing was tracked); CLAUDE.md "Current state" synced to this tracker and a "What's left" order added; §2 features table reordered to match it
 - 2026-09-12 — Tracker created: 28 details (13 MODELLED+SPLICED, 15 CODE-DRAWN) checked against index.html; features and housekeeping seeded from CLAUDE.md
