@@ -55,33 +55,36 @@ Roof types are those of the buildings that carry the detail.
 
 ## 2. Product features
 
-In the build order from CLAUDE.md (installer first, then the team asks of 11 Sept 2026).
+Done items first, then the order of CLAUDE.md "What's left".
 
 | # | Feature | Status | Notes |
 |---|---|---|---|
 | 0 | Desktop installer (Electron, Windows) | BUILT | `npm run dist` → `dist/RMI Roof Visualizer Setup 0.1.0.exe`; runs offline, vendored libs. Mac only if needed. Rollout to reps not yet recorded |
-| 1 | Photo panel | DONE (v1) | Photos from disk, pins that jump to details, native "Add photos" dialog in Electron. In memory only; saving comes with #5 |
-| 2 | Drawing panel | NOT STARTED | 2D drawing (zoomable), plain-language steps (ASSUMED steps say so), 3D concept tab. Images rendered at build time from `drawings/` |
-| 3 | PDF export | NOT STARTED | Electron `printToPDF` + canvas captures; cover, config, six stages, one page per detail, estimate (no pricing), photos, ASSUMED notes, Project Evaluation appendix; per-section toggles |
-| 4 | EagleView import | NOT STARTED | Parse report XML → facets, parapet/eave/flashing lines, penetrations classified by area for the rep to confirm; estimate from measured totals. Report files never committed |
-| 5 | Saved prospects | NOT STARTED | Config + photos + report + confirmations as one local file per prospect; location TBD |
+| 1 | Photo panel | DONE (v1) | Photos from disk, pins that jump to details, native "Add photos" dialog in Electron. In memory only; saving comes with #11 |
+| 2 | Remaining detail models | IN PROGRESS | 15 CODE-DRAWN rows in §1, in the order the buildings need them |
+| 3 | Fine-tuning | OPEN | Labels, fastener size, camera pass, silo headhouse/shed |
+| 4 | Textures | NOT STARTED | `textures/` folder (planned layout) |
+| 5 | Catalog alignment and 25-item dropdown | OPEN | Catalog rows ↔ the 25 `DETAILS` entries |
+| 6 | Webflow re-test and repo transfer | OPEN | |
+| 7 | ASSUMED questions to RMI | OPEN | [Catalog §5](RMI_Library_Catalog.md#5-open-questions-for-rmi); each answer moves an item to VERIFIED |
+| 8 | Drawing panel | NOT STARTED | 2D drawing (zoomable), plain-language steps (ASSUMED steps say so), 3D concept tab. Images rendered at build time from `drawings/` (git-ignored) |
+| 9 | PDF export | NOT STARTED | Electron `printToPDF` + canvas captures; cover, config, six stages, one page per detail, estimate (no pricing), photos, ASSUMED notes, Project Evaluation appendix; per-section toggles |
+| 10 | EagleView import | NOT STARTED | Parse report XML → facets, parapet/eave/flashing lines, penetrations classified by area for the rep to confirm; estimate from measured totals. Report files never committed |
+| 11 | Saved prospects | NOT STARTED | Config + photos + report + confirmations as one local file per prospect under `prospects/` (git-ignored); location TBD |
+| 12 | Bundled drawings, code signing, repo private, Pages off | NOT STARTED | Pages off once the first installer ships to reps |
 
 ---
 
 ## 3. Fine-tuning & housekeeping
 
-- [ ] Make the GitHub repo private
-- [ ] Turn off GitHub Pages once the first installer ships to reps
-- [ ] Add `drawings/` to `.gitignore` before any drawing is copied in (not there today)
+- [x] Add `drawings/` and `prospects/` to `.gitignore` before any drawing or prospect record is copied in (nothing tracked under either)
 - [ ] Decide where saved prospects live: rep laptop or shared folder
 - [ ] Keep a sample EagleView report outside the repo for testing #4
 - [ ] Mac installer, only if needed
-- [ ] Split `index.html` into `src/` JS modules and add `textures/` (planned layout; `models/`, `scripts/`, `docs/` exist)
-- [ ] Refresh CLAUDE.md "Current state": it says eight details are rebuilt; the code has 13 models spliced (§1)
+- [ ] Split `index.html` into `src/` JS modules (planned layout; `models/`, `scripts/`, `docs/` exist; textures are §2 #4)
+- [x] Refresh CLAUDE.md "Current state" to match §1 and §2
 - [ ] Extend spliced models to the instances still code-drawn: RTU curbs at other sizes (school, office, hotel, restaurant); coping on hospital, restaurant, hotel; ridge cap on manufacturing, airport, arena (confirm pitch vs. the 1:12 model)
 - [ ] Next curb model: CS-15-MP fixed metal curb for the arena hatch (§5 #14)
-- [ ] Rebuild the remaining CODE-DRAWN details to their drawings, in the order the buildings need them
-- [ ] Get RMI's answers to the catalog's open questions ([§5](RMI_Library_Catalog.md#5-open-questions-for-rmi)) and move each answered item to VERIFIED
 
 ---
 
@@ -89,4 +92,5 @@ In the build order from CLAUDE.md (installer first, then the team asks of 11 Sep
 
 Newest first, one line each.
 
+- 2026-09-12 — `drawings/` and `prospects/` git-ignored (nothing was tracked); CLAUDE.md "Current state" synced to this tracker and a "What's left" order added; §2 features table reordered to match it
 - 2026-09-12 — Tracker created: 28 details (13 MODELLED+SPLICED, 15 CODE-DRAWN) checked against index.html; features and housekeeping seeded from CLAUDE.md
