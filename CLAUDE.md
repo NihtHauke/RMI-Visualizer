@@ -82,14 +82,15 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 2. Fine-tuning — labels, fastener size, camera pass, silo headhouse/shed.
 3. Textures.
 4. Catalog alignment and the 25-item detail dropdown.
-5. Transfer repo to an RMI-owned GitHub organization — do at the same time as going private, so RMI
-   controls collaborator access. Until then the repo stays under nihthauke for team review.
-6. ASSUMED questions to RMI (catalog §5).
+5. ASSUMED questions to RMI (catalog §5).
+6. Repo private, Pages off, transfer to an RMI-owned GitHub organization — in one step, so RMI controls
+   collaborator access. Until then the repo stays under nihthauke for team review. The drawing panel can't
+   start until this is done (no RMI drawings in the repo while it is public).
 7. Drawing panel.
 8. PDF export.
 9. EagleView import.
 10. Saved prospects.
-11. Bundled drawings, code signing, repo private, Pages off.
+11. Bundled drawings, code signing, wide rollout.
 
 ## Code layout
 - `index.html` — currently the whole app (CSS + JS in one file, ~125 KB). Data-driven:
