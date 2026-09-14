@@ -73,7 +73,7 @@ Roof types are those of the buildings that carry the detail.
 
 | # | Feature | Status | Notes |
 |---|---|---|---|
-| 0 | Desktop installer (Electron, Windows) | BUILT (v0.1.1) | `npm run dist` → `dist/RMI Roof Visualizer Setup 0.1.1.exe`; runs offline, vendored libs. Window title shows the version from package.json at runtime (`app.getVersion()`), e.g. "RMI Roof Visualizer 0.1.1"; the 0.1.1 installer predates this, the next `npm run dist` carries it. Mac only if needed. Rollout to reps not yet recorded |
+| 0 | Desktop installer (Electron, Windows) | BUILT (v0.1.2) | `npm run dist` → `dist/RMI Roof Visualizer Setup 0.1.2.exe`; runs offline, vendored libs. Window title shows the version from package.json at runtime (`app.getVersion()`), e.g. "RMI Roof Visualizer 0.1.2". Mac only if needed. Rollout to reps not yet recorded |
 | 1 | Photo panel | DONE (v1) | Photos from disk, pins that jump to details, native "Add photos" dialog in Electron. In memory only; saving comes with #11 |
 | 2 | Remaining detail models | IN PROGRESS | 12 CODE-DRAWN rows in §1, in the order the buildings need them |
 | 3 | Fine-tuning | OPEN | Labels, camera pass, silo headhouse/shed (fastener size done 2026-09-14) |
@@ -108,6 +108,7 @@ Roof types are those of the buildings that carry the detail.
 
 Newest first, one line each.
 
+- 2026-09-14 — Desktop app 0.1.2 (package.json, package-lock.json, CLAUDE.md installer line). Installer rebuilt as `dist/RMI Roof Visualizer Setup 0.1.2.exe`, the first with the version in the window title. Packaged app opened from `dist/win-unpacked`: title "RMI Roof Visualizer 0.1.2", left panel ends at "Open photo panel"
 - 2026-09-14 — Electron window title now shows the app version, read from package.json at runtime (`app.getVersion()` in electron/main.js, no hard-coded number): "RMI Roof Visualizer 0.1.1" confirmed with `npm start`. The 0.1.1 installer already in dist/ was built before this change; the next `npm run dist` includes it
 - 2026-09-14 — Desktop app 0.1.1 (package.json, package-lock.json; the version is not shown anywhere in the UI). Installer rebuilt as `dist/RMI Roof Visualizer Setup 0.1.1.exe`, the first build without the B9 email modal. Opened with `npm start` and from `dist/win-unpacked`: the left panel ends at "Open photo panel", no email button. CLAUDE.md installer line bumped
 - 2026-09-14 — `configuration()`: Solar Post taken out of `details` and `detail_ids` (now the checklist only) and returned as its own field `solar_post: true/false`; field check run with it on and off. B8 note and the catalog's Solar Post line updated to match
