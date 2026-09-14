@@ -70,15 +70,15 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Detail menu: a per-building checkbox list (`BUILDINGS[].details`) — not a roof-type filter and not a dropdown. The roof type
   only swaps a detail's name and drawing (`byRoof`).
 - 28 detail rows (the 25 `DETAILS` entries + 2 concrete `byRoof` variants + the Solar Post toggle), keyed to drawing numbers.
-  Status as in `docs/TRACKER.md` §1: **16 MODELLED+SPLICED · 0 MODELLED · 12 CODE-DRAWN · 0 NOT STARTED.**
+  Status as in `docs/TRACKER.md` §1: **17 MODELLED+SPLICED · 0 MODELLED · 11 CODE-DRAWN · 0 NOT STARTED.**
   Spliced models still carry open ASSUMED items (listed per row in the tracker).
-  - **MODELLED+SPLICED (16):** R-panel side lap F-8-TYP · standing seam F-9-TYP / F-20-TYP · bin vent CS-12-CON (CS-1-TYP note 7) ·
+  - **MODELLED+SPLICED (17):** R-panel side lap F-8-TYP · standing seam F-9-TYP / F-20-TYP · bin vent CS-12-CON (CS-1-TYP note 7) ·
     manway / bin hatch CS-14-CON (CS-1-TYP note 7) · ridge cap F-21-M-TYP · HVAC curbs / RTU CS-1-TYP · drains D-1-TYP / D-2-TYP ·
     scuppers D-4-TYP · wall tie-in, reglet W-11-TYP · soil stacks P-6-TYP · skylights, curb-mounted CS-1-TYP note 7 ·
     kitchen exhaust CS-1-TYP note 7 · parapet / coping W-1-TYP · sleeper supports CS-8-TYP · pipe clusters / Chem-Curb P-8-TYP ·
-    penthouse walls, fixed counterflashing W-13-TYP.
-  - **CODE-DRAWN (12):** HVAC curb on metal CS-13-MP · skylight panels, flush F-12-TYP · vents on metal / SPF Plate D ·
-    pipes on metal P-9-MP · gutters W-7-TYP · downspout inlets D-8-TYP · roof hatch on metal / SPF CS-15-MP · edge metal F-1-TYP ·
+    penthouse walls, fixed counterflashing W-13-TYP · perimeter edge metal F-1-TYP.
+  - **CODE-DRAWN (11):** HVAC curb on metal CS-13-MP · skylight panels, flush F-12-TYP · vents on metal / SPF Plate D ·
+    pipes on metal P-9-MP · gutters W-7-TYP · downspout inlets D-8-TYP · roof hatch on metal / SPF CS-15-MP ·
     expansion joint A-3-TYP ·
     silo walls W-7-TYP · gallery supports P-5-C / P-7-C · Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
 - Product features: desktop installer v0.1.2 **built** (`dist/RMI Roof Visualizer Setup 0.1.2.exe`); photo panel **done** (v1, in memory).
@@ -86,7 +86,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## What's left (in order)
-1. Remaining detail models — the 12 CODE-DRAWN rows, in the order the buildings need them.
+1. Remaining detail models — the 11 CODE-DRAWN rows, in the order the buildings need them.
 2. Fine-tuning — labels, camera pass, silo headhouse/shed.
 3. Textures.
 4. Catalog alignment with the 25 `DETAILS` entries (the detail menu is a per-building checkbox list, not a dropdown).

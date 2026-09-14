@@ -38,7 +38,7 @@ Roof types are those of the buildings that carry the detail.
 | Wall tie-in, reglet (`wall`) — school gym wall | W-11-TYP | Mod-bit, TPO | MODELLED+SPLICED | Flashing height, reglet, counterflashing lap (§5 #6) |
 | Soil stacks (`pipe`) — all five buildings | P-6-TYP | TPO, mod-bit, gravel BUR, concrete | MODELLED+SPLICED | Every dimension (§5 #9) |
 | Skylights, curb-mounted (`skylight`) — school | CS-1-TYP note 7 | Mod-bit, TPO | MODELLED+SPLICED | Dome rise, retainer frame, condensation gutter; shared curb numbers (§5 #5) |
-| Edge metal (`edge`) | F-1-TYP | TPO, concrete, mod-bit | CODE-DRAWN | Flange width |
+| Edge metal (`edge`) — office east edge at the hotspot; every office edge draws the same cross-section in code | F-1-TYP | TPO, concrete, mod-bit | MODELLED+SPLICED | Tape at the edge joint, Flex down the fascia and face fasteners (none on the drawing); flange, fascia, stripping and cleat sizes (§5 #22) |
 | Penthouse walls (`penthouse`) — office penthouse west face | W-13-TYP | TPO, mod-bit, gravel BUR, concrete | MODELLED+SPLICED | Counterflashing height, depth and stand-off; cant; skirt size and lap; fastener spacing; skirt fitted after the topcoat (§5 #21) |
 | Sleeper supports (`sleeper`) — office hotspot sleeper, hotel hotspot condenser | CS-8-TYP | TPO, mod-bit, concrete | MODELLED+SPLICED | Every dimension (NTS): sleeper, pad, 6" raise, patch; whether the (E) condition has a pad |
 | Pipe clusters / Chem-Curb (`pitchpan`) — all three hospital pans | P-8-TYP | Gravel BUR, mod-bit, TPO, concrete | MODELLED+SPLICED | Every dimension (NTS): curb, penetrations, fill crown, Flex field extent; curb set before or after priming (§5 #20) |
@@ -49,7 +49,7 @@ Roof types are those of the buildings that carry the detail.
 | Parapet / coping (`coping`) — big-box east run only | W-1-TYP | TPO, mod-bit, gravel BUR, concrete | MODELLED+SPLICED | Joint gap, fastener spacing, whole-coping primer (§5 #3) |
 | Solar Post supports (toggle, not in `DETAILS`) | P-1-S-TYP, P-2-S-TYP, P-3-S-TYP | All | CODE-DRAWN | Geometry, no 3D render |
 
-**Totals:** 16 MODELLED+SPLICED · 0 MODELLED · 12 CODE-DRAWN · 0 NOT STARTED.
+**Totals:** 17 MODELLED+SPLICED · 0 MODELLED · 11 CODE-DRAWN · 0 NOT STARTED.
 
 ---
 
@@ -64,7 +64,7 @@ Roof types are those of the buildings that carry the detail.
 | B3 | Macro roof with click-to-zoom hotspots | BUILT | Whole-roof view with a marker per switched-on detail, labelled with its drawing number; click flies the camera to the detail, "Back to roof" returns. Photo pins (#1) use the same jump |
 | B4 | Section-view toggle | BUILT | Detail view only: a cut plane through the detail, facing the camera, so the section follows the orbit |
 | B5 | Material quantity estimate | BUILT | Gallons of primer, Flex and topcoat plus the system code, from the spec-plate rates in `ROOFS`. Metal takes off laps, end laps and fasteners; flat roofs full field +6% (ASSUMED); per-detail allowances ASSUMED; silo walls add their area. No pricing |
-| B6 | glTF detail models (`mountModel`) | BUILT | Loads the `MODELS` `.glb` files, keeps only `<layer>__` meshes, scales metres to feet, skins parts to the roof's materials, and hides the code-drawn stand-in once loaded (kept if the load fails). Field cutouts (`applyCutouts`) open the membrane and coating sheets around flat-roof models; splices set 4-ft sections into parapet runs (coping, scupper), walls (W-11 reglet, W-13 penthouse) and metal slopes (side lap, standing seam), plus the ridge cap |
+| B6 | glTF detail models (`mountModel`) | BUILT | Loads the `MODELS` `.glb` files, keeps only `<layer>__` meshes, scales metres to feet, skins parts to the roof's materials, and hides the code-drawn stand-in once loaded (kept if the load fails). Field cutouts (`applyCutouts`) open the membrane and coating sheets around flat-roof models; splices set 4-ft sections into parapet runs (coping, scupper), walls (W-11 reglet, W-13 penthouse), the office edge-metal run (F-1) and metal slopes (side lap, standing seam), plus the ridge cap |
 | B7 | Environment map and bump textures | BUILT | Procedural, no image files: a gradient cube map as `scene.environment` for metal and Thane reflections; canvas-noise bump maps on mod-bit granules, SPF foam, concrete and felts. Image textures are still #4 |
 | B8 | Solar Post visual toggle (`S.solar`) | BUILT | "Add Solar Post supports" under Finish shows code-drawn posts on all 11 buildings, adds an ASSUMED Flex allowance to the estimate and sets `solar_post: true` in `configuration()`. Geometry status in §1 |
 | B9 | Lead-capture email modal | REMOVED 2026-09-14 | Obsolete under the desktop direction; it never sent anything. Button, modal, Copy/Close handlers and `__rmi.payload()` removed. The serialiser is kept as `configuration()` (`__rmi.configuration()`): building, roof and plate, system code, existing condition, checked details with drawing numbers, topcoat, sq ft, gallon estimate, photo file names and pins. No pricing. Needed by #9 and #11. The internal keys sit beside the labels so #11 can restore a prospect: `building_key`, `roof_key`, `topcoat_key`, and `detail_ids` (`{id, name}` per checked detail, same order as `details`). Both lists hold only the `DETAILS` checklist; the Solar Post toggle is its own field, `solar_post: true/false` |
@@ -75,7 +75,7 @@ Roof types are those of the buildings that carry the detail.
 |---|---|---|---|
 | 0 | Desktop installer (Electron, Windows) | BUILT (v0.1.2) | `npm run dist` → `dist/RMI Roof Visualizer Setup 0.1.2.exe`; runs offline, vendored libs. Window title shows the version from package.json at runtime (`app.getVersion()`), e.g. "RMI Roof Visualizer 0.1.2". Mac only if needed. Rollout to reps not yet recorded |
 | 1 | Photo panel | DONE (v1) | Photos from disk, pins that jump to details, native "Add photos" dialog in Electron. In memory only; saving comes with #11 |
-| 2 | Remaining detail models | IN PROGRESS | 12 CODE-DRAWN rows in §1, in the order the buildings need them |
+| 2 | Remaining detail models | IN PROGRESS | 11 CODE-DRAWN rows in §1, in the order the buildings need them |
 | 3 | Fine-tuning | OPEN | Labels, camera pass, silo headhouse/shed (fastener size done 2026-09-14) |
 | 4 | Textures | NOT STARTED | `textures/` folder (planned layout) |
 | 5 | Catalog alignment with the 25 `DETAILS` entries | OPEN | Catalog rows ↔ the 25 `DETAILS` entries. The detail menu is a per-building checkbox list, not a dropdown (B1) |
@@ -108,6 +108,7 @@ Roof types are those of the buildings that carry the detail.
 
 Newest first, one line each.
 
+- 2026-09-14 — Perimeter edge metal F-1-TYP modelled and spliced into the office east edge at the hotspot (`perimeter-edge-metal-F-1-TYP.glb`). Every office edge now draws the same cross-section in code (`EM`, mitred at the corners) in place of the old box flange, and on a metal-edged block the field sheets run out to the wall face. Built to the drawing: flange flat on the roof (no raised stop, which is F-2-TYP), stripped in, fascia hooked over a continuous cleat. Now VERIFIED (was "no VERIFIED tag"): the stripping over the flange stepping down onto the field; confirm seam and flashing integrity; the cleat; Flex over the stripped flange and the field; topcoat to all surface areas. ASSUMED, not on the drawing: the tape over the metal-to-membrane joint, Flex down the fascia face, exposed face fasteners and their encapsulation, and every size (was "flange width"), §5 #22. Detail camera brought in from 14 to 3.5 ft. The penthouse prism helpers are now shared (`prismRun`, `rectYZ`, `sheetYZ`); `prismRun` can leave a run end open where it meets a spliced model
 - 2026-09-14 — Desktop app 0.1.2 (package.json, package-lock.json, CLAUDE.md installer line). Installer rebuilt as `dist/RMI Roof Visualizer Setup 0.1.2.exe`, the first with the version in the window title. Packaged app opened from `dist/win-unpacked`: title "RMI Roof Visualizer 0.1.2", left panel ends at "Open photo panel"
 - 2026-09-14 — Electron window title now shows the app version, read from package.json at runtime (`app.getVersion()` in electron/main.js, no hard-coded number): "RMI Roof Visualizer 0.1.1" confirmed with `npm start`. The 0.1.1 installer already in dist/ was built before this change; the next `npm run dist` includes it
 - 2026-09-14 — Desktop app 0.1.1 (package.json, package-lock.json; the version is not shown anywhere in the UI). Installer rebuilt as `dist/RMI Roof Visualizer Setup 0.1.1.exe`, the first build without the B9 email modal. Opened with `npm start` and from `dist/win-unpacked`: the left panel ends at "Open photo panel", no email button. CLAUDE.md installer line bumped
