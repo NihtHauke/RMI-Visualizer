@@ -152,8 +152,8 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 | Parapet / coping (`coping`) | W-1-TYP · 3D W1-11-FT3D | `metal-coping-joint-W-1-TYP.glb` | **VERIFIED**, including the 4" tape / 2" Flex / 2" topcoat extents. Note 7: coping must meet code and SMACNA for wind uplift or it is excluded from warranty | Open-joint gap; fastener spacing; coat thicknesses. The topcoat shows the entire-coping (system warranty) option |
 
 **Not in `DETAILS`:** Solar Post supports is a separate toggle (`S.solar`) — drawings P-1-S-TYP, P-2-S-TYP and
-P-3-S-TYP, no 3D render, code geometry. It appears in `configuration()` as "Solar Post supports
-(P-1-S-TYP)".
+P-3-S-TYP, no 3D render, code geometry. `configuration()` returns it as its own field, `solar_post`
+(true/false), not in the detail lists.
 
 **14 of the 25 carry a Blender model**; the other 11 are generic code geometry pending the same treatment.
 
