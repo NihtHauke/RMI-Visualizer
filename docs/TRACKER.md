@@ -62,7 +62,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 | 0 | Desktop installer (Electron, Windows) | BUILT | `npm run dist` → `dist/RMI Roof Visualizer Setup 0.1.0.exe`; runs offline, vendored libs. Mac only if needed. Rollout to reps not yet recorded |
 | 1 | Photo panel | DONE (v1) | Photos from disk, pins that jump to details, native "Add photos" dialog in Electron. In memory only; saving comes with #11 |
 | 2 | Remaining detail models | IN PROGRESS | 15 CODE-DRAWN rows in §1, in the order the buildings need them |
-| 3 | Fine-tuning | OPEN | Labels, fastener size, camera pass, silo headhouse/shed |
+| 3 | Fine-tuning | OPEN | Labels, camera pass, silo headhouse/shed (fastener size done 2026-09-14) |
 | 4 | Textures | NOT STARTED | `textures/` folder (planned layout) |
 | 5 | Catalog alignment and 25-item dropdown | OPEN | Catalog rows ↔ the 25 `DETAILS` entries |
 | 6 | ASSUMED questions to RMI | OPEN | [Catalog §5](RMI_Library_Catalog.md#5-open-questions-for-rmi); each answer moves an item to VERIFIED |
@@ -92,6 +92,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 
 Newest first, one line each.
 
+- 2026-09-14 — Code-drawn purlin fasteners on R-panel and standing seam cut from ~3" discs to true scale (~5/8" head, ~1.5" Flex dab, sizes ASSUMED) to match the F-8-TYP model washers at detail cameras; rust patches and lap strips unchanged, whole-roof view still reads as metal
 - 2026-09-12 — CLAUDE.md direction: Pages goes off at What's left step 6 (repo private) before any RMI drawing is committed, not when the first installer ships; the installer replaces the review link for reps
 - 2026-09-12 — Repo private, Pages off and transfer to an RMI org folded into one step (§2 #7) just before the drawing panel, which it blocks; #12 is now bundled drawings, code signing, wide rollout
 - 2026-09-12 — Webflow re-test dropped (desktop program, nothing hosted on roofrmi.com); repo transfer reworded to an RMI-owned GitHub org at the same time as going private; stale #4 reference fixed
