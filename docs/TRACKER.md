@@ -78,7 +78,7 @@ Roof types are those of the buildings that carry the detail.
 | 2 | Remaining detail models | IN PROGRESS | 12 CODE-DRAWN rows in §1, in the order the buildings need them |
 | 3 | Fine-tuning | OPEN | Labels, camera pass, silo headhouse/shed (fastener size done 2026-09-14) |
 | 4 | Textures | NOT STARTED | `textures/` folder (planned layout) |
-| 5 | Catalog alignment and 25-item dropdown | OPEN | Catalog rows ↔ the 25 `DETAILS` entries |
+| 5 | Catalog alignment with the 25 `DETAILS` entries | OPEN | Catalog rows ↔ the 25 `DETAILS` entries. The detail menu is a per-building checkbox list, not a dropdown (B1) |
 | 6 | ASSUMED questions to RMI | OPEN | [Catalog §5](RMI_Library_Catalog.md#5-open-questions-for-rmi); each answer moves an item to VERIFIED |
 | 7 | Repo private, Pages off, transfer to an RMI-owned GitHub organization | NOT STARTED | One step, so RMI controls collaborator access. Until then the repo stays under nihthauke for team review. Blocks #8 |
 | 8 | Drawing panel | NOT STARTED | Can't start until #7 is done. 2D drawing (zoomable), plain-language steps (ASSUMED steps say so), 3D concept tab. Images rendered at build time from `drawings/` (git-ignored) |
@@ -100,6 +100,7 @@ Roof types are those of the buildings that carry the detail.
 - [x] Refresh CLAUDE.md "Current state" to match §1 and §2
 - [ ] Extend spliced models to the instances still code-drawn: RTU curbs at other sizes (school, office, hotel, restaurant); coping on hospital, restaurant, hotel; ridge cap on manufacturing, airport, arena (confirm pitch vs. the 1:12 model)
 - [ ] Next curb model: CS-15-MP fixed metal curb for the arena hatch (§5 #14)
+- [ ] Ask RMI whether reps see ballasted single-ply roofs (Plate SPB) — candidate 8th roof type; ballast removal is not built
 
 ---
 
@@ -107,6 +108,7 @@ Roof types are those of the buildings that carry the detail.
 
 Newest first, one line each.
 
+- 2026-09-14 — Topcoat labels: stage 5 and the stage text follow the Finish toggle (RMI-White Plus name, text and Plate rates WP23 1.5 / WP30 2 gal/sq on every roof but gravel BUR); ridge cap source no longer hard-codes Thane. CLAUDE.md synced to the code: gravel removal runs inside Prep and there is no ballast stage (SPB question added to §3); Project Evaluation pre-fill is #13 NOT STARTED; the detail menu is a per-building checkbox list (#5 reworded)
 - 2026-09-14 — §2: "Built" table (B1–B9) added above the numbered features, each row checked against index.html; #0–#12 unchanged. Found in the code: the detail checklist is set by building, not roof type; gravel removal runs inside Prep and there is no ballast removal; the Project Evaluation pre-fill is only a stub in the email payload (added as #13 NOT STARTED); the lead-capture email modal is still wired (B9, obsolete, pending removal)
 - 2026-09-14 — Penthouse wall W-13-TYP modelled and spliced on the office penthouse west face at the hotspot (`wall-counterflashing-fixed-W-13-TYP.glb`). Every penthouse now draws the same cross-section in code, mitred at the corners. Now VERIFIED: the counterflashing is fixed and never removed (note 7); sealant bead at its top edge; Flex encapsulates the (E) flashing up to the counterflashing (was "Flex height ASSUMED", off §5 #15); topcoat over the Flex; 24 ga. skirt min 4" over the RMI system. No term bar on the drawing. Sizes, skirt timing and the optional coated counterflashing are ASSUMED (§5 #21). Detail camera unchanged — at distance 20 the section reads small
 - 2026-09-14 — Pipe clusters P-8-TYP modelled and spliced on all three hospital pans (`chem-curb-P-8-TYP.glb`). Built to the drawing, not the old code geometry: a Chem-Curb set in M-1 sealant (no metal flange), the pocket filled with Flex tapered outward (not pourable sealer), Flex min 4" and topcoat min 2" up the penetrations — now VERIFIED; sizes, fill crown, field extent and curb-before-primer ASSUMED (§5 #20). One hospital pan moved off the penthouse wall line; detail camera brought in

@@ -5,8 +5,8 @@ A private presentation tool for RMI's sales reps, used live with contractors, bu
 (in person or over Zoom screen share). The rep picks a building type, roof type and the details on the roof,
 then walks through RMI's fluid-applied system (primer → RMI-Flex → RMI-Thane or RMI-White Plus) stage by
 stage. One Three.js scene: whole roof (macro) with click-to-zoom details (micro), a section-view toggle,
-a material estimate, a photo panel for the prospect's own roof, and a summary that pre-fills RMI's
-Project Evaluation form.
+a material estimate and a photo panel for the prospect's own roof. Pre-filling RMI's Project Evaluation form
+is planned, not built (`docs/TRACKER.md` §2 #13, NOT STARTED).
 
 Direction (10 Sept 2026): the final product is a DESKTOP APPLICATION, not a website. Electron wraps the existing
 index.html + models into an installer (Windows first; Mac if needed) that reps install and run offline in its own
@@ -62,7 +62,11 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - 7 roof types, each from its spec plate: R-panel (MP), standing seam (MP), SPF (SPF), TPO/PVC/EPDM (SP),
   mod-bit granule (A-G), gravel BUR (MA-GR, Thane only), concrete/LIC (C).
 - Two field patterns: **seam-trace** (metal: primer + Flex on seams, laps, fasteners, curbs, penetrations; full-field topcoat)
-  and **full-field** (everything else: primer, Flex, topcoat over the whole roof). Two roof-specific pre-stages: gravel removal, ballast removal.
+  and **full-field** (everything else: primer, Flex, topcoat over the whole roof). Every roof runs the same six stages
+  (existing, prep, primer, Flex, topcoat, finished); on gravel BUR the gravel is swept off inside Prep, not as a separate stage.
+  Ballast removal is not built — ballasted single-ply (Plate SPB) is not one of the 7 roof types.
+- Detail menu: a per-building checkbox list (`BUILDINGS[].details`) — not a roof-type filter and not a dropdown. The roof type
+  only swaps a detail's name and drawing (`byRoof`).
 - 28 detail rows (the 25 `DETAILS` entries + 2 concrete `byRoof` variants + the Solar Post toggle), keyed to drawing numbers.
   Status as in `docs/TRACKER.md` §1: **16 MODELLED+SPLICED · 0 MODELLED · 12 CODE-DRAWN · 0 NOT STARTED.**
   Spliced models still carry open ASSUMED items (listed per row in the tracker).
@@ -76,14 +80,15 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
     expansion joint A-3-TYP ·
     silo walls W-7-TYP · gallery supports P-5-C / P-7-C · Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
 - Product features: desktop installer v0.1.0 **built** (`dist/RMI Roof Visualizer Setup 0.1.0.exe`); photo panel **done** (v1, in memory).
-  Drawing panel, PDF export, EagleView import and saved prospects: **not started**.
+  Drawing panel, PDF export, EagleView import, saved prospects and the Project Evaluation pre-fill: **not started**.
+  The lead-capture email modal from the website direction is still in `index.html`: obsolete, pending removal (TRACKER §2 B9).
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## What's left (in order)
 1. Remaining detail models — the 12 CODE-DRAWN rows, in the order the buildings need them.
 2. Fine-tuning — labels, fastener size, camera pass, silo headhouse/shed.
 3. Textures.
-4. Catalog alignment and the 25-item detail dropdown.
+4. Catalog alignment with the 25 `DETAILS` entries (the detail menu is a per-building checkbox list, not a dropdown).
 5. ASSUMED questions to RMI (catalog §5).
 6. Repo private, Pages off, transfer to an RMI-owned GitHub organization — in one step, so RMI controls
    collaborator access. Until then the repo stays under nihthauke for team review. The drawing panel can't
