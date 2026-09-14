@@ -55,7 +55,21 @@ Roof types are those of the buildings that carry the detail.
 
 ## 2. Product features
 
-Done items first, then the order of CLAUDE.md "What's left".
+**Built** — what `index.html` already does, each row checked against the code (2026-09-14).
+
+| # | Feature | Status | Notes |
+|---|---|---|---|
+| B1 | Configurator | BUILT | 11 building types and 7 roof types (`BUILDINGS`, `ROOFS`). Each building offers only its own 1–4 roof types (silo: concrete only), so not every pairing exists. The detail checklist is set by the building (`BUILDINGS[].details`), not by roof type; the roof type swaps a detail's name and drawing through `byRoof` (e.g. vent → bin vent CS-12-CON on concrete) |
+| B2 | Six-stage walkthrough | BUILT | Existing → Prep → Primer → RMI-Flex → RMI-Thane → Finished on every roof, with play, step and per-stage text. The stage timeline drives the layers: its progress shows each model's `existing` / `primer` / `flex` / `topcoat` collections and sweeps the clipped overlays across code-drawn roofs. White Plus is the Finish toggle (recolours the topcoat, swaps the system code); stage 5 keeps the RMI-Thane name. Gravel removal is not a separate stage — it sweeps off during Prep on gravel BUR. No ballast removal in the code |
+| B3 | Macro roof with click-to-zoom hotspots | BUILT | Whole-roof view with a marker per switched-on detail, labelled with its drawing number; click flies the camera to the detail, "Back to roof" returns. Photo pins (#1) use the same jump |
+| B4 | Section-view toggle | BUILT | Detail view only: a cut plane through the detail, facing the camera, so the section follows the orbit |
+| B5 | Material quantity estimate | BUILT | Gallons of primer, Flex and topcoat plus the system code, from the spec-plate rates in `ROOFS`. Metal takes off laps, end laps and fasteners; flat roofs full field +6% (ASSUMED); per-detail allowances ASSUMED; silo walls add their area. No pricing |
+| B6 | glTF detail models (`mountModel`) | BUILT | Loads the `MODELS` `.glb` files, keeps only `<layer>__` meshes, scales metres to feet, skins parts to the roof's materials, and hides the code-drawn stand-in once loaded (kept if the load fails). Field cutouts (`applyCutouts`) open the membrane and coating sheets around flat-roof models; splices set 4-ft sections into parapet runs (coping, scupper), walls (W-11 reglet, W-13 penthouse) and metal slopes (side lap, standing seam), plus the ridge cap |
+| B7 | Environment map and bump textures | BUILT | Procedural, no image files: a gradient cube map as `scene.environment` for metal and Thane reflections; canvas-noise bump maps on mod-bit granules, SPF foam, concrete and felts. Image textures are still #4 |
+| B8 | Solar Post visual toggle (`S.solar`) | BUILT | "Add Solar Post supports" under Finish shows code-drawn posts on all 11 buildings, adds an ASSUMED Flex allowance to the estimate and lists P-1-S-TYP in the configuration payload. Geometry status in §1 |
+| B9 | Lead-capture email modal | BUILT — obsolete under the desktop direction, pending removal | "Email me this configuration" opens "Configuration sent to RMI" with the JSON payload and a Copy button; the text describes the Webflow form → webhook → Lambda → ShareFile pipeline. Nothing is sent (no network call). Removal also covers `__rmi.payload()` (read by `scripts/snapshot.py`) and the photo panel's note about the configuration email |
+
+**Numbered** — done items first, then the order of CLAUDE.md "What's left". Numbers are fixed: §3 and the update log cite them.
 
 | # | Feature | Status | Notes |
 |---|---|---|---|
@@ -72,6 +86,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 | 10 | EagleView import | NOT STARTED | Parse report XML → facets, parapet/eave/flashing lines, penetrations classified by area for the rep to confirm; estimate from measured totals. Report files never committed |
 | 11 | Saved prospects | NOT STARTED | Config + photos + report + confirmations as one local file per prospect under `prospects/` (git-ignored); location TBD |
 | 12 | Bundled drawings, code signing, wide rollout | NOT STARTED | |
+| 13 | Project Evaluation pre-fill | NOT STARTED | No summary view fills RMI's Project Evaluation form. The only trace is a two-field `project_evaluation_prefill` stub (existing roof system, checked details) inside the B9 payload, which is shown, never sent. Feeds the #9 appendix; numbered 13 so #0–#12 keep their cross-references |
 
 ---
 
@@ -92,6 +107,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 
 Newest first, one line each.
 
+- 2026-09-14 — §2: "Built" table (B1–B9) added above the numbered features, each row checked against index.html; #0–#12 unchanged. Found in the code: the detail checklist is set by building, not roof type; gravel removal runs inside Prep and there is no ballast removal; the Project Evaluation pre-fill is only a stub in the email payload (added as #13 NOT STARTED); the lead-capture email modal is still wired (B9, obsolete, pending removal)
 - 2026-09-14 — Penthouse wall W-13-TYP modelled and spliced on the office penthouse west face at the hotspot (`wall-counterflashing-fixed-W-13-TYP.glb`). Every penthouse now draws the same cross-section in code, mitred at the corners. Now VERIFIED: the counterflashing is fixed and never removed (note 7); sealant bead at its top edge; Flex encapsulates the (E) flashing up to the counterflashing (was "Flex height ASSUMED", off §5 #15); topcoat over the Flex; 24 ga. skirt min 4" over the RMI system. No term bar on the drawing. Sizes, skirt timing and the optional coated counterflashing are ASSUMED (§5 #21). Detail camera unchanged — at distance 20 the section reads small
 - 2026-09-14 — Pipe clusters P-8-TYP modelled and spliced on all three hospital pans (`chem-curb-P-8-TYP.glb`). Built to the drawing, not the old code geometry: a Chem-Curb set in M-1 sealant (no metal flange), the pocket filled with Flex tapered outward (not pourable sealer), Flex min 4" and topcoat min 2" up the penetrations — now VERIFIED; sizes, fill crown, field extent and curb-before-primer ASSUMED (§5 #20). One hospital pan moved off the penthouse wall line; detail camera brought in
 - 2026-09-14 — Sleeper support CS-8-TYP modelled and spliced (office hotspot sleeper, both sleepers under the hotel hotspot condenser). Per the drawing the coats run continuous under the raised sleeper and the walkpad goes down after cure — no Flex wrap (was ASSUMED in the code geometry; now VERIFIED, dropped from §5 #15). Code-drawn sleepers resized to match; condenser sleepers now parallel; field cutouts accept rectangles
