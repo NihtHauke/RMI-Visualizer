@@ -73,7 +73,7 @@ Roof types are those of the buildings that carry the detail.
 
 | # | Feature | Status | Notes |
 |---|---|---|---|
-| 0 | Desktop installer (Electron, Windows) | BUILT | `npm run dist` → `dist/RMI Roof Visualizer Setup 0.1.0.exe`; runs offline, vendored libs. Mac only if needed. Rollout to reps not yet recorded |
+| 0 | Desktop installer (Electron, Windows) | BUILT (v0.1.1) | `npm run dist` → `dist/RMI Roof Visualizer Setup 0.1.1.exe`; runs offline, vendored libs. Mac only if needed. Rollout to reps not yet recorded |
 | 1 | Photo panel | DONE (v1) | Photos from disk, pins that jump to details, native "Add photos" dialog in Electron. In memory only; saving comes with #11 |
 | 2 | Remaining detail models | IN PROGRESS | 12 CODE-DRAWN rows in §1, in the order the buildings need them |
 | 3 | Fine-tuning | OPEN | Labels, camera pass, silo headhouse/shed (fastener size done 2026-09-14) |
@@ -108,6 +108,7 @@ Roof types are those of the buildings that carry the detail.
 
 Newest first, one line each.
 
+- 2026-09-14 — Desktop app 0.1.1 (package.json, package-lock.json; the version is not shown anywhere in the UI). Installer rebuilt as `dist/RMI Roof Visualizer Setup 0.1.1.exe`, the first build without the B9 email modal. Opened with `npm start` and from `dist/win-unpacked`: the left panel ends at "Open photo panel", no email button. CLAUDE.md installer line bumped
 - 2026-09-14 — `configuration()`: Solar Post taken out of `details` and `detail_ids` (now the checklist only) and returned as its own field `solar_post: true/false`; field check run with it on and off. B8 note and the catalog's Solar Post line updated to match
 - 2026-09-14 — `configuration()` now returns internal keys beside its labels: `building_key`, `roof_key`, `topcoat_key`, `detail_ids` (`{id, name}` per checked detail; Solar Post as `solar`). Existing fields unchanged; a photo-panel snapshot still returns the pins
 - 2026-09-14 — B9 lead-capture email modal REMOVED: button, modal HTML/CSS, Copy/Close handlers and `__rmi.payload()`. The serialiser is kept as `configuration()` / `__rmi.configuration()`, minus the website-only fields (`source`, empty `contact`, `project_evaluation_prefill` stub). snapshot.py reads it instead of opening the modal. The photo panel note no longer mentions an email. Catalog lines about the emailed configuration reworded. CLAUDE.md modal sentence deleted
