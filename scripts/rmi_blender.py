@@ -66,6 +66,7 @@ LIB = {
     "unit":       lambda: mat("RMI_unit",         (0.86, 0.87, 0.85), 0.7),
     "unitD":      lambda: mat("RMI_unit_dark",    (0.32, 0.36, 0.40), 0.8),
     "wood":       lambda: mat("RMI_wood",         (0.55, 0.42, 0.28), 0.9),
+    "rubber":     lambda: mat("RMI_rubber",       (0.17, 0.17, 0.18), 0.95),
     "wall":       lambda: mat("RMI_wall",         (0.80, 0.78, 0.74), 0.9),
     "fast":       lambda: mat("RMI_fastener",     (0.72, 0.74, 0.75), 0.4, 0.9),
     "seal":       lambda: mat("RMI_sealant",      (0.25, 0.25, 0.27), 0.6),

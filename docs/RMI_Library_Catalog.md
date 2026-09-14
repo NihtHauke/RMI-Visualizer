@@ -143,7 +143,7 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 | Skylights (`skylight`) | CS-1-TYP, note 7 names skylight domes · 3D CS1-18-3D | `curb-skylight-CS-1-TYP.glb` | **VERIFIED**: Flex up the full curb and over the top to the interior; dome lifted and reset | Dome rise; retainer frame; condensation gutter; plus the shared curb numbers above |
 | Edge metal (`edge`) | F-1-TYP · 3D F1-34-FT-3D | — code geometry | Per F-1-TYP; no VERIFIED tag | Flange width |
 | Penthouse walls (`penthouse`) | W-13-TYP, fixed counterflashing · 3D W-11-24-FT-3D | — code geometry | Per W-13-TYP; no VERIFIED tag | Flex height on the wall |
-| Sleeper supports (`sleeper`) | CS-8-TYP · 3D CS8-2-19-3D | — code geometry | Per CS-8-TYP; no VERIFIED tag | Wrap height |
+| Sleeper supports (`sleeper`) | CS-8-TYP · 3D CS8-2-19-3D | `sleeper-support-CS-8-TYP.glb` at the office hotspot sleeper and under both sleepers of the hotel hotspot condenser; the rest code-drawn to the same sizes | **VERIFIED**: wood sleeper raised and reset; Flex base coat and topcoat run continuous across the field under the support — nothing wraps the block; loose-laid walkpad set after the RMI materials have completely cured; damaged or rotted sleepers replaced. Note 7: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems. (The 2024 library file is named "CS 7 TYP Sleeper Support"; its title block reads CS-8-TYP.) | Drawing is NTS with no dimensions: 6x10 x 30" sleeper; 3/8" synthetic rubber pad 2.5" past the sleeper; the 6" raise; the 22" x 48" roof patch; coat thicknesses. Whether the (E) condition already has a pad |
 | Pipe clusters (`pitchpan`) | P-8-TYP, chem curb / pitch pan · 3D PP-1-FT-3D | — code geometry | Per P-8-TYP; no VERIFIED tag | Fill depth |
 | Expansion joint (`ej`) | A-3-TYP, EPDM/PVC/TPO · no 3D render | — code geometry | Per A-3-TYP; geometry **ASSUMED** | The geometry itself (no 3D concept render) |
 | Silo walls (`silowall`) | W-7-TYP, concrete and CMU walls · no 3D render | — code geometry | Per W-7-TYP, with vertical field application on silos per the Longview grain terminal project | Sequence and coverage on curved walls |
@@ -184,7 +184,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | Curb-mounted unit, fixed (cannot lift) | CS-2-TYP, CS-3-TYP | CS1-1-18-3D, CS1-2-18-3D | BUR, mod-bit, single-ply |
 | Support curb w/ skirt, BUR | CS-4-BUR, CS-6-BUR | — | BUR, mod-bit |
 | Support curb, single-ply | CS-5-SP, CS-7-SP | — | PVC, EPDM, TPO |
-| Sleeper support | CS-8-TYP | CS8-2-19-3D, CS8-6-19-3D | All flat systems + concrete |
+| Sleeper support — **model** `models/sleeper-support-CS-8-TYP.glb` (`scripts/build_sleeper_support_CS-8-TYP.py`). Assembly VERIFIED to CS-8-TYP (coats continuous under the raised sleeper, walkpad after cure); every dimension ASSUMED | CS-8-TYP | CS8-2-19-3D, CS8-6-19-3D | All flat systems + concrete |
 | Wood support block | CS-9-TYP | — | All flat systems + concrete |
 | Rubber support block | CS-10-TYP | CS10-1-16-3D, CS10-16-2-3D, CS10-16-6-3D | All flat systems + concrete |
 | Duct support | CS-11-TYP | — | All flat systems |
@@ -315,8 +315,9 @@ as RMI spec — the UI tags all of it ASSUMED.
     minimum 4" over the RMI system, with Flex to the underside of the (E) vertical metal. It is the next curb
     model; the arena hatch is code geometry until then.
 15. **Wrap heights on the SPF variants** of the HVAC curb (SPF-12-TYP), pipe penetration (SPF-3-TYP) and roof
-    hatch (SPF-12-TYP), and on the sleeper support (CS-8-TYP), gallery support (P-5-C / P-7-C) and penthouse
-    wall (W-13-TYP). Each is a single number in the builder.
+    hatch (SPF-12-TYP), and on the gallery support (P-5-C / P-7-C) and penthouse
+    wall (W-13-TYP). Each is a single number in the builder. (The sleeper support, CS-8-TYP, is off this list:
+    the drawing has no wrap — the coats run continuous under the raised sleeper. VERIFIED 2026-09-14.)
 16. **Ridge cap and expansion joint: no 3D concept render.** A-3-TYP still has none, so the expansion joint
     shape is assumed. F-21-M-TYP is now modelled to its 2D drawing, but with no render to check the massing
     against, these are open: is a 6" cap lap right, and is the closure typically nearer the ridge than the
