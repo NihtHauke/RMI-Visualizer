@@ -48,8 +48,6 @@
   .est td{padding:3px 0}
   .est td:last-child{text-align:right;font-weight:600}
   .est .note{color:var(--mute);font-size:12px;margin-top:6px;line-height:1.35}
-  .cta{width:100%;margin-top:14px;background:var(--gold);color:var(--navy);border:0;padding:11px;border-radius:3px;font-weight:700;cursor:pointer;font-size:14px}
-  .cta:hover{background:var(--gold-2);color:#fff}
   .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.3px;padding:1px 5px;border-radius:2px;vertical-align:middle}
   .tag.v{background:#E3F1E8;color:var(--ok)}
   .tag.a{background:#FBEBD6;color:var(--warn)}
@@ -93,16 +91,6 @@
   .desc h3{margin:0 0 4px;font-size:15px;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;color:var(--navy);display:flex;gap:8px;align-items:center}
   .desc p{margin:0 0 4px}
   .desc .src{color:var(--mute);font-size:12px}
-
-  .modal{position:fixed;inset:0;background:rgba(18,33,58,.55);display:none;align-items:center;justify-content:center;z-index:20}
-  .modal.show{display:flex}
-  .modal .box{background:#fff;width:min(560px,92vw);max-height:86vh;overflow:auto;border-radius:4px;padding:18px 20px;border-top:4px solid var(--gold)}
-  .modal h3{margin:0 0 6px;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;color:var(--navy)}
-  .modal p{font-size:13px;color:var(--mute);margin:0 0 10px}
-  .modal pre{background:#F4F5F7;border:1px solid var(--line);padding:10px;font-size:12px;overflow:auto;border-radius:3px}
-  .modal .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
-  .modal .actions button{border:1px solid var(--navy);background:var(--navy);color:#fff;padding:7px 12px;border-radius:3px;cursor:pointer}
-  .modal .actions button.ghost{background:#fff;color:var(--navy)}
 
   /* ---- Prospect photos panel (phase 1: local only, nothing uploaded or stored) ---- */
   #photos{grid-area:photo;display:none;min-height:0;min-width:0;flex-direction:column;background:#fff;border-left:1px solid var(--line);position:relative}
@@ -217,7 +205,6 @@
     <h2>Prospect photos</h2>
     <div class="pattern" style="margin:0 0 8px">Drop in the prospect's own roof photos and pin each condition to an RMI detail. Photos stay on this computer — nothing is uploaded or stored.</div>
     <div style="display:flex;gap:6px"><button class="pbtn solid" id="photoRailBtn" style="flex:1">Open photo panel</button><span class="pattern" id="photoRailCnt" style="margin:0;align-self:center"></span></div>
-    <button class="cta" id="emailBtn">Email me this configuration</button>
   </aside>
 
   <main id="view">
@@ -238,7 +225,7 @@
     </div>
     <div class="pins" id="ppins"></div>
     <div class="pthumbs" id="pthumbs"></div>
-    <div class="pnote">Photos and pins live in this window only. They are not uploaded or saved anywhere and are gone when it closes. The configuration email carries file names and pinned detail numbers, never the images.</div>
+    <div class="pnote">Photos and pins live in this window only. They are not uploaded or saved anywhere and are gone when it closes.</div>
   </section>
 
   <footer>
@@ -253,13 +240,6 @@
     <div class="desc" id="desc"></div>
   </footer>
 </div>
-
-<div class="modal" id="modal"><div class="box">
-  <h3>Configuration sent to RMI</h3>
-  <p>In production this posts to the Webflow form, which fires the webhook → Lambda → ShareFile pipeline and pre-fills an RMI Project Evaluation form. This is the payload it would carry.</p>
-  <pre id="payload"></pre>
-  <div class="actions"><button class="ghost" id="copyBtn">Copy</button><button id="closeBtn">Close</button></div>
-</div></div>
 
 <script src="vendor/three.min.js"></script>
 <script src="vendor/GLTFLoader.js"></script>
@@ -1467,15 +1447,12 @@ function phSummary(){ return { count:PH.list.length, note:'file names and pinned
 const photosAPI={ open:phOpen, add:phAdd, clear:phClear, select:phSelect, pin:(i,x,y,id)=>{ if(i!==PH.cur) phSelect(i); PH.temp={x,y,pick:id}; phCommit(id); }, click:(i,j)=>{ if(i!==PH.cur) phSelect(i); phGo(PH.list[i].pins[j]); },
   state:()=>({ open:phEl.app.classList.contains('photos'), cur:PH.cur, photos:PH.list.map(p=>({name:p.name,status:p.status,w:p.w,h:p.h,pins:p.pins.map(x=>({x:x.x,y:x.y,detail:x.detail,drawing:x.drawing}))})) }), summary:phSummary };
 
-document.getElementById('emailBtn').onclick=()=>{ const e=estimate(), b=BUILDINGS[S.building], r=ROOFS[S.roof];
-  const payload={ source:'visualize-your-roof', building:b.label, roof:`${r.label} (Plate ${r.plate})`, rmi_system:e.system, existing_condition:{[r.condLabel]:S.cond},
+// The current configuration as plain data (no pricing) — for saved prospects (#11) and PDF export (#9)
+function configuration(){ const e=estimate(), b=BUILDINGS[S.building], r=ROOFS[S.roof];
+  return { building:b.label, roof:`${r.label} (Plate ${r.plate})`, rmi_system:e.system, existing_condition:{[r.condLabel]:S.cond},
     details:b.details.filter(k=>S.on[k]).map(k=>`${DET(k).menu} (${DET(k).drawing})`).concat(S.solar?['Solar Post supports (P-1-S-TYP)']:[]), topcoat:S.topcoat==='white'?'RMI-White Plus':'RMI-Thane', roof_sqft:S.sqft,
     material_estimate_gal:{primer:+e.primerGal.toFixed(1),flex:+e.flexGal.toFixed(1),topcoat:+e.topGal.toFixed(1),basis:'spec-plate coverage rates; detail allowances ASSUMED; no pricing'},
-    project_evaluation_prefill:{ existing_roof_system:r.label, detail_drawings_checked:b.details.filter(k=>S.on[k]).map(k=>DETAILS[k].menu.toUpperCase()).concat(S.solar?['SOLAR']:[]) }, prospect_photos:phSummary(), contact:{name:'',email:'',phone:''} };
-  document.getElementById('payload').textContent=JSON.stringify(payload,null,2); document.getElementById('modal').classList.add('show'); };
-document.getElementById('closeBtn').onclick=()=>document.getElementById('modal').classList.remove('show');
-document.getElementById('copyBtn').onclick=()=>{ navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('payload').textContent); };
-document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id==='modal') e.currentTarget.classList.remove('show'); });
+    prospect_photos:phSummary() }; }
 
 /* =================================================================
    LOOP
@@ -1489,7 +1466,7 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize()
   applyCam(); applyStage(); applySection(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
 
 selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame);
-window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, payload:()=>{ document.getElementById('emailBtn').click(); const t=document.getElementById('payload').textContent; document.getElementById('modal').classList.remove('show'); return JSON.parse(t); } };
+window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, configuration };
 })();
 </script>
 </body>

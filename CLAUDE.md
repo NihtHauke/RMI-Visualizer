@@ -83,7 +83,6 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
     silo walls W-7-TYP · gallery supports P-5-C / P-7-C · Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
 - Product features: desktop installer v0.1.0 **built** (`dist/RMI Roof Visualizer Setup 0.1.0.exe`); photo panel **done** (v1, in memory).
   Drawing panel, PDF export, EagleView import, saved prospects and the Project Evaluation pre-fill: **not started**.
-  The lead-capture email modal from the website direction is still in `index.html`: obsolete, pending removal (TRACKER §2 B9).
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## What's left (in order)

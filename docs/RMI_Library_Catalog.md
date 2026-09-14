@@ -16,7 +16,7 @@ Source: `2024_Master_RMI_Library.zip` (296 files, read 2026-09-04). Status tags:
 | 2024 3D Details | 116 | 3D exploded concept renders of the same details, already color-coded Flex = gold, Thane = silver, with a "field" (FT) view for each family | **MICRO visuals** — these are near-direct references for the Three.js detail views |
 | 3D Web System Comparisons | 8 | 2020 brochures per roof type (Metal, BUR, SPF, Single Ply, Concrete/LIC, BUR new construction, RV) + reference chart | Customer-facing copy per roof type; macro-view marketing text |
 | 2024 Technical Bulletins | 10 | Bulletins 1001–1800 (granules, cold weather, etc.) | Edge cases; not needed for mockup |
-| Roof Design Checklist | 1 | Sample project evaluation | Later: "email me my configuration" could mirror this |
+| Roof Design Checklist | 1 | Sample project evaluation | Later: the Project Evaluation pre-fill (Tracker §2 #13) mirrors this |
 
 Note: `2024PDF Concrete.zip` inside the Concrete folder is a duplicate of the five concrete PDFs beside it — safe to ignore.
 
@@ -152,7 +152,7 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 | Parapet / coping (`coping`) | W-1-TYP · 3D W1-11-FT3D | `metal-coping-joint-W-1-TYP.glb` | **VERIFIED**, including the 4" tape / 2" Flex / 2" topcoat extents. Note 7: coping must meet code and SMACNA for wind uplift or it is excluded from warranty | Open-joint gap; fastener spacing; coat thicknesses. The topcoat shows the entire-coping (system warranty) option |
 
 **Not in `DETAILS`:** Solar Post supports is a separate toggle (`S.solar`) — drawings P-1-S-TYP, P-2-S-TYP and
-P-3-S-TYP, no 3D render, code geometry. It appears in the emailed configuration as "Solar Post supports
+P-3-S-TYP, no 3D render, code geometry. It appears in `configuration()` as "Solar Post supports
 (P-1-S-TYP)".
 
 **14 of the 25 carry a Blender model**; the other 11 are generic code geometry pending the same treatment.

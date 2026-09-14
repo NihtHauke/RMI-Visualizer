@@ -150,8 +150,8 @@ def main():
                 page.wait_for_timeout(800)
                 pin_png = save_png(page, OUT / f"{tag}-pin.png")
                 print("pin click ->", page.evaluate("window.__rmi.S.view"), "wrote", pin_png)
-                pay = page.evaluate("window.__rmi.payload()")
-                print("payload.prospect_photos:", pay.get("prospect_photos"))
+                cfg = page.evaluate("window.__rmi.configuration()")
+                print("configuration.prospect_photos:", cfg.get("prospect_photos"))
             browser.close()
     finally:
         httpd.shutdown()
