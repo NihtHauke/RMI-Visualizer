@@ -41,7 +41,7 @@ Roof types are those of the buildings that carry the detail.
 | Edge metal (`edge`) | F-1-TYP | TPO, concrete, mod-bit | CODE-DRAWN | Flange width |
 | Penthouse walls (`penthouse`) | W-13-TYP | TPO, mod-bit, gravel BUR, concrete | CODE-DRAWN | Flex height on the wall (§5 #15) |
 | Sleeper supports (`sleeper`) — office hotspot sleeper, hotel hotspot condenser | CS-8-TYP | TPO, mod-bit, concrete | MODELLED+SPLICED | Every dimension (NTS): sleeper, pad, 6" raise, patch; whether the (E) condition has a pad |
-| Pipe clusters / pitch pan (`pitchpan`) | P-8-TYP | Gravel BUR, mod-bit, TPO, concrete | CODE-DRAWN | Fill depth |
+| Pipe clusters / Chem-Curb (`pitchpan`) — all three hospital pans | P-8-TYP | Gravel BUR, mod-bit, TPO, concrete | MODELLED+SPLICED | Every dimension (NTS): curb, penetrations, fill crown, Flex field extent; curb set before or after priming (§5 #20) |
 | Expansion joint (`ej`) | A-3-TYP | Gravel BUR, mod-bit, TPO, concrete | CODE-DRAWN | Geometry, no 3D render (§5 #16) |
 | Silo walls (`silowall`) | W-7-TYP | Concrete | CODE-DRAWN | Sequence and coverage on a curved wall (§5 #17) |
 | Gallery supports (`support`) | P-5-C, P-7-C | Concrete | CODE-DRAWN | Wrap height (§5 #15) |
@@ -49,7 +49,7 @@ Roof types are those of the buildings that carry the detail.
 | Parapet / coping (`coping`) — big-box east run only | W-1-TYP | TPO, mod-bit, gravel BUR, concrete | MODELLED+SPLICED | Joint gap, fastener spacing, whole-coping primer (§5 #3) |
 | Solar Post supports (toggle, not in `DETAILS`) | P-1-S-TYP, P-2-S-TYP, P-3-S-TYP | All | CODE-DRAWN | Geometry, no 3D render |
 
-**Totals:** 14 MODELLED+SPLICED · 0 MODELLED · 14 CODE-DRAWN · 0 NOT STARTED.
+**Totals:** 15 MODELLED+SPLICED · 0 MODELLED · 13 CODE-DRAWN · 0 NOT STARTED.
 
 ---
 
@@ -61,7 +61,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 |---|---|---|---|
 | 0 | Desktop installer (Electron, Windows) | BUILT | `npm run dist` → `dist/RMI Roof Visualizer Setup 0.1.0.exe`; runs offline, vendored libs. Mac only if needed. Rollout to reps not yet recorded |
 | 1 | Photo panel | DONE (v1) | Photos from disk, pins that jump to details, native "Add photos" dialog in Electron. In memory only; saving comes with #11 |
-| 2 | Remaining detail models | IN PROGRESS | 14 CODE-DRAWN rows in §1, in the order the buildings need them |
+| 2 | Remaining detail models | IN PROGRESS | 13 CODE-DRAWN rows in §1, in the order the buildings need them |
 | 3 | Fine-tuning | OPEN | Labels, camera pass, silo headhouse/shed (fastener size done 2026-09-14) |
 | 4 | Textures | NOT STARTED | `textures/` folder (planned layout) |
 | 5 | Catalog alignment and 25-item dropdown | OPEN | Catalog rows ↔ the 25 `DETAILS` entries |
@@ -92,6 +92,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 
 Newest first, one line each.
 
+- 2026-09-14 — Pipe clusters P-8-TYP modelled and spliced on all three hospital pans (`chem-curb-P-8-TYP.glb`). Built to the drawing, not the old code geometry: a Chem-Curb set in M-1 sealant (no metal flange), the pocket filled with Flex tapered outward (not pourable sealer), Flex min 4" and topcoat min 2" up the penetrations — now VERIFIED; sizes, fill crown, field extent and curb-before-primer ASSUMED (§5 #20). One hospital pan moved off the penthouse wall line; detail camera brought in
 - 2026-09-14 — Sleeper support CS-8-TYP modelled and spliced (office hotspot sleeper, both sleepers under the hotel hotspot condenser). Per the drawing the coats run continuous under the raised sleeper and the walkpad goes down after cure — no Flex wrap (was ASSUMED in the code geometry; now VERIFIED, dropped from §5 #15). Code-drawn sleepers resized to match; condenser sleepers now parallel; field cutouts accept rectangles
 - 2026-09-14 — Code-drawn purlin fasteners on R-panel and standing seam cut from ~3" discs to true scale (~5/8" head, ~1.5" Flex dab, sizes ASSUMED) to match the F-8-TYP model washers at detail cameras; rust patches and lap strips unchanged, whole-roof view still reads as metal
 - 2026-09-12 — CLAUDE.md direction: Pages goes off at What's left step 6 (repo private) before any RMI drawing is committed, not when the first installer ships; the installer replaces the review link for reps

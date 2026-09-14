@@ -144,7 +144,7 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 | Edge metal (`edge`) | F-1-TYP · 3D F1-34-FT-3D | — code geometry | Per F-1-TYP; no VERIFIED tag | Flange width |
 | Penthouse walls (`penthouse`) | W-13-TYP, fixed counterflashing · 3D W-11-24-FT-3D | — code geometry | Per W-13-TYP; no VERIFIED tag | Flex height on the wall |
 | Sleeper supports (`sleeper`) | CS-8-TYP · 3D CS8-2-19-3D | `sleeper-support-CS-8-TYP.glb` at the office hotspot sleeper and under both sleepers of the hotel hotspot condenser; the rest code-drawn to the same sizes | **VERIFIED**: wood sleeper raised and reset; Flex base coat and topcoat run continuous across the field under the support — nothing wraps the block; loose-laid walkpad set after the RMI materials have completely cured; damaged or rotted sleepers replaced. Note 7: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems. (The 2024 library file is named "CS 7 TYP Sleeper Support"; its title block reads CS-8-TYP.) | Drawing is NTS with no dimensions: 6x10 x 30" sleeper; 3/8" synthetic rubber pad 2.5" past the sleeper; the 6" raise; the 22" x 48" roof patch; coat thicknesses. Whether the (E) condition already has a pad |
-| Pipe clusters (`pitchpan`) | P-8-TYP, chem curb / pitch pan · 3D PP-1-FT-3D | — code geometry | Per P-8-TYP; no VERIFIED tag | Fill depth |
+| Pipe clusters (`pitchpan`) | P-8-TYP, Chem-Curb / pitch pan · 3D PP-1-FT-3D | `chem-curb-P-8-TYP.glb` on all three hospital pans | **VERIFIED**: Chem-Curb fabricated and installed per the manufacturer (Chem-Link), set in RMI M-1 sealant; clean, prepare and prime (note 10); interior pocket filled with RMI-Flex tapered from the penetration outward to shed water; Flex flashing coat over the curb onto the field and min 4" up each penetration past the curb (5" modelled); RMI-Thane / White min 2" up past the Flex (2.5" modelled). The drawing has no metal flange and no pourable sealer: the pocket fill is Flex. Note 7: any non-circular penetration, or where jacks or boots are not feasible. Note 8: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems | Drawing is NTS: 30" x 16" x 4" curb with a 1/2" wall; the four penetrations (3" vent, 2" line, two 1-1/2" conduits); 3/8" beads; fill 3/4" higher at a penetration, tapering over 4"; Flex 6" and topcoat 7" onto the field; coat thicknesses; curb set before priming (§5 #20) |
 | Expansion joint (`ej`) | A-3-TYP, EPDM/PVC/TPO · no 3D render | — code geometry | Per A-3-TYP; geometry **ASSUMED** | The geometry itself (no 3D concept render) |
 | Silo walls (`silowall`) | W-7-TYP, concrete and CMU walls · no 3D render | — code geometry | Per W-7-TYP, with vertical field application on silos per the Longview grain terminal project | Sequence and coverage on curved walls |
 | Gallery supports (`support`) | P-5-C / P-7-C, circular supports on concrete · no 3D render | — code geometry | Per P-5-C / P-7-C; no VERIFIED tag | Wrap height |
@@ -170,7 +170,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | Pipe penetration, concrete deck | P-4-C, P-5-C, P-7-C | — | Direct over concrete; P-5/P-7 cover circular supports (site screen, solar, mechanical) |
 | Pipe penetration, metal roof — EPDM boot | P-9-MP | — | All metal panel systems |
 | Pipe penetration, metal roof — metal jack | P-10-MP | P1BUR-11-FT-3D | All metal panel systems |
-| Non-circular / cluster penetration — chem curb / pitch pan | P-8-TYP | PP-1-FT-3D, PP-1-1-3D, PP-1-6-3D, PP-5-6-3D | BUR, mod-bit, single-ply, concrete |
+| Non-circular / cluster penetration — chem curb / pitch pan — **model** `models/chem-curb-P-8-TYP.glb` (`scripts/build_chem_curb_P-8-TYP.py`). Assembly VERIFIED to P-8-TYP (curb in M-1, Flex-filled pocket tapered to shed water, Flex min 4" / topcoat min 2" up the penetrations); every dimension ASSUMED | P-8-TYP | PP-1-FT-3D, PP-1-1-3D, PP-1-6-3D, PP-5-6-3D | BUR, mod-bit, single-ply, concrete |
 | **Solar post support flashing** | P-1-S-TYP, P-2-S-TYP, P-3-S-TYP (site screen pitch pan) | — (no 3D yet) | All solar post supports |
 
 ### Curbs & supports
@@ -333,6 +333,12 @@ as RMI spec — the UI tags all of it ASSUMED.
     allowances are assumed and labelled as such in the UI.
 19. **Building type to roof type pairing** (which roof types to offer for a school versus a warehouse). Not an
     RMI question; drafted from public building-stock data and tagged.
+20. **P-8-TYP Chem-Curb sizes and order.** NTS, no dimensions beyond the 4" Flex and 2" topcoat minimums up the
+    penetration. The model uses a 30" x 16" x 4" curb with a 1/2" wall around four penetrations, 3/8" M-1 beads
+    inside and outside the curb and at each penetration, fill 3/4" higher at a penetration tapering over 4", and
+    Flex 6" / topcoat 7" onto the field. Open: is the curb set before or after priming (modelled before), how far
+    does the Flex run onto the field, and how high should the fill crown at the penetration? Constants in
+    `scripts/build_chem_curb_P-8-TYP.py`.
 
 ---
 
