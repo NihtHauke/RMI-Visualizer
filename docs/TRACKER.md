@@ -39,7 +39,7 @@ Roof types are those of the buildings that carry the detail.
 | Soil stacks (`pipe`) — all five buildings | P-6-TYP | TPO, mod-bit, gravel BUR, concrete | MODELLED+SPLICED | Every dimension (§5 #9) |
 | Skylights, curb-mounted (`skylight`) — school | CS-1-TYP note 7 | Mod-bit, TPO | MODELLED+SPLICED | Dome rise, retainer frame, condensation gutter; shared curb numbers (§5 #5) |
 | Edge metal (`edge`) | F-1-TYP | TPO, concrete, mod-bit | CODE-DRAWN | Flange width |
-| Penthouse walls (`penthouse`) | W-13-TYP | TPO, mod-bit, gravel BUR, concrete | CODE-DRAWN | Flex height on the wall (§5 #15) |
+| Penthouse walls (`penthouse`) — office penthouse west face | W-13-TYP | TPO, mod-bit, gravel BUR, concrete | MODELLED+SPLICED | Counterflashing height, depth and stand-off; cant; skirt size and lap; fastener spacing; skirt fitted after the topcoat (§5 #21) |
 | Sleeper supports (`sleeper`) — office hotspot sleeper, hotel hotspot condenser | CS-8-TYP | TPO, mod-bit, concrete | MODELLED+SPLICED | Every dimension (NTS): sleeper, pad, 6" raise, patch; whether the (E) condition has a pad |
 | Pipe clusters / Chem-Curb (`pitchpan`) — all three hospital pans | P-8-TYP | Gravel BUR, mod-bit, TPO, concrete | MODELLED+SPLICED | Every dimension (NTS): curb, penetrations, fill crown, Flex field extent; curb set before or after priming (§5 #20) |
 | Expansion joint (`ej`) | A-3-TYP | Gravel BUR, mod-bit, TPO, concrete | CODE-DRAWN | Geometry, no 3D render (§5 #16) |
@@ -49,7 +49,7 @@ Roof types are those of the buildings that carry the detail.
 | Parapet / coping (`coping`) — big-box east run only | W-1-TYP | TPO, mod-bit, gravel BUR, concrete | MODELLED+SPLICED | Joint gap, fastener spacing, whole-coping primer (§5 #3) |
 | Solar Post supports (toggle, not in `DETAILS`) | P-1-S-TYP, P-2-S-TYP, P-3-S-TYP | All | CODE-DRAWN | Geometry, no 3D render |
 
-**Totals:** 15 MODELLED+SPLICED · 0 MODELLED · 13 CODE-DRAWN · 0 NOT STARTED.
+**Totals:** 16 MODELLED+SPLICED · 0 MODELLED · 12 CODE-DRAWN · 0 NOT STARTED.
 
 ---
 
@@ -61,7 +61,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 |---|---|---|---|
 | 0 | Desktop installer (Electron, Windows) | BUILT | `npm run dist` → `dist/RMI Roof Visualizer Setup 0.1.0.exe`; runs offline, vendored libs. Mac only if needed. Rollout to reps not yet recorded |
 | 1 | Photo panel | DONE (v1) | Photos from disk, pins that jump to details, native "Add photos" dialog in Electron. In memory only; saving comes with #11 |
-| 2 | Remaining detail models | IN PROGRESS | 13 CODE-DRAWN rows in §1, in the order the buildings need them |
+| 2 | Remaining detail models | IN PROGRESS | 12 CODE-DRAWN rows in §1, in the order the buildings need them |
 | 3 | Fine-tuning | OPEN | Labels, camera pass, silo headhouse/shed (fastener size done 2026-09-14) |
 | 4 | Textures | NOT STARTED | `textures/` folder (planned layout) |
 | 5 | Catalog alignment and 25-item dropdown | OPEN | Catalog rows ↔ the 25 `DETAILS` entries |
@@ -92,6 +92,7 @@ Done items first, then the order of CLAUDE.md "What's left".
 
 Newest first, one line each.
 
+- 2026-09-14 — Penthouse wall W-13-TYP modelled and spliced on the office penthouse west face at the hotspot (`wall-counterflashing-fixed-W-13-TYP.glb`). Every penthouse now draws the same cross-section in code, mitred at the corners. Now VERIFIED: the counterflashing is fixed and never removed (note 7); sealant bead at its top edge; Flex encapsulates the (E) flashing up to the counterflashing (was "Flex height ASSUMED", off §5 #15); topcoat over the Flex; 24 ga. skirt min 4" over the RMI system. No term bar on the drawing. Sizes, skirt timing and the optional coated counterflashing are ASSUMED (§5 #21). Detail camera unchanged — at distance 20 the section reads small
 - 2026-09-14 — Pipe clusters P-8-TYP modelled and spliced on all three hospital pans (`chem-curb-P-8-TYP.glb`). Built to the drawing, not the old code geometry: a Chem-Curb set in M-1 sealant (no metal flange), the pocket filled with Flex tapered outward (not pourable sealer), Flex min 4" and topcoat min 2" up the penetrations — now VERIFIED; sizes, fill crown, field extent and curb-before-primer ASSUMED (§5 #20). One hospital pan moved off the penthouse wall line; detail camera brought in
 - 2026-09-14 — Sleeper support CS-8-TYP modelled and spliced (office hotspot sleeper, both sleepers under the hotel hotspot condenser). Per the drawing the coats run continuous under the raised sleeper and the walkpad goes down after cure — no Flex wrap (was ASSUMED in the code geometry; now VERIFIED, dropped from §5 #15). Code-drawn sleepers resized to match; condenser sleepers now parallel; field cutouts accept rectangles
 - 2026-09-14 — Code-drawn purlin fasteners on R-panel and standing seam cut from ~3" discs to true scale (~5/8" head, ~1.5" Flex dab, sizes ASSUMED) to match the F-8-TYP model washers at detail cameras; rust patches and lap strips unchanged, whole-roof view still reads as metal

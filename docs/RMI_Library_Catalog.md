@@ -142,7 +142,7 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 | Pipes / soil stacks (`pipe`) | P-6-TYP · 3D P3SP-11-FT-3D | `lead-soil-stack-P-6-TYP.glb` | **VERIFIED**: lead up the stack and turned into the bore, sealant bead at the base, Flex encapsulating the lead and extending inside the stack, topcoat past the Flex. Note 7 covers conduit, HVAC and refrigeration penetrations | Drawing is NTS with no dimensions: 4" stack; 24" height; 14" lead flange; Flex 6" past the flange and 6" down the bore; topcoat 1" past the Flex |
 | Skylights (`skylight`) | CS-1-TYP, note 7 names skylight domes · 3D CS1-18-3D | `curb-skylight-CS-1-TYP.glb` | **VERIFIED**: Flex up the full curb and over the top to the interior; dome lifted and reset | Dome rise; retainer frame; condensation gutter; plus the shared curb numbers above |
 | Edge metal (`edge`) | F-1-TYP · 3D F1-34-FT-3D | — code geometry | Per F-1-TYP; no VERIFIED tag | Flange width |
-| Penthouse walls (`penthouse`) | W-13-TYP, fixed counterflashing · 3D W-11-24-FT-3D | — code geometry | Per W-13-TYP; no VERIFIED tag | Flex height on the wall |
+| Penthouse walls (`penthouse`) | W-13-TYP, fixed counterflashing · 3D W-11-24-FT-3D | `wall-counterflashing-fixed-W-13-TYP.glb`: a 4-ft section spliced into the office penthouse west face at the hotspot. Every penthouse draws the same cross-section in code (`PW13`), mitred at the corners | **VERIFIED**: counterflashing fixed, cannot be removed or lifted, stays in place (note 7), damaged metal replaced; bead of RMI approved sealant at its top edge; clean, prepare and prime; Flex encapsulates the (E) flashing up to the counterflashing; RMI-Thane / White encapsulates the Flex; 24 ga. skirt metal extends min 4" over the RMI system. Coating the counterflashing assembly is optional (not shown). The drawing has no term bar: the counterflashing's own top flange carries the bead. Note 9: all (E) BUR, mod-bit, EPDM, PVC, TPO regardless of wall type | Drawing is NTS: counterflashing top 24", 6" deep, 1" off the wall, 1/2" hem; the (E) flashing running up behind it to its top; 6" cant and 10" foot (not drawn); coats 1/2" up behind the hem; skirt 21" to 13.5" (5" lap); skirt fasteners 12" o.c.; skirt fitted after the topcoat; coat thicknesses (§5 #21) |
 | Sleeper supports (`sleeper`) | CS-8-TYP · 3D CS8-2-19-3D | `sleeper-support-CS-8-TYP.glb` at the office hotspot sleeper and under both sleepers of the hotel hotspot condenser; the rest code-drawn to the same sizes | **VERIFIED**: wood sleeper raised and reset; Flex base coat and topcoat run continuous across the field under the support — nothing wraps the block; loose-laid walkpad set after the RMI materials have completely cured; damaged or rotted sleepers replaced. Note 7: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems. (The 2024 library file is named "CS 7 TYP Sleeper Support"; its title block reads CS-8-TYP.) | Drawing is NTS with no dimensions: 6x10 x 30" sleeper; 3/8" synthetic rubber pad 2.5" past the sleeper; the 6" raise; the 22" x 48" roof patch; coat thicknesses. Whether the (E) condition already has a pad |
 | Pipe clusters (`pitchpan`) | P-8-TYP, Chem-Curb / pitch pan · 3D PP-1-FT-3D | `chem-curb-P-8-TYP.glb` on all three hospital pans | **VERIFIED**: Chem-Curb fabricated and installed per the manufacturer (Chem-Link), set in RMI M-1 sealant; clean, prepare and prime (note 10); interior pocket filled with RMI-Flex tapered from the penetration outward to shed water; Flex flashing coat over the curb onto the field and min 4" up each penetration past the curb (5" modelled); RMI-Thane / White min 2" up past the Flex (2.5" modelled). The drawing has no metal flange and no pourable sealer: the pocket fill is Flex. Note 7: any non-circular penetration, or where jacks or boots are not feasible. Note 8: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems | Drawing is NTS: 30" x 16" x 4" curb with a 1/2" wall; the four penetrations (3" vent, 2" line, two 1-1/2" conduits); 3/8" beads; fill 3/4" higher at a penetration, tapering over 4"; Flex 6" and topcoat 7" onto the field; coat thicknesses; curb set before priming (§5 #20) |
 | Expansion joint (`ej`) | A-3-TYP, EPDM/PVC/TPO · no 3D render | — code geometry | Per A-3-TYP; geometry **ASSUMED** | The geometry itself (no 3D concept render) |
@@ -155,7 +155,7 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 P-3-S-TYP, no 3D render, code geometry. It appears in the emailed configuration as "Solar Post supports
 (P-1-S-TYP)".
 
-**13 of the 25 carry a Blender model**; the other 12 are generic code geometry pending the same treatment.
+**14 of the 25 carry a Blender model**; the other 11 are generic code geometry pending the same treatment.
 
 ## 3d. MICRO table — the library's own drawing index
 
@@ -213,7 +213,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | Concrete wall / block wall / concrete cap | W-7, W-8, W-9-TYP | — | Concrete, CMU (not brick) |
 | Wall-mounted conduit | W-10-TYP | — | All flat systems |
 | Reglet counterflashing — **model** `models/reglet-counterflashing-W-11-TYP.glb` (`scripts/build_reglet_counterflashing_W-11-TYP.py`), a 4-ft section spliced into the school's gym-wall tie-in. Assembly VERIFIED (Flex to the reglet receiver, term bar 12" o.c., counterflashing removed/reset); flashing height 24" and all other sizes ASSUMED | W-11-TYP | W13-FT-26-3D + 4 variants | All flat systems; 3D notes include metal |
-| Surface / fixed counterflashing | W-12, W-13, W-14-TYP | W-11-24-FT-3D + 4 variants | All flat systems |
+| Surface / fixed counterflashing — **model** `models/wall-counterflashing-fixed-W-13-TYP.glb` (`scripts/build_wall_counterflashing_fixed_W-13-TYP.py`), a 4-ft section spliced into the office penthouse west face. Assembly VERIFIED to W-13-TYP (fixed counterflashing left in place, sealant bead at its top, Flex up to the counterflashing, 24 ga. skirt min 4" over the system); every dimension ASSUMED | W-12, W-13, W-14-TYP | W-11-24-FT-3D + 4 variants | All flat systems |
 | Stucco weep screed | W-15, W-16-TYP | — | Stucco walls |
 | Perimeter edge metal | F-1-TYP | F1-34-FT-3D, F1-FT-8-3D + 4 variants | All flat systems |
 | Perimeter edge, raised stop | F-2-TYP | — | All flat systems |
@@ -315,8 +315,8 @@ as RMI spec — the UI tags all of it ASSUMED.
     minimum 4" over the RMI system, with Flex to the underside of the (E) vertical metal. It is the next curb
     model; the arena hatch is code geometry until then.
 15. **Wrap heights on the SPF variants** of the HVAC curb (SPF-12-TYP), pipe penetration (SPF-3-TYP) and roof
-    hatch (SPF-12-TYP), and on the gallery support (P-5-C / P-7-C) and penthouse
-    wall (W-13-TYP). Each is a single number in the builder. (The sleeper support, CS-8-TYP, is off this list:
+    hatch (SPF-12-TYP), and on the gallery support (P-5-C / P-7-C). Each is a single number in the builder. (The penthouse wall, W-13-TYP,
+    is off this list: Flex runs up to the fixed counterflashing, VERIFIED 2026-09-14; its sizes are #21.) (The sleeper support, CS-8-TYP, is off this list:
     the drawing has no wrap — the coats run continuous under the raised sleeper. VERIFIED 2026-09-14.)
 16. **Ridge cap and expansion joint: no 3D concept render.** A-3-TYP still has none, so the expansion joint
     shape is assumed. F-21-M-TYP is now modelled to its 2D drawing, but with no render to check the massing
@@ -339,6 +339,13 @@ as RMI spec — the UI tags all of it ASSUMED.
     Flex 6" / topcoat 7" onto the field. Open: is the curb set before or after priming (modelled before), how far
     does the Flex run onto the field, and how high should the fill crown at the penetration? Constants in
     `scripts/build_chem_curb_P-8-TYP.py`.
+21. **W-13-TYP fixed counterflashing sizes and the skirt.** NTS, no dimensions beyond the skirt's min 4" over the
+    RMI system. The model puts the counterflashing top 24" above the roof, 6" deep, standing 1" off the wall with a
+    1/2" hem; the (E) flashing runs up behind it; Flex and topcoat tuck 1/2" up behind the hem; the skirt runs 21" to
+    13.5" (5" lap) with fasteners 12" o.c. through the counterflashing. Open: a typical counterflashing height; is the
+    skirt fitted after the topcoat (modelled) or before it; is the skirt required every time or only where the
+    counterflashing doesn't reach 4" over the system? The drawing shows no term bar — confirm none is wanted.
+    Constants in `scripts/build_wall_counterflashing_fixed_W-13-TYP.py` and `PW13` in index.html.
 
 ---
 

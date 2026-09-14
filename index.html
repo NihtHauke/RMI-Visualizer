@@ -418,8 +418,8 @@ const DETAILS = {
     layers:[{k:'existing',label:'Existing gravel-stop edge metal and fascia',color:'#C9C9C2'},{k:'primer',label:'Primer on the metal flange and field',color:'#E8D7A6'},{k:'flex',label:'Flex over the flange, onto the field and to the drip edge',color:'#D9A21B'},{k:'thane',label:'Topcoat over flange and field',color:'#C3C7CC'}],
     src:'Assembly per F-1-TYP and F1-34-FT-3D. Flange width is ASSUMED.' },
   penthouse:{ name:'Penthouse wall, fixed counterflashing', drawing:'W-13-TYP', concept:'W-11-24-FT-3D', dist:20, phi:1.15, theta:0.9, drop:2.0, menu:'Penthouse walls',
-    layers:[{k:'existing',label:'Existing wall, cant and surface-mounted counterflashing',color:'#C9C9C2'},{k:'primer',label:'Primer up the wall to the counterflashing',color:'#E8D7A6'},{k:'flex',label:'Flex from the field up the wall, sealed under the counterflashing',color:'#D9A21B'},{k:'thane',label:'Topcoat over wall and field',color:'#C3C7CC'}],
-    src:'Assembly per W-13-TYP (fixed counterflashing) and W-11-24-FT-3D. Flex height on the wall is ASSUMED.' },
+    layers:[{k:'existing',label:'(E) wall flashing up the wall behind a fixed, surface-mounted counterflashing that cannot be removed or lifted; damaged metal replaced',color:'#C9C9C2'},{k:'primer',label:'Bead of RMI approved sealant at the top edge of the counterflashing; clean, prepare and prime the flashing and field',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the (E) flashing from the field up to the counterflashing',color:'#D9A21B'},{k:'thane',label:'Topcoat encapsulates the Flex; 24 ga. skirt metal extends min 4" over the RMI system (fitted after the topcoat — ASSUMED)',color:'#C3C7CC'}],
+    src:'Assembly per W-13-TYP and W-11-24-FT-3D — VERIFIED: the counterflashing is fixed and stays in place (note 7), damaged metal replaced; bead of RMI approved sealant at its top edge; Flex encapsulates the (E) flashing up to the counterflashing; topcoat encapsulates the Flex; 24 ga. skirt metal extends min 4" over the RMI system; coating the counterflashing assembly is optional (not shown). Note 9: all (E) BUR, mod-bit, EPDM, PVC, TPO systems regardless of wall type. The drawing is not to scale: the 24" counterflashing height, its 6" depth and 1" stand-off, the cant, the skirt size (5" lap modelled), fastener spacing, fitting the skirt after the topcoat and coat thicknesses are ASSUMED.' },
   sleeper:{ name:'Sleeper support (pipes, condensers)', drawing:'CS-8-TYP', concept:'CS8-2-19-3D', dist:8, phi:1.3, theta:2.1, drop:0.4, menu:'Sleeper supports',
     layers:[{k:'existing',label:'(E) wood sleeper on a walkpad; damaged or rotted sleepers replaced',color:'#C9C9C2'},{k:'primer',label:'Sleeper raised, pad removed; clean, repair, prepare and prime the field under it',color:'#E8D7A6'},{k:'flex',label:'Flex base coat runs continuous across the field under the raised sleeper',color:'#D9A21B'},{k:'thane',label:'Topcoat continuous under it; after full cure a loose-laid walkpad is set and the sleeper reset on it',color:'#C3C7CC'}],
     src:'Assembly per CS-8-TYP and CS8-2-19-3D — VERIFIED: wood sleeper raised and reset; Flex base coat and topcoat continuous across the field under the support, no wrap on the block; loose-laid walkpad set after the RMI materials have completely cured; damaged or rotted sleepers replaced. Note 7: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems. The drawing is not to scale and gives no dimensions: the 6x10 x 30" sleeper, 3/8" pad 2.5" past it, 6" raise and coat thicknesses are ASSUMED.' },
@@ -560,12 +560,12 @@ let B = null;   // the current built building: { extent, hots, applyStage(p) }
 const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mounted-unit-CS-1-TYP.glb', pipe:'models/lead-soil-stack-P-6-TYP.glb', coping:'models/metal-coping-joint-W-1-TYP.glb', wall:'models/reglet-counterflashing-W-11-TYP.glb', scupper:'models/overflow-scupper-D-4-TYP.glb', lap:'models/rpanel-side-lap-F-8-TYP.glb', sseam:'models/standing-seam-F-9-TYP.glb',
   /* CS-1-TYP note 7: the same curb assembly carries hatches, skylight domes, vents and ducts — four units on one curb (scripts/rmi_curb.py) */
   ridge:'models/metal-ridge-cap-F-21-M-TYP.glb', hatch:'models/roof-hatch-CS-1-TYP.glb', skylight:'models/curb-skylight-CS-1-TYP.glb', exhaust:'models/kitchen-exhaust-fan-CS-1-TYP.glb', binvent:'models/bin-vent-CS-1-TYP.glb',
-  sleeper:'models/sleeper-support-CS-8-TYP.glb', pitchpan:'models/chem-curb-P-8-TYP.glb' };
+  sleeper:'models/sleeper-support-CS-8-TYP.glb', pitchpan:'models/chem-curb-P-8-TYP.glb', penthouse:'models/wall-counterflashing-fixed-W-13-TYP.glb' };
 const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=null;
 function loadModel(file){ if(modelCache[file]) return modelCache[file];
   modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
 const LAYER_CLIP={primer:clipPrim,flex:clipFlex,topcoat:clipTop};
-function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); if(!['existing','primer','flex','topcoat'].includes(layer)){ o.visible=false; o.userData.helper=true; return; } o.castShadow=o.receiveShadow=true; o.userData.layer=layer; o.userData.tape=/__(tape|sealant)/.test(o.name); o.userData.reset=/__counterflashing/.test(o.name); o.userData.pad=/__walkpad/.test(o.name);o.userData.crimp = /_before_/.test(o.name)?'before':(/_after_/.test(o.name)?'after':null);   /* a part the prep stage swaps: the open standing-seam crimp for the re-crimped one (F-9-TYP note 11), or new work it installs (the P-8-TYP Chem-Curb) */
+function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); if(!['existing','primer','flex','topcoat'].includes(layer)){ o.visible=false; o.userData.helper=true; return; } o.castShadow=o.receiveShadow=true; o.userData.layer=layer; o.userData.tape=/__(tape|sealant)/.test(o.name); o.userData.reset=/__counterflashing/.test(o.name); o.userData.after=/__skirt/.test(o.name); o.userData.pad=/__walkpad/.test(o.name);o.userData.crimp = /_before_/.test(o.name)?'before':(/_after_/.test(o.name)?'after':null);   /* a part the prep stage swaps: the open standing-seam crimp for the re-crimped one (F-9-TYP note 11), or new work it installs (the P-8-TYP Chem-Curb) */
     const m=o.material.clone(); m.side=THREE.DoubleSide; if(LAYER_CLIP[layer]&&!o.userData.tape){ m.clippingPlanes=[LAYER_CLIP[layer]]; m.clipShadows=true; }   /* tape and sealant are prep work: shown from the prep stage, never swept */ if(layer==='primer'){ m.transparent=true; m.opacity=.75; }
     if(layer==='topcoat'){ m.envMapIntensity=1.2; o.userData.topcoat=true; } o.material=m; if(/existing__unit/.test(o.name)) o.userData.lift=true; }); }
 // Place a model instance under `parent` at (x,z), hiding `fallback` (the code-drawn group) once it arrives.
@@ -576,7 +576,7 @@ function mountModel(id,parent,x,z,rotY,fallback,skins){ const file=MODELS[id]; i
     .catch(e=>{ console.warn('model not loaded, keeping code geometry:',file,e.message); });
   return holder; }
 function applyModels(p,seat){ const white=S.topcoat==='white';
-  modelInstances.forEach(h=>{ if(!h.parent) return; const gt=h.userData.gate||{}; h.traverse(o=>{ if(!o.isMesh||o.userData.helper) return; const L=o.userData.layer; if(o.userData.reset){ o.visible = p.prep<0.5 || p.thane>0; return; } if(o.userData.pad){ o.visible=!!seat; return; }   /* CS-8-TYP walkpad: out while the sleeper is raised, set after cure */if(o.userData.crimp){ o.visible = o.userData.crimp==='before' ? p.prep<0.5 : p.prep>=0.5; return; }
+  modelInstances.forEach(h=>{ if(!h.parent) return; const gt=h.userData.gate||{}; h.traverse(o=>{ if(!o.isMesh||o.userData.helper) return; const L=o.userData.layer; if(o.userData.reset){ o.visible = p.prep<0.5 || p.thane>0; return; } if(o.userData.after){ o.visible = p.thane>=1; return; }   /* W-13-TYP skirt metal: over the finished system */ if(o.userData.pad){ o.visible=!!seat; return; }   /* CS-8-TYP walkpad: out while the sleeper is raised, set after cure */if(o.userData.crimp){ o.visible = o.userData.crimp==='before' ? p.prep<0.5 : p.prep>=0.5; return; }
     if(L==='primer') o.visible= o.userData.tape ? p.prep>=0.5 : p.primer>(gt.primer||0); else if(L==='flex') o.visible=p.flex>(gt.flex||0); else if(L==='topcoat'){ o.visible=p.thane>0; o.material.color.set(white?0xF4F3EE:0xDCE0E4); o.material.metalness=white?0.04:0.38; o.material.roughness=white?0.62:0.3; }
     if(o.userData.lift){ if(o.userData.y0===undefined) o.userData.y0=o.position.y; o.position.y=o.userData.y0-(seat?6*0.0254:0); } }); }); }
 
@@ -984,13 +984,45 @@ function addWallTie(b,side,len,center,gap){ const g=new THREE.Group(); b.roof.ad
   const segs = gap ? [[-len/2,gap.at-1.998],[gap.at+1.998,len/2]] : [[-len/2,len/2]]; segs.forEach(([x0,x1])=>seg(x0,x1));   // run over-laps 0.6 mm into the model (flush): the coplanar strip is sub-pixel, and there is no slit and no exposed end-face
   if(gap){ const fb=seg(gap.at-2,gap.at+2); const r=runAt(gap.at-2,gap.at+2); mountModel('wall',r,0,0,0,fb,{primer:M.primerOv,flex:M.flexOv,flashing:M.modbit,cant:M.wood,term_bar:M.coping,reglet_lip:M.coping,reglet_groove:M.joint,screw:M.fast,counterflashing:M.coping}); }   // model's +y (toward the roof) lands on local -z; skinned to the run's materials so the seams vanish; code stand-in until it loads
   return g; }
-function addPenthouse(b,x,z,PL,PW,PHt){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g);
+// Penthouse wall per W-13-TYP (concept W-11-24-FT-3D): the counterflashing is FIXED — surface-mounted, cannot be removed or lifted (note 7) — so it
+// stays put; bead of RMI approved sealant at its top edge; clean, prime; Flex encapsulates the (E) flashing up to the counterflashing; topcoat
+// encapsulates the Flex; 24 ga. skirt metal fastened through the counterflashing extends min 4" over the RMI system (all VERIFIED). No term bar
+// is drawn. Coating the counterflashing assembly is optional (not shown). The cross-section below is the one
+// scripts/build_wall_counterflashing_fixed_W-13-TYP.py builds, from the same numbers; `splice` = {k, at} splices the 4-ft model into face k
+// at penthouse-local position `at` along it. Sizes are ASSUMED (NTS): 24" counterflashing top, 6" deep, 1" off the wall; cant; skirt 21"–13.5"
+// (5" over the coats); fasteners 12" o.c.; the skirt fitted after the topcoat. Runs are mitred at the outside corners.
+const PW13={ CANT:6, T:0.1875, FOOT:10, CF_TOP:24, CF_STAND:1, CF_BOT:18, HEM:0.5, COAT_TOP:18.5, SK_TOP:21, SK_BOT:13.5, SK_KICK:0.75, SCREW_Z:19.5, SCREW_R:0.1875, SCREW_H:0.125,
+  BEAD:0.1875, COAT:0.04, MT:0.04, FIELD:{primer:12,flex:12,topcoat:13} };   // inches
+function addPenthouse(b,x,z,PL,PW,PHt,splice){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const IN=1/12, P=PW13, surf=b.fieldPlanes[0].material; b.afterParts=b.afterParts||[];
   g.add(box(PL,PHt,PW,M.wall,0,PHt/2,0)); g.add(box(PL+0.6,0.4,PW+0.6,M.coping,0,PHt+0.15,0)); g.add(box(3,7,0.2,M.unitD,PL/4,3.5,PW/2+0.12,false));
-  const sides=[{w:PL,d:0.06,x:0,z:-PW/2},{w:PL,d:0.06,x:0,z:PW/2},{w:0.06,d:PW,x:-PL/2,z:0},{w:0.06,d:PW,x:PL/2,z:0}];
-  sides.forEach(sd=>{ const ox=sd.w>sd.d?0:(sd.x<0?-1:1), oz=sd.w>sd.d?(sd.z<0?-1:1):0; const at=(t,h,mat,H2,W2,D2)=>g.add(box(W2!==undefined?W2:sd.w+(ox?0:t*2),H2,D2!==undefined?D2:sd.d+(oz?0:t*2),mat,sd.x+ox*t,h,sd.z+oz*t,false));
-    g.add(box(sd.w>sd.d?sd.w+0.5:0.5,0.5,sd.w>sd.d?0.5:sd.d+0.5,M.wallB,sd.x+ox*0.25,0.25,sd.z+oz*0.25,false));
-    at(0.06,0.8,M.primerOv,1.6); at(0.1,0.75,M.flexOv,1.5); at(0.14,0.75,M.topcoat,1.5);
-    g.add(box(sd.w>sd.d?sd.w+0.4:0.16,0.9,sd.w>sd.d?0.16:sd.d+0.4,M.coping,sd.x+ox*0.12,1.95,sd.z+oz*0.12,false)); });
+  // prism along run-local x from a (y,z) polygon in inches (y from the wall toward the roof, z up); ma/mb = 1 mitres the -x/+x end for an outside corner
+  const prismRun=(r,pts,mat,xa,xb,ma,mb)=>{ let a=0; pts.forEach(([y0,z0],i)=>{ const [y1,z1]=pts[(i+1)%pts.length]; a+=y0*z1-y1*z0; }); if(a<0) pts=pts.slice().reverse();
+    const S=pts.map(([y,h])=>[xa-ma*y*IN,h*IN,-y*IN]), E=pts.map(([y,h])=>[xb+mb*y*IN,h*IN,-y*IN]), n=pts.length, v=[];
+    for(let i=1;i<n-1;i++) v.push(...S[0],...S[i+1],...S[i],...E[0],...E[i],...E[i+1]);
+    for(let i=0;i<n;i++){ const j=(i+1)%n; v.push(...S[i],...S[j],...E[j],...S[i],...E[j],...E[i]); }
+    const ge=new THREE.BufferGeometry(); ge.setAttribute('position',new THREE.Float32BufferAttribute(v,3)); ge.computeVertexNormals(); const m=new THREE.Mesh(ge,mat); m.receiveShadow=true; r.add(m); return m; };
+  const rect=(y0,y1,z0,z1)=>[[y0,z0],[y1,z0],[y1,z1],[y0,z1]];
+  const sheet=([y0,z0],[y1,z1],t)=>{ const ln=Math.hypot(y1-y0,z1-z0), ny=-(z1-z0)/ln*t/2, nz=(y1-y0)/ln*t/2; return [[y0+ny,z0+nz],[y1+ny,z1+nz],[y1-ny,z1-nz],[y0-ny,z0-nz]]; };
+  const section=(r,ma,mb)=>{ const L2=r.userData.len/2, add=(pts,mat)=>prismRun(r,pts,mat,-L2,L2,ma,mb), SY=P.CF_STAND+P.MT;
+    add([[0,0],[P.CANT,0],[0,P.CANT]],M.wood);
+    add(rect(P.CANT,P.FOOT,0,P.T),surf); add(sheet([P.CANT,P.T/2],[0,P.CANT+P.T/2],P.T),surf); add(rect(0,P.T,P.CANT,P.CF_TOP),surf);   // (E) base flashing: foot, over the cant, up the wall behind the counterflashing
+    add(rect(0,SY,P.CF_TOP,P.CF_TOP+P.MT),M.coping); add(rect(P.CF_STAND,SY,P.CF_BOT,P.CF_TOP),M.coping); add(sheet([P.CF_STAND+P.MT/2,P.CF_BOT],[P.CF_STAND-P.HEM,P.CF_BOT-P.HEM*0.6],P.MT),M.coping);   // (E) fixed counterflashing: flange, face, hem
+    b.tapeList.push(add(rect(0,P.BEAD*1.6,P.CF_TOP+P.MT,P.CF_TOP+P.MT+P.BEAD*1.6),M.unitD));   // new sealant bead at the top edge, shown from prep
+    [[M.primerOv,1,'primer'],[M.flexOv,2,'flex'],[M.topcoat,3,'topcoat']].forEach(([mat,i,k])=>{ const d0=(i-1)*P.COAT, d1=i*P.COAT;   // coats: field foot, over the flashing foot, cant, up the flashing to the counterflashing
+      add(rect(P.FOOT+d0,P.FIELD[k],P.T+d0,P.T+d1),mat); add(rect(P.CANT,P.FOOT+d1,P.T+d0,P.T+d1),mat); add(sheet([P.CANT+d0*0.7,P.T+d0*0.7],[d0*0.7,P.CANT+P.T+d0*0.7],P.COAT),mat); add(rect(P.T+d0,P.T+d1,P.CANT,P.COAT_TOP),mat); });
+    const sk=[add(rect(SY,SY+P.MT,P.SK_BOT+P.SK_KICK,P.SK_TOP),M.coping), add(sheet([SY+P.MT/2,P.SK_BOT+P.SK_KICK],[SY+P.MT/2+P.SK_KICK,P.SK_BOT],P.MT),M.coping)];   // new skirt metal + kick-out
+    const xs=[]; for(let t=-L2+0.5;t<L2;t+=1) xs.push(t);
+    if(xs.length){ const sc=new THREE.InstancedMesh(new THREE.CylinderGeometry(P.SCREW_R*IN,P.SCREW_R*IN,P.SCREW_H*IN,8),M.fast,xs.length), o=new THREE.Object3D(); xs.forEach((t,i)=>{ o.position.set(t,P.SCREW_Z*IN,-(SY+P.MT+P.SCREW_H/2)*IN); o.rotation.set(Math.PI/2,0,0); o.updateMatrix(); sc.setMatrixAt(i,o.matrix); }); r.add(sc); sk.push(sc); }
+    sk.forEach(m=>b.afterParts.push(m)); };
+  // each face in a wallFrame turned to face OUT of the penthouse (the roof is outside it); s = +1 where run-local +x runs along +`at`
+  [{k:'N',fs:'S',half:PW/2,len:PL,s:1},{k:'S',fs:'N',half:PW/2,len:PL,s:-1},{k:'W',fs:'E',half:PL/2,len:PW,s:-1},{k:'E',fs:'W',half:PL/2,len:PW,s:1}].forEach(fc=>{
+    const F=wallFrame(b,fc.fs,-fc.half,g), h=fc.len/2;
+    const seg=(a0,a1,into)=>{ const r=F.runAt(a0,a1,into), cA=a0<=-h+1e-6?1:0, cB=a1>=h-1e-6?1:0; section(r,fc.s>0?cA:cB,fc.s>0?cB:cA); return r; };
+    const sp=splice&&splice.k===fc.k?splice:null;
+    if(!sp){ seg(-h,h); return; }
+    seg(-h,sp.at-1.998); seg(sp.at+1.998,h);   // over-lap the model 0.6 mm, as the reglet run does
+    const fb=new THREE.Group(); g.add(fb); seg(sp.at-2,sp.at+2,fb); const r=F.runAt(sp.at-2,sp.at+2);
+    mountModel('penthouse',r,0,0,0,fb,{primer:M.primerOv,flex:M.flexOv,flashing:surf,cant:M.wood,fixed_cf:M.coping,skirt_screw:M.fast,skirt:M.coping}); });   // model's +y (toward the roof) lands on run-local -z; skinned to the run's materials; code stand-in until it loads
   return g; }
 // Sleeper support per CS-8-TYP (concept CS8-2-19-3D): wood sleeper raised and reset; clean, repair, prime; Flex base coat and topcoat
 // run CONTINUOUS across the field under the support (nothing wraps the block — the field sheets already do it); loose-laid walkpad set
@@ -1041,7 +1073,7 @@ function addExpansionJoint(b,x,z0,z1){ const g=new THREE.Group(); g.position.set
   [-0.9,0.9].forEach(ox=>{ g.add(box(0.7,1.0,len,M.wallB,ox,0.5,0)); g.add(box(0.76,0.95,len,M.primerOv,ox,0.5,0,false)); g.add(box(0.82,0.9,len,M.flexOv,ox,0.45,0,false)); g.add(box(0.88,0.9,len,M.topcoat,ox,0.45,0,false)); });
   g.add(box(2.6,0.14,len,M.ejCover,0,1.07,0)); g.add(box(3.6,0.06,len,M.flexOv,0,0.09,0,false)); g.add(box(3.8,0.06,len,M.topcoat,0,0.12,0,false)); return g; }
 function sweepFor(p,x0,x1){ const f=q=>x0-6+(x1-x0+12)*q; clipPrim.constant=f(p.primer); clipFlex.constant=f(p.flex); clipTop.constant=f(p.thane); }
-function condFor(b,p){ if(b.tapeList) b.tapeList.forEach(t=>t.visible = p.prep>=0.5); if(b.resetParts) b.resetParts.forEach(m=>m.visible = p.prep<0.5 || p.thane>0); /* counterflashing: removed at prep, reset with the topcoat */ if(ROOFS[S.roof].plate==='MA'&&!b._noGravelClip){ const x0=(B&&B.gravelSpan?B.gravelSpan[0]:b.x-b.IL/2)-4, x1=(B&&B.gravelSpan?B.gravelSpan[1]:b.x+b.IL/2)+4; clipGravel.constant = -( x0 + (x1-x0)*p.prep ); } M.blister.opacity=S.cond?0.9*(1-p.primer):0; M.stain.opacity=S.cond?0.5*(1-p.prep):0; M.granLoss.opacity=S.cond?0.8*(1-p.prep):0; M.crack.opacity=S.cond?0.9*(1-p.prep):0; const MA=ROOFS[S.roof].plate==='MA'; b.stains.visible=S.cond&&p.prep<1; b.fails.visible=S.cond&&(MA?p.primer<1:p.prep<1); b.patches.visible=S.cond&&p.prep>0.3&&p.flex<1; }
+function condFor(b,p){ if(b.tapeList) b.tapeList.forEach(t=>t.visible = p.prep>=0.5); if(b.resetParts) b.resetParts.forEach(m=>m.visible = p.prep<0.5 || p.thane>0); /* counterflashing: removed at prep, reset with the topcoat */ if(b.afterParts) b.afterParts.forEach(m=>m.visible = p.thane>=1); /* W-13-TYP skirt metal: fitted over the finished system */ if(ROOFS[S.roof].plate==='MA'&&!b._noGravelClip){ const x0=(B&&B.gravelSpan?B.gravelSpan[0]:b.x-b.IL/2)-4, x1=(B&&B.gravelSpan?B.gravelSpan[1]:b.x+b.IL/2)+4; clipGravel.constant = -( x0 + (x1-x0)*p.prep ); } M.blister.opacity=S.cond?0.9*(1-p.primer):0; M.stain.opacity=S.cond?0.5*(1-p.prep):0; M.granLoss.opacity=S.cond?0.8*(1-p.prep):0; M.crack.opacity=S.cond?0.9*(1-p.prep):0; const MA=ROOFS[S.roof].plate==='MA'; b.stains.visible=S.cond&&p.prep<1; b.fails.visible=S.cond&&(MA?p.primer<1:p.prep<1); b.patches.visible=S.cond&&p.prep>0.3&&p.flex<1; }
 
 /* -----------------------------------------------------------------
    BIG-BOX RETAIL (flat)
@@ -1093,7 +1125,7 @@ function buildSchool(){
 function buildOffice(){
   const b=makeBlock({L:130,W:110,H:46,edge:'metal'}); const {L,W,H}=b;
   for(let f=0;f<3;f++){ b.g.add(box(L+0.3,6,W+0.3,M.glazing,0,10+f*12,0,false)); }   // ribbon glazing bands
-  const pent=addPenthouse(b,-20,-15,40,28,12);
+  const pent=addPenthouse(b,-20,-15,40,28,12,{k:'W',at:10});   // W-13-TYP model on the west face at the penthouse hotspot (world z=-5)
   const drainPos=[[-45,-35],[45,-35],[-45,38],[45,38]]; drainPos.forEach(([x,z])=>addStain(b,x,z));
   const drains=new THREE.Group(); b.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(b,x,z)));
   const rtuPos=[[30,20],[30,-5]]; const rtus=new THREE.Group(); b.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(b,x,z,7,1.4)));
