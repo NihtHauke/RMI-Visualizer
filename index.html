@@ -1449,8 +1449,10 @@ const photosAPI={ open:phOpen, add:phAdd, clear:phClear, select:phSelect, pin:(i
 
 // The current configuration as plain data (no pricing) — for saved prospects (#11) and PDF export (#9)
 function configuration(){ const e=estimate(), b=BUILDINGS[S.building], r=ROOFS[S.roof];
-  return { building:b.label, roof:`${r.label} (Plate ${r.plate})`, rmi_system:e.system, existing_condition:{[r.condLabel]:S.cond},
-    details:b.details.filter(k=>S.on[k]).map(k=>`${DET(k).menu} (${DET(k).drawing})`).concat(S.solar?['Solar Post supports (P-1-S-TYP)']:[]), topcoat:S.topcoat==='white'?'RMI-White Plus':'RMI-Thane', roof_sqft:S.sqft,
+  return { building:b.label, building_key:S.building, roof:`${r.label} (Plate ${r.plate})`, roof_key:S.roof, rmi_system:e.system, existing_condition:{[r.condLabel]:S.cond},
+    details:b.details.filter(k=>S.on[k]).map(k=>`${DET(k).menu} (${DET(k).drawing})`).concat(S.solar?['Solar Post supports (P-1-S-TYP)']:[]),
+    detail_ids:b.details.filter(k=>S.on[k]).map(k=>({ id:k, name:`${DET(k).menu} (${DET(k).drawing})` })).concat(S.solar?[{ id:'solar', name:'Solar Post supports (P-1-S-TYP)' }]:[]),   // same order and names as details; the Solar Post toggle is S.solar
+    topcoat:S.topcoat==='white'?'RMI-White Plus':'RMI-Thane', topcoat_key:S.topcoat, roof_sqft:S.sqft,
     material_estimate_gal:{primer:+e.primerGal.toFixed(1),flex:+e.flexGal.toFixed(1),topcoat:+e.topGal.toFixed(1),basis:'spec-plate coverage rates; detail allowances ASSUMED; no pricing'},
     prospect_photos:phSummary() }; }
 
