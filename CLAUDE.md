@@ -40,6 +40,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 
 ## Hard rules
 - Commercial buildings only. No residential types.
+- "Hotel / senior living" is the label for that market. Condominiums are never named anywhere in UI text.
 - **No pricing anywhere.** The tool outputs a configuration and a material-quantity estimate; dollars come from an RMI rep.
 - Every **detail** visual traces to an RMI document: spec plates for field application patterns and rates, 2D detail drawings for assemblies.
   Building shells (footprint, height, parapet, penthouse, where the RTUs sit) have no RMI drawings — they are generic commercial archetypes
@@ -51,7 +52,8 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   catalog so RMI can fill the gap; a source document always overrides an assumption.
 - Never present an ASSUMED sequence as RMI spec in customer-facing text.
 - Chemistry / formulation data never enters this repo. Product performance data (rates, mils, warranties) is fine.
-- Until the repo is private and Pages is off: no RMI PDFs, no client names, no real buildings in it. Chemistry never. The generic
+- Until the repo is private and Pages is off: no RMI PDFs, no client names, no prospect addresses, no EagleView report numbers
+  and no real buildings anywhere in it — code and docs alike, including `docs/TRACKER.md` and `docs/RMI_Library_Catalog.md`. Chemistry never. The generic
   buildings are archetypes; prospect photos are the only real-roof content and never become part of the archetypes.
 - Everything must keep working from a local folder with no network: no CDN dependencies once packaged (vendor
   three.js and GLTFLoader into the repo), no absolute URLs, model paths relative to index.html.
@@ -86,7 +88,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 
 ## What's left (in order)
 1. Remaining detail models — the 12 CODE-DRAWN rows, in the order the buildings need them.
-2. Fine-tuning — labels, fastener size, camera pass, silo headhouse/shed.
+2. Fine-tuning — labels, camera pass, silo headhouse/shed.
 3. Textures.
 4. Catalog alignment with the 25 `DETAILS` entries (the detail menu is a per-building checkbox list, not a dropdown).
 5. ASSUMED questions to RMI (catalog §5).
