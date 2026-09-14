@@ -11,7 +11,7 @@ const WIN = { width: 1400, height: 900, minWidth: 1024, minHeight: 640 };
 function createWindow() {
   const win = new BrowserWindow({
     ...WIN,
-    title: TITLE,
+    title: `${TITLE} ${app.getVersion()}`,   // version comes from package.json at runtime, so every bump shows here
     backgroundColor: '#12213A',
     autoHideMenuBar: true,
     show: false,
@@ -25,7 +25,7 @@ function createWindow() {
   });
 
   win.once('ready-to-show', () => win.show());
-  // index.html sets its own <title>; keep the window named after the product.
+  // index.html sets its own <title>; keep the window named after the product and version.
   win.on('page-title-updated', (e) => e.preventDefault());
   // Any link that would open a new window goes to the rep's default browser instead.
   win.webContents.setWindowOpenHandler(({ url }) => { shell.openExternal(url); return { action: 'deny' }; });
