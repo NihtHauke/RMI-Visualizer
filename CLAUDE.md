@@ -83,7 +83,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
     pipes on metal P-9-MP · gutters W-7-TYP · downspout inlets D-8-TYP · roof hatch on metal / SPF CS-15-MP ·
     expansion joint A-3-TYP ·
     silo walls W-7-TYP · gallery supports P-5-C / P-7-C · Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
-- Product features: desktop installer v0.1.2 **built** (`dist/RMI Roof Visualizer Setup 0.1.2.exe`); photo panel **done** (v1, in memory).
+- Product features: desktop installer v0.1.2 **built** (`dist/RMI Roof Visualizer Setup 0.1.2.exe`); photo panel **done** (v2: top strip, docked slider, IndexedDB persistence, sample set).
   Drawing panel, PDF export, EagleView import, saved prospects and the Project Evaluation pre-fill: **not started**.
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
