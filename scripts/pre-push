@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# Git pre-push hook: GitHub is updated on Fridays only, by Heath (process change, 14 Sept 2026).
-# Install: cp scripts/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
-if [ "$(date +%u)" != "5" ]; then
-  echo "Pushes are Fridays only — use git push --no-verify to override" >&2
-  exit 1
-fi
-exit 0

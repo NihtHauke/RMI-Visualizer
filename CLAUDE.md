@@ -135,15 +135,12 @@ For every detail or code change, in this order:
    Run it headless: `blender -b --python scripts/build_<...>.py` (Blender is at `C:\Program Files\Blender Foundation\Blender 5.1\blender.exe`). Never open .blend files from inside a running Blender session via script — it crashes.
 3. Register the model in `index.html` (`MODELS` map) and give it a mount point + cutout sizes in the builder (see `addDrain` / `addRTU`). The coating cutout must sit just INSIDE the model's own Flex extent; the membrane cutout just inside the model's roof patch.
 4. Visual check: `python scripts/snapshot.py --building <b> --detail <id>` (and `--section`). Open the contact sheet and LOOK at every stage. Fix anything wrong before pushing. Zero console errors is the bar.
-5. `git add . && git commit -m "<what changed>"`. No push — see the Friday rule below.
+5. `git add . && git commit -m "<what changed>" && git push`
 6. Update the detail's line in `docs/RMI_Library_Catalog.md` (model file, VERIFIED/ASSUMED) and tell Heath what moved from ASSUMED to VERIFIED.
 
-**Every task ends in `docs/TRACKER.md`** (the single project status page): update the row(s) the task touched — detail,
-feature or housekeeping item — and add one dated line at the top of its Update log. Do it in the same commit as the work,
-not a follow-up commit. Per-drawing ASSUMED questions stay in the catalog; the tracker links to them.
-Commit every task as before. Never run git push. Pushes happen on Fridays only, by Heath. The Friday
-push updates the 'Published to GitHub' line in TRACKER.md.
-Install the Friday-only push hook once per clone: `cp scripts/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push`.
+**`docs/TRACKER.md`** is the single project status page. Every task still updates its TRACKER rows (status tables,
+detail table) in the same commit — those must stay accurate. Do NOT add per-task log lines. §4 is a weekly update
+written on Fridays. Per-drawing ASSUMED questions stay in the catalog; the tracker links to them.
 Setup once: `pip install playwright pillow && playwright install chromium`. `snapshots/` is git-ignored.
 
 ## Lessons already learned (don't repeat)

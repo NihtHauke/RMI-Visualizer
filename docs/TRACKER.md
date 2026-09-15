@@ -1,12 +1,13 @@
 # RMI Roof Visualizer — Project Tracker
 
-Published to GitHub: 14 Sept 2026
+Tracker updated: Mon 14 Sept 2026
 
 The single status page. Per-drawing ASSUMED questions live in the catalog, not here:
 [RMI_Library_Catalog.md](RMI_Library_Catalog.md) — §3c is the per-detail sync table, [§5](RMI_Library_Catalog.md#5-open-questions-for-rmi)
 is the numbered list of open questions for RMI (cited below as §5 #n).
 
-Rule: every task updates the row it touched and adds one dated line to the update log, in the same commit as the work.
+Rule: every task updates the rows it touched (§1–§3) in the same commit as the work, so the tables stay accurate.
+No per-task log lines: §4 is a weekly update, written on Fridays.
 
 ---
 
@@ -71,7 +72,7 @@ Roof types are those of the buildings that carry the detail.
 | B8 | Solar Post visual toggle (`S.solar`) | BUILT | "Add Solar Post supports" under Finish shows code-drawn posts on all 11 buildings, adds an ASSUMED Flex allowance to the estimate and sets `solar_post: true` in `configuration()`. Geometry status in §1 |
 | B9 | Lead-capture email modal | REMOVED 2026-09-14 | Obsolete under the desktop direction; it never sent anything. Button, modal, Copy/Close handlers and `__rmi.payload()` removed. The serialiser is kept as `configuration()` (`__rmi.configuration()`): building, roof and plate, system code, existing condition, checked details with drawing numbers, topcoat, sq ft, gallon estimate, photo file names and pins. No pricing. Needed by #9 and #11. The internal keys sit beside the labels so #11 can restore a prospect: `building_key`, `roof_key`, `topcoat_key`, and `detail_ids` (`{id, name}` per checked detail, same order as `details`). Both lists hold only the `DETAILS` checklist; the Solar Post toggle is its own field, `solar_post: true/false` |
 
-**Numbered** — done items first, then the order of CLAUDE.md "What's left". Numbers are fixed: §3 and the update log cite them.
+**Numbered** — done items first, then the order of CLAUDE.md "What's left". Numbers are fixed: §3 and the weekly update cite them.
 
 | # | Feature | Status | Notes |
 |---|---|---|---|
@@ -103,36 +104,36 @@ Roof types are those of the buildings that carry the detail.
 - [ ] Extend spliced models to the instances still code-drawn: RTU curbs at other sizes (school, office, hotel, restaurant); coping on hospital, restaurant, hotel; ridge cap on manufacturing, airport, arena (confirm pitch vs. the 1:12 model)
 - [ ] Next curb model: CS-15-MP fixed metal curb for the arena hatch (§5 #14)
 - [ ] Ask RMI whether reps see ballasted single-ply roofs (Plate SPB) — candidate 8th roof type; ballast removal is not built
-- Friday publish (Fridays only, Heath): unpublished commits: `git rev-list --count origin/main..main` → run contact sheets → update the Published line → `git push` → confirm Pages loads → send Dennis the week's log lines from §4
+- Friday update (Heath): `git log --since="last friday"` → write the week's entry in §4 → update the title line → run contact sheets → `git push` → confirm Pages loads → tell Dennis the tracker is updated
 - `samples/` photos — shared with client permission, EXIF stripped, no identifiers
 
 ---
 
-## 4. Update log
+## 4. Weekly update
 
-Newest first, one line each.
+Newest first, one entry per week, written on Fridays.
 
-- 2026-09-14 — Photo panel v2 (Dennis, 14 Sept): the right-side panel is replaced by a thumbnail strip under the header, full width of the 3D view, shown whenever a photo exists or the header button is on; clicking a thumbnail docks a slider on the right (about 40 %, prev/next, ← → and Esc, active thumbnail highlighted and scrolled into view). Pin logic unchanged. Photos, pins and the building/roof selection now persist in IndexedDB on the machine (survive a reload; "Clear photos" wipes the store; on-screen note reads "Photos and pins stay on this computer only (browser storage). Nothing is uploaded."). "Load sample photos" on the empty strip loads the four `samples/` photos as "Sample roof"; dropped-in photos replace them. Checked with Playwright (15 steps: toggle, samples, keys, pin, pin click, reload restore, remove, replace, drop on the 3D view, clear, narrow layout) and `snapshot.py` with and without `--photos`: default-camera sheet unchanged, zero console errors. Grid tracks stay `minmax(0,1fr)`. B9 untouched
-- 2026-09-14 — The Published line at the top of this page now carries the date only; the unpublished-commit count came off it because nothing kept it current between Fridays. The Friday checklist in §3 now starts with the live count, `git rev-list --count origin/main..main`
-- 2026-09-14 — `samples/`: four client roof photos committed (`sample-01.jpg` … `sample-04.jpg`, aerial, 1600 × 1070) under the public-repo exception. Checked before committing: no EXIF or GPS data, building signage blurred, no readable names or addresses
-- 2026-09-14 — Process change from Dennis: GitHub is updated once a week. Every task is still committed, but nothing is pushed until Friday, when Heath pushes and updates the Published line at the top of this page (checklist in §3). `scripts/pre-push` refuses a push on any other day (`--no-verify` overrides; install note in CLAUDE.md; `.gitattributes` keeps the script LF so bash runs it on Windows). CLAUDE.md working loop step 5 no longer pushes. Public-repo exception for `samples/`: client roof photos RMI has written permission to share, EXIF stripped, unnamed, unaddressed (CLAUDE.md hard rule; §3); `samples/` is not git-ignored
-- 2026-09-14 — Perimeter edge metal F-1-TYP modelled and spliced into the office east edge at the hotspot (`perimeter-edge-metal-F-1-TYP.glb`). Every office edge now draws the same cross-section in code (`EM`, mitred at the corners) in place of the old box flange, and on a metal-edged block the field sheets run out to the wall face. Built to the drawing: flange flat on the roof (no raised stop, which is F-2-TYP), stripped in, fascia hooked over a continuous cleat. Now VERIFIED (was "no VERIFIED tag"): the stripping over the flange stepping down onto the field; confirm seam and flashing integrity; the cleat; Flex over the stripped flange and the field; topcoat to all surface areas. ASSUMED, not on the drawing: the tape over the metal-to-membrane joint, Flex down the fascia face, exposed face fasteners and their encapsulation, and every size (was "flange width"), §5 #22. Detail camera brought in from 14 to 3.5 ft. The penthouse prism helpers are now shared (`prismRun`, `rectYZ`, `sheetYZ`); `prismRun` can leave a run end open where it meets a spliced model
-- 2026-09-14 — Desktop app 0.1.2 (package.json, package-lock.json, CLAUDE.md installer line). Installer rebuilt as `dist/RMI Roof Visualizer Setup 0.1.2.exe`, the first with the version in the window title. Packaged app opened from `dist/win-unpacked`: title "RMI Roof Visualizer 0.1.2", left panel ends at "Open photo panel"
-- 2026-09-14 — Electron window title now shows the app version, read from package.json at runtime (`app.getVersion()` in electron/main.js, no hard-coded number): "RMI Roof Visualizer 0.1.1" confirmed with `npm start`. The 0.1.1 installer already in dist/ was built before this change; the next `npm run dist` includes it
-- 2026-09-14 — Desktop app 0.1.1 (package.json, package-lock.json; the version is not shown anywhere in the UI). Installer rebuilt as `dist/RMI Roof Visualizer Setup 0.1.1.exe`, the first build without the B9 email modal. Opened with `npm start` and from `dist/win-unpacked`: the left panel ends at "Open photo panel", no email button. CLAUDE.md installer line bumped
-- 2026-09-14 — `configuration()`: Solar Post taken out of `details` and `detail_ids` (now the checklist only) and returned as its own field `solar_post: true/false`; field check run with it on and off. B8 note and the catalog's Solar Post line updated to match
-- 2026-09-14 — `configuration()` now returns internal keys beside its labels: `building_key`, `roof_key`, `topcoat_key`, `detail_ids` (`{id, name}` per checked detail; Solar Post as `solar`). Existing fields unchanged; a photo-panel snapshot still returns the pins
-- 2026-09-14 — B9 lead-capture email modal REMOVED: button, modal HTML/CSS, Copy/Close handlers and `__rmi.payload()`. The serialiser is kept as `configuration()` / `__rmi.configuration()`, minus the website-only fields (`source`, empty `contact`, `project_evaluation_prefill` stub). snapshot.py reads it instead of opening the modal. The photo panel note no longer mentions an email. Catalog lines about the emailed configuration reworded. CLAUDE.md modal sentence deleted
-- 2026-09-14 — CLAUDE.md: "fastener size" off What's left item 2 (done); public-repo rule now also bars prospect addresses and EagleView report numbers, including from this tracker and the catalog; new hard rule: "Hotel / senior living" is the market label and condominiums are never named in UI text
-- 2026-09-14 — Topcoat labels: stage 5 and the stage text follow the Finish toggle (RMI-White Plus name, text and Plate rates WP23 1.5 / WP30 2 gal/sq on every roof but gravel BUR); ridge cap source no longer hard-codes Thane. CLAUDE.md synced to the code: gravel removal runs inside Prep and there is no ballast stage (SPB question added to §3); Project Evaluation pre-fill is #13 NOT STARTED; the detail menu is a per-building checkbox list (#5 reworded)
-- 2026-09-14 — §2: "Built" table (B1–B9) added above the numbered features, each row checked against index.html; #0–#12 unchanged. Found in the code: the detail checklist is set by building, not roof type; gravel removal runs inside Prep and there is no ballast removal; the Project Evaluation pre-fill is only a stub in the email payload (added as #13 NOT STARTED); the lead-capture email modal is still wired (B9, obsolete, pending removal)
-- 2026-09-14 — Penthouse wall W-13-TYP modelled and spliced on the office penthouse west face at the hotspot (`wall-counterflashing-fixed-W-13-TYP.glb`). Every penthouse now draws the same cross-section in code, mitred at the corners. Now VERIFIED: the counterflashing is fixed and never removed (note 7); sealant bead at its top edge; Flex encapsulates the (E) flashing up to the counterflashing (was "Flex height ASSUMED", off §5 #15); topcoat over the Flex; 24 ga. skirt min 4" over the RMI system. No term bar on the drawing. Sizes, skirt timing and the optional coated counterflashing are ASSUMED (§5 #21). Detail camera unchanged — at distance 20 the section reads small
-- 2026-09-14 — Pipe clusters P-8-TYP modelled and spliced on all three hospital pans (`chem-curb-P-8-TYP.glb`). Built to the drawing, not the old code geometry: a Chem-Curb set in M-1 sealant (no metal flange), the pocket filled with Flex tapered outward (not pourable sealer), Flex min 4" and topcoat min 2" up the penetrations — now VERIFIED; sizes, fill crown, field extent and curb-before-primer ASSUMED (§5 #20). One hospital pan moved off the penthouse wall line; detail camera brought in
-- 2026-09-14 — Sleeper support CS-8-TYP modelled and spliced (office hotspot sleeper, both sleepers under the hotel hotspot condenser). Per the drawing the coats run continuous under the raised sleeper and the walkpad goes down after cure — no Flex wrap (was ASSUMED in the code geometry; now VERIFIED, dropped from §5 #15). Code-drawn sleepers resized to match; condenser sleepers now parallel; field cutouts accept rectangles
-- 2026-09-14 — Code-drawn purlin fasteners on R-panel and standing seam cut from ~3" discs to true scale (~5/8" head, ~1.5" Flex dab, sizes ASSUMED) to match the F-8-TYP model washers at detail cameras; rust patches and lap strips unchanged, whole-roof view still reads as metal
-- 2026-09-12 — CLAUDE.md direction: Pages goes off at What's left step 6 (repo private) before any RMI drawing is committed, not when the first installer ships; the installer replaces the review link for reps
-- 2026-09-12 — Repo private, Pages off and transfer to an RMI org folded into one step (§2 #7) just before the drawing panel, which it blocks; #12 is now bundled drawings, code signing, wide rollout
-- 2026-09-12 — Webflow re-test dropped (desktop program, nothing hosted on roofrmi.com); repo transfer reworded to an RMI-owned GitHub org at the same time as going private; stale #4 reference fixed
-- 2026-09-12 — CLAUDE.md Blender conventions: rebuild order now points to the §1 details table (curb variants share the CS-1 pattern; gutter pairs with inlet)
-- 2026-09-12 — `drawings/` and `prospects/` git-ignored (nothing was tracked); CLAUDE.md "Current state" synced to this tracker and a "What's left" order added; §2 features table reordered to match it
-- 2026-09-12 — Tracker created: 28 details (13 MODELLED+SPLICED, 15 CODE-DRAWN) checked against index.html; features and housekeeping seeded from CLAUDE.md
+### 14 Sept 2026
+
+- **Four more details built from RMI drawings** and placed in the buildings: sleeper supports (CS-8), pipe clusters on a
+  Chem-Curb (P-8), penthouse walls with fixed counterflashing (W-13) and perimeter edge metal (F-1). That makes 17 of 28 details
+  modelled, up from 13; 11 are still simple stand-in shapes. Each one moved several points from ASSUMED to VERIFIED against its
+  drawing; the sizes the drawings don't give are new questions for RMI (catalog §5 #20–22).
+- **Photo panel v2:** prospect photos now sit in a strip across the top of the 3D view; click one and it opens large on the
+  right, with arrows to step through. Pins on a photo still jump to the matching detail. Photos and pins stay on that computer
+  after the app is closed, and nothing is uploaded. Four sample roof photos can be loaded for demos.
+- **Desktop app 0.1.2:** installer rebuilt. The old website email form is gone, and the window title shows the version number.
+- **Topcoat choice follows through:** picking RMI-White Plus now changes the stage name, the stage text and the coverage rates,
+  not just the colour.
+- **Smaller fixes:** metal roof fasteners drawn at true size; the configuration record behind the tool now carries everything
+  PDF export and saved prospects will need to rebuild a presentation.
+- **This tracker** was created and every "built" feature was checked against the app. That check found the Project Evaluation
+  pre-fill isn't built yet; it is now on the list (#13).
+- **Rules:** making the repo private, turning the review link off and moving the repo to an RMI-owned GitHub account happen
+  together, just before the drawing panel. Webflow testing dropped (desktop app, nothing on roofrmi.com). The market is labelled
+  "Hotel / senior living" and condominiums are never named. No prospect addresses or EagleView report numbers in the repo; the one
+  exception is `samples/`, four client roof photos RMI may share, with location data stripped and signage blurred.
+- **Process:** a short-lived "push on Fridays only" rule was reversed (14 Sept): work goes to the review link as it's done, and
+  this tracker gets a weekly update every Friday.
+- **Next:** the remaining 11 details in the order the buildings need them, starting with the metal roof hatch curb (CS-15-MP);
+  then fine-tuning (labels, camera, silo) and sending RMI the open ASSUMED questions.
