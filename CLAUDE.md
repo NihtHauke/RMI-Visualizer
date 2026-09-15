@@ -86,10 +86,12 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
     pipes on metal P-9-MP · gutters W-7-TYP · downspout inlets D-8-TYP · roof hatch on metal / SPF CS-15-MP ·
     expansion joint A-3-TYP ·
     silo walls W-7-TYP · gallery supports P-5-C / P-7-C · Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
-- Product features: desktop installer v0.1.3 **built** (`dist/RMI Roof Visualizer Setup 0.1.3.exe`); photo panel **done** (v2: top strip, docked slider, IndexedDB persistence, sample set);
+- Product features: desktop installer v0.1.4 **built** (`dist/RMI Roof Visualizer Setup 0.1.4.exe`); photo panel **done** (v2: top strip, docked slider, IndexedDB persistence, sample set);
   drawing panel **built** (15 Sept 2026: "Drawing" button in detail view docks a panel with the 2D sheet zoom/pan, "How it's applied" steps from `STEPS` in
   index.html with ASSUMED tagged, and the 3D concept; sheet number and issue/revision date from the sheet; 52 sheets rendered locally into `drawings/`, bundled by the installer, git-ignored).
-  PDF export, EagleView import, saved prospects and the Project Evaluation pre-fill: **not started**.
+  PDF export **built** (15 Sept 2026: "Export PDF" in the header; dialog with prospect, rep, notes and per-section toggles; canvas captures at the default
+  cameras; Electron `printToPDF` via `rmiDesktop.exportPdf`, browser print dialog otherwise; the Project Evaluation pre-fill ships as its appendix).
+  EagleView import and saved prospects: **not started**.
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## What's left (in order)
@@ -102,7 +104,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
    collaborator access. Until then the repo stays under nihthauke for team review. Committing `drawings/` waits on
    this (no RMI drawings in the repo while it is public); the panel itself is built and reads the git-ignored folder.
 7. Drawing panel — **built 15 Sept 2026** (sheets render locally; see the `drawings/` rule above).
-8. PDF export.
+8. PDF export — **built 15 Sept 2026** (the Project Evaluation pre-fill is its appendix; a standalone form view is still open).
 9. EagleView import.
 10. Saved prospects.
 11. Bundled drawings, code signing, wide rollout.
@@ -121,6 +123,12 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Test with Playwright + swiftshader; `window.__rmi` exposes `S`, `setStage`, `goDetail`, `goRoof`, `selectBuilding`, `finishCam`, `photos`, `drawing`
   (`open`, `tab`, `state`) for scripted screenshots; `snapshot.py --drawing [2d|steps|3d]` shoots the panel. `RMI_SELFTEST=<png>` makes the
   packaged app open the big-box drain with the panel, print the panel state and save a screenshot, then quit (the installer check).
+  `RMI_SELFTEST_PDF=<pdf>` exports the big-box presentation with the sample photos pinned to that path and quits (the export check).
+- PDF export: `pdfExport()` in index.html — `pdfCaptures` renders the scene at fixed sizes (`pdfCapture`, 2D composite so JPEG gets the
+  view background, hotspot labels drawn on the configuration image), `pdfBuild` writes the sections into `#pdfDoc`, `body.pdf` switches the
+  `@media print` CSS to that document, then `rmiDesktop.exportPdf` (Electron: save dialog + `printToPDF`, main.js) or `window.print()`.
+  `__rmi.pdf` exposes `open`, `export`, `prepare` (build without printing, for `page.pdf()` checks), `done`, `state`. `DETAIL_GAL` holds
+  the per-detail Flex allowances the estimate and the PDF share; `PE_ITEMS` maps detail ids to RMI's Project Evaluation checklist.
 - Drawing panel data: `DETAILS[].drawing` / `.concept` name the sheets; `DETAILS[].steps` (from the `STEPS` block above `DETAILS`) is the
   plain-language sequence; `sheet` overrides the image name when two sheets share a number (gutter seams: `W-7-TYP-GUTTER`). Images are
   `drawings/<number>.png`; `drawings/index.js` sets `window.RMI_DRAWINGS` (title, issue/revision, size) and is loaded with a `<script>` on

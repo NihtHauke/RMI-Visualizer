@@ -64,6 +64,27 @@ function createWindow() {
     });
   }
 
+  // RMI_SELFTEST_PDF=<pdf path>: build check for the export. After load, pick the big-box retail building, load the four
+  // sample photos, pin two of them, export every section straight to that path (no dialogs) and print the result, then quit.
+  if (process.env.RMI_SELFTEST_PDF) {
+    win.webContents.once('did-finish-load', async () => {
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      try {
+        await sleep(4000);
+        await win.webContents.executeJavaScript("window.__rmiQuiet=true; window.__rmi.selectBuilding('bigbox'); window.__rmi.finishCam();");
+        await sleep(3500);
+        await win.webContents.executeJavaScript("window.__rmi.photos.samples()");
+        await sleep(3500);
+        await win.webContents.executeJavaScript("window.__rmi.photos.pin(0,0.64,0.5,'drain'); window.__rmi.photos.pin(0,0.28,0.74,'rtu'); window.__rmi.photos.pin(1,0.5,0.6,'coping'); window.__rmi.photos.slider(false); window.__rmi.finishCam();");
+        await sleep(800);
+        const r = await win.webContents.executeJavaScript("window.__rmi.pdf.export({ quiet:true, form:{ prospect:'Sample prospect', address:'123 Sample Street, Anytown', rep:'RMI rep', notes:'Selftest export from the packaged app.', sections:{ cover:true, config:true, stages:true, details:true, estimate:true, photos:true, notes:true, appendix:true } } })");
+        console.log('[selftest] pdf', JSON.stringify(r));
+        console.log('[selftest] state', JSON.stringify(await win.webContents.executeJavaScript('window.__rmi.pdf.state()')));
+      } catch (err) { console.log('[selftest] FAILED', err.message); }
+      app.quit();
+    });
+  }
+
   win.loadFile(path.join(__dirname, '..', 'index.html'));
   return win;
 }
@@ -94,6 +115,40 @@ if (!app.requestSingleInstanceLock()) {
     }
     return out;
   });
+  // PDF export: the page has built the document into #pdfDoc and set body.pdf, so print media shows only that. Ask where to
+  // save (Documents by default, the page's suggested <prospect>-<date>.pdf), print with Chromium's printToPDF (Letter,
+  // CSS @page margins, a running footer with page numbers) and write the bytes. RMI_SELFTEST_PDF skips the dialog and
+  // writes straight to that path (the build check). Only the file written here can be opened back through rmi:open-path.
+  let lastPdf = null;
+  ipcMain.handle('rmi:export-pdf', async (e, opt) => {
+    const win = BrowserWindow.fromWebContents(e.sender);
+    const suggested = String((opt && opt.suggested) || 'prospect.pdf').replace(/[\/:*?"<>|]+/g, '-');
+    let file = process.env.RMI_SELFTEST_PDF || null;
+    if (!file) {
+      const r = await dialog.showSaveDialog(win, {
+        title: 'Export PDF', defaultPath: path.join(app.getPath('documents'), suggested),
+        filters: [{ name: 'PDF', extensions: ['pdf'] }],
+      });
+      if (r.canceled || !r.filePath) return { canceled: true };
+      file = r.filePath;
+    }
+    try {
+      const footer = String((opt && opt.footer) || 'RMI Roof Visualizer').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+      // The window's navy backgroundColor would fill the page margins, so the print runs on white (the page covers the window
+      // completely, so nothing visible changes).
+      win.setBackgroundColor('#FFFFFF');
+      const data = await win.webContents.printToPDF({
+        pageSize: 'Letter', printBackground: true, preferCSSPageSize: true, displayHeaderFooter: true,
+        headerTemplate: '<span></span>',
+        footerTemplate: `<div style="width:100%;margin:0 0.6in;font-family:Arial,Helvetica,sans-serif;font-size:7.5px;color:#6B7684;display:flex;justify-content:space-between"><span>${footer}</span><span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span></div>`,
+      });
+      win.setBackgroundColor('#12213A');
+      await fs.promises.writeFile(file, data);
+      lastPdf = file;
+      return { path: file, bytes: data.length };
+    } catch (err) { win.setBackgroundColor('#12213A'); return { error: err.message }; }
+  });
+  ipcMain.handle('rmi:open-path', async (_e, p) => { if (!lastPdf || p !== lastPdf) return 'not a file exported this session'; return shell.openPath(lastPdf); });
   app.whenReady().then(createWindow);
   app.on('window-all-closed', () => app.quit());
 }

@@ -215,6 +215,126 @@
     .hint{display:none}
   }
   @media (prefers-reduced-motion:reduce){ aside{transition:none} }
+
+  /* ---- PDF export: "Export PDF" in the header opens a small dialog (prospect, rep, section toggles); the document itself is
+     built into #pdfDoc, hidden on screen and the only thing on the page under print media while body.pdf is set. ---- */
+  #pdfBtn{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:3px;padding:4px 10px;cursor:pointer;font-size:13px}
+  #pdfBtn:disabled{opacity:.5;cursor:default}
+  .xdlg{position:fixed;inset:0;z-index:40;background:rgba(18,33,58,.55);display:none;align-items:center;justify-content:center;padding:16px}
+  .xdlg.show{display:flex}
+  .xbox{background:#fff;border-radius:4px;border-top:4px solid var(--gold);width:min(560px,100%);max-height:100%;overflow:auto;padding:16px 18px 14px;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:13.5px}
+  .xbox h3{margin:0 0 10px;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:19px;color:var(--navy)}
+  .xbox h4{margin:14px 0 6px;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:14px;color:var(--navy)}
+  .xgrid{display:grid;grid-template-columns:110px minmax(0,1fr);gap:7px 10px;align-items:center}
+  .xgrid label{font-size:13px;color:var(--mute)}
+  .xgrid input,.xgrid textarea{width:100%;border:1px solid var(--line);border-radius:3px;padding:5px 7px;font-size:13.5px;background:#fff}
+  .xgrid textarea{min-height:56px;resize:vertical;font-family:inherit}
+  .xsecs{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px}
+  .xsecs label{display:flex;gap:7px;align-items:center;padding:4px 6px;border:1px solid var(--line);border-radius:3px;cursor:pointer}
+  .xsecs label.off{color:var(--mute)}
+  .xsecs label small{color:var(--mute);margin-left:auto;font-size:11px;white-space:nowrap}
+  .xsecs input{accent-color:var(--navy)}
+  .xnote{font-size:12px;color:var(--mute);line-height:1.4;margin:12px 0 0}
+  .xrow{display:flex;gap:8px;align-items:center;margin-top:12px}
+  .xrow .xstatus{flex:1;font-size:12.5px;color:var(--mute);min-width:0}
+  .xrow .xstatus.ok{color:var(--ok)}
+  .xrow .xstatus.err{color:var(--warn)}
+  #pdfDoc{display:none}
+
+  @media print{
+    @page{size:Letter portrait;margin:0.55in 0.6in 0.75in}
+    html,body{height:auto;overflow:visible;background:#fff}
+    body.pdf #app,body.pdf .xdlg{display:none!important}
+    body.pdf #pdfDoc{display:block}
+    #pdfDoc{font-family:"Barlow",system-ui,sans-serif;color:var(--ink);font-size:11pt;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    #pdfDoc *{box-sizing:border-box}
+    #pdfDoc img{max-width:100%}
+    #pdfDoc .pg{break-before:page;page-break-before:always}
+    #pdfDoc .pg:first-child{break-before:auto;page-break-before:auto}
+    #pdfDoc h2{font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:20pt;color:var(--navy);margin:0 0 4pt;padding-bottom:4pt;border-bottom:2px solid var(--gold);break-after:avoid}
+    #pdfDoc h3{font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:13.5pt;color:var(--navy);margin:0 0 3pt;break-after:avoid}
+    #pdfDoc h4{font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:11.5pt;color:var(--navy);margin:12pt 0 4pt;break-after:avoid}
+    #pdfDoc p{margin:0 0 5pt}
+    #pdfDoc .sub{color:var(--mute);font-size:9.5pt;margin:0 0 8pt}
+    #pdfDoc .src{color:var(--mute);font-size:9pt;line-height:1.35}
+    #pdfDoc .tag{display:inline-block;font-size:7.5pt;font-weight:700;letter-spacing:.3px;padding:0 4px;border-radius:2px;vertical-align:middle;line-height:1.5}
+    #pdfDoc .tag.v{background:#E3F1E8;color:var(--ok)}
+    #pdfDoc .tag.a{background:#FBEBD6;color:var(--warn)}
+    /* cover */
+    #pdfDoc .cover{position:relative;min-height:9.4in}
+    #pdfDoc .cover .brand{display:flex;align-items:center;gap:10pt;padding-bottom:10pt;border-bottom:3px solid var(--gold)}
+    #pdfDoc .cover .brand img{width:44pt;height:44pt;border-radius:6pt}
+    #pdfDoc .cover .brand b{display:block;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:26pt;color:var(--navy);line-height:1}
+    #pdfDoc .cover .brand span{display:block;font-size:10.5pt;color:var(--mute);letter-spacing:.5px;text-transform:uppercase;margin-top:3pt}
+    #pdfDoc .cover h1{font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:32pt;color:var(--navy);margin:34pt 0 4pt;line-height:1.05}
+    #pdfDoc .cover .tagline{font-size:13pt;color:var(--mute);margin:0 0 26pt}
+    #pdfDoc .cover .who .k{font-size:9.5pt;color:var(--mute);text-transform:uppercase;letter-spacing:.6px}
+    #pdfDoc .cover .who .v{font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:22pt;color:var(--ink);line-height:1.15}
+    #pdfDoc .cover .who .addr{font-size:12pt;color:var(--ink);white-space:pre-line}
+    #pdfDoc .cover .hero{display:block;width:100%;height:3.9in;object-fit:cover;border-radius:3pt;margin:22pt 0 16pt;border:1px solid var(--line)}
+    #pdfDoc .cover .meta{display:grid;grid-template-columns:1fr 1fr;gap:6pt 18pt;font-size:11pt}
+    #pdfDoc .cover .meta span{display:block;font-size:8.5pt;color:var(--mute);text-transform:uppercase;letter-spacing:.5px}
+    #pdfDoc .cover .fine{position:absolute;left:0;right:0;bottom:0;font-size:8.5pt;color:var(--mute);line-height:1.35;border-top:1px solid var(--line);padding-top:6pt}
+    /* configuration */
+    #pdfDoc .wide{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:3pt;margin:8pt 0 10pt}
+    #pdfDoc table.kv{width:100%;border-collapse:collapse;font-size:10.5pt}
+    #pdfDoc table.kv th{text-align:left;vertical-align:top;width:1.9in;padding:4pt 8pt 4pt 0;color:var(--mute);font-weight:600;border-bottom:1px solid var(--line)}
+    #pdfDoc table.kv td{vertical-align:top;padding:4pt 0;border-bottom:1px solid var(--line)}
+    #pdfDoc table.kv ul{margin:0;padding-left:14pt}
+    /* stages */
+    #pdfDoc .stg{display:flex;gap:12pt;align-items:flex-start;margin:0 0 10pt;break-inside:avoid;page-break-inside:avoid}
+    #pdfDoc .stg img{width:3.5in;height:2.25in;object-fit:cover;flex:none;border:1px solid var(--line);border-radius:3pt}
+    #pdfDoc .stg p{font-size:10.5pt}
+    /* details */
+    #pdfDoc .drow{display:flex;gap:12pt;align-items:flex-start;margin:6pt 0 8pt}
+    #pdfDoc .drow .dimg{width:3.9in;height:2.925in;object-fit:cover;flex:none;border:1px solid var(--line);border-radius:3pt}
+    #pdfDoc .dlayers{flex:1;min-width:0;font-size:9pt;line-height:1.3}
+    #pdfDoc .dlayers .row{display:flex;gap:6pt;align-items:flex-start;padding:3pt 0;border-bottom:1px solid var(--line)}
+    #pdfDoc .dlayers .sw{width:18pt;height:8pt;border-radius:1pt;flex:none;margin-top:3pt;border:1px solid rgba(0,0,0,.15)}
+    #pdfDoc .dthumbs{display:flex;gap:8pt;margin:0 0 8pt}
+    #pdfDoc .dthumbs div{flex:1;min-width:0;font-size:8.5pt;color:var(--mute);text-align:center}
+    #pdfDoc .dthumbs img{display:block;width:100%;height:1.3in;object-fit:cover;border:1px solid var(--line);border-radius:2pt;margin-bottom:2pt}
+    #pdfDoc ol.steps{margin:0;padding-left:18pt;font-size:9.5pt}
+    #pdfDoc ol.steps li{margin:0 0 3pt;padding-left:2pt}
+    #pdfDoc ol.steps li::marker{color:var(--navy);font-weight:700}
+    #pdfDoc ol.steps li.a{border-left:3px solid var(--warn);margin-left:-10pt;padding-left:7pt}
+    #pdfDoc .sheet img{display:block;width:100%;max-height:8.5in;object-fit:contain;border:1px solid var(--line)}
+    #pdfDoc .sheet h2{font-size:14pt;margin-bottom:6pt}
+    /* estimate */
+    #pdfDoc .flow{margin-top:16pt;break-inside:avoid;page-break-inside:avoid}
+    #pdfDoc table.est{border-collapse:collapse;min-width:4.6in;font-size:11pt;margin:6pt 0 8pt}
+    #pdfDoc table.est td{padding:4pt 10pt 4pt 0;border-bottom:1px solid var(--line)}
+    #pdfDoc table.est td:last-child{text-align:right;font-weight:700;color:var(--navy)}
+    #pdfDoc .nobid{font-weight:600;color:var(--navy)}
+    /* photos */
+    #pdfDoc .ph{display:flex;gap:12pt;align-items:flex-start;margin:8pt 0 12pt;break-inside:avoid;page-break-inside:avoid}
+    #pdfDoc .pimg{position:relative;flex:none;border:1px solid var(--line)}
+    #pdfDoc .pimg img{display:block;width:100%;height:auto}
+    #pdfDoc .ppin{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center}
+    #pdfDoc .ppin b{background:var(--gold);color:var(--navy);border:1px solid #fff;border-radius:2pt;padding:0 4pt;font-size:8pt;line-height:12pt;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+    #pdfDoc .ppin i{width:1.5pt;height:10pt;background:var(--gold);display:block}
+    #pdfDoc .plist{flex:1;min-width:0;font-size:10pt}
+    #pdfDoc .plist b{display:block;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:11.5pt;color:var(--navy);margin-bottom:3pt;word-break:break-word}
+    #pdfDoc .plist ol{margin:0;padding-left:16pt}
+    #pdfDoc .plist li{margin:0 0 2pt}
+    /* notes */
+    #pdfDoc ul.asm{margin:0 0 6pt;padding-left:16pt;font-size:10pt}
+    #pdfDoc ul.asm li{margin:0 0 3pt}
+    #pdfDoc .rnotes{white-space:pre-line;font-size:10.5pt;border:1px solid var(--line);border-left:3px solid var(--gold);padding:6pt 8pt;background:#FAFAF8}
+    /* appendix */
+    #pdfDoc table.form{width:100%;border-collapse:collapse;font-size:9.5pt;margin:0 0 6pt}
+    #pdfDoc table.form th{text-align:left;vertical-align:top;width:2.1in;padding:3pt 6pt 3pt 0;color:var(--mute);font-weight:600;border-bottom:1px solid var(--line);text-transform:uppercase;font-size:8pt;letter-spacing:.3px}
+    #pdfDoc table.form td{vertical-align:top;padding:3pt 0;border-bottom:1px solid var(--line);min-height:14pt}
+    #pdfDoc table.form td.blank{color:#B6BCC4;font-style:italic}
+    #pdfDoc .chk{display:grid;grid-template-columns:repeat(3,1fr);gap:2pt 10pt;font-size:9.5pt;margin:4pt 0 6pt}
+    #pdfDoc .chk div{display:flex;gap:5pt;align-items:baseline;padding:2pt 0}
+    #pdfDoc .chk i{display:inline-block;width:10pt;height:10pt;border:1px solid var(--ink);flex:none;font-style:normal;font-size:8.5pt;line-height:9pt;text-align:center;font-weight:700;color:var(--navy);position:relative;top:1pt}
+    #pdfDoc .chk .on i{background:#E3F1E8;border-color:var(--ok)}
+    #pdfDoc .chk small{color:var(--mute);font-size:8.5pt}
+    #pdfDoc .sig{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14pt;margin-top:14pt;font-size:9.5pt}
+    #pdfDoc .sig div{border-top:1px solid var(--ink);padding-top:3pt;color:var(--mute)}
+    #pdfDoc .sig div b{display:block;color:var(--ink);font-weight:600;min-height:12pt}
+  }
 </style>
 </head>
 <body>
@@ -224,6 +344,7 @@
     <div class="mark">RMI <b>·</b> Visualize your roof</div>
     <div class="sub" id="subTitle"></div>
     <button id="photoBtn" title="Prospect photos (stay on this computer)">Prospect photos</button>
+    <button id="pdfBtn" title="Export this presentation as a PDF (no pricing)">Export PDF</button>
     <div class="mock">Mockup — not RMI spec</div>
   </header>
 
@@ -305,6 +426,23 @@
     <div class="desc" id="desc"></div>
   </footer>
 </div>
+
+<div class="xdlg" id="xdlg" role="dialog" aria-label="Export PDF">
+  <div class="xbox">
+    <h3>Export PDF</h3>
+    <div class="xgrid">
+      <label for="xProspect">Prospect</label><input id="xProspect" placeholder="Company or building name" autocomplete="off">
+      <label for="xAddress">Address</label><input id="xAddress" placeholder="Street, city, state" autocomplete="off">
+      <label for="xRep">Rep name</label><input id="xRep" placeholder="Your name" autocomplete="off">
+      <label for="xNotes">Notes</label><textarea id="xNotes" placeholder="Anything the prospect should read alongside the presentation (optional)"></textarea>
+    </div>
+    <h4>Sections</h4>
+    <div class="xsecs" id="xSecs"></div>
+    <p class="xnote">Images are captured from the 3D view at the default cameras. The PDF carries a material-quantity estimate and no pricing; anything the drawings do not state is listed as ASSUMED. Prospect photos go into the PDF only if that section is on.</p>
+    <div class="xrow"><span class="xstatus" id="xStatus"></span><button class="pbtn" id="xCancel">Cancel</button><button class="pbtn solid" id="xGo">Export PDF</button></div>
+  </div>
+</div>
+<div id="pdfDoc"></div>
 
 <script src="vendor/three.min.js"></script>
 <script src="vendor/GLTFLoader.js"></script>
@@ -1604,8 +1742,8 @@ const cam={ target:new THREE.Vector3(0,22,0), dist:165, theta:0.62, phi:1.0 };
 const camTo={ ...cam, target:cam.target.clone() }, camFrom={ ...cam, target:cam.target.clone() }; let camT=1;
 const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ease=t=>t<.5?2*t*t:-1+(4-2*t)*t, lerp=(a,b,t)=>a+(b-a)*t;
-function roofDist(){ const e=B?B.extent:{L:120,W:80}; const base=e.dist||Math.max(e.L,e.W)*(e.L>280?1.3:e.L>250?1.15:e.W>150?1.45:1.38);
-  const a=canvas.parentElement.clientWidth/Math.max(1,canvas.parentElement.clientHeight); return base*(a>=1.5?1:a<=1?1.5:1+(1.5-a)); }   // wide view: as before; square (photo slider docked) or portrait: back off so the whole roof stays in frame
+function roofDist(aspect){ const e=B?B.extent:{L:120,W:80}; const base=e.dist||Math.max(e.L,e.W)*(e.L>280?1.3:e.L>250?1.15:e.W>150?1.45:1.38);
+  const a=aspect||canvas.parentElement.clientWidth/Math.max(1,canvas.parentElement.clientHeight); return base*(a>=1.5?1:a<=1?1.5:1+(1.5-a)); }   // `aspect` given: the PDF capture frame instead of the on-screen view   // wide view: as before; square (photo slider docked) or portrait: back off so the whole roof stays in frame
 function applyCam(){ const t=camT<1?ease(camT):1; const c= camT<1 ? {dist:lerp(camFrom.dist,camTo.dist,t),theta:lerp(camFrom.theta,camTo.theta,t),phi:lerp(camFrom.phi,camTo.phi,t),target:camFrom.target.clone().lerp(camTo.target,t)} : cam;
   if(camT>=1){ Object.assign(cam,{dist:camTo.dist,theta:camTo.theta,phi:camTo.phi}); cam.target.copy(camTo.target); }
   camera.position.copy(c.target.clone().add(new THREE.Vector3(Math.sin(c.theta)*Math.sin(c.phi),Math.cos(c.phi),Math.cos(c.theta)*Math.sin(c.phi)).multiplyScalar(c.dist))); camera.lookAt(c.target); }
@@ -1681,10 +1819,12 @@ function syncUI(){ const b=BUILDINGS[S.building], r=ROOFS[S.roof];
   ['Penetrations','Skylights','Gutters','Vents'].filter(t=>!b.details.some(k=>DETAILS[k].menu.toLowerCase().includes(t.toLowerCase().slice(0,5)))).forEach(t=>{ const l=document.createElement('label'); l.className='off'; l.innerHTML=`<input type="checkbox" disabled> ${t}`; dc.appendChild(l); });
   buildStageBar(); }
 
+// Flex allowance per detail in gallons: typical count on the archetype × gallons per unit — ASSUMED until RMI supplies figures (also listed on the PDF's estimate page)
+const DETAIL_GAL={ curb:2, rtu:3*2, drain:4*0.5, scupper:2*0.5, pipe:7*0.3, skylight:5*1.5, wall:3, penthouse:4, edge:3, sleeper:10*0.3, mskylight:6*1.2, vent:3*1, mpipe:3*0.3, pitchpan:3*1.5, ej:6, gutter:44*0.15, gutterinlet:10*0.4, hatch:1.5, support:6*0.5, exhaust:2*1.5 }, SOLAR_GAL=24*0.25;
 function estimate(){ const r=ROOFS[S.roof]; const bx=BUILDINGS[S.building]; let A=S.sqft; if(bx.extraSqFt) Object.entries(bx.extraSqFt).forEach(([k,v])=>{ if(S.on[k]) A+=v; }); const sq=A/100; let flexSq, treated; const on=k=>S.on[k]?1:0;
   if(r.pattern==='seam'){ const lap=(A/(r.surface==='sseam'?2:3))*0.5/100, endl=(A/40)*1.0/100, fast=(A/7.5)*0.2/100; flexSq=lap+endl+fast; treated=flexSq*100+on('curb')*60; }
   else { flexSq=sq*1.06; treated=A*1.06; }   // +6% for parapet walls, curbs and sumps (ASSUMED)
-  const detailGal = on('curb')*2 + on('rtu')*3*2 + on('drain')*4*0.5 + on('scupper')*2*0.5 + on('pipe')*7*0.3 + on('skylight')*5*1.5 + on('wall')*3 + on('penthouse')*4 + on('edge')*3 + on('sleeper')*10*0.3 + on('mskylight')*6*1.2 + on('vent')*3*1 + on('mpipe')*3*0.3 + on('pitchpan')*3*1.5 + on('ej')*6 + on('gutter')*44*0.15 + on('gutterinlet')*10*0.4 + on('hatch')*1.5 + on('support')*6*0.5 + on('exhaust')*2*1.5 + (S.solar?24*0.25:0);
+  const detailGal = Object.entries(DETAIL_GAL).reduce((a,[k,v])=>a+on(k)*v,0) + (S.solar?SOLAR_GAL:0);
   const flexGal=flexSq*r.rates.flexGalPerSq+detailGal, primerGal=treated/r.rates.primerSqFtPerGal, topGal=sq*r.rates.topGalPerSq;
   return { primerGal, flexGal, topGal, system:r.system[S.topcoat] }; }
 function renderEstimate(){ const e=estimate(), r=ROOFS[S.roof]; const f=n=>n<10?n.toFixed(1):Math.round(n).toLocaleString(); const where=r.pattern==='seam'?'seams, laps, fasteners, curb':(BUILDINGS[S.building].extraSqFt&&S.on.silowall?'deck + silo walls + details':'full field + details');
@@ -1806,7 +1946,7 @@ function phRenderPins(){ const p=phCur(); [...phEl.wrap.querySelectorAll('.pin,.
 phEl.wrap.addEventListener('click',e=>{ const p=phCur(); if(!p||p.status!=='ok') return; const r=phEl.wrap.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height; if(x<0||x>1||y<0||y>1) return;
   const b=BUILDINGS[S.building]; PH.temp={ x, y, pick:(PH.temp&&PH.temp.pick)||b.details.find(k=>S.on[k])||b.details[0] }; phRenderPins(); });
 document.addEventListener('keydown',e=>{ // Esc: cancel a pending pin, else close the slider. ← →: previous / next photo while the slider is open (not while typing in a field).
-  if(e.key==='Escape'){ if(PH.temp){ PH.temp=null; phRenderPins(); } else if(DR.open) drwOpen(false); else if(phEl.app.classList.contains('slider')) phSlider(false); return; }
+  if(e.key==='Escape'){ if(xEl.dlg.classList.contains('show')){ if(!PDF.busy) pdfOpen(false); return; } if(PH.temp){ PH.temp=null; phRenderPins(); } else if(DR.open) drwOpen(false); else if(phEl.app.classList.contains('slider')) phSlider(false); return; }
   if(!phEl.app.classList.contains('slider')) return; const tag=(e.target&&e.target.tagName||'').toLowerCase(); if(tag==='input'||tag==='select'||tag==='textarea') return;
   if(e.key==='ArrowLeft'){ e.preventDefault(); phStep(-1); } else if(e.key==='ArrowRight'){ e.preventDefault(); phStep(1); } });
 function phCommit(id){ const p=phCur(); if(!p||!PH.temp||!id) return; const d=DET(id); p.pins.push({ x:PH.temp.x, y:PH.temp.y, detail:id, drawing:d.drawing, name:d.menu }); PH.temp=null; phSavePhoto(p); phRender(); }
@@ -1887,6 +2027,168 @@ new ResizeObserver(()=>{ if(DR.open&&DR.status==='loaded') drwFit(); }).observe(
 const drawingAPI={ open:drwOpen, tab:drwTab, ready:()=>drwManifest(), state:()=>({ open:DR.open, tab:DR.tab, detail:DR.id, number:drwEl.img.dataset.num||null, status:DR.status, zoom:+DR.z.toFixed(3), manifest:DR.manifest?Object.keys(DR.manifest).length:DR.manifest, steps:(S.view!=='roof'&&DET(S.view).steps||[]).length }) };
 
 /* =================================================================
+   PDF EXPORT — "Export PDF" in the header. A small dialog takes the prospect, the rep, notes and which sections to
+   include. The page then captures the 3D view at the default cameras (whole roof at each stage, each selected detail at
+   four stages), builds the document into #pdfDoc and prints it: in the desktop app through Electron's printToPDF
+   (window.rmiDesktop.exportPdf shows the save dialog and writes the file, suggested name <prospect>-<date>.pdf), in a
+   browser through the print dialog ("Save as PDF"). body.pdf switches the print CSS to the document. Nothing here prices
+   anything; the estimate section carries the same no-pricing wording as the rail.
+================================================================= */
+const PDF={ busy:false, last:null };
+const PDF_SECTIONS=[
+  ['cover','Cover','prospect, date, rep'],
+  ['config','Building and roof configuration','whole-roof image'],
+  ['stages','The six stages','image and text each'],
+  ['details','One page per detail','3D view, steps, 2D drawing'],
+  ['estimate','Material estimate','gallons, no pricing'],
+  ['photos','Prospect photos and pins',''],
+  ['notes','Notes and ASSUMED items',''],
+  ['appendix','Project Evaluation pre-fill','appendix'] ];
+const xEl={ dlg:document.getElementById('xdlg'), secs:document.getElementById('xSecs'), status:document.getElementById('xStatus'), go:document.getElementById('xGo'), cancel:document.getElementById('xCancel'), btn:document.getElementById('pdfBtn'), doc:document.getElementById('pdfDoc'),
+  prospect:document.getElementById('xProspect'), address:document.getElementById('xAddress'), rep:document.getElementById('xRep'), notes:document.getElementById('xNotes') };
+const PDF_KEY='rmi.export';   // last prospect / rep / section choices, browser storage on this machine only
+function pdfRemember(f){ try{ localStorage.setItem(PDF_KEY,JSON.stringify({ prospect:f.prospect, address:f.address, rep:f.rep, notes:f.notes, sections:f.sections })); }catch(e){} }
+function pdfRecall(){ try{ return JSON.parse(localStorage.getItem(PDF_KEY)||'{}')||{}; }catch(e){ return {}; } }
+function pdfSelected(){ return B?BUILDINGS[S.building].details.filter(k=>S.on[k]&&B.hots.some(h=>h.id===k)):[]; }   // checked details this building actually carries
+function pdfPhotos(){ return PH.list.filter(p=>p.status==='ok'&&p.url); }
+function pdfStatus(t,cls){ xEl.status.textContent=t||''; xEl.status.className='xstatus'+(cls?' '+cls:''); }
+function pdfOpen(on){ if(on===undefined) on=!xEl.dlg.classList.contains('show'); if(!on){ xEl.dlg.classList.remove('show'); return; }
+  const m=pdfRecall(); xEl.prospect.value=m.prospect||''; xEl.address.value=m.address||''; xEl.rep.value=m.rep||''; xEl.notes.value=m.notes||'';
+  const nd=pdfSelected().length, np=pdfPhotos().length; xEl.secs.innerHTML='';
+  PDF_SECTIONS.forEach(([k,label,hint])=>{ const l=document.createElement('label'); const off=(k==='photos'&&!np)||(k==='details'&&!nd); const on=off?false:(m.sections&&k in m.sections?!!m.sections[k]:true);
+    const h=k==='photos'?(np?`${np} photo${np!==1?'s':''}`:'no photos loaded'):k==='details'?(nd?`${nd} detail${nd!==1?'s':''}`:'none selected'):hint;
+    l.className=off?'off':''; l.innerHTML=`<input type="checkbox" data-k="${k}" ${on?'checked':''} ${off?'disabled':''}> ${label}${h?`<small>${phEsc(h)}</small>`:''}`; xEl.secs.appendChild(l); });
+  pdfStatus(''); xEl.dlg.classList.add('show'); xEl.prospect.focus(); }
+function pdfForm(){ const sections={}; [...xEl.secs.querySelectorAll('input')].forEach(i=>sections[i.dataset.k]=i.checked&&!i.disabled);
+  return { prospect:xEl.prospect.value.trim(), address:xEl.address.value.trim(), rep:xEl.rep.value.trim(), notes:xEl.notes.value.trim(), sections }; }
+xEl.btn.onclick=()=>pdfOpen(true);
+xEl.cancel.onclick=()=>{ if(!PDF.busy) pdfOpen(false); };
+xEl.dlg.addEventListener('click',e=>{ if(e.target===xEl.dlg&&!PDF.busy) pdfOpen(false); });
+xEl.go.onclick=()=>pdfExport();
+
+// ---- captures: one frame from the live scene at a fixed size, composited on the view's background (the WebGL canvas is
+// transparent above the ground plane and JPEG has no alpha), whole-roof shots labelled like the hotspots. The live canvas
+// is put back straight after, so the rep sees at most a flicker.
+const CAPQ=0.86;
+function pdfCapture(w,h,labels){ const pr=renderer.getPixelRatio(); renderer.setPixelRatio(1); renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
+  camT=1; applyCam(); applyStage(); applySection(); renderer.render(scene,camera);
+  const c=document.createElement('canvas'); c.width=w; c.height=h; const g=c.getContext('2d'); const bg=g.createLinearGradient(0,0,0,h); bg.addColorStop(0,'#DCE3E9'); bg.addColorStop(0.6,'#EEF1F4'); bg.addColorStop(1,'#F4F5F6'); g.fillStyle=bg; g.fillRect(0,0,w,h);
+  g.drawImage(canvas,0,0,w,h); if(labels) pdfLabels(g,w,h); const out=c.toDataURL('image/jpeg',CAPQ);
+  renderer.setPixelRatio(pr); resize(); return out; }
+function pdfLabels(g,w,h){ if(!B) return; const F1='600 15px "Barlow",system-ui,sans-serif', F2='500 13px "Barlow",system-ui,sans-serif'; g.textBaseline='middle';
+  B.hots.forEach(hot=>{ if(!hot.show()) return; const d=DET(hot.id); const v=hot.anchor().clone().project(camera); if(v.z>1) return; const x=(v.x+1)/2*w, y=(1-v.y)/2*h; if(x<0||x>w||y<0||y>h) return;
+    const t1=d.name, t2=' '+d.drawing; g.font=F1; const w1=g.measureText(t1).width; g.font=F2; const w2=g.measureText(t2).width; const bw=w1+w2+16, bh=26; const bx=Math.min(w-bw-4,Math.max(4,x-bw/2)), by=Math.max(4,y-22-bh);
+    g.strokeStyle='#12213A'; g.lineWidth=2; g.beginPath(); g.moveTo(x,y); g.lineTo(x,by+bh); g.stroke();
+    g.fillStyle='rgba(255,255,255,.95)'; g.fillRect(bx,by,bw,bh); g.lineWidth=1.5; g.strokeRect(bx,by,bw,bh);
+    g.fillStyle='#12213A'; g.font=F1; g.fillText(t1,bx+8,by+bh/2); g.fillStyle='#6B7684'; g.font=F2; g.fillText(t2,bx+8+w1,by+bh/2); }); }
+const pdfTick=()=>new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));   // let the dialog repaint between captures
+async function pdfCaptures(form,say){ const shots={ stages:[], details:{} }; const need=form.sections;
+  const keep={ view:S.view, stage:S.stage, section:!!S.section, drawing:DR.open, cam:{dist:cam.dist,theta:cam.theta,phi:cam.phi,target:cam.target.clone()} };
+  S.playing=false; S.section=false; const RW=1400, RH=900;
+  if(need.cover||need.config||need.stages){ goRoof(true); camTo.dist=roofDist(RW/RH)*0.9; cam.dist=camTo.dist; camT=1;
+    for(let i=0;i<stagesOf().length;i++){ const last=stagesOf().length-1; if(!(need.stages||(need.cover&&i===last)||(need.config&&i===0))) continue;
+      say(`Capturing stage ${i+1} of ${stagesOf().length}…`); setStage(i,false); shots.stages[i]=pdfCapture(RW,RH,false); if(i===0&&need.config) shots.roofLabelled=pdfCapture(RW,RH,true); await pdfTick(); } }
+  if(need.details){ for(const id of pdfSelected()){ say(`Capturing ${DET(id).name}…`); if(goDetail(id)===false) continue; camT=1; const d={};
+      [['existing',0],['primer',2],['flex',3],['done',5]].forEach(([k,i])=>{ setStage(i,false); d[k]=pdfCapture(k==='done'?1200:600,k==='done'?900:450,false); }); shots.details[id]=d; await pdfTick(); } }
+  S.section=keep.section; if(keep.view!=='roof'&&goDetail(keep.view)!==false){ if(keep.drawing) drwOpen(true); } else goRoof(true);
+  setStage(keep.stage,false); Object.assign(camTo,{dist:keep.cam.dist,theta:keep.cam.theta,phi:keep.cam.phi}); camTo.target.copy(keep.cam.target); camT=1; applyCam();
+  return shots; }
+
+// ---- the document
+const pdfPlain=s=>String(s||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+const pdfTagged=s=>phEsc(s).replace(/ASSUMED/g,'<span class="tag a">ASSUMED</span>').replace(/VERIFIED/g,'<span class="tag v">VERIFIED</span>');
+const pdfAssumed=s=>pdfPlain(s).split(/(?<=[.!?])\s+/).filter(x=>/ASSUMED/.test(x));   // the sentences of a text that carry an ASSUMED
+const pdfDate=d=>d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+function pdfFileName(form,d){ const p=(form.prospect||'prospect').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'prospect'; return `${p}-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.pdf`; }
+const pdfGal=n=>n<10?n.toFixed(1):Math.round(n).toLocaleString();
+// RMI's "Detail drawings — check all applicable" list (Project Evaluation form p.5, as in the catalog §3a) ← the tool's detail ids
+const PE_ITEMS=[ ['HVAC',['rtu','curb']], ['Curbs',['rtu','curb','exhaust','hatch','skylight','vent']], ['Platform / platforms',['sleeper']], ['Vent',['vent']], ['Mechanical exhaust',['exhaust']], ['Support blocks',['sleeper']],
+  ['Walkpads',[]], ['Drain',['drain']], ['Scupper',['scupper']], ['Gutter',['gutter','gutterinlet']], ['Interior gutter',[]], ['Penetration / penetrations',['pipe','mpipe','pitchpan']], ['Soil stack',['pipe']],
+  ['Site screen',['support']], ['Antenna',[]], ['Exp. joint',['ej']], ['Ducts',[]], ['Coping',['coping']], ['Edge metal',['edge']], ['Counterflashing',['wall','penthouse']], ['Wall metal',['penthouse','silowall']],
+  ['Roof hatch',['hatch']], ['Typ. system config.',['*']] ];
+function pdfBuild(form,shots,manifest,date){ const b=BUILDINGS[S.building], r=ROOFS[S.roof], e=estimate(), sec=form.sections, E=phEsc, sel=pdfSelected(), photos=pdfPhotos(), last=stagesOf().length-1;
+  const prospect=form.prospect||'Prospect', rep=form.rep||'', topcoat=S.topcoat==='white'?'RMI-White Plus':'RMI-Thane', sq=S.sqft/100; const out=[]; const detailNames=sel.map(k=>`${DET(k).name} (${DET(k).drawing})`);
+  const extra=b.extraSqFt?Object.entries(b.extraSqFt).filter(([k])=>S.on[k]).map(([k,v])=>`${v.toLocaleString()} sq ft ${DET(k).name.toLowerCase()}`):[];
+  const disclaimer='Presentation from the RMI Roof Visualizer. The building shown is a generic commercial archetype, not a survey of the prospect\'s roof; each detail follows the RMI drawing and specification plate it names. Items marked ASSUMED are not RMI specification and are listed at the end for RMI to confirm. This document carries a material-quantity estimate and no pricing; an RMI representative or contractor prices the job.';
+  if(sec.cover) out.push(`<section class="pg cover"><div class="brand"><img src="build/icon.png" alt=""><div><b>RMI</b><span>Fluid-applied roofing systems</span></div></div>
+    <h1>Visualize your roof</h1><p class="tagline">${E(b.label)} · ${E(r.label)} · ${E(topcoat)}</p>
+    <div class="who"><div class="k">Prepared for</div><div class="v">${E(prospect)}</div>${form.address?`<div class="addr">${E(form.address)}</div>`:''}</div>
+    ${shots.stages[last]?`<img class="hero" src="${shots.stages[last]}" alt="">`:''}
+    <div class="meta"><div><span>Date</span>${E(pdfDate(date))}</div><div><span>Prepared by</span>${E(rep||'RMI representative')}</div><div><span>RMI system</span>${E(e.system)}</div><div><span>Details on the roof</span>${sel.length?sel.length+' — '+E(sel.map(k=>DET(k).menu).join(', ')):'none selected'}</div></div>
+    <p class="fine">${E(disclaimer)}</p></section>`);
+  if(sec.config) out.push(`<section class="pg"><h2>Building and roof configuration</h2><p class="sub">What the presentation shows: the building type, the existing roof and the conditions on it.</p>
+    ${shots.roofLabelled?`<img class="wide" src="${shots.roofLabelled}" alt="">`:''}
+    <table class="kv"><tr><th>Building type</th><td>${E(b.label)} — a generic commercial archetype</td></tr><tr><th>Roof type</th><td>${E(r.label)} — RMI specification Plate ${E(r.plate)}</td></tr>
+    <tr><th>Field pattern</th><td>${pdfTagged(pdfPlain(r.patternNote))}</td></tr><tr><th>Existing condition shown</th><td>${E(r.condLabel)}${S.cond?'':' (switched off in the view)'}</td></tr>
+    <tr><th>Details on the roof</th><td>${sel.length?'<ul>'+sel.map(k=>`<li>${E(DET(k).name)} — ${E(DET(k).drawing)}</li>`).join('')+'</ul>':'None selected'}</td></tr>
+    <tr><th>Finish</th><td>${E(topcoat)}</td></tr><tr><th>Solar Post supports</th><td>${S.solar?'Yes (P-1-S-TYP / P-2-S-TYP / P-3-S-TYP)':'No'}</td></tr>
+    <tr><th>Roof size</th><td>${S.sqft.toLocaleString()} sq ft (approx., entered by the rep)${extra.length?' + '+E(extra.join(', ')):''}</td></tr><tr><th>RMI system</th><td>${E(e.system)}</td></tr></table></section>`);
+  if(sec.estimate){ const allow=sel.filter(k=>DETAIL_GAL[k]).map(k=>[DET(k).name,DETAIL_GAL[k]]); if(S.solar) allow.push(['Solar Post supports',SOLAR_GAL]);
+    out.push(`<section class="pg"><h2>Material estimate</h2><p class="sub">Gallons of each RMI product for this configuration, from the coverage rates on RMI specification Plate ${E(r.plate)}. Quantities only.</p>
+    <table class="est"><tr><td>RMI system</td><td>${E(e.system)}</td></tr><tr><td>RMI primer</td><td>${pdfGal(e.primerGal)} gal</td></tr><tr><td>RMI-Flex (${r.pattern==='seam'?'seams, laps, fasteners, curbs':(extra.length?'deck + silo walls + details':'full field + details')})</td><td>${pdfGal(e.flexGal)} gal</td></tr><tr><td>${E(topcoat)} (full field)</td><td>${pdfGal(e.topGal)} gal</td></tr></table>
+    <p class="nobid">Not a bid — no pricing here; an RMI rep or contractor prices the job.</p>
+    <h4>Basis</h4><table class="kv"><tr><th>Roof area</th><td>${S.sqft.toLocaleString()} sq ft (${sq.toLocaleString(undefined,{maximumFractionDigits:1})} squares), approx., entered by the rep${extra.length?'; plus '+E(extra.join(' and ')):''}</td></tr>
+    <tr><th>Field pattern</th><td>${pdfTagged(pdfPlain(r.patternNote))}</td></tr>
+    <tr><th>Primer</th><td>1 gal per ${r.rates.primerSqFtPerGal.toLocaleString()} sq ft of treated surface (Plate ${E(r.plate)})</td></tr>
+    <tr><th>RMI-Flex</th><td>${r.rates.flexGalPerSq} gal per square${r.pattern==='seam'?' of seam, lap and fastener area (the panel field is optional on metal)':' of field, plus 6% for walls, curbs and sumps <span class="tag a">ASSUMED</span>'}</td></tr>
+    <tr><th>${E(topcoat)}</th><td>${r.rates.topGalPerSq} gal per square over the whole roof (Plate ${E(r.plate)})</td></tr></table>
+    <h4>Flex allowance per detail <span class="tag a">ASSUMED</span></h4>${allow.length?`<table class="kv">${allow.map(([n,g])=>`<tr><th>${E(n)}</th><td>${pdfGal(g)} gal</td></tr>`).join('')}</table>`:'<p class="src">No detail allowances in this configuration.</p>'}
+    <p class="src">Each allowance is a typical count of that condition on the archetype times a gallon figure per unit. RMI supplies the real figures; until then they are ASSUMED and the prospect's own roof decides the count.</p></section>`); }
+  if(sec.stages) out.push(`<section class="pg"><h2>The RMI system, stage by stage</h2><p class="sub">${E(r.label)} on the ${E(b.label)}, finished in ${E(topcoat)}. Each image is the whole roof at that stage.</p>`
+    +stagesOf().map(STG).map((s,i)=>`<div class="stg">${shots.stages[i]?`<img src="${shots.stages[i]}" alt="">`:''}<div><h3>${i+1}. ${E(s.name)}</h3><p>${E(s.text)}</p><p class="src">${pdfTagged(s.src)}</p></div></div>`).join('')+'</section>');
+  if(sec.details) sel.forEach(id=>{ const d=DET(id), sh=shots.details[id]||{}, num=d.sheet||d.drawing, info=manifest[num]||manifest[d.drawing]||null, steps=d.steps||[];
+    out.push(`<section class="pg"><h2>${E(d.name)}</h2><p class="sub">${d.drawing==='—'?'No RMI drawing in the library for this case':'RMI drawing '+E(d.drawing)+(info&&info.title?' · '+E(info.title):'')+(info&&info.rev?' · issue / revision '+E(info.rev):'')} · on the ${E(b.label)}, ${E(r.label)}</p>
+      <div class="drow">${sh.done?`<img class="dimg" src="${sh.done}" alt="">`:''}<div class="dlayers"><h4 style="margin-top:0">Layers</h4>${d.layers.map(l=>`<div class="row"><span class="sw" style="background:${l.k==='thane'&&S.topcoat==='white'?'#F1F0EB':l.color}"></span><span>${pdfTagged(l.label)}</span></div>`).join('')}</div></div>
+      <div class="dthumbs">${[['existing','Existing'],['primer','Primer'],['flex','RMI-Flex']].map(([k,n])=>sh[k]?`<div><img src="${sh[k]}" alt="">${n}</div>`:'').join('')}</div>
+      <h4>How it's applied${d.drawing!=='—'?' ('+E(d.drawing)+')':''}</h4>${steps.length?`<ol class="steps">${steps.map(t=>`<li class="${/ASSUMED/.test(t)?'a':''}">${pdfTagged(t)}</li>`).join('')}</ol>`:'<p>No steps written for this detail yet.</p>'}
+      <p class="src">${pdfTagged(d.src||'')}</p>${d.drawing!=='—'&&!info?`<p class="src">Drawing ${E(d.drawing)} is not bundled with this build, so the sheet is not reproduced here.</p>`:''}</section>`);
+    if(info) out.push(`<section class="pg sheet"><h2>${E(d.drawing)} — ${E(info.title||'')}${info.rev?' · issue / revision '+E(info.rev):''}</h2><p class="sub">RMI detail drawing for ${E(d.name)}. The drawing and its notes are RMI specification; the 3D views in this document are a visualization of them.</p><img src="drawings/${E(info.file)}" alt=""></section>`); });
+  if(sec.photos&&photos.length){ const np=photos.reduce((a,p)=>a+p.pins.length,0);
+    out.push(`<section class="pg"><h2>Prospect photos</h2><p class="sub">${photos.length} photo${photos.length!==1?'s':''}, ${np} pin${np!==1?'s':''}. Each pin ties a condition in the photo to the RMI detail that addresses it.</p>`
+      +photos.map(p=>`<div class="ph"><div class="pimg" style="width:${p.w&&p.h&&p.h>p.w?'2.7in':'4.3in'}"><img src="${p.url}" alt="">${p.pins.map((pin,j)=>`<span class="ppin" style="left:${(pin.x*100).toFixed(2)}%;top:${(pin.y*100).toFixed(2)}%"><b>${j+1}</b><i></i></span>`).join('')}</div>
+        <div class="plist"><b>${E(p.sample?'Sample roof · '+p.name:p.name)}</b>${p.pins.length?`<ol>${p.pins.map(pin=>`<li>${E(pin.drawing)} · ${E(pin.name)}${DETAILS[pin.detail]?' — '+E(DETAILS[pin.detail].name):''}</li>`).join('')}</ol>`:'<span class="src">No pins on this photo.</span>'}</div></div>`).join('')+'</section>'); }
+  if(sec.notes){ const roofA=[]; stagesOf().map(STG).forEach(s=>pdfAssumed(s.src).forEach(x=>roofA.push(`${s.name}: ${x}`))); roofA.push('Material estimate: per-detail allowances (gallons added per detail) are ASSUMED until RMI supplies figures; the +6% for walls, curbs and sumps on full-field roofs is ASSUMED.');
+    const li=a=>a.map(x=>`<li>${pdfTagged(x)}</li>`).join('');
+    out.push(`<section class="pg"><h2>Notes and ASSUMED items</h2>${form.notes?`<h4>Notes from ${E(rep||'the rep')}</h4><div class="rnotes">${E(form.notes)}</div>`:''}
+      <h4>What ASSUMED means</h4><p>Every detail in this document traces to an RMI drawing or specification plate. Where a sheet does not state a size, a sequence or an extent, the Visualizer shows a plausible one and tags it <span class="tag a">ASSUMED</span>. Those items are not RMI specification: RMI confirms or corrects them, and a source document always overrides an assumption.</p>
+      <h4>Roof: ${E(r.label)} (Plate ${E(r.plate)})</h4><ul class="asm">${li(roofA)}</ul>
+      ${sel.map(id=>{ const d=DET(id); const a=[...(d.steps||[]).filter(t=>/ASSUMED/.test(t)), ...pdfAssumed(d.src), ...d.layers.map(l=>l.label).filter(t=>/ASSUMED/.test(t))]; return `<h4>${E(d.name)} (${E(d.drawing)})</h4>${a.length?`<ul class="asm">${li(a)}</ul>`:'<p class="src">Nothing tagged ASSUMED for this detail.</p>'}`; }).join('')}
+      ${S.solar?'<h4>Solar Post supports</h4><ul class="asm"><li>The posts are code-drawn from P-1-S-TYP / P-2-S-TYP / P-3-S-TYP and their Flex allowance in the estimate is ASSUMED.</li></ul>':''}</section>`); }
+  if(sec.appendix){ const has=ids=>ids.includes('*')||ids.some(k=>S.on[k]&&b.details.includes(k)); const blank='<td class="blank">rep to complete</td>'; const row=(k,v)=>`<tr><th>${k}</th>${v?`<td>${v}</td>`:blank}</tr>`;
+    const overview=`${r.label} on a ${b.label}. Existing condition: ${r.condLabel}. Conditions on the roof: ${detailNames.length?detailNames.join('; '):'none selected'}. Proposed finish: ${topcoat}${S.solar?'; Solar Post supports':''}.${form.notes?' '+form.notes:''}`;
+    const yrs=(e.system.match(/^[A-Z]+-(\d+)-/)||[])[1]||'';
+    out.push(`<section class="pg"><h2>Appendix — Request for Project Evaluation, pre-filled</h2><p class="sub">RMI's Project Evaluation form (Specifier Request – CSI Documents, revised 11/15/13) asks for the items below. Fields the Visualizer knows are filled from this configuration; the rest are left for the rep. This is a pre-fill to copy into RMI's form, not a submission. RMI does not practice architecture or engineering, and its requirements never supersede building code.</p>
+      <h4>Project information and contacts</h4><table class="form">${row('Firm')}${row('Project contact',E(rep))}${row('Phone / email')}${row('Street address',E(form.address))}${row('City / state / zip')}${row('Project name or ID #',E(prospect))}${row('Use',E(b.label))}${row('Roof squares',`${sq.toLocaleString(undefined,{maximumFractionDigits:1})} (${S.sqft.toLocaleString()} sq ft, approx.)${extra.length?' + '+E(extra.join(', ')):''}`)}${row('RMI specification #',E(e.system))}${row('General overview',E(overview))}</table>
+      <h4>General description of document profile</h4><table class="form">${row('Public funding / private owner')}${row('Bonded? If so what type')}${row('Proprietary RMI products','Yes — the RMI fluid-applied system shown in this document')}${row('Generic – performance based')}${row('Warranty',yrs?`${yrs}-yr per system code ${E(e.system)}${r.noWhite?' (material only)':''} — RMI to confirm material and labor vs. material`:'')}${row('Regulatory requirements (fire rating, hail, CRRC)')}</table>
+      <h4>Existing roof system</h4><table class="form">${row('Roof deck')}${row('Surface membrane',`${E(r.label)} (Plate ${E(r.plate)})`)}${row('Thickness')}${row('Existing underside insulation')}${row('Existing or new exterior insulation',S.roof==='spf'?'Spray foam (existing)':'')}${row('Gutters',has(['gutter','gutterinlet'])?E(['gutter','gutterinlet'].filter(k=>S.on[k]&&b.details.includes(k)).map(k=>DET(k).name+' ('+DET(k).drawing+')').join('; ')):'')}${row('Drains',has(['drain','scupper'])?E(['drain','scupper'].filter(k=>S.on[k]&&b.details.includes(k)).map(k=>DET(k).name+' ('+DET(k).drawing+')').join('; ')):'')}${row('Skylights',has(['skylight','mskylight'])?E(['skylight','mskylight'].filter(k=>S.on[k]&&b.details.includes(k)).map(k=>DET(k).name+' ('+DET(k).drawing+')').join('; ')):'')}${row('Duct work / mechanical',has(['rtu','curb','exhaust','vent','sleeper','pitchpan'])?E(['rtu','curb','exhaust','vent','sleeper','pitchpan'].filter(k=>S.on[k]&&b.details.includes(k)).map(k=>DET(k).name+' ('+DET(k).drawing+')').join('; ')):'')}${row('Additional sheet metal',has(['coping','edge','wall','penthouse','ridge','ej','hatch'])?E(['coping','edge','wall','penthouse','ridge','ej','hatch'].filter(k=>S.on[k]&&b.details.includes(k)).map(k=>DET(k).name+' ('+DET(k).drawing+')').join('; ')):'')}</table>
+      <h4>Detail drawings — check all applicable</h4><div class="chk">${PE_ITEMS.map(([n,ids])=>{ const on=has(ids); const dr=ids.filter(k=>k!=='*'&&S.on[k]&&b.details.includes(k)).map(k=>DET(k).drawing); return `<div class="${on?'on':''}"><i>${on?'✓':''}</i><span>${E(n)}${dr.length?` <small>${E([...new Set(dr)].join(', '))}</small>`:''}</span></div>`; }).join('')}</div>
+      ${S.solar||(S.on.silowall&&b.details.includes('silowall'))?`<p class="src">Other: ${[S.solar?'Solar Post supports (P-1-S-TYP / P-2-S-TYP / P-3-S-TYP)':'',S.on.silowall&&b.details.includes('silowall')?'concrete silo walls, vertical application (W-7-TYP)':''].filter(Boolean).join('; ')}.</p>`:''}
+      <h4>Requested project exceptions / special conditions</h4><table class="form">${row('1. Describe item')}${row('2. Describe item')}${row('3. Describe item')}${row('4. Describe item')}</table>
+      <h4>Project roofing photos / as-builts / roof plans</h4><table class="form">${row('Total number of submitted photos',`${photos.length} loaded in the Visualizer${photos.some(p=>p.sample)?' (includes sample photos)':''}; the form asks for 640×480 copies`)}</table>
+      <div class="sig"><div><b>${E(rep)}</b>Name (print)</div><div><b></b>Firm or company</div><div><b>${E(pdfDate(date))}</b>Date</div></div></section>`); }
+  return out.join('\n'); }
+function pdfImagesReady(root){ return Promise.all([...root.querySelectorAll('img')].map(im=>(im.complete?Promise.resolve():new Promise(r=>{ im.onload=r; im.onerror=r; })).then(()=>im.decode?im.decode().catch(()=>{}):null))); }
+async function pdfPrepare(form,say){ say=say||(()=>{}); const date=new Date(); say('Loading the drawing index…'); const manifest=await drwManifest(); const shots=await pdfCaptures(form,say);
+  say('Building the document…'); xEl.doc.innerHTML=pdfBuild(form,shots,manifest||{},date); await pdfImagesReady(xEl.doc); if(document.fonts&&document.fonts.ready) await document.fonts.ready; document.body.classList.add('pdf');
+  return { name:pdfFileName(form,date), footer:`RMI Roof Visualizer · ${form.prospect||'Prospect'} · ${pdfDate(date)}`, pages:xEl.doc.querySelectorAll('section').length, images:xEl.doc.querySelectorAll('img').length }; }
+function pdfDone(clear){ document.body.classList.remove('pdf'); if(clear) xEl.doc.innerHTML=''; }
+async function pdfExport(opt){ opt=opt||{}; if(PDF.busy) return { ok:false, error:'busy' }; const form=opt.form||pdfForm(); PDF.busy=true; xEl.go.disabled=true; xEl.btn.disabled=true; const say=t=>pdfStatus(t); let r=null;
+  try{ pdfRemember(form); const prep=await pdfPrepare(form,say); const d=window.rmiDesktop;
+    if(d&&d.exportPdf){ say('Writing the PDF…'); r=await d.exportPdf({ suggested:prep.name, footer:prep.footer }); }
+    else { say('Print dialog open — choose "Save as PDF".'); window.print(); r={ printed:true }; }
+    pdfDone(!opt.keep);
+    if(r&&r.path){ PDF.last=r.path; pdfStatus(`Saved ${r.path}`,'ok'); if(d&&d.openPath&&!opt.quiet&&!window.__rmiQuiet){ const bt=document.createElement('button'); bt.className='pbtn'; bt.textContent='Open'; bt.style.marginLeft='8px'; bt.onclick=()=>d.openPath(r.path); xEl.status.appendChild(bt); } }
+    else if(r&&r.canceled) pdfStatus('Export cancelled — nothing was written.');
+    else if(r&&r.error) pdfStatus('Export failed: '+r.error,'err');
+    else pdfStatus('Sent to the print dialog.','ok');
+    return Object.assign({ ok:!(r&&r.error), file:prep.name, pages:prep.pages, images:prep.images }, r||{}); }
+  catch(err){ pdfDone(!opt.keep); pdfStatus('Export failed: '+err.message,'err'); console.error('PDF export failed',err); return { ok:false, error:err.message }; }
+  finally{ PDF.busy=false; xEl.go.disabled=false; xEl.btn.disabled=false; } }
+// scripted access for Playwright checks (build the document and leave it in place for page.pdf()) and the packaged-app selftest
+const pdfAPI={ open:pdfOpen, export:pdfExport, prepare:(form)=>pdfPrepare(Object.assign({ prospect:'', address:'', rep:'', notes:'', sections:Object.fromEntries(PDF_SECTIONS.map(([k])=>[k,true])) },form||{})), done:pdfDone,
+  state:()=>({ busy:PDF.busy, last:PDF.last, dialog:xEl.dlg.classList.contains('show'), printing:document.body.classList.contains('pdf'), sections:[...xEl.doc.querySelectorAll('section')].map(s=>s.className), images:xEl.doc.querySelectorAll('img').length, details:pdfSelected(), photos:pdfPhotos().length, file:pdfFileName(pdfForm(),new Date()) }) };
+
+/* =================================================================
    LOOP
 ================================================================= */
 function resize(){ const r=canvas.parentElement.getBoundingClientRect(); const w=Math.max(1,Math.floor(r.width)), h=Math.max(1,Math.floor(r.height)); if(canvas.width!==w*renderer.getPixelRatio()||canvas.height!==h*renderer.getPixelRatio()){ renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); } }
@@ -1898,7 +2200,7 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize()
   applyCam(); applyStage(); applySection(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
 
 selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame); phRestore();   // browser storage: last building/roof and the photos come back after a reload
-window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, drawing:drawingAPI, configuration };
+window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, drawing:drawingAPI, configuration, pdf:pdfAPI };
 })();
 </script>
 </body>
