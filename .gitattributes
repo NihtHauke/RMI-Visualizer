@@ -1,0 +1,2 @@
+# Shell hooks must keep LF endings or bash fails on Windows checkouts (core.autocrlf=true).
+scripts/pre-push text eol=lf

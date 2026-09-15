@@ -1,5 +1,7 @@
 # RMI Roof Visualizer — Project Tracker
 
+Published to GitHub: 14 Sept 2026 · unpublished commits since: 0
+
 The single status page. Per-drawing ASSUMED questions live in the catalog, not here:
 [RMI_Library_Catalog.md](RMI_Library_Catalog.md) — §3c is the per-detail sync table, [§5](RMI_Library_Catalog.md#5-open-questions-for-rmi)
 is the numbered list of open questions for RMI (cited below as §5 #n).
@@ -101,6 +103,8 @@ Roof types are those of the buildings that carry the detail.
 - [ ] Extend spliced models to the instances still code-drawn: RTU curbs at other sizes (school, office, hotel, restaurant); coping on hospital, restaurant, hotel; ridge cap on manufacturing, airport, arena (confirm pitch vs. the 1:12 model)
 - [ ] Next curb model: CS-15-MP fixed metal curb for the arena hatch (§5 #14)
 - [ ] Ask RMI whether reps see ballasted single-ply roofs (Plate SPB) — candidate 8th roof type; ballast removal is not built
+- Friday publish (Fridays only, Heath): run contact sheets → update the Published line and reset the count → `git push` → confirm Pages loads → send Dennis the week's log lines from §4
+- `samples/` photos — shared with client permission, EXIF stripped, no identifiers
 
 ---
 
@@ -108,6 +112,7 @@ Roof types are those of the buildings that carry the detail.
 
 Newest first, one line each.
 
+- 2026-09-14 — Process change from Dennis: GitHub is updated once a week. Every task is still committed, but nothing is pushed until Friday, when Heath pushes and updates the Published line at the top of this page (checklist in §3). `scripts/pre-push` refuses a push on any other day (`--no-verify` overrides; install note in CLAUDE.md; `.gitattributes` keeps the script LF so bash runs it on Windows). CLAUDE.md working loop step 5 no longer pushes. Public-repo exception for `samples/`: client roof photos RMI has written permission to share, EXIF stripped, unnamed, unaddressed (CLAUDE.md hard rule; §3); `samples/` is not git-ignored
 - 2026-09-14 — Perimeter edge metal F-1-TYP modelled and spliced into the office east edge at the hotspot (`perimeter-edge-metal-F-1-TYP.glb`). Every office edge now draws the same cross-section in code (`EM`, mitred at the corners) in place of the old box flange, and on a metal-edged block the field sheets run out to the wall face. Built to the drawing: flange flat on the roof (no raised stop, which is F-2-TYP), stripped in, fascia hooked over a continuous cleat. Now VERIFIED (was "no VERIFIED tag"): the stripping over the flange stepping down onto the field; confirm seam and flashing integrity; the cleat; Flex over the stripped flange and the field; topcoat to all surface areas. ASSUMED, not on the drawing: the tape over the metal-to-membrane joint, Flex down the fascia face, exposed face fasteners and their encapsulation, and every size (was "flange width"), §5 #22. Detail camera brought in from 14 to 3.5 ft. The penthouse prism helpers are now shared (`prismRun`, `rectYZ`, `sheetYZ`); `prismRun` can leave a run end open where it meets a spliced model
 - 2026-09-14 — Desktop app 0.1.2 (package.json, package-lock.json, CLAUDE.md installer line). Installer rebuilt as `dist/RMI Roof Visualizer Setup 0.1.2.exe`, the first with the version in the window title. Packaged app opened from `dist/win-unpacked`: title "RMI Roof Visualizer 0.1.2", left panel ends at "Open photo panel"
 - 2026-09-14 — Electron window title now shows the app version, read from package.json at runtime (`app.getVersion()` in electron/main.js, no hard-coded number): "RMI Roof Visualizer 0.1.1" confirmed with `npm start`. The 0.1.1 installer already in dist/ was built before this change; the next `npm run dist` includes it
