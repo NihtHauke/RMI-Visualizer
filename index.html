@@ -132,6 +132,32 @@
   .dfoot{flex:none;font-size:11px;color:var(--mute);padding:5px 10px 6px;background:#F6F7F8;border-top:1px solid var(--line);line-height:1.35}
   @media (max-width:820px){ #app.drawing,#app.slider.drawing{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "strip" "view" "foot"} #app.drawing .drw{grid-area:view;z-index:6;border-left:0} #app.drawing .layers{display:none} }
 
+  /* ---- EagleView prospect roof: "Import EagleView report" in the header; a Penetrations panel docks right of the 3D view in roof view ---- */
+  #evBtn{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:3px;padding:4px 10px;cursor:pointer;font-size:13px}
+  #evBtn.on{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+  .evchip{position:absolute;top:48px;left:12px;max-width:calc(100% - 24px);background:rgba(255,255,255,.92);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:3px;padding:5px 10px;font-size:12.5px;color:var(--ink);display:none;line-height:1.35}
+  .evtot{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+  .evtot td{padding:3px 0;border-bottom:1px solid var(--line)}
+  .evtot td:last-child{text-align:right;font-weight:600;white-space:nowrap}
+  .evp{grid-area:evp;display:none;flex-direction:column;min-height:0;min-width:0;background:#fff;border-left:1px solid var(--line)}
+  #app.ev{grid-template-columns:var(--rail) minmax(0,1fr) 340px;grid-template-areas:"head head head" "rail strip strip" "rail view evp" "rail foot foot"}
+  #app.ev .evp{display:flex}
+  #app.ev .hint{display:none}
+  #app.ev.drawing{grid-template-columns:var(--rail) minmax(0,1fr) minmax(0,.8fr);grid-template-areas:"head head head" "rail strip strip" "rail view drw" "rail foot foot"}
+  #app.ev.drawing .evp{display:none}
+  .evtools{display:flex;gap:8px;align-items:center;padding:6px 10px;border-bottom:1px solid var(--line);font-size:12px;color:var(--warn);flex:none}
+  .evlist{flex:1;min-height:0;overflow:auto;font-size:12.5px}
+  .evrow{display:grid;grid-template-columns:36px minmax(0,1fr);gap:2px 8px;padding:6px 10px;border-bottom:1px solid var(--line);cursor:pointer;align-items:center}
+  .evrow:hover{background:#FAFAF8}
+  .evrow.on{background:#FFF9EA}
+  .evrow b{color:var(--navy);font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:14px;grid-row:span 2}
+  .evrow .sz{color:var(--mute);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .evrow .ctl{display:flex;gap:6px;align-items:center;min-width:0}
+  .evrow select{flex:1;min-width:0;border:1px solid var(--line);border-radius:3px;padding:2px 4px;font-size:12px;background:#fff}
+  .evrow label{display:flex;gap:4px;align-items:center;white-space:nowrap;font-size:11.5px;color:var(--mute);cursor:pointer}
+  .evrow input{accent-color:var(--navy)}
+  @media (max-width:820px){ #app.ev{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "strip" "view" "foot"} #app.ev .evp{grid-area:view;z-index:6;border-left:0} #evBtn{font-size:12px;padding:3px 7px} }
+
   /* ---- Prospect photos (v2): thumbnail strip across the top of the 3D view, a slider that docks on the right, local storage only ---- */
   #pstrip{grid-area:strip;display:none;align-items:center;gap:8px;padding:6px 10px;min-width:0;min-height:0;background:#fff;border-bottom:1px solid var(--line)}
   #app.photos #pstrip{display:flex}
@@ -258,11 +284,15 @@
     #pdfDoc p{margin:0 0 5pt}
     #pdfDoc .sub{color:var(--mute);font-size:9.5pt;margin:0 0 8pt}
     #pdfDoc .src{color:var(--mute);font-size:9pt;line-height:1.35}
+    #pdfDoc table.sched{width:100%;border-collapse:collapse;font-size:8.5pt;line-height:1.3}
+    #pdfDoc .sched th,#pdfDoc .sched td{border-bottom:1px solid var(--line);padding:1.5pt 4pt;text-align:left;vertical-align:top}
+    #pdfDoc .sched th{color:var(--navy)}
+    #pdfDoc .sched tr{break-inside:avoid}
     #pdfDoc .tag{display:inline-block;font-size:7.5pt;font-weight:700;letter-spacing:.3px;padding:0 4px;border-radius:2px;vertical-align:middle;line-height:1.5}
     #pdfDoc .tag.v{background:#E3F1E8;color:var(--ok)}
     #pdfDoc .tag.a{background:#FBEBD6;color:var(--warn)}
     /* cover */
-    #pdfDoc .cover{position:relative;min-height:9.4in}
+    #pdfDoc .cover{position:relative}
     #pdfDoc .cover .brand{display:flex;align-items:center;gap:10pt;padding-bottom:10pt;border-bottom:3px solid var(--gold)}
     #pdfDoc .cover .brand img{height:64pt;width:auto;flex:none}
     #pdfDoc .cover .brand span{display:block;font-size:10.5pt;color:var(--mute);letter-spacing:.5px;text-transform:uppercase}
@@ -271,10 +301,10 @@
     #pdfDoc .cover .who .k{font-size:9.5pt;color:var(--mute);text-transform:uppercase;letter-spacing:.6px}
     #pdfDoc .cover .who .v{font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:22pt;color:var(--ink);line-height:1.15}
     #pdfDoc .cover .who .addr{font-size:12pt;color:var(--ink);white-space:pre-line}
-    #pdfDoc .cover .hero{display:block;width:100%;height:3.9in;object-fit:cover;border-radius:3pt;margin:22pt 0 16pt;border:1px solid var(--line)}
+    #pdfDoc .cover .hero{display:block;width:100%;height:3.1in;object-fit:cover;border-radius:3pt;margin:22pt 0 16pt;border:1px solid var(--line)}
     #pdfDoc .cover .meta{display:grid;grid-template-columns:1fr 1fr;gap:6pt 18pt;font-size:11pt}
     #pdfDoc .cover .meta span{display:block;font-size:8.5pt;color:var(--mute);text-transform:uppercase;letter-spacing:.5px}
-    #pdfDoc .cover .fine{position:absolute;left:0;right:0;bottom:0;font-size:8.5pt;color:var(--mute);line-height:1.35;border-top:1px solid var(--line);padding-top:6pt}
+    #pdfDoc .cover .fine{margin-top:14pt;font-size:8.5pt;color:var(--mute);line-height:1.35;border-top:1px solid var(--line);padding-top:6pt}
     /* configuration */
     #pdfDoc .wide{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:3pt;margin:8pt 0 10pt}
     #pdfDoc table.kv{width:100%;border-collapse:collapse;font-size:10.5pt}
@@ -344,6 +374,8 @@
     <div class="mark"><img src="assets/rmi-logo.png" alt="RMI">Visualize your roof</div>
     <div class="sub" id="subTitle"></div>
     <button id="photoBtn" title="Prospect photos (stay on this computer)">Prospect photos</button>
+    <button id="evBtn" title="Import an EagleView report XML from this computer (nothing is uploaded)">Import EagleView report</button>
+    <input type="file" id="evInput" accept=".xml,text/xml,application/xml" style="display:none">
     <button id="pdfBtn" title="Export this presentation as a PDF (no pricing)">Export PDF</button>
     <div class="mock">Mockup — not RMI spec</div>
   </header>
@@ -367,6 +399,11 @@
 
     <h2>Roof size (optional)</h2>
     <div class="field"><label for="sqft">Approx. square feet</label><input type="number" id="sqft" value="9600" min="500" step="100"></div>
+    <div id="evBasis" style="display:none">
+      <div class="field"><label for="evPH">Parapet height (ft)</label><input type="number" id="evPH" value="3" min="0.5" max="10" step="0.5"></div>
+      <table class="evtot" id="evTotals"></table>
+      <div class="pattern" id="evBasisNote"></div>
+    </div>
     <div class="est" style="margin-top:10px">
       <table id="estTable"></table>
       <div class="note">Material estimate from RMI spec-plate coverage rates. Per-detail allowances are <span class="tag a">ASSUMED</span> until RMI supplies figures. Not a bid — no pricing here; an RMI rep or contractor prices the job.</div>
@@ -387,8 +424,9 @@
 
   <main id="view">
     <canvas id="c"></canvas>
-    <div class="viewbar"><div class="chip" id="viewChip"><b>Whole roof</b><span id="viewName"></span><button id="backBtn" style="display:none">Back to roof</button><button id="secBtn" style="display:none;background:#fff;color:var(--navy);border:1px solid var(--navy)">Section view</button><button id="drwBtn" style="display:none;background:#fff;color:var(--navy);border:1px solid var(--navy)" title="RMI drawing, application steps and 3D concept for this detail">Drawing</button></div></div>
+    <div class="viewbar"><div class="chip" id="viewChip"><b>Whole roof</b><span id="viewName"></span><button id="backBtn" style="display:none">Back to roof</button><button id="secBtn" style="display:none;background:#fff;color:var(--navy);border:1px solid var(--navy)">Section view</button><button id="drwBtn" style="display:none;background:#fff;color:var(--navy);border:1px solid var(--navy)" title="RMI drawing, application steps and 3D concept for this detail">Drawing</button><button id="evpBtn" style="display:none;background:#fff;color:var(--navy);border:1px solid var(--navy)" title="Confirm the type of each penetration measured in the EagleView report">Penetrations</button></div></div>
     <div class="hint">Drag to orbit · scroll to zoom · click a marker to zoom in</div>
+    <div class="evchip" id="evChip"></div>
     <div id="hots"></div>
     <div class="layers" id="layers"></div>
   </main>
@@ -401,6 +439,13 @@
       <div class="dsteps" id="drwSteps"></div>
     </div>
     <div class="dfoot" id="drwFoot"></div>
+  </aside>
+
+  <aside class="evp" id="evp" aria-label="EagleView penetrations">
+    <div class="dhead"><div class="dtitle"><b>Penetrations</b><span id="evpMeta"></span></div><button class="pbtn" id="evpClose" title="Close (Esc)">×</button></div>
+    <div class="evtools"><button class="pbtn" id="evConfirmAll">Confirm all best guesses</button><span id="evpCnt"></span></div>
+    <div class="evlist" id="evList"></div>
+    <div class="dfoot">Each penetration from the report, numbered as on its penetrations diagram, typed by footprint area as a best guess: under 1 sq ft soil stack / pipe; 1–4 small curb; 4–10 curb / hatch; 10–30 RTU / skylight; over 30 large equipment. A type stays ASSUMED until the rep confirms or changes it. Click a row to fly to it.</div>
   </aside>
 
   <section id="photos" aria-label="Prospect photo">
@@ -781,6 +826,10 @@ const STEPS = {
     `Applies to all metal coping laps, joints, corners and transitions (note 8).` ]
 };
 
+// On a flat membrane roof (the EagleView prospect) a hatch or a vent is a curb per CS-1-TYP note 7 — the RTU curb assembly, the unit lifted and
+// reset — not the metal-roof sheet. Curb sizes are ASSUMED.
+const FLAT_HATCH={ drawing:'CS-1-TYP', concept:'CS1-18-3D', steps:curbSteps('hatch','CS-1-TYP'), src:'Access and smoke hatches are named in CS-1-TYP note 7 — VERIFIED: the hatch curb takes the RTU curb assembly, Flex from the field up the full curb wall and over the top, the hatch lifted and reset after cure. Curb size is ASSUMED.' };
+const FLAT_VENT={ name:'Vent / duct curb', drawing:'CS-1-TYP', concept:'CS1-18-3D', steps:curbSteps('vent','CS-1-TYP'), src:'Vents and ducts are named in CS-1-TYP note 7 — VERIFIED: the same curb assembly as the RTU, the vent lifted and reset after cure. Curb and hood sizes are ASSUMED.' };
 const DETAILS = {
   curb:   { name:'Curb-mounted HVAC unit', drawing:'CS-13-MP', concept:'CS13-1-8-3D', dist:21, phi:1.18, theta:0.85, drop:4.6, menu:'HVAC curb', steps:STEPS.curb, byRoof:{ spf:{ drawing:'SPF-13-TYP', concept:'B-1-SPF-1-3D', steps:spfCurbSteps('HVAC'), src:'Assembly per SPF-13-TYP (SPF (E) HVAC curb flashing). Wrap height is ASSUMED.' } },
     layers:[{k:'existing',label:'(E) metal curb, flashing skirt and counterflashing; unit lifted',color:'#AEB3B0'},{k:'primer',label:'Primer on curb, flashing and the panel around it',color:'#E8D7A6'},{k:'flex',label:'Flex from the panel up the full curb wall, over the top, onto the interior',color:'#D9A21B'},{k:'thane',label:'Topcoat over all; counterflashing and unit reset after cure',color:'#C3C7CC'}],
@@ -796,7 +845,7 @@ const DETAILS = {
     src:'Assembly per F-12-TYP. No 3D concept render; geometry is ASSUMED.', byRoof:{ spf:{ drawing:'—', steps:STEPS.mskylightSpf, src:'No SPF skylight drawing in the library; treated as a curb per SPF-13-TYP. ASSUMED.' } } },
   vent:   { name:'Roof exhaust vent', drawing:'Plate D', concept:'—', dist:12, phi:1.1, theta:2.6, drop:2.0, menu:'Vents', steps:STEPS.vent,
     layers:[{k:'existing',label:'Existing vent curb and gooseneck hood',color:'#AEB3B0'},{k:'primer',label:'Primer on curb and surrounding panel',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb and out onto the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
-    src:'Metal ducts, vents and curbs per Plate D. No dedicated vent drawing for metal roofs in the library; assembly is ASSUMED.', byRoof:{ spf:{ drawing:'SPF-16-TYP', steps:STEPS.ventSpf, src:'Assembly per SPF-16-TYP (roof mounted vent). Wrap height is ASSUMED.' }, concrete:{ name:'Bin vent', drawing:'CS-12-CON', steps:STEPS.ventCon, src:'Treated as a curb on exposed concrete per CS-12-CON. ASSUMED.' } } },
+    src:'Metal ducts, vents and curbs per Plate D. No dedicated vent drawing for metal roofs in the library; assembly is ASSUMED.', byRoof:{ spf:{ drawing:'SPF-16-TYP', steps:STEPS.ventSpf, src:'Assembly per SPF-16-TYP (roof mounted vent). Wrap height is ASSUMED.' }, concrete:{ name:'Bin vent', drawing:'CS-12-CON', steps:STEPS.ventCon, src:'Treated as a curb on exposed concrete per CS-12-CON. ASSUMED.' }, tpo:FLAT_VENT, modbit:FLAT_VENT, gravel:FLAT_VENT } },
   mpipe:  { name:'Pipe penetration, EPDM boot', drawing:'P-9-MP', concept:'—', dist:8, phi:1.05, theta:2.5, drop:2.2, menu:'Pipes', steps:STEPS.mpipe,
     layers:[{k:'existing',label:'Existing pipe with EPDM boot',color:'#AEB3B0'},{k:'primer',label:'Primer on boot and panel',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the boot and its flange',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
     src:'Assembly per P-9-MP (EPDM boot). P-10-MP covers the metal-jack alternative.', byRoof:{ spf:{ drawing:'SPF-4-TYP', steps:STEPS.mpipeSpf, src:'Assembly per SPF-4-TYP (SPF configuration, penetration): Flex min 1" above the rain-collar flashing, topcoat min 1" above the Flex.' } } },
@@ -808,7 +857,7 @@ const DETAILS = {
     src:'Assembly per D-8-TYP and D8-9-FT-3D.' },
   hatch:  { name:'Roof hatch', drawing:'CS-15-MP', concept:'—', dist:12, phi:1.1, theta:0.8, drop:1.6, menu:'Roof hatch', steps:STEPS.hatch,
     layers:[{k:'existing',label:'Existing hatch curb and lid',color:'#AEB3B0'},{k:'primer',label:'Primer on curb wall and panel',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb to the lid frame and out onto the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
-    src:'Access and smoke hatches are named in CS-1-TYP note 7 (flat roofs) — VERIFIED; on metal, CS-15-MP fixed curb. Flex up the full curb and over the top; hatch lifted and reset.', byRoof:{ spf:{ drawing:'SPF-13-TYP', steps:STEPS.hatchSpf, src:'Curb per SPF-13-TYP. Hatch-specific wrap is ASSUMED.' }, concrete:{ name:'Manway / bin hatch', drawing:'CS-14-CON', steps:STEPS.hatchCon, src:'Fixed curb on exposed concrete per CS-14-CON.' } } },
+    src:'Access and smoke hatches are named in CS-1-TYP note 7 (flat roofs) — VERIFIED; on metal, CS-15-MP fixed curb. Flex up the full curb and over the top; hatch lifted and reset.', byRoof:{ spf:{ drawing:'SPF-13-TYP', steps:STEPS.hatchSpf, src:'Curb per SPF-13-TYP. Hatch-specific wrap is ASSUMED.' }, concrete:{ name:'Manway / bin hatch', drawing:'CS-14-CON', steps:STEPS.hatchCon, src:'Fixed curb on exposed concrete per CS-14-CON.' }, tpo:FLAT_HATCH, modbit:FLAT_HATCH, gravel:FLAT_HATCH } },
   ridge:  { name:'Ridge cap', drawing:'F-21-M-TYP', concept:'—', dist:12, phi:1.0, theta:0.2, drop:0, menu:'Ridge cap', steps:STEPS.ridge, byRoof:{ spf:{ drawing:'SPF-3-TYP', steps:STEPS.ridgeSpf, src:'Assembly per SPF-3-TYP (SPF ridge line configuration).' } },
     layers:[{k:'existing',label:'Existing ridge cap and closures',color:'#AEB3B0'},{k:'primer',label:'Primer on cap laps and fasteners',color:'#E8D7A6'},{k:'flex',label:'Flex over cap laps and both edges',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
     src:'Assembly per F-21-M-TYP — VERIFIED: (E) ridge cap over the (E) metal panel with a metal closure at the panel end, the closure set in sealant or tape with a ribbon of sealant at any voids, closure fasteners through the cap, RMI-Flex at the cap and the topcoat over all (the drawing labels it RMI-Thane; note 10 puts the wear surface coating per the RMI specification guide, where Plate MP offers Thane or White Plus). Note 12 gives the one dimension on the drawing: closures must be recessed a minimum 6\" under the ridge cap or flashing metal, or additional flat stock flashing is added — the model recesses the closure 7.8\". Note 11: confirm closures are present and tight fitting, replace ill-fitting ones and seal their edges before the Flex goes on. Note 13: foam closures are not permissible without prior written approval from RMI. There is no 3D concept render for this detail, so everything else is ASSUMED: the 4-ft section, the 6\" cap lap and its joggled end, the closure 18\" from the ridge and its 3\" width, the notches where the ribs pass, fasteners at 12\" o.c., how far the Flex turns over the cap edge and runs onto the panel, and every coat thickness.' },
@@ -1286,12 +1335,12 @@ function drawLines(roof,ls,cutouts){ if(ls.mesh){ roof.remove(ls.mesh); ls.mesh.
     cutouts.forEach(c=>{ const u=ls.alongZ?c.x:c.z, v=ls.alongZ?c.z:c.x, d=Math.max(0,Math.abs(p-u)-ls.w/2);
       if(c.rMem){ const R=c.rMem+CLR; if(d<R){ const hl=Math.sqrt(R*R-d*d); cuts.push([v-hl,v+hl]); } }
       else { const hh=c.hMem, hx=(Array.isArray(hh)?hh[0]:hh)+CLR, hz=(Array.isArray(hh)?hh[1]:hh)+CLR; if(d<(ls.alongZ?hx:hz)){ const hv=ls.alongZ?hz:hx; cuts.push([v-hv,v+hv]); } } });
-    cuts.sort((q,r)=>q[0]-r[0]); let s=-ls.half; cuts.forEach(([lo,hi])=>{ if(lo>s) segs.push([p,s,Math.min(lo,ls.half)]); s=Math.max(s,hi); }); if(s<ls.half) segs.push([p,s,ls.half]); });
+    cuts.sort((q,r)=>q[0]-r[0]); (ls.spans?ls.spans(p):[[-ls.half,ls.half]]).forEach(([a0,a1])=>{ let s=a0; cuts.forEach(([lo,hi])=>{ if(hi<=s||lo>=a1) return; if(lo>s) segs.push([p,s,lo]); s=Math.max(s,hi); }); if(s<a1) segs.push([p,s,a1]); }); });   // `spans`: the strip's runs inside a polygon facet (EagleView prospect); a rectangle block runs -half..half
   const mesh=new THREE.InstancedMesh(ls.alongZ?new THREE.BoxGeometry(ls.w,0.04,1):new THREE.BoxGeometry(1,0.04,ls.w),ls.mat,Math.max(segs.length,1)), mm=new THREE.Matrix4(); mesh.count=segs.length;
   segs.forEach(([p,lo,hi],i)=>{ const c=(lo+hi)/2, l=hi-lo; if(ls.alongZ) mm.makeScale(1,1,l).setPosition(p,0.02,c); else mm.makeScale(l,1,1).setPosition(c,0.02,p); mesh.setMatrixAt(i,mm); });
   roof.add(mesh); ls.mesh=mesh; }
 function applyCutouts(b){ if(!b.cutouts.length) return; b.lineSets.forEach(ls=>drawLines(b.roof,ls,b.cutouts));
-  const build=(kind,shrink=0)=>{ const sh=new THREE.Shape(); sh.moveTo(-b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,b.IW/2); sh.lineTo(-b.IL/2,b.IW/2); sh.closePath();
+  const build=(kind,shrink=0)=>{ const sh=b.shape?b.shape():new THREE.Shape(); if(!b.shape){ sh.moveTo(-b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,b.IW/2); sh.lineTo(-b.IL/2,b.IW/2); sh.closePath(); }   // a polygon block (EagleView prospect) supplies its own outline
     b.cutouts.forEach(c=>{ const h=new THREE.Path(); const r=(kind==='mem'?c.rMem:c.rCoat)-shrink, hh=(kind==='mem'?c.hMem:c.hCoat); const hx=(Array.isArray(hh)?hh[0]:hh)-shrink, hz=(Array.isArray(hh)?hh[1]:hh)-shrink;   // hMem/hCoat: half-size, or [half-x, half-z] for a rectangle
       if(kind==='mem'?c.rMem:c.rCoat){ h.absarc(c.x,-c.z,r,0,Math.PI*2,true); } else { h.moveTo(c.x-hx,-c.z-hz); h.lineTo(c.x-hx,-c.z+hz); h.lineTo(c.x+hx,-c.z+hz); h.lineTo(c.x+hx,-c.z-hz); h.closePath(); } sh.holes.push(h); });
     return new THREE.ShapeGeometry(sh,24); };
@@ -1355,17 +1404,25 @@ function addPipe(b,x,z,r=0.35){ let g=new THREE.Group(); g.position.set(x,0,z); 
 // Same numbers as scripts/build_overflow_scupper_D-4-TYP.py, whose 4-ft section splices into this run — keep the two in step or the seams show.
 const PB={ CANT:6, FT:0.1875, FOOT:10, COAT:0.25, FIELD:{primer:12,flex:12,topcoat:13} };   // inches
 // Run-local frame on a wall face `off` from the block centre: x along the wall, -z toward the roof, y up; y = from the wall, z = height (inches) in slab/tilt.
-function wallFrame(b,side,off,into){ const isX=side==='W'||side==='E', sgn=(side==='W'||side==='N')?-1:1, IN=1/12;
-  const runAt=(x0,x1,parent)=>{ const r=new THREE.Group(); const c=(x0+x1)/2; if(isX){ r.position.set(sgn*off,0,c); r.rotation.y=sgn<0?-Math.PI/2:Math.PI/2; } else { r.position.set(c,0,sgn*off); r.rotation.y=sgn<0?Math.PI:0; } (parent||into).add(r); r.userData.len=x1-x0; return r; };
+function frameTools(b){ const IN=1/12;   // the slab / tilt / cant builders every run-local frame shares
   const slab=(r,y0,y1,z0,z1,mat,tag)=>{ const m=box(r.userData.len,(z1-z0)*IN,(y1-y0)*IN,mat,0,(z0+z1)/2*IN,-(y0+y1)/2*IN,false); r.add(m); if(tag) b.resetParts.push(m); return m; };
   const tilt=(r,p,q,t,mat,tag)=>{ const [y0,z0]=p,[y1,z1]=q; const ln=Math.hypot(y1-y0,z1-z0); const m=box(r.userData.len,t*IN,ln*IN,mat,0,(z0+z1)/2*IN,-(y0+y1)/2*IN,false); m.rotation.x=-Math.atan2(z1-z0,-(y1-y0)); r.add(m); if(tag) b.resetParts.push(m); return m; };
   const cant=(r,c)=>{ const sh=new THREE.Shape(); sh.moveTo(0,0); sh.lineTo(c*IN,0); sh.lineTo(0,c*IN); sh.closePath(); /* CCW; rotateY(90) sends shape-x to local -z, toward the roof */ const cg=new THREE.ExtrudeGeometry(sh,{depth:r.userData.len,bevelEnabled:false}); cg.rotateY(Math.PI/2); cg.translate(-r.userData.len/2,0,0); const m=new THREE.Mesh(cg,M.wood); r.add(m); return m; };
-  return {runAt,slab,tilt,cant,IN}; }
-function parapetBase(b,side,segs,into){ const F=wallFrame(b,side,(side==='W'||side==='E')?b.IL/2:b.IW/2,into); const surf=b.fieldPlanes[0].material; const P=PB, top=b.PH*12-0.1, runs=[];
-  segs.forEach(([x0,x1])=>{ if(x1-x0<0.01) return; const r=F.runAt(x0,x1); runs.push(r); F.cant(r,P.CANT);
+  return {slab,tilt,cant,IN}; }
+function wallFrame(b,side,off,into){ const isX=side==='W'||side==='E', sgn=(side==='W'||side==='N')?-1:1;
+  const runAt=(x0,x1,parent)=>{ const r=new THREE.Group(); const c=(x0+x1)/2; if(isX){ r.position.set(sgn*off,0,c); r.rotation.y=sgn<0?-Math.PI/2:Math.PI/2; } else { r.position.set(c,0,sgn*off); r.rotation.y=sgn<0?Math.PI:0; } (parent||into).add(r); r.userData.len=x1-x0; return r; };
+  return Object.assign({runAt},frameTools(b)); }
+// A run along any edge of a facet (the EagleView prospect roof): p0 → p1 in roof-local [x,z], the field on the run's local -z side (loops are
+// oriented with the field to the left of the direction of travel, seen from above). runAt(x0,x1) measures along the edge from p0.
+function edgeFrame(b,p0,p1,into){ const dx=p1[0]-p0[0], dz=p1[1]-p0[1], len=Math.hypot(dx,dz)||1, ux=dx/len, uz=dz/len, rot=Math.atan2(-uz,ux);
+  const runAt=(x0,x1,parent)=>{ const r=new THREE.Group(); const c=(x0+x1)/2; r.position.set(p0[0]+ux*c,0,p0[1]+uz*c); r.rotation.y=rot; (parent||into).add(r); r.userData.len=x1-x0; return r; };
+  return Object.assign({runAt,len,ux,uz},frameTools(b)); }
+function parapetBaseSection(b,F,r,surf){ const P=PB, top=b.PH*12-0.1; F.cant(r,P.CANT);   // one run of the cant + base flashing + coats (parapetBase and the EagleView prospect share it)
     F.slab(r,P.CANT,P.FOOT,0,P.FT,surf); F.tilt(r,[P.CANT,P.FT/2],[0,P.CANT+P.FT/2],P.FT,surf); F.slab(r,0,P.FT,P.CANT,b.PH*12,surf);   // (E) base flashing: foot, over the cant, up the wall
     [[M.primerOv,1,'primer'],[M.flexOv,2,'flex'],[M.topcoat,3,'topcoat']].forEach(([mat,i,k])=>{ const d0=(i-1)*P.COAT, d1=i*P.COAT, c=P.CANT+P.FT/2+P.FT/Math.SQRT2+Math.SQRT2*(d0+P.COAT/2);   /* this coat's centre-line over the cant: y+z=c */
-      F.slab(r,P.FOOT+d0,P.FIELD[k],P.FT+d0,P.FT+d1,mat); F.slab(r,P.CANT,P.FOOT+d1,P.FT+d0,P.FT+d1,mat); F.tilt(r,[c-(P.FT+d0+P.COAT/2),P.FT+d0+P.COAT/2],[d0+P.COAT/2,c-(d0+P.COAT/2)],P.COAT,mat); F.slab(r,P.FT+d0,P.FT+d1,P.CANT,top,mat); }); });
+      F.slab(r,P.FOOT+d0,P.FIELD[k],P.FT+d0,P.FT+d1,mat); F.slab(r,P.CANT,P.FOOT+d1,P.FT+d0,P.FT+d1,mat); F.tilt(r,[c-(P.FT+d0+P.COAT/2),P.FT+d0+P.COAT/2],[d0+P.COAT/2,c-(d0+P.COAT/2)],P.COAT,mat); F.slab(r,P.FT+d0,P.FT+d1,P.CANT,top,mat); }); }
+function parapetBase(b,side,segs,into){ const F=wallFrame(b,side,(side==='W'||side==='E')?b.IL/2:b.IW/2,into); const surf=b.fieldPlanes[0].material; const runs=[];
+  segs.forEach(([x0,x1])=>{ if(x1-x0<0.01) return; const r=F.runAt(x0,x1); runs.push(r); parapetBaseSection(b,F,r,surf); });
   return runs; }
 // Overflow scupper per D-4-TYP (concept D4-1-FT-3D): the (E) tube through the parapet above the (E) cant; Flex encapsulates the tube interior and
 // runs 12" onto the field (VERIFIED), the base coat continues up the (E) wall flashing, topcoat over all; sealant bead at the exterior termination.
@@ -1392,11 +1449,7 @@ function setScuppers(b,on){ b.scuppers.forEach(sc=>{ sc.g.visible=on; sc.plug.fo
 // Sizes are ASSUMED except the 12" screw spacing. `gap` = {at} splices the 4-ft model into the run at that position along the wall.
 const WT={ FH:24, REG:26, CANT:6, T:0.1875, FOOT:10, BAR_H:1, BAR_T:0.125, BAR_TOP:23.5, SCREW_R:0.1875, SCREW_H:0.125, GROOVE_H:0.75, LIP_H:0.75,
   CF_STAND:1, CF_KNEE:24.5, CF_BOT:20, HEM:0.5, BEAD:0.1875, COAT:0.04, MT:0.04, FIELD:{primer:12,flex:12,topcoat:13} };   // inches
-function addWallTie(b,side,len,center,gap){ const g=new THREE.Group(); b.roof.add(g); const isX=side==='W'||side==='E';
-  const off=(isX?b.IL/2:b.IW/2)+b.PT;   // the true wall face: makeBlock insets the field by PT even on a skipped side, so the abutting wall stands PT beyond it
-  const IN=1/12, W=WT; b.resetParts=b.resetParts||[];
-  const F=wallFrame(b,side,off,g); const runAt=(x0,x1)=>F.runAt(center+x0,center+x1), slab=F.slab, tilt=F.tilt;   // run-local frame like the coping: x along the wall, -z toward the roof, y up
-  const seg=(x0,x1)=>{ const r=runAt(x0,x1); F.cant(r,W.CANT);
+function wallTieSection(b,F,r){ const IN=1/12, W=WT, slab=F.slab, tilt=F.tilt; b.resetParts=b.resetParts||[]; F.cant(r,W.CANT);   // one run of the W-11-TYP tie-in (addWallTie and the EagleView prospect share it)
     slab(r,W.CANT,W.FOOT,0,W.T,M.modbit); tilt(r,[W.CANT,W.T/2],[0,W.CANT+W.T/2],W.T,M.modbit); slab(r,0,W.T,W.CANT,W.FH,M.modbit);          // (E) flashing: foot, over the cant, up the wall
     slab(r,W.T,W.T+W.BAR_T,W.BAR_TOP-W.BAR_H,W.BAR_TOP,M.coping);                                                                         // term bar
     for(let x=-r.userData.len/2+0.5;x<r.userData.len/2;x+=1){ const sc=new THREE.Mesh(new THREE.CylinderGeometry(W.SCREW_R*IN,W.SCREW_R*IN,W.SCREW_H*IN,8),M.fast); sc.rotation.x=Math.PI/2; sc.position.set(x,(W.BAR_TOP-W.BAR_H/2)*IN,-(W.T+W.BAR_T+W.SCREW_H/2)*IN); r.add(sc); }   // 12" o.c.
@@ -1406,7 +1459,12 @@ function addWallTie(b,side,len,center,gap){ const g=new THREE.Group(); b.roof.ad
     [[M.primerOv,1,'primer'],[M.flexOv,2,'flex'],[M.topcoat,3,'topcoat']].forEach(([mat,i,k])=>{ const d0=(i-1)*W.COAT, d1=i*W.COAT;   // coats: field foot, cant, flashing, over the bar, up to the reglet receiver
       slab(r,W.FOOT+d0,W.FIELD[k],W.T+d0,W.T+d1,mat); slab(r,W.CANT,W.FOOT+d1,W.T+d0,W.T+d1,mat); tilt(r,[W.CANT+d0*0.7,W.T+d0*0.7],[d0*0.7,W.CANT+W.T+d0*0.7],W.COAT,mat);
       slab(r,W.T+d0,W.T+d1,W.CANT,W.BAR_TOP-W.BAR_H-d1,mat); slab(r,W.T,W.T+W.BAR_T+d1,W.BAR_TOP-W.BAR_H-d1,W.BAR_TOP+d1,mat); slab(r,d0,W.T+W.BAR_T+d1,W.BAR_TOP+d0,W.FH+d1,mat); slab(r,d0,d1,W.FH,W.REG-W.LIP_H,mat); });
-    return r; };
+    return r; }
+function addWallTie(b,side,len,center,gap){ const g=new THREE.Group(); b.roof.add(g); const isX=side==='W'||side==='E';
+  const off=(isX?b.IL/2:b.IW/2)+b.PT;   // the true wall face: makeBlock insets the field by PT even on a skipped side, so the abutting wall stands PT beyond it
+  const IN=1/12, W=WT; b.resetParts=b.resetParts||[];
+  const F=wallFrame(b,side,off,g); const runAt=(x0,x1)=>F.runAt(center+x0,center+x1), slab=F.slab, tilt=F.tilt;   // run-local frame like the coping: x along the wall, -z toward the roof, y up
+  const seg=(x0,x1)=>wallTieSection(b,F,runAt(x0,x1));
   // the field stops PT short of the wall: carry the membrane and the three sweep sheets across that strip so the tie-in sits on roof, not on bare block
   const fill=runAt(-len/2,len/2); fill.add(box(len,0.01,b.PT+0.05,b.fieldPlanes[0].material,0,-0.005,-(b.PT/2),false)); [[M.primerOv,0.05],[M.flexOv,0.08],[M.topcoat,0.11]].forEach(([mat,dy])=>{ fill.add(box(len,0.02,b.PT+0.05,mat,0,dy,-(b.PT/2),false)); });   // membrane flush with the field plane so the flashing foot sits on it
   const segs = gap ? [[-len/2,gap.at-1.998],[gap.at+1.998,len/2]] : [[-len/2,len/2]]; segs.forEach(([x0,x1])=>seg(x0,x1));   // run over-laps 0.6 mm into the model (flush): the coplanar strip is sub-pixel, and there is no slit and no exposed end-face
@@ -1431,10 +1489,7 @@ function prismRun(r,pts,mat,xa,xb,ma,mb,capA=true,capB=true){ const IN=1/12; let
   const ge=new THREE.BufferGeometry(); ge.setAttribute('position',new THREE.Float32BufferAttribute(v,3)); ge.computeVertexNormals(); const m=new THREE.Mesh(ge,mat); m.receiveShadow=true; r.add(m); return m; }
 function rectYZ(y0,y1,z0,z1){ return [[y0,z0],[y1,z0],[y1,z1],[y0,z1]]; }
 function sheetYZ([y0,z0],[y1,z1],t){ const ln=Math.hypot(y1-y0,z1-z0), ny=-(z1-z0)/ln*t/2, nz=(y1-y0)/ln*t/2; return [[y0+ny,z0+nz],[y1+ny,z1+nz],[y1-ny,z1-nz],[y0-ny,z0-nz]]; }
-function addPenthouse(b,x,z,PL,PW,PHt,splice){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const IN=1/12, P=PW13, surf=b.fieldPlanes[0].material; b.afterParts=b.afterParts||[];
-  g.add(box(PL,PHt,PW,M.wall,0,PHt/2,0)); g.add(box(PL+0.6,0.4,PW+0.6,M.coping,0,PHt+0.15,0)); g.add(box(3,7,0.2,M.unitD,PL/4,3.5,PW/2+0.12,false));
-  const rect=rectYZ, sheet=sheetYZ;
-  const section=(r,ma,mb)=>{ const L2=r.userData.len/2, add=(pts,mat)=>prismRun(r,pts,mat,-L2,L2,ma,mb), SY=P.CF_STAND+P.MT;
+function penthouseSection(b,r,surf,ma,mb){ const IN=1/12, P=PW13, rect=rectYZ, sheet=sheetYZ; b.afterParts=b.afterParts||[]; const L2=r.userData.len/2, add=(pts,mat)=>prismRun(r,pts,mat,-L2,L2,ma,mb), SY=P.CF_STAND+P.MT;   // one run of the W-13-TYP section (addPenthouse and the EagleView prospect share it)
     add([[0,0],[P.CANT,0],[0,P.CANT]],M.wood);
     add(rect(P.CANT,P.FOOT,0,P.T),surf); add(sheet([P.CANT,P.T/2],[0,P.CANT+P.T/2],P.T),surf); add(rect(0,P.T,P.CANT,P.CF_TOP),surf);   // (E) base flashing: foot, over the cant, up the wall behind the counterflashing
     add(rect(0,SY,P.CF_TOP,P.CF_TOP+P.MT),M.coping); add(rect(P.CF_STAND,SY,P.CF_BOT,P.CF_TOP),M.coping); add(sheet([P.CF_STAND+P.MT/2,P.CF_BOT],[P.CF_STAND-P.HEM,P.CF_BOT-P.HEM*0.6],P.MT),M.coping);   // (E) fixed counterflashing: flange, face, hem
@@ -1444,7 +1499,11 @@ function addPenthouse(b,x,z,PL,PW,PHt,splice){ const g=new THREE.Group(); g.posi
     const sk=[add(rect(SY,SY+P.MT,P.SK_BOT+P.SK_KICK,P.SK_TOP),M.coping), add(sheet([SY+P.MT/2,P.SK_BOT+P.SK_KICK],[SY+P.MT/2+P.SK_KICK,P.SK_BOT],P.MT),M.coping)];   // new skirt metal + kick-out
     const xs=[]; for(let t=-L2+0.5;t<L2;t+=1) xs.push(t);
     if(xs.length){ const sc=new THREE.InstancedMesh(new THREE.CylinderGeometry(P.SCREW_R*IN,P.SCREW_R*IN,P.SCREW_H*IN,8),M.fast,xs.length), o=new THREE.Object3D(); xs.forEach((t,i)=>{ o.position.set(t,P.SCREW_Z*IN,-(SY+P.MT+P.SCREW_H/2)*IN); o.rotation.set(Math.PI/2,0,0); o.updateMatrix(); sc.setMatrixAt(i,o.matrix); }); r.add(sc); sk.push(sc); }
-    sk.forEach(m=>b.afterParts.push(m)); };
+    sk.forEach(m=>b.afterParts.push(m)); }
+function addPenthouse(b,x,z,PL,PW,PHt,splice){ const g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const IN=1/12, P=PW13, surf=b.fieldPlanes[0].material; b.afterParts=b.afterParts||[];
+  g.add(box(PL,PHt,PW,M.wall,0,PHt/2,0)); g.add(box(PL+0.6,0.4,PW+0.6,M.coping,0,PHt+0.15,0)); g.add(box(3,7,0.2,M.unitD,PL/4,3.5,PW/2+0.12,false));
+  const rect=rectYZ, sheet=sheetYZ;
+  const section=(r,ma,mb)=>penthouseSection(b,r,surf,ma,mb);
   // each face in a wallFrame turned to face OUT of the penthouse (the roof is outside it); s = +1 where run-local +x runs along +`at`
   [{k:'N',fs:'S',half:PW/2,len:PL,s:1},{k:'S',fs:'N',half:PW/2,len:PL,s:-1},{k:'W',fs:'E',half:PL/2,len:PW,s:-1},{k:'E',fs:'W',half:PL/2,len:PW,s:1}].forEach(fc=>{
     const F=wallFrame(b,fc.fs,-fc.half,g), h=fc.len/2;
@@ -1465,12 +1524,13 @@ function addPenthouse(b,x,z,PL,PW,PHt,splice){ const g=new THREE.Group(); g.posi
 // `splices` [{k, at, id:'edge'}] sets the 4-ft model into side k at world x (N/S) or z (E/W). Runs are mitred at the corners.
 const EM={ MT:0.06, FLANGE:4, FACE_OFF:0.5, FACE_H:4, HEM:0.375, CLEAT_T:0.04, CLEAT_TOP:-0.25, CLEAT_BOT:-3.2, KICK:0.25, PLY_T:0.125, PLY_END:8,
   COATS:{primer:[[0.30,0.60],[0.70,0.76],-3.90], flex:[[0.66,0.96],[0.78,0.88],-3.95], topcoat:[[1.02,1.32],[1.00,1.10],-4.00]} };   // inches: y from the wall face (+ toward the roof), z from the roof surface; per coat [top z0,z1], [face y0,y1], face bottom
-function addEdgeMetal(b,splices){ const g=new THREE.Group(); g.position.y=b.H; b.g.add(g); const E=EM, YO=E.FACE_OFF+E.MT, surf=b.fieldPlanes[0].material;
-  const section=(r,ma,mb,ca,cb)=>{ const L2=r.userData.len/2, add=(pts,mat)=>prismRun(r,pts,mat,-L2,L2,ma,mb,ca,cb), top=E.MT+E.PLY_T;
+function edgeMetalSection(r,surf,ma,mb,ca,cb){ const E=EM, YO=E.FACE_OFF+E.MT; const L2=r.userData.len/2, add=(pts,mat)=>prismRun(r,pts,mat,-L2,L2,ma,mb,ca,cb), top=E.MT+E.PLY_T;   // one run of the F-1-TYP section (addEdgeMetal and the EagleView prospect share it)
     add(rectYZ(-YO,E.FLANGE,0,E.MT),M.coping); add(rectYZ(-YO,-E.FACE_OFF,-E.FACE_H,0),M.coping); add(sheetYZ([-YO+E.MT/2,-E.FACE_H],[-YO+E.MT/2+E.HEM,-E.FACE_H+E.HEM],E.MT),M.coping);   // (E) flange, fascia, hem at the drip
     add(rectYZ(-E.CLEAT_T,0,E.CLEAT_BOT,E.CLEAT_TOP),M.coping); add(sheetYZ([-E.CLEAT_T/2,E.CLEAT_BOT],[-E.CLEAT_T/2-E.KICK,E.CLEAT_BOT-E.KICK],E.CLEAT_T),M.coping);   // (E) cleat and its kick
     add(rectYZ(-E.FACE_OFF,E.FLANGE+0.25,E.MT,top),surf); add(rectYZ(E.FLANGE,E.PLY_END,0,E.PLY_T),surf);   // (E) stripping over the flange, stepping down onto the field
-    [['primer',M.primerOv],['flex',M.flexOv],['topcoat',M.topcoat]].forEach(([k,mat])=>{ const [[z0,z1],[y0,y1],zb]=E.COATS[k]; add(rectYZ(-y1,0,z0,z1),mat); add(rectYZ(-y1,-y0,zb,z0),mat); }); };   // coats: over the edge to meet the field sheets, down the fascia (ASSUMED)
+    [['primer',M.primerOv],['flex',M.flexOv],['topcoat',M.topcoat]].forEach(([k,mat])=>{ const [[z0,z1],[y0,y1],zb]=E.COATS[k]; add(rectYZ(-y1,0,z0,z1),mat); add(rectYZ(-y1,-y0,zb,z0),mat); }); }   // coats: over the edge to meet the field sheets, down the fascia (ASSUMED)
+function addEdgeMetal(b,splices){ const g=new THREE.Group(); g.position.y=b.H; b.g.add(g); const E=EM, YO=E.FACE_OFF+E.MT, surf=b.fieldPlanes[0].material;
+  const section=(r,ma,mb,ca,cb)=>edgeMetalSection(r,surf,ma,mb,ca,cb);
   [{k:'N',n:b.L},{k:'S',n:b.L},{k:'W',n:b.W},{k:'E',n:b.W}].forEach(sd=>{ const F=wallFrame(b,sd.k,(sd.k==='W'||sd.k==='E')?b.L/2:b.W/2,g), s=(sd.k==='S'||sd.k==='W')?1:-1, h=sd.n/2;   // s = +1 where run-local +x runs along +at
     const seg=(a0,a1,into,openLo,openHi)=>{ const r=F.runAt(a0,a1,into), lo=a0<=-h+1e-6, hi=a1>=h-1e-6;
       section(r,(s>0?lo:hi)?-1:0,(s>0?hi:lo)?-1:0,!(s>0?openLo:openHi),!(s>0?openHi:openLo)); return r; };   // open at an end that meets the model
@@ -1497,16 +1557,18 @@ function addSleeperRun(b,x0,z0,x1,z1,n,modelAt){ const g=new THREE.Group(); b.ro
 // Roof hatch per CS-1-TYP note 7 ("ACCESS HATCH, SMOKE HATCH") — same curb and coatings as the RTU, lid on top.
 // Only the silo calls this, and the silo is exposed concrete, where CS-12-CON / CS-14-CON govern: the curb, skirt and nailer
 // are skinned to concrete and the patch to the silo's own field. ASSUMED — flagged in the catalog.
-function addHatch(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g; const CW=3.2, CH=1.2;
+function addHatch(b,x,z,opt){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g; const CW=3.2, CH=1.2;
   const prim=new THREE.Group(); g.add(prim);
-  if(mountModel('hatch',g,0,0,0,prim,{membrane:b.fieldPlanes[0].material,curb_wall:M.concrete,flashing_skirt:M.concrete,nailer:M.concrete})) b.cutouts.push({x,z,hMem:3.75,hCoat:2.90});
+  const skins=opt&&opt.flat?{membrane:b.fieldPlanes[0].material}:{membrane:b.fieldPlanes[0].material,curb_wall:M.concrete,flashing_skirt:M.concrete,nailer:M.concrete};   // `flat`: a membrane roof (the EagleView prospect), CS-1-TYP note 7 — the model keeps its own curb materials
+  if(mountModel('hatch',g,0,0,0,prim,skins)) b.cutouts.push({x,z,hMem:3.75,hCoat:2.90});
   g=prim; const d=curbAssembly(g,CW,CH,'sweep',false);
   const lid=box(CW+0.5,0.25,CW+0.5,M.coping,0,0.3,-0.35); lid.rotation.x=-0.28; d.unit.add(lid); g.userData.unit=d.unit; g.userData.CH=CH; return gOuter; }
 // Bin vent per CS-1-TYP note 7 ("VENTS, DUCTS") — same curb and coatings as the RTU, neck and rain cap on top.
 // Silo only: exposed concrete, so CS-12-CON governs and the curb is skinned to concrete (ASSUMED, flagged in the catalog).
-function addBinVent(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g;
+function addBinVent(b,x,z,opt){ let g=new THREE.Group(); g.position.set(x,0,z); b.roof.add(g); const gOuter=g;
   const prim=new THREE.Group(); g.add(prim);
-  if(mountModel('binvent',g,0,0,0,prim,{membrane:b.fieldPlanes[0].material,curb_wall:M.concrete,flashing_skirt:M.concrete,nailer:M.concrete})) b.cutouts.push({x,z,hMem:3.35,hCoat:2.50});
+  const skins=opt&&opt.flat?{membrane:b.fieldPlanes[0].material}:{membrane:b.fieldPlanes[0].material,curb_wall:M.concrete,flashing_skirt:M.concrete,nailer:M.concrete};   // `flat`: a membrane roof (the EagleView prospect), CS-1-TYP note 7
+  if(mountModel('binvent',g,0,0,0,prim,skins)) b.cutouts.push({x,z,hMem:3.35,hCoat:2.50});
   g=prim;
   g.add(box(2.4,1.0,2.4,M.curb,0,0.5,0)); const neck=new THREE.Mesh(new THREE.CylinderGeometry(0.8,0.8,2.2,16),M.coping); neck.position.y=2.1; g.add(neck); const cap=new THREE.Mesh(new THREE.ConeGeometry(1.5,0.8,16),M.coping); cap.position.y=3.5; g.add(cap);
   g.add(box(2.5,1.0,2.5,M.primerOv,0,0.5,0,false)); g.add(box(2.6,0.95,2.6,M.flexOv,0,0.48,0,false)); g.add(box(2.7,1.02,2.7,M.topcoat,0,0.51,0,false)); return gOuter; }
@@ -1732,8 +1794,220 @@ function makeSolar(parent, cols, rows){
   return solar;
 }
 
-const BUILDERS={ warehouse:buildWarehouse, bigbox:buildBigBox, school:buildSchool, office:buildOffice, manufacturing:buildManufacturing, hospital:buildHospital, arena:buildArena, silo:buildSilo, hotel:buildHotel, airport:buildAirport, restaurant:buildRestaurant };
-function rebuild(){ modelInstances.length=0; BLOCKS.length=0; disposeGroup(world); B = BUILDERS[S.building](); BLOCKS.forEach(applyCutouts); buildHots(); goRoof(true); }
+/* =================================================================
+   EAGLEVIEW IMPORT (§2 #10) — "Import EagleView report" in the header reads the report XML from the rep's machine
+   (native dialog in the desktop app, a file input in a browser) and builds a prospect building from it: POINTS (x,y,z ft),
+   LINES typed PARAPET / EAVE / FLASHING / OTHER, FACES of type ROOF (a POLYGON path of line ids at an elevation) and
+   ROOFPENETRATION (unroundedsize). Each ROOF facet is a level at its elevation — the main roof, penthouses, stair towers
+   and canopies. PARAPET edges get the parapet and coping (W-1-TYP), EAVE edges the edge metal (F-1-TYP), FLASHING edges
+   the wall tie-in (W-11-TYP), and a PARAPET edge that meets a higher facet the penthouse wall (W-13-TYP). Every
+   penetration sits at its polygon centroid with its footprint, typed by area as a best guess (under 1 sq ft soil stack /
+   pipe; 1–4 small curb; 4–10 curb / hatch; 10–30 RTU / skylight; over 30 large equipment) that the rep confirms in the
+   Penetrations panel — unconfirmed ones stay ASSUMED. The estimate uses the report's measured totals. The report is
+   client data: it is read into memory and never written anywhere by the tool; the XML carries no report date and no
+   parapet height, so the label uses the file's date and the rep enters the parapet height.
+================================================================= */
+const EV={ rep:null, open:false, PH:3, PT:0.67, GRADE:10, WRAP:1.5 };   // PH: parapet height entered by the rep (ft). ASSUMED: 8" parapet thickness, grade 10 ft below the lowest facet, Flex 1.5 ft up each penetration
+const EV_CLASS=[ [1,'pipe','under 1 sq ft: soil stack / pipe'], [4,'vent','1–4 sq ft: small curb (vent / duct)'], [10,'hatch','4–10 sq ft: curb / hatch'], [30,'rtu','10–30 sq ft: RTU / skylight'], [Infinity,'rtu','over 30 sq ft: large equipment on a curb'] ];
+const EV_TYPES=['pipe','pitchpan','vent','hatch','exhaust','skylight','rtu','drain'];   // what the rep can call a penetration — each a DETAILS entry with a flat-roof drawing
+const EV_EDGE={ PARAPET:'coping', EAVE:'edge', FLASHING:'wall' };   // line type → detail; a PARAPET edge against a higher facet becomes 'penthouse'
+const UNIT_GAL={ pipe:0.3, pitchpan:1.5, vent:1, hatch:1.5, exhaust:1.5, skylight:1.5, rtu:2, drain:0.5 };   // Flex per penetration, gallons — ASSUMED (the per-unit figures behind DETAIL_GAL)
+const EV_BAND={ edge:1, wall:2, penthouse:2 };   // ft of treated band along an eave (flange + fascia), a wall tie-in and a penthouse wall — ASSUMED
+const EV_LIFT={ pipe:3.6, pitchpan:2.8, vent:3.5, hatch:2.4, exhaust:4.6, skylight:2.8, rtu:6.4, drain:1.2 };   // hotspot marker height above the roof per kind
+const EV_AZ={ coping:Math.PI/2, edge:Math.PI/2, penthouse:Math.PI/2, wall:-Math.PI/2 };   // outward azimuth of the reference edge each DETAILS camera was set on (big-box east parapet, office east edge, office penthouse west face, school west wall); the prospect turns theta with its own edge
+
+function evClassify(area){ return EV_CLASS.find(([max])=>area<max)||EV_CLASS[EV_CLASS.length-1]; }
+function polyArea(lp){ let a=0; for(let i=0;i<lp.length;i++){ const [x0,z0]=lp[i], [x1,z1]=lp[(i+1)%lp.length]; a+=x0*z1-x1*z0; } return a/2; }
+function polyCentroid(lp){ let a=0,cx=0,cz=0; for(let i=0;i<lp.length;i++){ const [x0,z0]=lp[i],[x1,z1]=lp[(i+1)%lp.length]; const w=x0*z1-x1*z0; a+=w; cx+=(x0+x1)*w; cz+=(z0+z1)*w; }
+  if(Math.abs(a)<1e-9) return [lp.reduce((s,p)=>s+p[0],0)/lp.length, lp.reduce((s,p)=>s+p[1],0)/lp.length]; return [cx/(3*a),cz/(3*a)]; }
+function pointIn(pt,lp){ const [x,z]=pt; let ins=false; for(let i=0,j=lp.length-1;i<lp.length;j=i++){ const [xi,zi]=lp[i],[xj,zj]=lp[j]; if((zi>z)!==(zj>z)&&x<(xj-xi)*(z-zi)/(zj-zi)+xi) ins=!ins; } return ins; }
+function polyEdgeDist(pt,lps){ let best=Infinity; lps.forEach(lp=>{ for(let i=0;i<lp.length;i++){ const a=lp[i], c=lp[(i+1)%lp.length], dx=c[0]-a[0], dz=c[1]-a[1], L2=dx*dx+dz*dz||1; const t=Math.max(0,Math.min(1,((pt[0]-a[0])*dx+(pt[1]-a[1])*dz)/L2)); best=Math.min(best,Math.hypot(pt[0]-a[0]-t*dx,pt[1]-a[1]-t*dz)); } }); return best; }
+function polyBBox(lps){ const b={minX:Infinity,maxX:-Infinity,minZ:Infinity,maxZ:-Infinity}; lps.forEach(lp=>lp.forEach(([x,z])=>{ b.minX=Math.min(b.minX,x); b.maxX=Math.max(b.maxX,x); b.minZ=Math.min(b.minZ,z); b.maxZ=Math.max(b.maxZ,z); })); return b; }
+// Loops are oriented with the field to the LEFT of the direction of travel seen from above (outer loops clockwise on the page, holes anticlockwise),
+// so every edge's outward normal — away from the field — is (-uz, ux). offsetLoop moves a loop that far outward (mitred corners).
+function offsetLoop(lp,d){ const n=lp.length, ns=[]; for(let i=0;i<n;i++){ const [x0,z0]=lp[i],[x1,z1]=lp[(i+1)%n]; const l=Math.hypot(x1-x0,z1-z0)||1; ns.push([-(z1-z0)/l,(x1-x0)/l]); }
+  return lp.map((p,i)=>{ const a=ns[(i-1+n)%n], b=ns[i], den=1+a[0]*b[0]+a[1]*b[1]; if(den<0.3) return [p[0]+b[0]*d,p[1]+b[1]*d]; return [p[0]+(a[0]+b[0])*d/den,p[1]+(a[1]+b[1])*d/den]; }); }
+function toShape(outer,holes){ const sh=new THREE.Shape(); outer.forEach(([x,z],i)=>{ if(i) sh.lineTo(x,-z); else sh.moveTo(x,-z); }); sh.closePath();   // the field planes are rotated -90° about x, so shape y is world -z (as applyCutouts draws its holes)
+  (holes||[]).forEach(h=>{ const p=new THREE.Path(); h.forEach(([x,z],i)=>{ if(i) p.lineTo(x,-z); else p.moveTo(x,-z); }); p.closePath(); sh.holes.push(p); }); return sh; }
+// Where the line x=p (alongZ) or z=p crosses a facet: the runs inside the outer loop and outside its holes, each pulled in by `shrink` ft.
+function polySpans(outer,holes,p,alongZ,shrink){ const xs=[]; [outer].concat(holes||[]).forEach(lp=>{ for(let i=0;i<lp.length;i++){ const a=lp[i], b=lp[(i+1)%lp.length]; const u0=alongZ?a[0]:a[1], u1=alongZ?b[0]:b[1], v0=alongZ?a[1]:a[0], v1=alongZ?b[1]:b[0]; if((u0<=p)===(u1<=p)) continue; xs.push(v0+(p-u0)*(v1-v0)/(u1-u0)); } });
+  xs.sort((a,b)=>a-b); const out=[]; for(let i=0;i+1<xs.length;i+=2){ const lo=xs[i]+shrink, hi=xs[i+1]-shrink; if(hi>lo) out.push([lo,hi]); } return out; }
+
+// ---- the XML → facets (outer loop + holes, edges with their line type, elevation) and penetrations (centroid, footprint, area)
+function evParse(text){ const doc=new DOMParser().parseFromString(text,'application/xml'); const root=doc.querySelector('EAGLEVIEW_EXPORT');
+  if(doc.querySelector('parsererror')||!root) throw new Error('not an EagleView report XML');
+  const at=(el,k,d)=>el&&el.hasAttribute(k)?el.getAttribute(k):d;
+  const rid=at(doc.querySelector('REPORT'),'reportId','')||'unknown'; const loc=doc.querySelector('LOCATION'); const st=doc.querySelector('STRUCTURES');
+  const rot=+at(st,'globalRotationAngleRadians',0)||0, cs=Math.cos(rot), sn=Math.sin(rot);   // turn the model to the report's own image orientation
+  const pts={}; doc.querySelectorAll('POINT').forEach(p=>{ const [x,y,z]=at(p,'data','0,0,0').split(',').map(Number); pts[at(p,'id','')]={ x:x*cs-y*sn, z:x*sn+y*cs, e:z||0 }; });   // scene: x right, z down the page, e = elevation ft
+  const lines={}, lineTypes={}; doc.querySelectorAll('LINE').forEach(l=>{ const t=String(at(l,'type','OTHER')||'OTHER').toUpperCase(); lines[at(l,'id','')]={ ends:at(l,'path','').split(','), type:t }; lineTypes[t]=(lineTypes[t]||0)+1; });
+  const faces=[]; doc.querySelectorAll('FACE').forEach(f=>{ const pg=f.querySelector('POLYGON'); if(!pg) return; const path=at(pg,'path','').split(',').filter(Boolean); if(path.length<2) return;
+    // chain the lines into a vertex sequence, keeping each step's line type; the outer loop and its holes share one path, joined by lines walked twice
+    const seq=[], typ=[]; path.forEach((lid,i)=>{ const L=lines[lid]; if(!L||L.ends.length<2) return; let [a,b]=L.ends; if(!seq.length){ const nx=lines[path[i+1]]; if(nx&&nx.ends.includes(a)&&!nx.ends.includes(b)) [a,b]=[b,a]; seq.push(a); typ.push(null); seq.push(b); typ.push(L.type); return; }
+      const last=seq[seq.length-1]; if(a===last){ seq.push(b); typ.push(L.type); } else if(b===last){ seq.push(a); typ.push(L.type); } else { seq.push(a); typ.push(null); seq.push(b); typ.push(L.type); } });
+    const loops=[], stk=[], stT=[]; seq.forEach((v,k)=>{ const t=typ[k], i=stk.indexOf(v); if(i>=0){ const vs=stk.slice(i), ts=stT.slice(i+1).concat([t]); if(vs.length>=3) loops.push({ids:vs,types:ts}); stk.length=i+1; stT.length=i+1; } else { stk.push(v); stT.push(t); } });
+    if(stk.length>=3) loops.push({ ids:stk.slice(), types:stT.slice(1).concat(['OTHER']) });
+    const L2=loops.map(l=>{ const p=l.ids.map(id=>pts[id]).filter(Boolean); return { pts:p.map(q=>[q.x,q.z]), types:l.types, e:p.reduce((s,q)=>s+q.e,0)/Math.max(1,p.length) }; }).filter(l=>l.pts.length>=3); L2.forEach(l=>{ l.area=polyArea(l.pts); });
+    if(!L2.length) return;
+    faces.push({ id:at(f,'id',''), des:at(f,'designator',''), type:String(at(f,'type','')).toUpperCase(), children:at(f,'children','').split(',').filter(Boolean), area:+at(pg,'unroundedsize',0)||+at(pg,'size',0)||0, pitch:at(pg,'pitch','0'), loops:L2 }); });
+  const summary={}; doc.querySelectorAll('OVERALL_SUMMARY ATTRIBUTE').forEach(a=>{ summary[at(a,'name','')]=at(a,'value',''); }); const num=k=>+String(summary[k]||'').replace(/[^0-9.\-]/g,'')||0;
+  const facets=[], pens=[];
+  faces.forEach(f=>{ if(f.type==='ROOF'){ const sorted=f.loops.slice().sort((a,b)=>Math.abs(b.area)-Math.abs(a.area)); const outer=sorted[0], holes=sorted.slice(1);
+      const orient=(l,neg)=>{ if((l.area<0)!==neg){ l.pts.reverse(); const n=l.pts.length, t=l.types; l.types=t.map((_,k)=>t[(n-2-k+n)%n]); l.area=-l.area; } }; orient(outer,true); holes.forEach(h=>orient(h,false));
+      const edges=[]; [outer].concat(holes).forEach((l,li)=>{ const n=l.pts.length; for(let i=0;i<n;i++){ const a=l.pts[i], b=l.pts[(i+1)%n], len=Math.hypot(b[0]-a[0],b[1]-a[1]); if(len<0.05) continue; const ux=(b[0]-a[0])/len, uz=(b[1]-a[1])/len; edges.push({ a, b, len, type:l.types[i]||'OTHER', hole:li>0, mid:[(a[0]+b[0])/2,(a[1]+b[1])/2], n:[-uz,ux] }); } });
+      facets.push({ id:f.id, des:f.des, e:outer.e, area:f.area||Math.abs(outer.area)-holes.reduce((s,h)=>s+Math.abs(h.area),0), pitch:f.pitch, outer:outer.pts, holes:holes.map(h=>h.pts), edges, children:f.children }); }
+    else if(f.type==='ROOFPENETRATION'){ const l=f.loops.slice().sort((a,b)=>Math.abs(b.area)-Math.abs(a.area))[0]; const c=polyCentroid(l.pts); const [x0,z0]=l.pts[0],[x1,z1]=l.pts[1]; const ang=Math.atan2(z1-z0,x1-x0), c2=Math.cos(ang), s2=Math.sin(ang); let u0=Infinity,u1=-Infinity,v0=Infinity,v1=-Infinity;
+      l.pts.forEach(([x,z])=>{ const u=x*c2+z*s2, v=-x*s2+z*c2; u0=Math.min(u0,u); u1=Math.max(u1,u); v0=Math.min(v0,v); v1=Math.max(v1,v); });   // footprint along the outline's first edge
+      pens.push({ id:f.id, n:f.des||String(pens.length+1), area:f.area||Math.abs(l.area), c, w:u1-u0, h:v1-v0, rot:-ang, e:l.e, poly:l.pts, parent:null, kind:null, guess:null, confirmed:false }); } });
+  if(!facets.length) throw new Error('no ROOF facets in the file');
+  facets.forEach(f=>f.children.forEach(c=>{ const p=pens.find(x=>x.id===c); if(p) p.parent=f.id; }));   // the facet that lists the penetration as a child, else the highest facet under its centroid
+  pens.forEach(p=>{ if(p.parent) return; const under=facets.filter(f=>pointIn(p.c,f.outer)&&!f.holes.some(h=>pointIn(p.c,h))).sort((a,b)=>b.e-a.e)[0]; p.parent=under?under.id:facets[0].id; });
+  const bb=polyBBox(facets.map(f=>f.outer)); const cx=(bb.minX+bb.maxX)/2, cz=(bb.minZ+bb.maxZ)/2, sh=p=>[p[0]-cx,p[1]-cz];   // centre the roof on the scene origin
+  facets.forEach(f=>{ f.outer=f.outer.map(sh); f.holes=f.holes.map(h=>h.map(sh)); f.edges.forEach(ed=>{ ed.a=sh(ed.a); ed.b=sh(ed.b); ed.mid=sh(ed.mid); }); }); pens.forEach(p=>{ p.c=sh(p.c); p.poly=p.poly.map(sh); });
+  pens.sort((a,b)=>((+a.n||0)-(+b.n||0))||String(a.n).localeCompare(String(b.n)));
+  const rep={ id:rid, location:loc?{ address:at(loc,'address',''), city:at(loc,'city',''), state:at(loc,'state',''), postal:at(loc,'postal','') }:null, north:st?+at(st,'northorientation',NaN):NaN, rot, facets, pens, facetById:Object.fromEntries(facets.map(f=>[f.id,f])), bbox:{ L:bb.maxX-bb.minX, W:bb.maxZ-bb.minZ },
+    totals:{ area:num('TotalRoofArea'), areaLess:num('TotalRoofAreaLessPenetrations'), facets:num('TotalRoofFacets')||facets.length, parapetLen:num('TotalParapetsLength'), eaveLen:num('TotalEavesLength'), flashLen:num('TotalFlashingLength'), penCount:num('TotalPenetrationsCount')||pens.length, penPerimeter:num('TotalPenetrationsPerimeter'), penArea:num('TotalPenetrationsArea'), pitch:summary.PredominantPitch||'', stories:summary.NumberOfStories||'' },
+    summary, lineTypes, file:{ name:'', date:null }, unused:[] };
+  // what the file carries that the build does not use
+  const un=rep.unused; if(lineTypes.OTHER) un.push(`${lineTypes.OTHER} lines typed OTHER — penetration outlines and untyped facet edges; drawn only as penetration footprints`); if(lineTypes.HIDDEN) un.push(`${lineTypes.HIDDEN} HIDDEN lines — the bridges that join holes to the outer path; used to split the loops, not drawn`);
+  ['RIDGE','HIP','VALLEY','RAKE','STEPFLASHING'].forEach(t=>{ if(lineTypes[t]) un.push(`${lineTypes[t]} ${t} lines — no pitched-roof build for a prospect yet`); }); if(facets.some(f=>+f.pitch>0)) un.push('pitched facets are drawn flat at their mean elevation');
+  if(doc.querySelectorAll('MATERIAL').length) un.push('MATERIAL entries — no roof type in them, the rep picks the roof type'); if(st&&st.hasAttribute('ftPerPixel')) un.push('rawpixel / ftPerPixel image coordinates — the report images are not in the XML'); if(!isNaN(rep.north)) un.push(`northorientation ${rep.north}° — no north arrow drawn yet`);
+  if(loc) un.push('LOCATION address — offered as the PDF address field only, never stored'); ['NumberOfStories','EstimatedAtticSquareFootage','RoofAreaPerPitch'].forEach(k=>{ if(Object.keys(summary).some(s=>s.startsWith(k))) un.push(`${k} — the elevations set the storeys, the pitch summary is not used`); });
+  return rep; }
+// scene elevations from the ASSUMED grade, edge kinds, penetration best guesses
+function evPrepare(rep){ const minE=Math.min(...rep.facets.map(f=>f.e)); rep.facets.forEach(f=>{ f.y=f.e-minE+EV.GRADE; }); let pentLen=0;
+  rep.facets.forEach(f=>{ f.edges.forEach(ed=>{ let kind=EV_EDGE[ed.type]||null;
+      if(ed.type==='PARAPET'){ const off=EV.PT/2+0.5, px=ed.mid[0]+ed.n[0]*off, pz=ed.mid[1]+ed.n[1]*off; if(rep.facets.some(o=>o!==f&&o.e>f.e+0.5&&pointIn([px,pz],o.outer))){ kind='penthouse'; pentLen+=ed.len; } }   // a higher facet stands just outside this edge: its wall, not a parapet
+      ed.kind=kind; }); f.parapet=f.edges.some(e=>e.kind==='coping'); });
+  rep.totals.penthouseLen=pentLen;
+  rep.pens.forEach(p=>{ const c=evClassify(p.area); p.guess=c[1]; p.guessLabel=c[2]; if(!p.kind) p.kind=p.guess; }); }
+
+// ---- a flat block from a polygon facet (outer loop + holes) at roof height E, walls from the ground; same layers and sweep sheets as makeBlock
+function makePolyBlock(o){ const {outer,holes=[],E,PH=3,PT=0.67,offset=0}=o; const mem=ROOFS[S.roof];
+  const g=new THREE.Group(); world.add(g);
+  const shell=offset?offsetLoop(outer,offset):outer; const ex=new THREE.ExtrudeGeometry(toShape(shell),{depth:Math.max(0.5,E-0.02),bevelEnabled:false}); ex.rotateX(-Math.PI/2); const body=new THREE.Mesh(ex,M.wall); body.castShadow=body.receiveShadow=true; g.add(body);   // walls stand `offset` outside the facet: the parapet thickness, or flush at an eave
+  const roof=new THREE.Group(); roof.position.y=E; g.add(roof);
+  const surf = mem.plate==='A'?M.modbit : mem.plate==='C'?M.concrete : mem.plate==='MA'?M.felts : mem.plate==='SPF'?M.spf : M.membrane;
+  const shape=()=>toShape(outer,holes); const bb=polyBBox([outer]); const IL=bb.maxX-bb.minX, IW=bb.maxZ-bb.minZ; const inside=(x,z)=>pointIn([x,z],outer)&&!holes.some(h=>pointIn([x,z],h));
+  const fld=new THREE.Mesh(new THREE.ShapeGeometry(shape(),24),surf); fld.rotation.x=-Math.PI/2; fld.receiveShadow=true; roof.add(fld); fld.userData.kind='mem'; const fieldPlanes=[fld], cutouts=[];
+  const area=Math.abs(polyArea(outer))-holes.reduce((s,h)=>s+Math.abs(polyArea(h)),0);
+  if(mem.plate==='MA'){ const gv=new THREE.Mesh(new THREE.ShapeGeometry(shape(),24),M.gravel); gv.rotation.x=-Math.PI/2; gv.position.y=0.03; gv.receiveShadow=true; roof.add(gv); gv.userData.kind='mem'; fieldPlanes.push(gv);
+    const nPb=Math.max(1,Math.round(area/28)); const e2=new THREE.Object3D(); [M.pebble,M.pebble2].forEach(pm=>{ const pb=new THREE.InstancedMesh(new THREE.CircleGeometry(0.5,6),pm,nPb); let i=0, tries=0; while(i<nPb&&tries++<nPb*20){ const x=bb.minX+Math.random()*IL, z=bb.minZ+Math.random()*IW; if(!inside(x,z)) continue; e2.position.set(x,0.04,z); e2.rotation.set(-Math.PI/2,0,Math.random()*3); const sc=0.4+Math.random()*0.9; e2.scale.set(sc,sc*0.7,1); e2.updateMatrix(); pb.setMatrixAt(i++,e2.matrix); } pb.count=i; roof.add(pb); }); }
+  const pitch=mem.plate==='A'?3:mem.plate==='C'?20:mem.plate==='MA'?3:10, seamMat=mem.plate==='A'?M.lapA:mem.plate==='C'?M.cjoint:mem.plate==='MA'?M.felts:M.seam;
+  const ticks=(a,b)=>{ const t=[]; for(let v=Math.ceil(a/pitch)*pitch;v<b-1;v+=pitch) if(v>a+1) t.push(v); return t; };
+  const lineSets=[]; if(mem.plate!=='SPF'){ lineSets.push({ mat:seamMat, w:mem.plate==='C'?0.3:mem.plate==='A'?0.25:0.35, alongZ:true, at:ticks(bb.minX,bb.maxX), half:IW/2, spans:p=>polySpans(outer,holes,p,true,0.3) });   // seams / laps / joints at fixed x, clipped to the facet
+    if(mem.plate==='C') lineSets.push({ mat:M.cjoint, w:0.3, alongZ:false, at:ticks(bb.minZ,bb.maxZ), half:IL/2, spans:p=>polySpans(outer,holes,p,false,0.3) }); }
+  lineSets.forEach(ls=>drawLines(roof,ls,[]));
+  const addOverlay=(mat,dy)=>{ const f=new THREE.Mesh(new THREE.ShapeGeometry(shape(),24),mat); f.rotation.x=-Math.PI/2; f.position.y=dy; f.receiveShadow=true; roof.add(f); f.userData.kind='coat'; f.userData.top=(mat===M.topcoat); fieldPlanes.push(f); };
+  addOverlay(M.primerOv,0.05); addOverlay(M.flexOv,0.08); addOverlay(M.topcoat,0.11);
+  const stains=new THREE.Group(), fails=new THREE.Group(), patches=new THREE.Group(); roof.add(stains); roof.add(fails); roof.add(patches);
+  const nF=Math.round(area/1400); for(let i=0,tries=0;i<nF&&tries<nF*40;tries++){ const sx=bb.minX+Math.random()*IL, zz=bb.minZ+Math.random()*IW; if(!inside(sx,zz)||!inside(sx-5,zz)||!inside(sx+5,zz)||!inside(sx,zz-7)||!inside(sx,zz+7)) continue; i++; const len=4+Math.random()*6;
+    if(mem.plate==='A'){ const gl=new THREE.Mesh(new THREE.CircleGeometry(1,12),M.granLoss); gl.rotation.x=-Math.PI/2; gl.position.set(sx+(Math.random()-.5)*8,0.035,zz); gl.scale.set(2+Math.random()*4,1.5+Math.random()*3,1); fails.add(gl); patches.add(box(2.4,0.06,len+2,M.patchA,sx,0.045,zz,false)); }
+    else if(mem.plate==='MA'){ const bl=new THREE.Mesh(new THREE.CircleGeometry(1,12),M.blister); bl.rotation.x=-Math.PI/2; bl.position.set(sx+(Math.random()-.5)*8,0.025,zz); bl.scale.set(1.5+Math.random()*3,1+Math.random()*2,1); fails.add(bl); patches.add(box(2.4,0.05,len+2,M.patchA,sx,0.028,zz,false)); }
+    else if(mem.plate==='C'){ const cr=box(0.25,0.04,len*1.6,M.crack,sx+(Math.random()-.5)*6,0.04,zz,false); cr.rotation.y=(Math.random()-.5)*1.2; fails.add(cr); const pc=box(1.2,0.06,len*1.6+1,M.patchC,cr.position.x,0.045,zz,false); pc.rotation.y=cr.rotation.y; patches.add(pc); }
+    else if(mem.plate==='SPF'){ const pit=new THREE.Mesh(new THREE.CircleGeometry(1,12),M.spfPit); pit.rotation.x=-Math.PI/2; pit.position.set(sx,0.03,zz); pit.scale.set(1.5+Math.random()*2,1+Math.random()*1.5,1); fails.add(pit); patches.add(box(3,0.05,3,M.spfPatch,sx,0.04,zz,false)); }
+    else { fails.add(box(0.9,0.05,len,M.stain,sx,0.04,zz,false)); patches.add(box(2.2,0.06,len+2,M.patch,sx,0.045,zz,false)); } }
+  const blk={g,roof,par:null,L:IL,W:IW,H:E,PH,PT,IL,IW,x:(bb.minX+bb.maxX)/2,z:(bb.minZ+bb.maxZ)/2,stains,fails,patches,em:null,tapeList:[],fieldPlanes,cutouts,lineSets,scuppers:[],shape,outer,holes,resetParts:[],afterParts:[]};
+  BLOCKS.push(blk); return blk; }
+// Parapet wall and metal coping along one facet edge, per W-1-TYP as in makeBlock: the wall stands PT outside the edge, cap with drip legs,
+// a 4" tape / primer / Flex at every 10-ft joint (instanced), face fasteners 3 ft o.c. encapsulated in Flex and topcoat, topcoat over the whole coping.
+function parapetRun(b,F,x0,x1,into){ const PH=b.PH, PT=b.PT, cw=PT+0.5, zc=PT/2; const run=F.runAt(x0-PT/2,x1+PT/2,into); run.position.y=PH; const n=run.userData.len;
+  run.add(box(n,PH,PT,M.wall,0,-PH/2,zc)); run.add(box(n,0.25,cw,M.coping,0,0.12,zc)); [-1,1].forEach(sg=>run.add(box(n,0.5,0.06,M.coping,0,-0.05,zc+sg*(cw/2-0.03),false)));
+  run.add(box(n+0.1,0.06,cw+0.12,M.topcoat,0,0.28,zc,false)); [-1,1].forEach(sg=>run.add(box(n+0.1,0.62,0.06,M.topcoat,0,0,zc+sg*(cw/2+0.06),false)));
+  const inst=(geo,mat,ts,y,z,rx)=>{ const im=new THREE.InstancedMesh(geo,mat,ts.length); const o=new THREE.Object3D(); ts.forEach((t,i)=>{ o.position.set(t,y,z); o.rotation.set(rx||0,0,0); o.updateMatrix(); im.setMatrixAt(i,o.matrix); }); run.add(im); return im; };
+  const js=[]; for(let t=-n/2+5;t<n/2-1;t+=10) js.push(t);
+  if(js.length){ inst(new THREE.BoxGeometry(0.06,0.3,cw+0.1),M.joint,js,0.12,zc); const U=(mat,wd,dy,tape)=>{ const top=inst(new THREE.BoxGeometry(wd,0.05,cw+0.1+dy*2),mat,js,0.25+dy,zc); const legs=[-1,1].map(sg=>inst(new THREE.BoxGeometry(wd,0.55,0.05),mat,js,-0.05,zc+sg*(cw/2+0.02+dy))); if(tape) [top].concat(legs).forEach(m=>{ m.userData.tape=true; b.tapeList.push(m); }); };
+    U(M.tape,0.34,0.005,true); U(M.primerOv,0.6,0.012); U(M.flexOv,0.68,0.02); }
+  const fa=[], fr=[]; for(let t=-n/2+4;t<n/2;t+=3){ if(js.some(j=>Math.abs(t-j)<0.8)) continue; (Math.random()<0.25?fr:fa).push(t); }
+  [[fa,M.fast],[fr,M.rustFast]].forEach(([ts,mat])=>{ if(ts.length) inst(new THREE.CylinderGeometry(0.06,0.06,0.05,8),mat,ts,-0.1,zc+cw/2,Math.PI/2); });   // fasteners on the outside face (run-local +z)
+  const fs=fa.concat(fr); if(fs.length){ [[0.14,M.flexOv,0.03],[0.16,M.topcoat,0.07]].forEach(([r,mat,dz])=>inst(new THREE.CircleGeometry(r,12),mat,fs,-0.1,zc+cw/2+dz)); }
+  return run; }
+
+// ---- the prospect building: one block per facet, its edges, its penetrations, one hotspot per detail type present
+function buildProspect(){ const rep=EV.rep; if(!rep) return { extent:{L:100,W:100,H:20}, hots:[], applyStage(){} };
+  const PH=EV.PH, PT=EV.PT, vis={}, reg=(id,o)=>{ (vis[id]=vis[id]||[]).push(o); }, blocks=[];
+  rep.facets.forEach(f=>{ f.block=makePolyBlock({ outer:f.outer, holes:f.holes, E:f.y, PH, PT, offset:f.parapet?PT:0 }); blocks.push(f.block); });
+  const edgeBest={};   // the longest edge of each kind carries the hotspot
+  rep.facets.forEach(f=>{ const b=f.block, surf=b.fieldPlanes[0].material; f.edges.forEach(ed=>{ if(!ed.kind) return; const F=edgeFrame(b,ed.a,ed.b,b.roof); if(!edgeBest[ed.kind]||ed.len>edgeBest[ed.kind].ed.len) edgeBest[ed.kind]={ ed, f };
+    if(ed.kind==='coping'){ parapetRun(b,F,0,ed.len,b.roof); parapetBaseSection(b,F,F.runAt(0,ed.len),surf); return; }
+    const g=new THREE.Group(); b.roof.add(g); reg(ed.kind,g); const r=F.runAt(0,ed.len,g);
+    if(ed.kind==='edge') edgeMetalSection(r,surf,0,0,true,true);
+    else if(ed.kind==='wall'){ wallTieSection(b,F,r); F.runAt(0,ed.len,g).add(box(ed.len+1,12,1.5,M.wall,0,6,0.75)); }   // the abutting wall: the taller block stands just behind the report's flashing line; this stub closes the gap (12 ft shown, ASSUMED)
+    else if(ed.kind==='penthouse') penthouseSection(b,r,surf,0,0); }); });
+  const penBest={};   // the instance of each kind nearest the roof centre carries the hotspot
+  rep.pens.forEach(p=>{ const f=rep.facetById[p.parent]; if(!f) return; const b=f.block, [x,z]=p.c, nCut=b.cutouts.length; let o;
+    switch(p.kind){ case 'pipe': o=addPipe(b,x,z); break; case 'pitchpan': o=addPitchPan(b,x,z); break; case 'vent': o=addBinVent(b,x,z,{flat:true}); break; case 'hatch': o=addHatch(b,x,z,{flat:true}); break; case 'exhaust': o=addExhaustFan(b,x,z); break; case 'skylight': o=addSkylight(b,x,z); break; case 'drain': addStain(b,x,z,Math.max(4,Math.sqrt(p.area)*3)); o=addDrain(b,x,z); break;
+      default: { const CW=Math.max(3,Math.min(14,Math.sqrt(p.area))); o=addRTU(b,x,z,CW,1.5); if(Math.abs(p.rot)>0.05&&CW!==8) o.rotation.y=p.rot; p.cw=CW; } }   // RTU / equipment at its measured footprint (code-drawn unless it is the 8-ft model curb)
+    if(b.cutouts.length>nCut){ const c=b.cutouts[b.cutouts.length-1], R=c.rMem||(Array.isArray(c.hMem)?Math.hypot(c.hMem[0],c.hMem[1]):c.hMem*Math.SQRT2); if(polyEdgeDist([x,z],[f.outer].concat(f.holes))<R+0.2) b.cutouts.pop(); }   // a hole that would cross the facet edge is left out: the triangulated sheets would bulge outside the parapet (the model's own patch simply overlaps the field there)
+    b.roof.remove(o); const g=new THREE.Group(); b.roof.add(g); g.add(o); reg(p.kind,g); p.obj=g; const d=Math.hypot(x,z); if(!penBest[p.kind]||d<penBest[p.kind].d) penBest[p.kind]={ p, f, d }; });
+  const main=rep.facets.slice().sort((a,b)=>b.area-a.area)[0], bb=polyBBox(rep.facets.map(f=>f.outer));
+  const solar=(()=>{ const c=polyCentroid(main.outer); const cols=[-20,-10,0,10,20].map(x=>c[0]+x), rows=[c[1]-6,c[1]+6]; if(!cols.every(x=>rows.every(z=>pointIn([x,z],main.outer)&&!main.holes.some(h=>pointIn([x,z],h))))) return null; const s=makeSolar(main.block.roof,cols,rows); s.visible=false; return s; })();
+  const hots=[];
+  ['coping','edge','wall','penthouse'].forEach(k=>{ const e=edgeBest[k]; if(!e) return; const d=DETAILS[k], {ed,f}=e, y=f.y+(k==='coping'?PH+0.6:k==='edge'?0.6:k==='wall'?2.6:2.8), out=k==='coping'?PT/2:-0.2, theta=Math.atan2(ed.n[0],ed.n[1])+(d.theta-EV_AZ[k]);
+    hots.push({ id:k, anchor:()=>new THREE.Vector3(ed.mid[0]+ed.n[0]*out,y,ed.mid[1]+ed.n[1]*out), cam:{theta}, show:()=>S.on[k] }); });
+  EV_TYPES.forEach(k=>{ const e=penBest[k]; if(!e) return; const {p,f}=e, lift=k==='rtu'?(p.cw||8)*0.5+2.4:EV_LIFT[k]; hots.push({ id:k, anchor:()=>new THREE.Vector3(p.c[0],f.y+lift,p.c[1]), show:()=>S.on[k] }); });
+  const H=Math.max(...rep.facets.map(f=>f.y))+PH;
+  function applyStage(p){ blocks.forEach(b=>condFor(b,p)); sweepFor(p,bb.minX,bb.maxX); Object.entries(vis).forEach(([id,arr])=>{ const on=!!S.on[id]; arr.forEach(o=>{ o.visible=on; }); }); if(solar) solar.visible=S.solar; }
+  return { extent:{ L:bb.maxX-bb.minX, W:bb.maxZ-bb.minZ, H, factor:0.92, phi:0.82 }, hots, applyStage, gravelSpan:[bb.minX,bb.maxX], ev:true }; }
+
+// ---- the building entry, the estimate, the panel
+function evActive(){ return !!(EV.rep&&S.building==='prospect'&&BUILDINGS.prospect); }
+function evDetails(){ const rep=EV.rep, b=BUILDINGS.prospect, ids=new Set(); rep.pens.forEach(p=>ids.add(p.kind)); rep.facets.forEach(f=>f.edges.forEach(e=>{ if(e.kind) ids.add(e.kind); }));
+  b.details=['coping','edge','wall','penthouse'].concat(EV_TYPES).filter(k=>ids.has(k)); b.defaultOn=b.details.slice(); return b.details; }
+function evRegister(){ const rep=EV.rep, label=`Prospect roof (report ${rep.id})`; BUILDINGS.prospect={ label, roofs:['tpo','modbit','gravel','concrete','spf'], sqft:Math.round(rep.totals.areaLess||rep.totals.area||rep.facets.reduce((s,f)=>s+f.area,0)), details:[], defaultOn:[], ev:true }; evDetails();
+  let o=[...bldSel.options].find(x=>x.value==='prospect'); if(!o){ o=document.createElement('option'); o.value='prospect'; bldSel.appendChild(o); } o.textContent=label; }
+function evConfirmedCount(){ return EV.rep?EV.rep.pens.filter(p=>p.confirmed).length:0; }
+function evDate(ms){ const d=ms?new Date(ms):null; return d&&!isNaN(d)?d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}):null; }
+function evLabelText(){ const r=EV.rep; return `From EagleView report ${r.id}, file dated ${r.file.date||'unknown'} — penetration types confirmed by rep: ${evConfirmedCount()} of ${r.pens.length}`; }
+function evAddress(){ const l=EV.rep&&EV.rep.location; return l?[l.address,[l.city,l.state].filter(Boolean).join(', '),l.postal].filter(Boolean).join(', '):''; }
+function evImport(text,name,date){ let rep; try{ rep=evParse(String(text||'')); }catch(err){ console.warn('EagleView import failed:',err.message); evNotice(`Could not read ${name||'that file'} — ${err.message}`); return false; }
+  rep.file={ name:name||'', date:(typeof date==='number'?evDate(date):date)||null }; evPrepare(rep); EV.rep=rep; evRegister(); selectBuilding('prospect'); evOpen(true); return true; }
+function evNotice(t){ const nm=document.getElementById('viewName'); nm.textContent=t; setTimeout(()=>{ if(nm.textContent===t) nm.textContent=''; },6000); }
+function evEstimate(r){ const t=EV.rep.totals, A=t.areaLess||t.area||S.sqft, wall=t.parapetLen*EV.PH, bands=(S.on.edge?t.eaveLen*EV_BAND.edge:0)+(S.on.wall?t.flashLen*EV_BAND.wall:0)+(S.on.penthouse?(t.penthouseLen||0)*EV_BAND.penthouse:0), pen=t.penPerimeter*EV.WRAP, treated=A+wall+bands+pen;
+  const penGal=EV.rep.pens.reduce((a,p)=>a+(S.on[p.kind]?(UNIT_GAL[p.kind]||0):0),0)+(S.solar?SOLAR_GAL:0);   // measured field + parapet walls (rep's height) + edge bands + penetration wraps; Flex per penetration by count
+  return { primerGal:treated/r.rates.primerSqFtPerGal, flexGal:treated/100*r.rates.flexGalPerSq+penGal, topGal:(A+wall+bands)/100*r.rates.topGalPerSq, system:r.system[S.topcoat], ev:{ A, wall, bands, pen, treated, penGal } }; }
+function evCounts(){ const c={}; (EV.rep?EV.rep.pens:[]).forEach(p=>{ if(S.on[p.kind]) c[p.kind]=(c[p.kind]||0)+1; }); return c; }
+function evSummary(){ const r=EV.rep; return { report:r.id, file:r.file, facets:r.facets.map(f=>({ id:f.id, designator:f.des, elevation_ft:+f.e.toFixed(2), area_sqft:Math.round(f.area) })), totals:r.totals, parapet_height_ft:EV.PH, parapet_height_note:'entered by the rep — not in the report (ASSUMED)',
+  penetrations:r.pens.map(p=>({ n:p.n, area_sqft:+p.area.toFixed(2), type:p.kind, drawing:DET(p.kind).drawing, guess:p.guess, confirmed:p.confirmed })), confirmed:evConfirmedCount(), unused:r.unused }; }
+const evEl={ app:document.getElementById('app'), panel:document.getElementById('evp'), meta:document.getElementById('evpMeta'), list:document.getElementById('evList'), cnt:document.getElementById('evpCnt'), btn:document.getElementById('evBtn'), input:document.getElementById('evInput'), close:document.getElementById('evpClose'),
+  all:document.getElementById('evConfirmAll'), chip:document.getElementById('evChip'), pbtn:document.getElementById('evpBtn'), basis:document.getElementById('evBasis'), ph:document.getElementById('evPH'), totals:document.getElementById('evTotals'), note:document.getElementById('evBasisNote'), sqftField:document.getElementById('sqft').closest('.field') };
+function evOpen(on){ if(on===undefined) on=!EV.open; if(on&&!(evActive()&&S.view==='roof')) on=false; EV.open=on; evEl.app.classList.toggle('ev',on); if(on){ if(PH.slider) phSlider(false); evRender(); } evEl.pbtn.textContent=on?'Hide penetrations':'Penetrations'; evEl.pbtn.style.background=on?'var(--navy)':'#fff'; evEl.pbtn.style.color=on?'#fff':'var(--navy)'; }
+function evLabel(){ const a=evActive(); evEl.chip.style.display=a?'block':'none'; evEl.pbtn.style.display=a&&S.view==='roof'?'inline-block':'none'; evEl.basis.style.display=a?'':'none'; evEl.sqftField.style.display=a?'none':''; evEl.btn.classList.toggle('on',a);
+  if(a){ evEl.chip.textContent=evLabelText(); evEl.ph.value=EV.PH; evBasisRender(); } if(!a&&EV.open) evOpen(false); if(EV.open) evRender(); }
+function evBasisRender(){ const t=EV.rep.totals, f=n=>Math.round(n).toLocaleString();
+  evEl.totals.innerHTML=`<tr><td>Roof area, less penetrations</td><td>${f(t.areaLess||t.area)} sq ft</td></tr><tr><td>Roof facets</td><td>${EV.rep.facets.length}</td></tr><tr><td>Parapet</td><td>${f(t.parapetLen)} ft</td></tr><tr><td>Eaves</td><td>${f(t.eaveLen)} ft</td></tr><tr><td>Flashing</td><td>${f(t.flashLen)} ft</td></tr><tr><td>Penetrations</td><td>${t.penCount} · ${f(t.penPerimeter)} ft · ${f(t.penArea)} sq ft</td></tr>`;
+  evEl.note.innerHTML=`Measured totals from EagleView report ${phEsc(EV.rep.id)}. The report has no parapet height: the ${EV.PH} ft above is entered by the rep and sets the parapet wall area in the estimate <span class="tag a">ASSUMED</span> until measured.`; }
+function evRender(){ if(!EV.open||!EV.rep) return; const r=EV.rep, E=phEsc, n=evConfirmedCount(); evEl.meta.textContent=`${n} of ${r.pens.length} confirmed by rep`; evEl.cnt.textContent=`${r.pens.length-n} ASSUMED`;
+  evEl.list.innerHTML=r.pens.map((p,i)=>{ const f=r.facetById[p.parent]; return `<div class="evrow ${p.confirmed?'':'asm'}" data-i="${i}"><b>${E(p.n)}</b><span class="sz">${p.area<10?p.area.toFixed(1):Math.round(p.area)} sq ft · ${p.w.toFixed(1)} × ${p.h.toFixed(1)} ft · facet ${E(f?f.des:'?')}${p.confirmed||p.kind===p.guess?'':' · was '+E(DET(p.guess).menu)}</span><div class="ctl"><select title="${E(p.guessLabel||'')}">${EV_TYPES.map(k=>`<option value="${k}" ${k===p.kind?'selected':''}>${E(DET(k).menu)} — ${E(DET(k).drawing)}</option>`).join('')}</select><label><input type="checkbox" ${p.confirmed?'checked':''}> ${p.confirmed?'confirmed':'<span class="tag a">ASSUMED</span>'}</label></div></div>`; }).join('');
+  [...evEl.list.children].forEach(row=>{ const i=+row.dataset.i; row.querySelector('select').onchange=e=>evSetType(i,e.target.value); row.querySelector('input').onchange=e=>evConfirm(i,e.target.checked); row.onclick=e=>{ if(e.target.closest('select,label,input')) return; evFocus(i); }; }); }
+function evAfter(){ evLabel(); renderEstimate(); if(EV.open) evRender(); }
+function evConfirm(i,on){ const p=EV.rep&&EV.rep.pens[i]; if(!p) return; p.confirmed=!!on; evAfter(); }
+function evConfirmAll(){ if(!EV.rep) return; EV.rep.pens.forEach(p=>{ p.confirmed=true; }); evAfter(); }
+function evSetType(i,kind){ const p=EV.rep&&EV.rep.pens[i]; if(!p||!EV_TYPES.includes(kind)) return; if(kind===p.kind){ p.confirmed=true; evAfter(); return; } p.kind=kind; p.confirmed=true; evApply(); }
+function evApply(){ // a type or the parapet height changed: the building's detail list and the scene follow, the camera stays put
+  if(!evActive()) return; evDetails(); BUILDINGS.prospect.details.forEach(k=>{ if(!(k in S.on)) S.on[k]=true; }); const keep={ dist:camTo.dist, theta:camTo.theta, phi:camTo.phi, target:camTo.target.clone() }, open=EV.open;
+  syncUI(); rebuild(); Object.assign(camTo,{dist:keep.dist,theta:keep.theta,phi:keep.phi}); camTo.target.copy(keep.target); camT=1; setStage(S.stage,false); renderEstimate(); evLabel(); if(open) evOpen(true); }
+function evFocus(i){ const p=EV.rep&&EV.rep.pens[i]; if(!p) return; const f=EV.rep.facetById[p.parent]; if(!f||S.view!=='roof') return; const d=DET(p.kind); flyTo(new THREE.Vector3(p.c[0],f.y+1,p.c[1]),Math.max(d.dist||10,Math.sqrt(p.area)*2.5),d.theta||0.7,Math.min(1.2,d.phi||1.05),false);
+  [...evEl.list.children].forEach(r=>r.classList.toggle('on',+r.dataset.i===i)); }
+function evPick(){ const d=window.rmiDesktop; if(d&&d.pickEagleView){ d.pickEagleView().then(r=>{ if(!r) return; if(r.error||!r.text) return evNotice(`Could not read ${r.name||'that file'} — ${r.error||'empty file'}`); evImport(r.text,r.name,r.mtime); }); return; } evEl.input.click(); }
+evEl.btn.onclick=evPick;
+evEl.input.onchange=()=>{ const f=evEl.input.files&&evEl.input.files[0]; evEl.input.value=''; if(!f) return; f.text().then(t=>evImport(t,f.name,f.lastModified)).catch(err=>evNotice(`Could not read ${f.name} — ${err.message}`)); };
+evEl.close.onclick=()=>evOpen(false); evEl.pbtn.onclick=()=>evOpen(); evEl.all.onclick=evConfirmAll;
+evEl.ph.onchange=e=>{ const v=Math.max(0.5,Math.min(10,+e.target.value||EV.PH)); e.target.value=v; if(v!==EV.PH){ EV.PH=v; evApply(); } };
+// scripted access for snapshot.py, Playwright checks and the packaged-app selftest
+const eagleviewAPI={ import:evImport, open:evOpen, setType:evSetType, confirm:evConfirm, confirmAll:evConfirmAll, focus:evFocus, height:h=>{ EV.PH=Math.max(0.5,Math.min(10,+h||EV.PH)); evApply(); }, summary:()=>EV.rep?evSummary():null,
+  state:()=>EV.rep?{ report:EV.rep.id, date:EV.rep.file.date, active:evActive(), open:EV.open, label:evLabelText(), facets:EV.rep.facets.map(f=>({ id:f.id, des:f.des, elevation:+f.e.toFixed(2), area:Math.round(f.area), edges:f.edges.reduce((a,e)=>{ const k=e.kind||'none'; a[k]=(a[k]||0)+1; return a; },{}) })),
+    penetrations:EV.rep.pens.length, confirmed:evConfirmedCount(), kinds:EV.rep.pens.reduce((a,p)=>{ a[p.kind]=(a[p.kind]||0)+1; return a; },{}), details:BUILDINGS.prospect?BUILDINGS.prospect.details:[], hots:B?B.hots.map(h=>h.id):[], totals:EV.rep.totals, unused:EV.rep.unused }:null };
+
+// PDF pieces: the penetration schedule page and the measured-totals rows of the estimate basis
+function evSchedule(ev,E){ const rows=ev.pens.map(p=>{ const f=ev.facetById[p.parent]; return `<tr><td>${E(p.n)}</td><td>${p.area<10?p.area.toFixed(1):Math.round(p.area)}</td><td>${p.w.toFixed(1)} × ${p.h.toFixed(1)}</td><td>${E(f?f.des:'')}</td><td>${E(DET(p.kind).menu)} — ${E(DET(p.kind).drawing)}</td><td>${p.confirmed?'confirmed by rep':'<span class="tag a">ASSUMED</span> best guess'}</td></tr>`; }).join('');
+  return `<section class="pg"><h2>Penetration schedule — EagleView report ${E(ev.id)}</h2><p class="sub">${ev.pens.length} penetrations measured in the report, numbered as on its penetrations diagram, with the roof facet each sits on. Each type is a best guess by footprint area until the rep confirms it: ${evConfirmedCount()} confirmed, ${ev.pens.length-evConfirmedCount()} ASSUMED.</p><table class="sched"><tr><th>#</th><th>sq ft</th><th>Footprint ft</th><th>Facet</th><th>Type — RMI drawing</th><th>Status</th></tr>${rows}</table></section>`; }
+function evBasisRows(E,e){ const t=EV.rep.totals, x=e.ev||{}, f=n=>Math.round(n).toLocaleString();
+  return `<tr><th>Parapet walls</th><td>${f(t.parapetLen)} ft of parapet × ${EV.PH} ft = ${f(x.wall||0)} sq ft — the height is entered by the rep, not measured <span class="tag a">ASSUMED</span></td></tr><tr><th>Penetrations</th><td>${t.penCount} penetrations; ${f(t.penPerimeter)} ft of perimeter × ${EV.WRAP} ft of Flex up each = ${f(x.pen||0)} sq ft <span class="tag a">ASSUMED</span>, plus a Flex allowance per penetration by count (below)</td></tr>${x.bands?`<tr><th>Edges</th><td>${f(x.bands)} sq ft of treated band along eaves (${EV_BAND.edge} ft), wall tie-ins (${EV_BAND.wall} ft) and penthouse walls (${EV_BAND.penthouse} ft) <span class="tag a">ASSUMED</span></td></tr>`:''}`; }
+
+const BUILDERS={ warehouse:buildWarehouse, bigbox:buildBigBox, school:buildSchool, office:buildOffice, manufacturing:buildManufacturing, hospital:buildHospital, arena:buildArena, silo:buildSilo, hotel:buildHotel, airport:buildAirport, restaurant:buildRestaurant, prospect:buildProspect };
+function rebuild(){ modelInstances.length=0; BLOCKS.length=0; disposeGroup(world); B = BUILDERS[S.building](); BLOCKS.forEach(applyCutouts); buildHots(); goRoof(true);
+  const ex=B.extent||{}, ss=B.ev?Math.max(180,Math.max(ex.L||0,ex.W||0)/2+(ex.H||0)/2+40):180; if(sun.shadow.camera.right!==ss){ sun.shadow.camera.left=sun.shadow.camera.bottom=-ss; sun.shadow.camera.right=sun.shadow.camera.top=ss; sun.shadow.camera.far=Math.max(600,ss*3); sun.shadow.camera.updateProjectionMatrix(); } }   // a prospect roof can outgrow the archetypes' shadow frame
 
 /* =================================================================
    CAMERA
@@ -1742,7 +2016,7 @@ const cam={ target:new THREE.Vector3(0,22,0), dist:165, theta:0.62, phi:1.0 };
 const camTo={ ...cam, target:cam.target.clone() }, camFrom={ ...cam, target:cam.target.clone() }; let camT=1;
 const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ease=t=>t<.5?2*t*t:-1+(4-2*t)*t, lerp=(a,b,t)=>a+(b-a)*t;
-function roofDist(aspect){ const e=B?B.extent:{L:120,W:80}; const base=e.dist||Math.max(e.L,e.W)*(e.L>280?1.3:e.L>250?1.15:e.W>150?1.45:1.38);
+function roofDist(aspect){ const e=B?B.extent:{L:120,W:80}; const base=e.dist||Math.max(e.L,e.W)*(e.factor||(e.L>280?1.3:e.L>250?1.15:e.W>150?1.45:1.38));   // `factor`: a building's own framing (the EagleView prospect sits high on a tall block, so it frames tighter and steeper)
   const a=aspect||canvas.parentElement.clientWidth/Math.max(1,canvas.parentElement.clientHeight); return base*(a>=1.5?1:a<=1?1.5:1+(1.5-a)); }   // `aspect` given: the PDF capture frame instead of the on-screen view   // wide view: as before; square (photo slider docked) or portrait: back off so the whole roof stays in frame
 function applyCam(){ const t=camT<1?ease(camT):1; const c= camT<1 ? {dist:lerp(camFrom.dist,camTo.dist,t),theta:lerp(camFrom.theta,camTo.theta,t),phi:lerp(camFrom.phi,camTo.phi,t),target:camFrom.target.clone().lerp(camTo.target,t)} : cam;
   if(camT>=1){ Object.assign(cam,{dist:camTo.dist,theta:camTo.theta,phi:camTo.phi}); cam.target.copy(camTo.target); }
@@ -1765,9 +2039,9 @@ function buildHots(){ hotsEl.innerHTML=''; B.hots.forEach(h=>{ const d=document.
 function placeHots(){ if(!B) return; const r=canvas.getBoundingClientRect(); B.hots.forEach(h=>{ const show=S.view==='roof'&&!!h.show(); h.el.classList.toggle('hide',!show); if(!show) return; v3.copy(h.anchor()).project(camera); h.el.style.left=((v3.x+1)/2*r.width)+'px'; h.el.style.top=((1-v3.y)/2*r.height)+'px'; }); }
 function goDetail(id){ const h=B&&B.hots.find(h=>h.id===id); if(!h){ console.warn(`no '${id}' hotspot on this building; it has: ${B?B.hots.map(x=>x.id).join(', '):'none'}`); return false; }
   const d=Object.assign({},DET(id),h.cam); S.view=id; const a=h.anchor().clone(); secAnchor.copy(a); a.y-=d.drop||0; flyTo(a,d.dist,d.theta,d.phi); document.getElementById('secBtn').style.display='inline-block'; document.getElementById('drwBtn').style.display='inline-block';   // a hotspot's `cam` overrides the detail camera for that building
-  document.getElementById('viewChip').querySelector('b').textContent='Detail'; document.getElementById('viewName').textContent=`${d.name} · ${d.drawing}`; document.getElementById('backBtn').style.display='inline-block'; document.getElementById('scaleNote').textContent='Stages replay at detail scale'; renderLayers(); }
-function goRoof(instant){ S.view='roof'; document.getElementById('secBtn').style.display='none'; document.getElementById('drwBtn').style.display='none'; drwOpen(false); const e=B.extent; flyTo(new THREE.Vector3(e.cx||0,e.dist?e.H-45:e.H+2,0),roofDist(),0.62,e.dist?1.2:1.0,instant);
-  document.getElementById('viewChip').querySelector('b').textContent='Whole roof'; document.getElementById('viewName').textContent=''; document.getElementById('backBtn').style.display='none'; document.getElementById('scaleNote').textContent=''; renderLayers(); }
+  document.getElementById('viewChip').querySelector('b').textContent='Detail'; document.getElementById('viewName').textContent=`${d.name} · ${d.drawing}`; document.getElementById('backBtn').style.display='inline-block'; document.getElementById('scaleNote').textContent='Stages replay at detail scale'; renderLayers(); evOpen(false); evLabel(); }
+function goRoof(instant){ S.view='roof'; document.getElementById('secBtn').style.display='none'; document.getElementById('drwBtn').style.display='none'; drwOpen(false); const e=B.extent; flyTo(new THREE.Vector3(e.cx||0,e.dist?e.H-45:e.H+2,0),roofDist(),0.62,e.phi||(e.dist?1.2:1.0),instant);
+  document.getElementById('viewChip').querySelector('b').textContent='Whole roof'; document.getElementById('viewName').textContent=''; document.getElementById('backBtn').style.display='none'; document.getElementById('scaleNote').textContent=''; renderLayers(); evLabel(); }
 document.getElementById('backBtn').onclick=()=>goRoof(false);
 const secPlane=new THREE.Plane(new THREE.Vector3(0,0,1),0); let secAnchor=new THREE.Vector3();
 document.getElementById('secBtn').onclick=()=>{ S.section=!S.section; document.getElementById('secBtn').textContent=S.section?'Full view':'Section view'; document.getElementById('secBtn').style.background=S.section?'var(--navy)':'#fff'; document.getElementById('secBtn').style.color=S.section?'#fff':'var(--navy)'; };
@@ -1817,17 +2091,17 @@ function syncUI(){ const b=BUILDINGS[S.building], r=ROOFS[S.roof];
   document.getElementById('patternNote').innerHTML=r.patternNote; const wb=document.querySelector('#topcoat button[data-v=white]'); wb.disabled=!!r.noWhite; wb.style.opacity=r.noWhite?.4:1; if(r.noWhite&&S.topcoat==='white'){ S.topcoat='thane'; [...document.getElementById('topcoat').children].forEach(x=>x.classList.toggle('on',x.dataset.v==='thane')); } document.getElementById('condLabel').textContent=r.condLabel; document.getElementById('subTitle').textContent=`${b.label} · ${r.label}`;
   const dc=document.getElementById('detailChecks'); dc.innerHTML=''; b.details.forEach(k=>{ const l=document.createElement('label'); l.innerHTML=`<input type="checkbox" ${S.on[k]?'checked':''}> ${DET(k).menu}`; l.querySelector('input').onchange=ev=>{ S.on[k]=ev.target.checked; if(!S.on[k]&&S.view===k) goRoof(false); renderEstimate(); }; dc.appendChild(l); });
   ['Penetrations','Skylights','Gutters','Vents'].filter(t=>!b.details.some(k=>DETAILS[k].menu.toLowerCase().includes(t.toLowerCase().slice(0,5)))).forEach(t=>{ const l=document.createElement('label'); l.className='off'; l.innerHTML=`<input type="checkbox" disabled> ${t}`; dc.appendChild(l); });
-  buildStageBar(); }
+  buildStageBar(); evLabel(); }
 
 // Flex allowance per detail in gallons: typical count on the archetype × gallons per unit — ASSUMED until RMI supplies figures (also listed on the PDF's estimate page)
 const DETAIL_GAL={ curb:2, rtu:3*2, drain:4*0.5, scupper:2*0.5, pipe:7*0.3, skylight:5*1.5, wall:3, penthouse:4, edge:3, sleeper:10*0.3, mskylight:6*1.2, vent:3*1, mpipe:3*0.3, pitchpan:3*1.5, ej:6, gutter:44*0.15, gutterinlet:10*0.4, hatch:1.5, support:6*0.5, exhaust:2*1.5 }, SOLAR_GAL=24*0.25;
-function estimate(){ const r=ROOFS[S.roof]; const bx=BUILDINGS[S.building]; let A=S.sqft; if(bx.extraSqFt) Object.entries(bx.extraSqFt).forEach(([k,v])=>{ if(S.on[k]) A+=v; }); const sq=A/100; let flexSq, treated; const on=k=>S.on[k]?1:0;
+function estimate(){ const r=ROOFS[S.roof]; const bx=BUILDINGS[S.building]; if(bx.ev&&EV.rep) return evEstimate(r); let A=S.sqft; if(bx.extraSqFt) Object.entries(bx.extraSqFt).forEach(([k,v])=>{ if(S.on[k]) A+=v; }); const sq=A/100; let flexSq, treated; const on=k=>S.on[k]?1:0;
   if(r.pattern==='seam'){ const lap=(A/(r.surface==='sseam'?2:3))*0.5/100, endl=(A/40)*1.0/100, fast=(A/7.5)*0.2/100; flexSq=lap+endl+fast; treated=flexSq*100+on('curb')*60; }
   else { flexSq=sq*1.06; treated=A*1.06; }   // +6% for parapet walls, curbs and sumps (ASSUMED)
   const detailGal = Object.entries(DETAIL_GAL).reduce((a,[k,v])=>a+on(k)*v,0) + (S.solar?SOLAR_GAL:0);
   const flexGal=flexSq*r.rates.flexGalPerSq+detailGal, primerGal=treated/r.rates.primerSqFtPerGal, topGal=sq*r.rates.topGalPerSq;
   return { primerGal, flexGal, topGal, system:r.system[S.topcoat] }; }
-function renderEstimate(){ const e=estimate(), r=ROOFS[S.roof]; const f=n=>n<10?n.toFixed(1):Math.round(n).toLocaleString(); const where=r.pattern==='seam'?'seams, laps, fasteners, curb':(BUILDINGS[S.building].extraSqFt&&S.on.silowall?'deck + silo walls + details':'full field + details');
+function renderEstimate(){ const e=estimate(), r=ROOFS[S.roof]; const f=n=>n<10?n.toFixed(1):Math.round(n).toLocaleString(); const where=BUILDINGS[S.building].ev?'field, parapet walls, penetrations':r.pattern==='seam'?'seams, laps, fasteners, curb':(BUILDINGS[S.building].extraSqFt&&S.on.silowall?'deck + silo walls + details':'full field + details');
   document.getElementById('estTable').innerHTML=`<tr><td>RMI system</td><td>${e.system}</td></tr><tr><td>RMI primer</td><td>${f(e.primerGal)} gal</td></tr><tr><td>RMI-Flex (${where})</td><td>${f(e.flexGal)} gal</td></tr><tr><td>${S.topcoat==='white'?'RMI-White Plus':'RMI-Thane'} (full field)</td><td>${f(e.topGal)} gal</td></tr>`; }
 
 /* =================================================================
@@ -1870,7 +2144,7 @@ function phApply(){ const strip=phShown(), slider=strip&&PH.slider&&PH.cur>=0&&P
   phEl.app.classList.toggle('photos',strip); phEl.app.classList.toggle('slider',slider); phEl.btn.classList.toggle('on',strip); phEl.railBtn.textContent=strip?'Hide photo strip':'Show photo strip';
   if(slider!==was||strip!==PH.lastStrip){ PH.lastStrip=strip; requestAnimationFrame(()=>{ if(slider) phFit(); if(S.view==='roof') goRoof(false); }); } }   // the 3D view just changed size; refit the whole-roof camera to it
 function phOpen(on){ if(on===undefined) on=!phShown(); PH.want=on; if(!on){ PH.slider=false; PH.temp=null; } else if(PH.list.length&&PH.cur<0) PH.cur=0; phRender(); }
-function phSlider(on){ PH.slider=on; if(!on) PH.temp=null; if(on&&PH.cur<0&&PH.list.length) PH.cur=0; phRender(); }
+function phSlider(on){ if(on&&EV.open) evOpen(false); PH.slider=on; if(!on) PH.temp=null; if(on&&PH.cur<0&&PH.list.length) PH.cur=0; phRender(); }
 // Header button: shows the strip; with photos in it (the strip can't hide while photos exist) it opens or closes the slider instead.
 phEl.btn.onclick=()=>{ if(PH.list.length) phSlider(!PH.slider); else phOpen(); };
 phEl.railBtn.onclick=()=>{ phEl.btn.onclick(); document.getElementById('rail').classList.remove('open'); };
@@ -1946,7 +2220,7 @@ function phRenderPins(){ const p=phCur(); [...phEl.wrap.querySelectorAll('.pin,.
 phEl.wrap.addEventListener('click',e=>{ const p=phCur(); if(!p||p.status!=='ok') return; const r=phEl.wrap.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height; if(x<0||x>1||y<0||y>1) return;
   const b=BUILDINGS[S.building]; PH.temp={ x, y, pick:(PH.temp&&PH.temp.pick)||b.details.find(k=>S.on[k])||b.details[0] }; phRenderPins(); });
 document.addEventListener('keydown',e=>{ // Esc: cancel a pending pin, else close the slider. ← →: previous / next photo while the slider is open (not while typing in a field).
-  if(e.key==='Escape'){ if(xEl.dlg.classList.contains('show')){ if(!PDF.busy) pdfOpen(false); return; } if(PH.temp){ PH.temp=null; phRenderPins(); } else if(DR.open) drwOpen(false); else if(phEl.app.classList.contains('slider')) phSlider(false); return; }
+  if(e.key==='Escape'){ if(xEl.dlg.classList.contains('show')){ if(!PDF.busy) pdfOpen(false); return; } if(PH.temp){ PH.temp=null; phRenderPins(); } else if(DR.open) drwOpen(false); else if(EV.open) evOpen(false); else if(phEl.app.classList.contains('slider')) phSlider(false); return; }
   if(!phEl.app.classList.contains('slider')) return; const tag=(e.target&&e.target.tagName||'').toLowerCase(); if(tag==='input'||tag==='select'||tag==='textarea') return;
   if(e.key==='ArrowLeft'){ e.preventDefault(); phStep(-1); } else if(e.key==='ArrowRight'){ e.preventDefault(); phStep(1); } });
 function phCommit(id){ const p=phCur(); if(!p||!PH.temp||!id) return; const d=DET(id); p.pins.push({ x:PH.temp.x, y:PH.temp.y, detail:id, drawing:d.drawing, name:d.menu }); PH.temp=null; phSavePhoto(p); phRender(); }
@@ -1968,7 +2242,7 @@ function configuration(){ const e=estimate(), b=BUILDINGS[S.building], r=ROOFS[S
     solar_post:S.solar,   // Solar Post supports toggle (P-1-S-TYP), not one of the DETAILS checklist
     topcoat:S.topcoat==='white'?'RMI-White Plus':'RMI-Thane', topcoat_key:S.topcoat, roof_sqft:S.sqft,
     material_estimate_gal:{primer:+e.primerGal.toFixed(1),flex:+e.flexGal.toFixed(1),topcoat:+e.topGal.toFixed(1),basis:'spec-plate coverage rates; detail allowances ASSUMED; no pricing'},
-    prospect_photos:phSummary() }; }
+    prospect_photos:phSummary(), eagleview:evActive()?evSummary():null }; }   // the EagleView report basis and the rep's penetration confirmations, for saved prospects (#11)
 
 /* =================================================================
    DRAWING PANEL — the RMI 2D sheet (zoom + pan), "How it's applied" steps, and the 3D concept render for the detail
@@ -2053,7 +2327,7 @@ function pdfSelected(){ return B?BUILDINGS[S.building].details.filter(k=>S.on[k]
 function pdfPhotos(){ return PH.list.filter(p=>p.status==='ok'&&p.url); }
 function pdfStatus(t,cls){ xEl.status.textContent=t||''; xEl.status.className='xstatus'+(cls?' '+cls:''); }
 function pdfOpen(on){ if(on===undefined) on=!xEl.dlg.classList.contains('show'); if(!on){ xEl.dlg.classList.remove('show'); return; }
-  const m=pdfRecall(); xEl.prospect.value=m.prospect||''; xEl.address.value=m.address||''; xEl.rep.value=m.rep||''; xEl.notes.value=m.notes||'';
+  const m=pdfRecall(); xEl.prospect.value=m.prospect||''; xEl.address.value=m.address||''; if(evActive()&&!xEl.address.value) xEl.address.value=evAddress(); xEl.rep.value=m.rep||''; xEl.notes.value=m.notes||'';
   const nd=pdfSelected().length, np=pdfPhotos().length; xEl.secs.innerHTML='';
   PDF_SECTIONS.forEach(([k,label,hint])=>{ const l=document.createElement('label'); const off=(k==='photos'&&!np)||(k==='details'&&!nd); const on=off?false:(m.sections&&k in m.sections?!!m.sections[k]:true);
     const h=k==='photos'?(np?`${np} photo${np!==1?'s':''}`:'no photos loaded'):k==='details'?(nd?`${nd} detail${nd!==1?'s':''}`:'none selected'):hint;
@@ -2107,33 +2381,34 @@ const PE_ITEMS=[ ['HVAC',['rtu','curb']], ['Curbs',['rtu','curb','exhaust','hatc
   ['Site screen',['support']], ['Antenna',[]], ['Exp. joint',['ej']], ['Ducts',[]], ['Coping',['coping']], ['Edge metal',['edge']], ['Counterflashing',['wall','penthouse']], ['Wall metal',['penthouse','silowall']],
   ['Roof hatch',['hatch']], ['Typ. system config.',['*']] ];
 function pdfBuild(form,shots,manifest,date){ const b=BUILDINGS[S.building], r=ROOFS[S.roof], e=estimate(), sec=form.sections, E=phEsc, sel=pdfSelected(), photos=pdfPhotos(), last=stagesOf().length-1;
-  const prospect=form.prospect||'Prospect', rep=form.rep||'', topcoat=S.topcoat==='white'?'RMI-White Plus':'RMI-Thane', sq=S.sqft/100; const out=[]; const detailNames=sel.map(k=>`${DET(k).name} (${DET(k).drawing})`);
+  const prospect=form.prospect||'Prospect', rep=form.rep||'', topcoat=S.topcoat==='white'?'RMI-White Plus':'RMI-Thane', sq=S.sqft/100; const out=[]; const detailNames=sel.map(k=>`${DET(k).name} (${DET(k).drawing})`); const ev=evActive()?EV.rep:null, evc=ev?evConfirmedCount():0, evN=ev?evCounts():{};
   const extra=b.extraSqFt?Object.entries(b.extraSqFt).filter(([k])=>S.on[k]).map(([k,v])=>`${v.toLocaleString()} sq ft ${DET(k).name.toLowerCase()}`):[];
-  const disclaimer='Presentation from the RMI Roof Visualizer. The building shown is a generic commercial archetype, not a survey of the prospect\'s roof; each detail follows the RMI drawing and specification plate it names. Items marked ASSUMED are not RMI specification and are listed at the end for RMI to confirm. This document carries a material-quantity estimate and no pricing; an RMI representative or contractor prices the job.';
+  const disclaimer='Presentation from the RMI Roof Visualizer. '+(ev?`The building shown is built from the measurements in EagleView report ${ev.id}: each roof facet at its measured elevation, parapet, eave and flashing lines where the report draws them, and every penetration at its measured position with its footprint. Penetration types are best guesses by footprint area until the rep confirms them; ${ev.pens.length-evc} of ${ev.pens.length} are still ASSUMED. `:'The building shown is a generic commercial archetype, not a survey of the prospect\'s roof; ')+'each detail follows the RMI drawing and specification plate it names. Items marked ASSUMED are not RMI specification and are listed at the end for RMI to confirm. This document carries a material-quantity estimate and no pricing; an RMI representative or contractor prices the job.';
   if(sec.cover) out.push(`<section class="pg cover"><div class="brand"><img src="assets/rmi-logo.png" alt="RMI"><span>Fluid-applied roofing systems</span></div>
     <h1>Visualize your roof</h1><p class="tagline">${E(b.label)} · ${E(r.label)} · ${E(topcoat)}</p>
-    <div class="who"><div class="k">Prepared for</div><div class="v">${E(prospect)}</div>${form.address?`<div class="addr">${E(form.address)}</div>`:''}</div>
+    <div class="who"><div class="k">Prepared for</div><div class="v">${E(prospect)}</div>${form.address?`<div class="addr">${E(form.address)}</div>`:''}${ev?`<div class="addr">EagleView report ${E(ev.id)} · file dated ${E(ev.file.date||'unknown')}</div>`:''}</div>
     ${shots.stages[last]?`<img class="hero" src="${shots.stages[last]}" alt="">`:''}
     <div class="meta"><div><span>Date</span>${E(pdfDate(date))}</div><div><span>Prepared by</span>${E(rep||'RMI representative')}</div><div><span>RMI system</span>${E(e.system)}</div><div><span>Details on the roof</span>${sel.length?sel.length+' — '+E(sel.map(k=>DET(k).menu).join(', ')):'none selected'}</div></div>
     <p class="fine">${E(disclaimer)}</p></section>`);
   if(sec.config) out.push(`<section class="pg"><h2>Building and roof configuration</h2><p class="sub">What the presentation shows: the building type, the existing roof and the conditions on it.</p>
     ${shots.roofLabelled?`<img class="wide" src="${shots.roofLabelled}" alt="">`:''}
-    <table class="kv"><tr><th>Building type</th><td>${E(b.label)} — a generic commercial archetype</td></tr><tr><th>Roof type</th><td>${E(r.label)} — RMI specification Plate ${E(r.plate)}</td></tr>
+    <table class="kv"><tr><th>Building type</th><td>${ev?E(`Prospect roof from EagleView report ${ev.id} (file dated ${ev.file.date||'unknown'}): ${ev.facets.length} roof facets at their measured elevations, parapet / eave / flashing lines as the report draws them, ${ev.pens.length} penetrations at their measured positions`):E(b.label)+' — a generic commercial archetype'}</td></tr>${ev?`<tr><th>Penetration types</th><td>${evc} of ${ev.pens.length} confirmed by the rep; ${ev.pens.length-evc} best guesses by footprint area <span class="tag a">ASSUMED</span> (schedule on the next page)</td></tr><tr><th>Parapet height</th><td>${EV.PH} ft, entered by the rep — not measured in the report <span class="tag a">ASSUMED</span></td></tr>`:''}<tr><th>Roof type</th><td>${E(r.label)} — RMI specification Plate ${E(r.plate)}</td></tr>
     <tr><th>Field pattern</th><td>${pdfTagged(pdfPlain(r.patternNote))}</td></tr><tr><th>Existing condition shown</th><td>${E(r.condLabel)}${S.cond?'':' (switched off in the view)'}</td></tr>
     <tr><th>Details on the roof</th><td>${sel.length?'<ul>'+sel.map(k=>`<li>${E(DET(k).name)} — ${E(DET(k).drawing)}</li>`).join('')+'</ul>':'None selected'}</td></tr>
     <tr><th>Finish</th><td>${E(topcoat)}</td></tr><tr><th>Solar Post supports</th><td>${S.solar?'Yes (P-1-S-TYP / P-2-S-TYP / P-3-S-TYP)':'No'}</td></tr>
-    <tr><th>Roof size</th><td>${S.sqft.toLocaleString()} sq ft (approx., entered by the rep)${extra.length?' + '+E(extra.join(', ')):''}</td></tr><tr><th>RMI system</th><td>${E(e.system)}</td></tr></table></section>`);
-  if(sec.estimate){ const allow=sel.filter(k=>DETAIL_GAL[k]).map(k=>[DET(k).name,DETAIL_GAL[k]]); if(S.solar) allow.push(['Solar Post supports',SOLAR_GAL]);
+    <tr><th>Roof size</th><td>${S.sqft.toLocaleString()} sq ft (${ev?'measured in the report, less penetrations':'approx., entered by the rep'})${extra.length?' + '+E(extra.join(', ')):''}</td></tr><tr><th>RMI system</th><td>${E(e.system)}</td></tr></table></section>`);
+  if(sec.config&&ev) out.push(evSchedule(ev,E));
+  if(sec.estimate){ const allow=ev?Object.entries(evN).map(([k,n])=>[`${DET(k).name} × ${n}`,n*(UNIT_GAL[k]||0)]):sel.filter(k=>DETAIL_GAL[k]).map(k=>[DET(k).name,DETAIL_GAL[k]]); if(S.solar) allow.push(['Solar Post supports',SOLAR_GAL]);
     out.push(`<section class="pg"><h2>Material estimate</h2><p class="sub">Gallons of each RMI product for this configuration, from the coverage rates on RMI specification Plate ${E(r.plate)}. Quantities only.</p>
     <table class="est"><tr><td>RMI system</td><td>${E(e.system)}</td></tr><tr><td>RMI primer</td><td>${pdfGal(e.primerGal)} gal</td></tr><tr><td>RMI-Flex (${r.pattern==='seam'?'seams, laps, fasteners, curbs':(extra.length?'deck + silo walls + details':'full field + details')})</td><td>${pdfGal(e.flexGal)} gal</td></tr><tr><td>${E(topcoat)} (full field)</td><td>${pdfGal(e.topGal)} gal</td></tr></table>
     <p class="nobid">Not a bid — no pricing here; an RMI rep or contractor prices the job.</p>
-    <h4>Basis</h4><table class="kv"><tr><th>Roof area</th><td>${S.sqft.toLocaleString()} sq ft (${sq.toLocaleString(undefined,{maximumFractionDigits:1})} squares), approx., entered by the rep${extra.length?'; plus '+E(extra.join(' and ')):''}</td></tr>
+    <h4>Basis</h4><table class="kv"><tr><th>Roof area</th><td>${S.sqft.toLocaleString()} sq ft (${sq.toLocaleString(undefined,{maximumFractionDigits:1})} squares), ${ev?'measured in EagleView report '+E(ev.id)+', less penetrations':'approx., entered by the rep'}${extra.length?'; plus '+E(extra.join(' and ')):''}</td></tr>${ev?evBasisRows(E,e):''}
     <tr><th>Field pattern</th><td>${pdfTagged(pdfPlain(r.patternNote))}</td></tr>
     <tr><th>Primer</th><td>1 gal per ${r.rates.primerSqFtPerGal.toLocaleString()} sq ft of treated surface (Plate ${E(r.plate)})</td></tr>
-    <tr><th>RMI-Flex</th><td>${r.rates.flexGalPerSq} gal per square${r.pattern==='seam'?' of seam, lap and fastener area (the panel field is optional on metal)':' of field, plus 6% for walls, curbs and sumps <span class="tag a">ASSUMED</span>'}</td></tr>
+    <tr><th>RMI-Flex</th><td>${r.rates.flexGalPerSq} gal per square${r.pattern==='seam'?' of seam, lap and fastener area (the panel field is optional on metal)':(ev?' of field, parapet wall, edge band and penetration wrap area (the measured totals above)':' of field, plus 6% for walls, curbs and sumps <span class="tag a">ASSUMED</span>')}</td></tr>
     <tr><th>${E(topcoat)}</th><td>${r.rates.topGalPerSq} gal per square over the whole roof (Plate ${E(r.plate)})</td></tr></table>
     <h4>Flex allowance per detail <span class="tag a">ASSUMED</span></h4>${allow.length?`<table class="kv">${allow.map(([n,g])=>`<tr><th>${E(n)}</th><td>${pdfGal(g)} gal</td></tr>`).join('')}</table>`:'<p class="src">No detail allowances in this configuration.</p>'}
-    <p class="src">Each allowance is a typical count of that condition on the archetype times a gallon figure per unit. RMI supplies the real figures; until then they are ASSUMED and the prospect's own roof decides the count.</p></section>`); }
+    <p class="src">${ev?'Each allowance is the count of that type in the report times a gallon figure per unit.':'Each allowance is a typical count of that condition on the archetype times a gallon figure per unit.'} RMI supplies the real figures; until then they are ASSUMED and the prospect's own roof decides the count.</p></section>`); }
   if(sec.stages) out.push(`<section class="pg"><h2>The RMI system, stage by stage</h2><p class="sub">${E(r.label)} on the ${E(b.label)}, finished in ${E(topcoat)}. Each image is the whole roof at that stage.</p>`
     +stagesOf().map(STG).map((s,i)=>`<div class="stg">${shots.stages[i]?`<img src="${shots.stages[i]}" alt="">`:''}<div><h3>${i+1}. ${E(s.name)}</h3><p>${E(s.text)}</p><p class="src">${pdfTagged(s.src)}</p></div></div>`).join('')+'</section>');
   if(sec.details) sel.forEach(id=>{ const d=DET(id), sh=shots.details[id]||{}, num=d.sheet||d.drawing, info=manifest[num]||manifest[d.drawing]||null, steps=d.steps||[];
@@ -2148,6 +2423,7 @@ function pdfBuild(form,shots,manifest,date){ const b=BUILDINGS[S.building], r=RO
       +photos.map(p=>`<div class="ph"><div class="pimg" style="width:${p.w&&p.h&&p.h>p.w?'2.7in':'4.3in'}"><img src="${p.url}" alt="">${p.pins.map((pin,j)=>`<span class="ppin" style="left:${(pin.x*100).toFixed(2)}%;top:${(pin.y*100).toFixed(2)}%"><b>${j+1}</b><i></i></span>`).join('')}</div>
         <div class="plist"><b>${E(p.sample?'Sample roof · '+p.name:p.name)}</b>${p.pins.length?`<ol>${p.pins.map(pin=>`<li>${E(pin.drawing)} · ${E(pin.name)}${DETAILS[pin.detail]?' — '+E(DETAILS[pin.detail].name):''}</li>`).join('')}</ol>`:'<span class="src">No pins on this photo.</span>'}</div></div>`).join('')+'</section>'); }
   if(sec.notes){ const roofA=[]; stagesOf().map(STG).forEach(s=>pdfAssumed(s.src).forEach(x=>roofA.push(`${s.name}: ${x}`))); roofA.push('Material estimate: per-detail allowances (gallons added per detail) are ASSUMED until RMI supplies figures; the +6% for walls, curbs and sumps on full-field roofs is ASSUMED.');
+    if(ev){ roofA.push(`EagleView report ${ev.id}: ${ev.pens.length-evc} of ${ev.pens.length} penetration types are best guesses by footprint area, ASSUMED until the rep confirms them (schedule in the configuration section).`); roofA.push(`Prospect roof build: the parapet height (${EV.PH} ft, entered by the rep — the report does not measure it), an ${Math.round(EV.PT*12)}" parapet thickness, grade ${EV.GRADE} ft below the lowest facet, ${EV.WRAP} ft of Flex up each penetration and the edge bands in the estimate are ASSUMED.`); }
     const li=a=>a.map(x=>`<li>${pdfTagged(x)}</li>`).join('');
     out.push(`<section class="pg"><h2>Notes and ASSUMED items</h2>${form.notes?`<h4>Notes from ${E(rep||'the rep')}</h4><div class="rnotes">${E(form.notes)}</div>`:''}
       <h4>What ASSUMED means</h4><p>Every detail in this document traces to an RMI drawing or specification plate. Where a sheet does not state a size, a sequence or an extent, the Visualizer shows a plausible one and tags it <span class="tag a">ASSUMED</span>. Those items are not RMI specification: RMI confirms or corrects them, and a source document always overrides an assumption.</p>
@@ -2158,7 +2434,7 @@ function pdfBuild(form,shots,manifest,date){ const b=BUILDINGS[S.building], r=RO
     const overview=`${r.label} on a ${b.label}. Existing condition: ${r.condLabel}. Conditions on the roof: ${detailNames.length?detailNames.join('; '):'none selected'}. Proposed finish: ${topcoat}${S.solar?'; Solar Post supports':''}.${form.notes?' '+form.notes:''}`;
     const yrs=(e.system.match(/^[A-Z]+-(\d+)-/)||[])[1]||'';
     out.push(`<section class="pg"><h2>Appendix — Request for Project Evaluation, pre-filled</h2><p class="sub">RMI's Project Evaluation form (Specifier Request – CSI Documents, revised 11/15/13) asks for the items below. Fields the Visualizer knows are filled from this configuration; the rest are left for the rep. This is a pre-fill to copy into RMI's form, not a submission. RMI does not practice architecture or engineering, and its requirements never supersede building code.</p>
-      <h4>Project information and contacts</h4><table class="form">${row('Firm')}${row('Project contact',E(rep))}${row('Phone / email')}${row('Street address',E(form.address))}${row('City / state / zip')}${row('Project name or ID #',E(prospect))}${row('Use',E(b.label))}${row('Roof squares',`${sq.toLocaleString(undefined,{maximumFractionDigits:1})} (${S.sqft.toLocaleString()} sq ft, approx.)${extra.length?' + '+E(extra.join(', ')):''}`)}${row('RMI specification #',E(e.system))}${row('General overview',E(overview))}</table>
+      <h4>Project information and contacts</h4><table class="form">${row('Firm')}${row('Project contact',E(rep))}${row('Phone / email')}${row('Street address',E(form.address))}${row('City / state / zip')}${row('Project name or ID #',E(prospect))}${row('Use',E(b.label))}${row('Roof squares',`${sq.toLocaleString(undefined,{maximumFractionDigits:1})} (${S.sqft.toLocaleString()} sq ft, ${ev?'measured, EagleView report '+E(ev.id):'approx.'})${extra.length?' + '+E(extra.join(', ')):''}`)}${row('RMI specification #',E(e.system))}${row('General overview',E(overview))}</table>
       <h4>General description of document profile</h4><table class="form">${row('Public funding / private owner')}${row('Bonded? If so what type')}${row('Proprietary RMI products','Yes — the RMI fluid-applied system shown in this document')}${row('Generic – performance based')}${row('Warranty',yrs?`${yrs}-yr per system code ${E(e.system)}${r.noWhite?' (material only)':''} — RMI to confirm material and labor vs. material`:'')}${row('Regulatory requirements (fire rating, hail, CRRC)')}</table>
       <h4>Existing roof system</h4><table class="form">${row('Roof deck')}${row('Surface membrane',`${E(r.label)} (Plate ${E(r.plate)})`)}${row('Thickness')}${row('Existing underside insulation')}${row('Existing or new exterior insulation',S.roof==='spf'?'Spray foam (existing)':'')}${row('Gutters',has(['gutter','gutterinlet'])?E(['gutter','gutterinlet'].filter(k=>S.on[k]&&b.details.includes(k)).map(k=>DET(k).name+' ('+DET(k).drawing+')').join('; ')):'')}${row('Drains',has(['drain','scupper'])?E(['drain','scupper'].filter(k=>S.on[k]&&b.details.includes(k)).map(k=>DET(k).name+' ('+DET(k).drawing+')').join('; ')):'')}${row('Skylights',has(['skylight','mskylight'])?E(['skylight','mskylight'].filter(k=>S.on[k]&&b.details.includes(k)).map(k=>DET(k).name+' ('+DET(k).drawing+')').join('; ')):'')}${row('Duct work / mechanical',has(['rtu','curb','exhaust','vent','sleeper','pitchpan'])?E(['rtu','curb','exhaust','vent','sleeper','pitchpan'].filter(k=>S.on[k]&&b.details.includes(k)).map(k=>DET(k).name+' ('+DET(k).drawing+')').join('; ')):'')}${row('Additional sheet metal',has(['coping','edge','wall','penthouse','ridge','ej','hatch'])?E(['coping','edge','wall','penthouse','ridge','ej','hatch'].filter(k=>S.on[k]&&b.details.includes(k)).map(k=>DET(k).name+' ('+DET(k).drawing+')').join('; ')):'')}</table>
       <h4>Detail drawings — check all applicable</h4><div class="chk">${PE_ITEMS.map(([n,ids])=>{ const on=has(ids); const dr=ids.filter(k=>k!=='*'&&S.on[k]&&b.details.includes(k)).map(k=>DET(k).drawing); return `<div class="${on?'on':''}"><i>${on?'✓':''}</i><span>${E(n)}${dr.length?` <small>${E([...new Set(dr)].join(', '))}</small>`:''}</span></div>`; }).join('')}</div>
@@ -2200,7 +2476,7 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize()
   applyCam(); applyStage(); applySection(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
 
 selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame); phRestore();   // browser storage: last building/roof and the photos come back after a reload
-window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, drawing:drawingAPI, configuration, pdf:pdfAPI };
+window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, drawing:drawingAPI, configuration, pdf:pdfAPI, eagleview:eagleviewAPI };
 })();
 </script>
 </body>

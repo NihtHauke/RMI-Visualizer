@@ -66,7 +66,7 @@ function createWindow() {
 
   // RMI_SELFTEST_PDF=<pdf path>: build check for the export. After load, pick the big-box retail building, load the four
   // sample photos, pin two of them, export every section straight to that path (no dialogs) and print the result, then quit.
-  if (process.env.RMI_SELFTEST_PDF) {
+  if (process.env.RMI_SELFTEST_PDF && !process.env.RMI_SELFTEST_EV) {   // with RMI_SELFTEST_EV the EagleView check below owns the export
     win.webContents.once('did-finish-load', async () => {
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       try {
@@ -85,10 +85,41 @@ function createWindow() {
     });
   }
 
+  // RMI_SELFTEST_EV=<xml path>: build check for the EagleView import. After load, import that report the way the header button
+  // would, print the import state as JSON, save a whole-roof screenshot at the finished stage to RMI_SELFTEST_PNG (or next to the
+  // XML), export the PDF too when RMI_SELFTEST_PDF is set, then quit. The report stays where it is; nothing is copied.
+  if (process.env.RMI_SELFTEST_EV) {
+    win.webContents.once('did-finish-load', async () => {
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      const xml = process.env.RMI_SELFTEST_EV, png = process.env.RMI_SELFTEST_PNG || xml.replace(/\.[^.]+$/, '') + '-selftest.png';
+      try {
+        const [text, st] = await Promise.all([fs.promises.readFile(xml, 'utf8'), fs.promises.stat(xml)]);
+        await sleep(3000);
+        const ok = await win.webContents.executeJavaScript(`window.__rmiQuiet=true; window.__rmi.eagleview.import(${JSON.stringify(text)}, ${JSON.stringify(path.basename(xml))}, ${st.mtimeMs})`);
+        console.log('[selftest] import', ok);
+        await sleep(7000);
+        await win.webContents.executeJavaScript("window.__rmi.finishCam(); window.__rmi.setStage(5,false); window.__rmi.S.prog=1;");
+        await sleep(1500);
+        console.log('[selftest] eagleview', await win.webContents.executeJavaScript('JSON.stringify(window.__rmi.eagleview.state())'));
+        const img = await win.webContents.capturePage();
+        fs.writeFileSync(png, img.toPNG());
+        console.log('[selftest] screenshot', png);
+        if (process.env.RMI_SELFTEST_PDF) {
+          const r = await win.webContents.executeJavaScript("window.__rmi.pdf.export({ quiet:true, form:{ prospect:'Prospect roof', address:'', rep:'RMI rep', notes:'Selftest export of an EagleView prospect from the packaged app.', sections:{ cover:true, config:true, stages:true, details:true, estimate:true, photos:false, notes:true, appendix:true } } })");
+          console.log('[selftest] pdf', JSON.stringify(r));
+        }
+      } catch (err) { console.log('[selftest] FAILED', err.message); }
+      app.quit();
+    });
+  }
+
   win.loadFile(path.join(__dirname, '..', 'index.html'));
   return win;
 }
 
+// The build checks (RMI_SELFTEST*) run in their own userData folder: they never touch the rep's photo store, and they do not
+// collide with an installed copy of the app that may be open (the single-instance lock is per userData folder).
+if (process.env.RMI_SELFTEST || process.env.RMI_SELFTEST_PDF || process.env.RMI_SELFTEST_EV) app.setPath('userData', path.join(app.getPath('temp'), 'rmi-roof-visualizer-selftest'));
 // One window per machine: a second launch focuses the running one.
 if (!app.requestSingleInstanceLock()) {
   app.quit();
@@ -114,6 +145,20 @@ if (!app.requestSingleInstanceLock()) {
       catch (err) { out.push({ name: path.basename(fp), size: 0, data: null, error: err.message }); }
     }
     return out;
+  });
+  // EagleView import: the page asks for a native open dialog (window.rmiDesktop.pickEagleView) and gets the report XML back as
+  // text with the file's date (the XML itself carries no report date). Read once into the page's memory; nothing is stored.
+  ipcMain.handle('rmi:pick-eagleview', async (e) => {
+    const win = BrowserWindow.fromWebContents(e.sender);
+    const r = await dialog.showOpenDialog(win, {
+      title: 'Import EagleView report',
+      properties: ['openFile'],
+      filters: [{ name: 'EagleView report (XML)', extensions: ['xml'] }, { name: 'All files', extensions: ['*'] }],
+    });
+    if (r.canceled || !r.filePaths.length) return null;
+    const fp = r.filePaths[0];
+    try { const [text, st] = await Promise.all([fs.promises.readFile(fp, 'utf8'), fs.promises.stat(fp)]); return { name: path.basename(fp), text, mtime: st.mtimeMs, size: st.size }; }
+    catch (err) { return { name: path.basename(fp), error: err.message }; }
   });
   // PDF export: the page has built the document into #pdfDoc and set body.pdf, so print media shows only that. Ask where to
   // save (Documents by default, the page's suggested <prospect>-<date>.pdf), print with Chromium's printToPDF (Letter,

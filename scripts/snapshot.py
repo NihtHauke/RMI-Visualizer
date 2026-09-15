@@ -13,6 +13,8 @@ Usage (from the repo root):
     python scripts/snapshot.py --building warehouse --roof sseam                  # a roof other than the building's first
     python scripts/snapshot.py --building bigbox --detail drain --drawing            # Drawing panel open, 2D tab
     python scripts/snapshot.py --building bigbox --detail drain --drawing steps      # ... "How it's applied" tab (or 3d)
+    python scripts/snapshot.py --eagleview ../RMI-prospects/x/report.XML                   # EagleView prospect roof (the file stays where it is)
+    python scripts/snapshot.py --eagleview ../RMI-prospects/x/report.XML --detail pipe --pdf  # ... a hotspot, and the PDF via page.pdf()
     python scripts/snapshot.py --building bigbox --photos a.jpg,b.png --width 1366 --height 768
         # prospect photos: loads the files into the photo strip, pins the first photo to the building's details
         # (which docks the slider on the right), shoots the split layout at laptop size, then clicks the first pin
@@ -76,6 +78,8 @@ def main():
     ap.add_argument("--detail", default=None, help="detail id, e.g. drain, rtu, coping, pipe")
     ap.add_argument("--roof", default=None, help="roof id to switch to after the building loads, e.g. sseam, spf (default: the building's first)")
     ap.add_argument("--section", action="store_true", help="turn on Section view in detail mode")
+    ap.add_argument("--eagleview", default=None, help="EagleView report XML to import (client data: read from where it is, never copied); selects the prospect roof")
+    ap.add_argument("--pdf", action="store_true", help="also build the PDF document and save it with page.pdf() (headless Chromium)")
     ap.add_argument("--topcoat", default="thane", choices=["thane", "white"])
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument("--width", type=int, default=1400)
@@ -91,6 +95,8 @@ def main():
 
     OUT.mkdir(exist_ok=True)
     httpd = serve(args.port)
+    if args.eagleview:
+        args.building = "prospect"
     tag = f"{args.building}{'-' + args.roof if args.roof else ''}-{args.detail or 'roof'}{'-section' if args.section else ''}{'-photos' if args.photos else ''}{'-drawing-' + args.drawing if args.drawing else ''}"
     photos = [str(Path(f.strip()).resolve()) for f in args.photos.split(",")] if args.photos else []
     for f in photos:
@@ -107,8 +113,21 @@ def main():
             page.on("console", lambda m: errors.append(m.text) if m.type in ("error", "warning") else None)
             page.goto(f"http://127.0.0.1:{args.port}/index.html")
             page.wait_for_timeout(3000)
-            page.evaluate(f"window.__rmi.selectBuilding('{args.building}'); window.__rmi.finishCam();")
-            page.wait_for_timeout(3500)  # models load async
+            if args.eagleview:
+                xml_path = Path(args.eagleview).resolve()
+                xml = xml_path.read_text(encoding="utf-8")
+                date = time.strftime("%B %d, %Y", time.localtime(xml_path.stat().st_mtime))
+                ok = page.evaluate("([t,n,d])=>window.__rmi.eagleview.import(t,n,d)", [xml, xml_path.name, date])
+                page.wait_for_timeout(7000)  # every penetration mounts a model
+                st = page.evaluate("window.__rmi.eagleview.state()")
+                print(f"eagleview import: ok={ok} report={st['report']} facets={len(st['facets'])} penetrations={st['penetrations']} kinds={st['kinds']} details={st['details']} hots={st['hots']}")
+                for f in st["facets"]:
+                    print(f"  facet {f['id']} {f['des']}: elevation {f['elevation']} ft, {f['area']} sq ft, edges {f['edges']}")
+                print("  unused:", *st["unused"], sep="\n    ")
+                page.evaluate("window.__rmi.eagleview.open(false); window.__rmi.finishCam();")
+            else:
+                page.evaluate(f"window.__rmi.selectBuilding('{args.building}'); window.__rmi.finishCam();")
+                page.wait_for_timeout(3500)  # models load async
             if args.roof:
                 page.evaluate(f"const r=document.getElementById('roof'); r.value='{args.roof}'; r.dispatchEvent(new Event('change')); window.__rmi.finishCam();")
                 page.wait_for_timeout(3500)
@@ -157,6 +176,15 @@ def main():
                 page.evaluate(f"window.__rmi.setStage({i}, true); window.__rmi.S.prog = 1;")
                 page.wait_for_timeout(700)
                 files.append(save_png(page, OUT / f"{tag}-{i+1}-{name}.png"))
+            if args.pdf:
+                st = page.evaluate("window.__rmi.pdf.prepare()")
+                print(f"pdf prepared: {st['pages']} pages, {st['images']} images")
+                page.emulate_media(media="print")
+                pdf_path = unlocked(OUT / f"{tag}.pdf")
+                page.pdf(path=str(pdf_path), format="Letter", print_background=True, prefer_css_page_size=True)
+                page.emulate_media(media="screen")
+                page.evaluate("window.__rmi.pdf.done(true)")
+                print("wrote", pdf_path)
             if photos:
                 # click the first pin: the 3D view should fly to that detail with the slider still docked
                 page.evaluate("window.__rmi.photos.click(0,0); window.__rmi.finishCam();")

@@ -91,7 +91,13 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   index.html with ASSUMED tagged, and the 3D concept; sheet number and issue/revision date from the sheet; 52 sheets rendered locally into `drawings/`, bundled by the installer, git-ignored).
   PDF export **built** (15 Sept 2026: "Export PDF" in the header; dialog with prospect, rep, notes and per-section toggles; canvas captures at the default
   cameras; Electron `printToPDF` via `rmiDesktop.exportPdf`, browser print dialog otherwise; the Project Evaluation pre-fill ships as its appendix).
-  EagleView import and saved prospects: **not started**.
+  EagleView import **built** (15 Sept 2026: "Import EagleView report" in the header reads the report XML — native dialog in Electron via
+  `rmiDesktop.pickEagleView`, a file input in a browser — and builds `BUILDINGS.prospect` / `buildProspect()`: each ROOF facet a polygon block
+  (`makePolyBlock`) at its elevation, PARAPET edges parapet + coping, EAVE edges F-1 edge metal, FLASHING edges the W-11 tie-in, a PARAPET edge
+  against a higher facet the W-13 penthouse wall; penetrations at their centroids typed by area (best guess, ASSUMED until confirmed in the
+  "Penetrations" panel); the estimate from the report's measured totals with the parapet height entered by the rep; PDF cover, configuration,
+  penetration schedule, estimate basis and notes carry the report; `configuration().eagleview` for saved prospects; `__rmi.eagleview` API).
+  Saved prospects: **not started**.
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## What's left (in order)
@@ -105,7 +111,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
    this (no RMI drawings in the repo while it is public); the panel itself is built and reads the git-ignored folder.
 7. Drawing panel — **built 15 Sept 2026** (sheets render locally; see the `drawings/` rule above).
 8. PDF export — **built 15 Sept 2026** (the Project Evaluation pre-fill is its appendix; a standalone form view is still open).
-9. EagleView import.
+9. EagleView import — **built 15 Sept 2026** (report files stay outside the repo; `*.xml` is git-ignored).
 10. Saved prospects.
 11. Bundled drawings, code signing, wide rollout.
 
@@ -124,6 +130,9 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   (`open`, `tab`, `state`) for scripted screenshots; `snapshot.py --drawing [2d|steps|3d]` shoots the panel. `RMI_SELFTEST=<png>` makes the
   packaged app open the big-box drain with the panel, print the panel state and save a screenshot, then quit (the installer check).
   `RMI_SELFTEST_PDF=<pdf>` exports the big-box presentation with the sample photos pinned to that path and quits (the export check).
+  `RMI_SELFTEST_EV=<xml>` imports that EagleView report, prints the import state, saves a whole-roof screenshot (`RMI_SELFTEST_PNG`) and, with
+  `RMI_SELFTEST_PDF`, exports its PDF (the import check); the selftests run in their own userData folder. `snapshot.py --eagleview <xml>` shoots the
+  prospect roof (`--detail`, `--pdf` for a page.pdf() export); the sample report lives outside the repo (`../RMI-prospects/`).
 - PDF export: `pdfExport()` in index.html — `pdfCaptures` renders the scene at fixed sizes (`pdfCapture`, 2D composite so JPEG gets the
   view background, hotspot labels drawn on the configuration image), `pdfBuild` writes the sections into `#pdfDoc`, `body.pdf` switches the
   `@media print` CSS to that document, then `rmiDesktop.exportPdf` (Electron: save dialog + `printToPDF`, main.js) or `window.print()`.

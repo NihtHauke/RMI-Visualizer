@@ -5,3 +5,5 @@ node_modules/
 dist/
 drawings/
 prospects/
+*.XML
+*.xml

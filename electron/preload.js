@@ -8,6 +8,9 @@ contextBridge.exposeInMainWorld('rmiDesktop', {
   // Native "Add photos" dialog. Resolves to [{ name, size, data: Uint8Array }] (empty when cancelled).
   // The bytes come straight from the rep's disk into the page's memory — nothing is copied or stored anywhere.
   pickPhotos: () => ipcRenderer.invoke('rmi:pick-photos'),
+  // Native "Import EagleView report" dialog. Resolves to { name, text, mtime } (null when cancelled, { name, error } when unreadable).
+  // The XML is read once into the page's memory; nothing is copied, cached or written anywhere.
+  pickEagleView: () => ipcRenderer.invoke('rmi:pick-eagleview'),
   // PDF export. The page has already built the document and switched the print CSS on (body.pdf); main shows the save dialog
   // (suggested name <prospect>-<date>.pdf), prints the page with printToPDF and writes the file. Resolves to
   // { path } | { canceled: true } | { error }. `footer` is the running footer text (page numbers are added).
