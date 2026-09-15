@@ -1,6 +1,6 @@
 # RMI Roof Visualizer — Project Tracker
 
-Tracker updated: Mon 14 Sept 2026
+Tracker updated: Tue 15 Sept 2026
 
 The single status page. Per-drawing ASSUMED questions live in the catalog, not here:
 [RMI_Library_Catalog.md](RMI_Library_Catalog.md) — §3c is the per-detail sync table, [§5](RMI_Library_Catalog.md#5-open-questions-for-rmi)
@@ -41,7 +41,7 @@ Roof types are those of the buildings that carry the detail.
 | Wall tie-in, reglet (`wall`) — school gym wall | W-11-TYP | Mod-bit, TPO | MODELLED+SPLICED | Flashing height, reglet, counterflashing lap (§5 #6) |
 | Soil stacks (`pipe`) — all five buildings | P-6-TYP | TPO, mod-bit, gravel BUR, concrete | MODELLED+SPLICED | Every dimension (§5 #9) |
 | Skylights, curb-mounted (`skylight`) — school | CS-1-TYP note 7 | Mod-bit, TPO | MODELLED+SPLICED | Dome rise, retainer frame, condensation gutter; shared curb numbers (§5 #5) |
-| Edge metal (`edge`) — office east edge at the hotspot; every office edge draws the same cross-section in code | F-1-TYP | TPO, concrete, mod-bit | MODELLED+SPLICED | Tape at the edge joint, Flex down the fascia and face fasteners (none on the drawing); flange, fascia, stripping and cleat sizes (§5 #22) |
+| Edge metal (`edge`) — office east edge at the hotspot; every office edge draws the same cross-section in code | F-1-TYP | TPO, concrete, mod-bit | MODELLED+SPLICED | Flex and topcoat down the fascia (the 2D drawing ends them at the roof edge); flange, fascia, stripping and cleat sizes (§5 #22) |
 | Penthouse walls (`penthouse`) — office penthouse west face | W-13-TYP | TPO, mod-bit, gravel BUR, concrete | MODELLED+SPLICED | Counterflashing height, depth and stand-off; cant; skirt size and lap; fastener spacing; skirt fitted after the topcoat (§5 #21) |
 | Sleeper supports (`sleeper`) — office hotspot sleeper, hotel hotspot condenser | CS-8-TYP | TPO, mod-bit, concrete | MODELLED+SPLICED | Every dimension (NTS): sleeper, pad, 6" raise, patch; whether the (E) condition has a pad |
 | Pipe clusters / Chem-Curb (`pitchpan`) — all three hospital pans | P-8-TYP | Gravel BUR, mod-bit, TPO, concrete | MODELLED+SPLICED | Every dimension (NTS): curb, penetrations, fill crown, Flex field extent; curb set before or after priming (§5 #20) |

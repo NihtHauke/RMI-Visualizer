@@ -22,11 +22,11 @@ What the drawings say (VERIFIED):
   * Note 8: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems.
   * F1-34-FT-3D note 10: roof coating (RMI-Thane or White Plus) to all surface areas.
   * No raised gravel stop on F-1-TYP: the flange runs flat to the edge (the raised stop is F-2-TYP).
+  * No tape at the edge joint, and no exposed face fasteners: the only fastener drawn is the cleat's, behind the fascia.
 
 ASSUMED (not on the drawings, which are not to scale and carry no dimensions):
-  * 4" tape over the metal-to-membrane joint at the roof edge, 2" onto the stripping and 2" down the fascia.
-  * Flex carried down the fascia face to the drip. The 2D drawing ends both coats at the roof edge.
-  * Exposed face fasteners 12" o.c., each encapsulated in Flex. The drawing shows only the cleat fastener, behind the fascia.
+  * Flex and topcoat carried down the fascia face to the drip. The 2D drawing ends both coats at the roof edge; the
+    fascia coverage follows F1-34-FT-3D note 10 ("to all surface areas").
   * Every size: 4" flange; 4" fascia standing 1/2" off the wall; 3/8" hem hooked on the cleat's kick; stripping 4" past
     the flange; cleat screws 12" o.c.; the sheet and coat thicknesses.
 """
@@ -45,12 +45,8 @@ HEM        = 0.375                  # hem turned in and up at the drip, hooked o
 CLEAT_T, CLEAT_TOP, CLEAT_BOT, KICK = 0.04, -0.25, -3.2, 0.25    # continuous cleat on the wall face, kicked out at the bottom
 PLY_T      = 0.125                  # (E) stripping over the flange (VERIFIED that it is there; thickness ASSUMED)
 PLY_END    = 8.0                    # stripping steps down past the flange and ends 4" onto the field
-TAPE, TAPE_T = 2.0, 0.03            # tape 2" each side of the edge joint (the 4" band of W-1-TYP)
-FAST_X     = (-18.0, -6.0, 6.0, 18.0)                             # face fasteners 12" o.c.
-FAST_Z, FAST_R, FAST_H = -2.75, 0.156, 0.12
 SCREW_X    = (-12.0, 0.0, 12.0)     # cleat screws (VERIFIED that the cleat is fastened to the support; spacing ASSUMED)
 SCREW_Z, SCREW_R, SCREW_H = -1.75, 0.2, 0.06
-DAB_R, DAB_Y = 0.55, (0.70, 0.98)   # Flex dab over each face fastener, out from the wall face
 # per coat: top slab z-range (the app's field sheet sits at its top), face slab y-range out from the wall face, bottom of the face slab
 COATS = {"primer":  ((0.30, 0.60), (0.70, 0.76), -3.90),
          "flex":    ((0.66, 0.96), (0.78, 0.88), -3.95),
@@ -89,7 +85,7 @@ B("flange", "existing", -YO, FLANGE, 0, MT, metal)
 B("fascia", "existing", -YO, -FACE_OFF, -FACE_H, 0, metal)
 slab_between("hem", "existing", (-YO + MT / 2, -FACE_H), (-YO + MT / 2 + HEM, -FACE_H + HEM), MT, metal)
 
-# (E) continuous cleat on the wall face, screwed to the support, kicked out at the bottom
+# (E) continuous cleat on the wall face, screwed to the support, kicked out at the bottom — the only fastener on the drawing
 B("cleat", "existing", -CLEAT_T, 0, CLEAT_BOT, CLEAT_TOP, metal)
 slab_between("cleat_kick", "existing", (-CLEAT_T / 2, CLEAT_BOT), (-CLEAT_T / 2 - KICK, CLEAT_BOT - KICK), CLEAT_T, metal)
 for i, x in enumerate(SCREW_X):
@@ -99,24 +95,11 @@ for i, x in enumerate(SCREW_X):
 B("ply_flange", "existing", -FACE_OFF, FLANGE + 0.25, MT, MT + PLY_T, M("membrane"))
 B("ply_field", "existing", FLANGE, PLY_END, 0, PLY_T, M("membrane"))
 
-# (E) face fasteners — ASSUMED (F-1-TYP draws only the concealed cleat fastener)
-for i, x in enumerate(FAST_X):
-    fastener(f"fastener_{i}", "existing", FAST_R, FAST_H, x, -(YO + FAST_H / 2), FAST_Z, M("fast"))
-
-# Tape over the metal-to-membrane joint at the edge: 2" onto the stripping, 2" down the fascia (prep work: the app shows primer__tape from prep)
-top = MT + PLY_T
-B("tape_top", "primer", -(YO + TAPE_T), -YO + TAPE, top, top + TAPE_T, M("tape"))
-B("tape_face", "primer", -(YO + TAPE_T), -YO, -TAPE, top, M("tape"))
-
-# Coats: a top slab from the fascia out to the wall face (the field sheets take over from there) and a face slab down the fascia to the drip
+# Coats: a top slab from the fascia out to the wall face (the field sheets take over from there) and a face slab down the fascia to the drip (ASSUMED)
 for layer, ((z0, z1), (y0, y1), zb) in COATS.items():
     mat = M("thane" if layer == "topcoat" else layer)
     B(f"{layer}_top", layer, -y1, 0, z0, z1, mat)
     B(f"{layer}_face", layer, -y1, -y0, zb, z0, mat)
-
-# Every face fastener encapsulated in Flex
-for i, x in enumerate(FAST_X):
-    fastener(f"flex_dab_{i}", "flex", DAB_R, DAB_Y[1] - DAB_Y[0], x, -(DAB_Y[0] + DAB_Y[1]) / 2, FAST_Z, M("flex"), verts=24)
 
 # Open both ends of the section. The app's code run overlaps each end by 0.6 mm; an end face left there shows as a hairline across the seam.
 bpy.context.view_layer.update()

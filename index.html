@@ -422,9 +422,9 @@ const DETAILS = {
     layers:[{k:'existing',label:'Existing curb and skylight frame',color:'#C9C9C2'},{k:'primer',label:'Primer on curb wall and field',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb to the frame',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
     src:'Assembly per CS-1-TYP, which names skylight domes in note 7 — VERIFIED. Flex up the full curb and over the top to the interior; dome lifted and reset.' },
   edge:   { name:'Perimeter edge metal', drawing:'F-1-TYP', concept:'F1-34-FT-3D', dist:3.5, phi:1.05, theta:0.7, drop:0.75, menu:'Edge metal',
-    layers:[{k:'existing',label:'(E) edge metal: flange on the roof stripped in with the (E) roof system, fascia hooked over a continuous cleat; damaged, ill-fitting or severely rusted metal replaced',color:'#C9C9C2'},{k:'primer',label:'Confirm seam and flashing integrity, repair as required; 4" tape over the metal-to-membrane joint at the edge, 2" on and 2" down (ASSUMED); clean, prepare and prime',color:'#E8D7A6'},{k:'flex',label:'Flex over the stripped flange and the field; carried over the tape and down the fascia to the drip, face fasteners encapsulated (ASSUMED)',color:'#D9A21B'},{k:'thane',label:'Topcoat over all surface areas',color:'#C3C7CC'}],
-    src:'Assembly per F-1-TYP with F1-34-FT-3D as reference — VERIFIED: (E) edge metal with cleat; damaged, ill-fitting or severely rusted metal replaced; confirm seam and flashing integrity, repair as required; clean, prepare and prime (note 10); RMI-Flex base coat over the stripped flange and the field; RMI-Thane or White over the Flex, to all surface areas (F1-34-FT-3D note 10). Note 7: edge metal and cleats must meet code and SMACNA for wind uplift or the edge is excluded from warranty. Note 8: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems. Not on the drawing, so ASSUMED: the tape over the metal-to-membrane joint; Flex down the fascia face (the 2D drawing ends the coats at the roof edge); exposed face fasteners 12" o.c. and their encapsulation (the drawing shows only the cleat fastener, behind the fascia). The drawing is not to scale: the 4" flange and fascia, stripping 4" past the flange, cleat and hem sizes and coat thicknesses are ASSUMED.' },
-  penthouse:{ name:'Penthouse wall, fixed counterflashing', drawing:'W-13-TYP', concept:'W-11-24-FT-3D', dist:20, phi:1.15, theta:0.9, drop:2.0, menu:'Penthouse walls',
+    layers:[{k:'existing',label:'(E) edge metal: flange on the roof stripped in with the (E) roof system, fascia hooked over a continuous cleat; damaged, ill-fitting or severely rusted metal replaced',color:'#C9C9C2'},{k:'primer',label:'Confirm seam and flashing integrity, repair as required; clean, prepare and prime',color:'#E8D7A6'},{k:'flex',label:'Flex over the stripped flange and on across the field; carried down the fascia to the drip (ASSUMED)',color:'#D9A21B'},{k:'thane',label:'Topcoat over all surface areas; down the fascia with the Flex (ASSUMED)',color:'#C3C7CC'}],
+    src:'Assembly per F-1-TYP with F1-34-FT-3D as reference — VERIFIED: (E) edge metal with cleat; damaged, ill-fitting or severely rusted metal replaced; confirm seam and flashing integrity, repair as required; clean, prepare and prime (note 10); RMI-Flex base coat over the stripped flange and the field; RMI-Thane or White over the Flex, to all surface areas (F1-34-FT-3D note 10). No tape at the edge joint and no exposed face fasteners: the only fastener drawn is the cleat\'s, behind the fascia. Note 7: edge metal and cleats must meet code and SMACNA for wind uplift or the edge is excluded from warranty. Note 8: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems. ASSUMED: Flex and topcoat carried down the fascia face to the drip — the 2D drawing ends both coats at the roof edge; the fascia coverage follows F1-34-FT-3D note 10. The drawing is not to scale: the 4" flange and fascia, stripping 4" past the flange, cleat and hem sizes and coat thicknesses are ASSUMED.' },
+  penthouse:{ name:'Penthouse wall, fixed counterflashing', drawing:'W-13-TYP', concept:'W-11-24-FT-3D', dist:5.5, phi:1.3, theta:-2.5, drop:1.9, menu:'Penthouse walls',
     layers:[{k:'existing',label:'(E) wall flashing up the wall behind a fixed, surface-mounted counterflashing that cannot be removed or lifted; damaged metal replaced',color:'#C9C9C2'},{k:'primer',label:'Bead of RMI approved sealant at the top edge of the counterflashing; clean, prepare and prime the flashing and field',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the (E) flashing from the field up to the counterflashing',color:'#D9A21B'},{k:'thane',label:'Topcoat encapsulates the Flex; 24 ga. skirt metal extends min 4" over the RMI system (fitted after the topcoat — ASSUMED)',color:'#C3C7CC'}],
     src:'Assembly per W-13-TYP and W-11-24-FT-3D — VERIFIED: the counterflashing is fixed and stays in place (note 7), damaged metal replaced; bead of RMI approved sealant at its top edge; Flex encapsulates the (E) flashing up to the counterflashing; topcoat encapsulates the Flex; 24 ga. skirt metal extends min 4" over the RMI system; coating the counterflashing assembly is optional (not shown). Note 9: all (E) BUR, mod-bit, EPDM, PVC, TPO systems regardless of wall type. The drawing is not to scale: the 24" counterflashing height, its 6" depth and 1" stand-off, the cant, the skirt size (5" lap modelled), fastener spacing, fitting the skirt after the topcoat and coat thicknesses are ASSUMED.' },
   sleeper:{ name:'Sleeper support (pipes, condensers)', drawing:'CS-8-TYP', concept:'CS8-2-19-3D', dist:8, phi:1.3, theta:2.1, drop:0.4, menu:'Sleeper supports',
@@ -451,6 +451,7 @@ const DETAILS = {
 };
 
 function DET(id){ const d=DETAILS[id]; const o=d.byRoof&&d.byRoof[S.roof]; return o?Object.assign({},d,o):d; }
+const PENT_FAR={ dist:20, theta:0.9, phi:1.15, drop:2.0 };   // whole-penthouse camera for the code-drawn penthouses (hospital, silo, hotel); the office, where W-13-TYP is spliced, takes the close DETAILS camera
 
 const BUILDINGS = {
   warehouse: { label:'Warehouse', roofs:['rpanel','sseam','spf'], sqft:9600, details:['curb','lap','ridge'], defaultOn:['curb','lap','ridge'] },
@@ -844,9 +845,9 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
   if(mem.plate==='MA'){ const gv=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),M.gravel); gv.rotation.x=-Math.PI/2; gv.position.y=0.03; gv.receiveShadow=true; roof.add(gv); gv.userData.kind='mem'; fieldPlanes.push(gv);
     const nPb=Math.round(IL*IW/28); const e2=new THREE.Object3D(); [M.pebble,M.pebble2].forEach(pm=>{ const pb=new THREE.InstancedMesh(new THREE.CircleGeometry(0.5,6),pm,nPb); for(let i=0;i<nPb;i++){ e2.position.set(-IL/2+Math.random()*IL,0.04,-IW/2+Math.random()*IW); e2.rotation.set(-Math.PI/2,0,Math.random()*3); const sc=0.4+Math.random()*0.9; e2.scale.set(sc,sc*0.7,1); e2.updateMatrix(); pb.setMatrixAt(i,e2.matrix); } roof.add(pb); }); }
   const pitch=mem.plate==='A'?3:mem.plate==='C'?20:mem.plate==='MA'?3:10, nS=Math.floor(IL/pitch)-1; const seamMat=mem.plate==='A'?M.lapA:mem.plate==='C'?M.cjoint:mem.plate==='MA'?M.felts:M.seam;
-  const seams=new THREE.InstancedMesh(new THREE.BoxGeometry(mem.plate==='C'?0.3:mem.plate==='A'?0.25:0.35,0.04,IW-2*SI),seamMat,nS); const mm=new THREE.Matrix4();
-  for(let i=0;i<nS;i++){ mm.makeTranslation(-IL/2+pitch*(i+1),0.02,0); seams.setMatrixAt(i,mm); } roof.add(seams);
-  if(mem.plate==='C'){ const nZ=Math.floor(IW/pitch)-1; const sz=new THREE.InstancedMesh(new THREE.BoxGeometry(IL-2*SI,0.04,0.3),M.cjoint,nZ); for(let i=0;i<nZ;i++){ mm.makeTranslation(0,0.02,-IW/2+pitch*(i+1)); sz.setMatrixAt(i,mm); } roof.add(sz); }
+  const lineSets=[{mat:seamMat, w:mem.plate==='C'?0.3:mem.plate==='A'?0.25:0.35, alongZ:true, at:Array.from({length:nS},(_,i)=>-IL/2+pitch*(i+1)), half:IW/2-SI}];   // seams / laps / joints at fixed x, running along z
+  if(mem.plate==='C'){ const nZ=Math.floor(IW/pitch)-1; lineSets.push({mat:M.cjoint, w:0.3, alongZ:false, at:Array.from({length:nZ},(_,i)=>-IW/2+pitch*(i+1)), half:IL/2-SI}); }   // concrete joints the other way
+  lineSets.forEach(ls=>drawLines(roof,ls,[]));
   function addOverlay(mat,dy){ const f=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),mat); f.rotation.x=-Math.PI/2; f.position.y=dy; f.receiveShadow=true; roof.add(f); f.userData.kind='coat'; f.userData.top=(mat===M.topcoat); fieldPlanes.push(f); }
   addOverlay(M.primerOv,0.05); addOverlay(M.flexOv,0.08); addOverlay(M.topcoat,0.11);   // the parapet walls get cant, base flashing and coats from parapetBase below
   const stains=new THREE.Group(), fails=new THREE.Group(), patches=new THREE.Group(); roof.add(stains); roof.add(fails); roof.add(patches);
@@ -855,7 +856,7 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
     else if(mem.plate==='MA'){ const bl=new THREE.Mesh(new THREE.CircleGeometry(1,12),M.blister); bl.rotation.x=-Math.PI/2; bl.position.set(sx+(Math.random()-.5)*8,0.025,zz); bl.scale.set(1.5+Math.random()*3,1+Math.random()*2,1); fails.add(bl); patches.add(box(2.4,0.05,len+2,M.patchA,sx,0.028,zz,false)); }
     else if(mem.plate==='C'){ const cr=box(0.25,0.04,len*1.6,M.crack,sx+(Math.random()-.5)*6,0.04,zz,false); cr.rotation.y=(Math.random()-.5)*1.2; fails.add(cr); const pc=box(1.2,0.06,len*1.6+1,M.patchC,cr.position.x,0.045,zz,false); pc.rotation.y=cr.rotation.y; patches.add(pc); }
     else { fails.add(box(0.9,0.05,len,M.stain,sx,0.04,zz,false)); patches.add(box(2.2,0.06,len+2,M.patch,sx,0.045,zz,false)); } }
-  const blk={g,roof,par,L,W,H,PH,PT,IL,IW,x,z,stains,fails,patches,em:null,tapeList,fieldPlanes,cutouts,scuppers:[]};
+  const blk={g,roof,par,L,W,H,PH,PT,IL,IW,x,z,stains,fails,patches,em:null,tapeList,fieldPlanes,cutouts,lineSets,scuppers:[]};
   sides.filter(sd=>!skip.includes(sd.k)).forEach(sd=>{ const nIn=sd.jx?IL:IW; parapetBase(blk,sd.k,segsAround(splices.filter(s=>s.k===sd.k&&s.id==='scupper').map(s=>s.at),-nIn/2,nIn/2),roof); });   // cant + base flashing + coats inside every parapet, minus the scupper bays
   splices.filter(s=>s.id==='scupper').forEach(s=>addScupperAt(blk,s));
   if(edge==='metal') blk.em=addEdgeMetal(blk,splices);   // F-1-TYP edge metal round all four sides; {k, at, id:'edge'} splices the Blender section in
@@ -867,7 +868,20 @@ const BLOCKS=[];
 // model's own Flex (the sheets float ~1" above the roof, so at the oblique detail camera the strip seen under the far hole edge must be
 // model Flex, not bare patch); the topcoat sheet's hole is 1" smaller again so nothing lies under *its* edge — otherwise the Flex sheet
 // shows as a thin yellow arc on the far side at the finished stage.
-function applyCutouts(b){ if(!b.cutouts.length) return;
+// Membrane seams, mod-bit laps and concrete joints as instanced strips, `ls` = {mat, w, alongZ, at:[fixed coords], half}. Each strip stops 1.8" short
+// of every cutout's hole (the membrane hole sits 1.2" inside the model's roof patch, plus 0.6" clear): a strip carried under a model shows as a
+// stripe through its thin coats. Called with no cutouts while the block is built, again from applyCutouts once every model has claimed its hole.
+function drawLines(roof,ls,cutouts){ if(ls.mesh){ roof.remove(ls.mesh); ls.mesh.geometry.dispose(); }
+  const CLR=0.15, segs=[];
+  ls.at.forEach(p=>{ const cuts=[];
+    cutouts.forEach(c=>{ const u=ls.alongZ?c.x:c.z, v=ls.alongZ?c.z:c.x, d=Math.max(0,Math.abs(p-u)-ls.w/2);
+      if(c.rMem){ const R=c.rMem+CLR; if(d<R){ const hl=Math.sqrt(R*R-d*d); cuts.push([v-hl,v+hl]); } }
+      else { const hh=c.hMem, hx=(Array.isArray(hh)?hh[0]:hh)+CLR, hz=(Array.isArray(hh)?hh[1]:hh)+CLR; if(d<(ls.alongZ?hx:hz)){ const hv=ls.alongZ?hz:hx; cuts.push([v-hv,v+hv]); } } });
+    cuts.sort((q,r)=>q[0]-r[0]); let s=-ls.half; cuts.forEach(([lo,hi])=>{ if(lo>s) segs.push([p,s,Math.min(lo,ls.half)]); s=Math.max(s,hi); }); if(s<ls.half) segs.push([p,s,ls.half]); });
+  const mesh=new THREE.InstancedMesh(ls.alongZ?new THREE.BoxGeometry(ls.w,0.04,1):new THREE.BoxGeometry(1,0.04,ls.w),ls.mat,Math.max(segs.length,1)), mm=new THREE.Matrix4(); mesh.count=segs.length;
+  segs.forEach(([p,lo,hi],i)=>{ const c=(lo+hi)/2, l=hi-lo; if(ls.alongZ) mm.makeScale(1,1,l).setPosition(p,0.02,c); else mm.makeScale(l,1,1).setPosition(c,0.02,p); mesh.setMatrixAt(i,mm); });
+  roof.add(mesh); ls.mesh=mesh; }
+function applyCutouts(b){ if(!b.cutouts.length) return; b.lineSets.forEach(ls=>drawLines(b.roof,ls,b.cutouts));
   const build=(kind,shrink=0)=>{ const sh=new THREE.Shape(); sh.moveTo(-b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,b.IW/2); sh.lineTo(-b.IL/2,b.IW/2); sh.closePath();
     b.cutouts.forEach(c=>{ const h=new THREE.Path(); const r=(kind==='mem'?c.rMem:c.rCoat)-shrink, hh=(kind==='mem'?c.hMem:c.hCoat); const hx=(Array.isArray(hh)?hh[0]:hh)-shrink, hz=(Array.isArray(hh)?hh[1]:hh)-shrink;   // hMem/hCoat: half-size, or [half-x, half-z] for a rectangle
       if(kind==='mem'?c.rMem:c.rCoat){ h.absarc(c.x,-c.z,r,0,Math.PI*2,true); } else { h.moveTo(c.x-hx,-c.z-hz); h.lineTo(c.x-hx,-c.z+hz); h.lineTo(c.x+hx,-c.z+hz); h.lineTo(c.x+hx,-c.z-hz); h.closePath(); } sh.holes.push(h); });
@@ -1034,31 +1048,28 @@ function addPenthouse(b,x,z,PL,PW,PHt,splice){ const g=new THREE.Group(); g.posi
   return g; }
 // Perimeter edge metal per F-1-TYP (concept F1-34-FT-3D): (E) flange flat on the roof, stripped in with the (E) roof system, the stripping stepping
 // down past the flange onto the field; fascia hooked over a continuous cleat. Confirm seam and flashing integrity; clean, prepare and prime; Flex over
-// the stripped flange and the field; topcoat to all surface areas (VERIFIED). ASSUMED: 4" tape over the metal-to-membrane joint at the edge (2" on the
-// stripping, 2" down the fascia); Flex and topcoat carried down the fascia to the drip; exposed face fasteners 12" o.c., each encapsulated in Flex;
-// every size. The cross-section is the one scripts/build_perimeter_edge_metal_F-1-TYP.py builds from the same numbers — keep the two in step or the
-// seams show. On a metal-edged block the field sheets run out to the wall face, so the coats here stop at y=0 at the sheets' own heights.
+// the stripped flange and the field; topcoat to all surface areas (VERIFIED). The drawing shows no tape at the edge joint and no exposed face fasteners
+// (only the cleat's, behind the fascia), so neither is drawn. ASSUMED: Flex and topcoat carried down the fascia to the drip (the 2D drawing ends them
+// at the roof edge; F1-34-FT-3D note 10 says topcoat to all surface areas); every size. The cross-section is the one
+// scripts/build_perimeter_edge_metal_F-1-TYP.py builds from the same numbers — keep the two in step or the seams show. On a metal-edged block the
+// field sheets run out to the wall face, so the coats here stop at y=0 at the sheets' own heights.
 // `splices` [{k, at, id:'edge'}] sets the 4-ft model into side k at world x (N/S) or z (E/W). Runs are mitred at the corners.
 const EM={ MT:0.06, FLANGE:4, FACE_OFF:0.5, FACE_H:4, HEM:0.375, CLEAT_T:0.04, CLEAT_TOP:-0.25, CLEAT_BOT:-3.2, KICK:0.25, PLY_T:0.125, PLY_END:8,
-  TAPE:2, TAPE_T:0.03, FAST_Z:-2.75, FAST_R:0.156, FAST_H:0.12, DAB_R:0.55, DAB_Y:[0.70,0.98],
   COATS:{primer:[[0.30,0.60],[0.70,0.76],-3.90], flex:[[0.66,0.96],[0.78,0.88],-3.95], topcoat:[[1.02,1.32],[1.00,1.10],-4.00]} };   // inches: y from the wall face (+ toward the roof), z from the roof surface; per coat [top z0,z1], [face y0,y1], face bottom
-function addEdgeMetal(b,splices){ const g=new THREE.Group(); g.position.y=b.H; b.g.add(g); const E=EM, IN=1/12, YO=E.FACE_OFF+E.MT, surf=b.fieldPlanes[0].material;
-  const section=(r,ma,mb,xs,ca,cb)=>{ const L2=r.userData.len/2, add=(pts,mat)=>prismRun(r,pts,mat,-L2,L2,ma,mb,ca,cb), top=E.MT+E.PLY_T;
+function addEdgeMetal(b,splices){ const g=new THREE.Group(); g.position.y=b.H; b.g.add(g); const E=EM, YO=E.FACE_OFF+E.MT, surf=b.fieldPlanes[0].material;
+  const section=(r,ma,mb,ca,cb)=>{ const L2=r.userData.len/2, add=(pts,mat)=>prismRun(r,pts,mat,-L2,L2,ma,mb,ca,cb), top=E.MT+E.PLY_T;
     add(rectYZ(-YO,E.FLANGE,0,E.MT),M.coping); add(rectYZ(-YO,-E.FACE_OFF,-E.FACE_H,0),M.coping); add(sheetYZ([-YO+E.MT/2,-E.FACE_H],[-YO+E.MT/2+E.HEM,-E.FACE_H+E.HEM],E.MT),M.coping);   // (E) flange, fascia, hem at the drip
     add(rectYZ(-E.CLEAT_T,0,E.CLEAT_BOT,E.CLEAT_TOP),M.coping); add(sheetYZ([-E.CLEAT_T/2,E.CLEAT_BOT],[-E.CLEAT_T/2-E.KICK,E.CLEAT_BOT-E.KICK],E.CLEAT_T),M.coping);   // (E) cleat and its kick
     add(rectYZ(-E.FACE_OFF,E.FLANGE+0.25,E.MT,top),surf); add(rectYZ(E.FLANGE,E.PLY_END,0,E.PLY_T),surf);   // (E) stripping over the flange, stepping down onto the field
-    b.tapeList.push(add(rectYZ(-(YO+E.TAPE_T),-YO+E.TAPE,top,top+E.TAPE_T),M.tape), add(rectYZ(-(YO+E.TAPE_T),-YO,-E.TAPE,top),M.tape));   // tape over the edge joint, shown from prep
-    [['primer',M.primerOv],['flex',M.flexOv],['topcoat',M.topcoat]].forEach(([k,mat])=>{ const [[z0,z1],[y0,y1],zb]=E.COATS[k]; add(rectYZ(-y1,0,z0,z1),mat); add(rectYZ(-y1,-y0,zb,z0),mat); });   // coats: over the edge to meet the field sheets, down the fascia
-    if(!xs.length) return; const o=new THREE.Object3D(), head=new THREE.InstancedMesh(new THREE.CylinderGeometry(E.FAST_R*IN,E.FAST_R*IN,E.FAST_H*IN,10),M.fast,xs.length), dab=new THREE.InstancedMesh(new THREE.CylinderGeometry(E.DAB_R*IN,E.DAB_R*IN,(E.DAB_Y[1]-E.DAB_Y[0])*IN,16),M.flexOv,xs.length);
-    xs.forEach((t,i)=>{ o.rotation.set(Math.PI/2,0,0); o.position.set(t,E.FAST_Z*IN,(YO+E.FAST_H/2)*IN); o.updateMatrix(); head.setMatrixAt(i,o.matrix); o.position.z=(E.DAB_Y[0]+E.DAB_Y[1])/2*IN; o.updateMatrix(); dab.setMatrixAt(i,o.matrix); }); r.add(head); r.add(dab); };   // face fasteners 12" o.c., each under a Flex dab
+    [['primer',M.primerOv],['flex',M.flexOv],['topcoat',M.topcoat]].forEach(([k,mat])=>{ const [[z0,z1],[y0,y1],zb]=E.COATS[k]; add(rectYZ(-y1,0,z0,z1),mat); add(rectYZ(-y1,-y0,zb,z0),mat); }); };   // coats: over the edge to meet the field sheets, down the fascia (ASSUMED)
   [{k:'N',n:b.L},{k:'S',n:b.L},{k:'W',n:b.W},{k:'E',n:b.W}].forEach(sd=>{ const F=wallFrame(b,sd.k,(sd.k==='W'||sd.k==='E')?b.L/2:b.W/2,g), s=(sd.k==='S'||sd.k==='W')?1:-1, h=sd.n/2;   // s = +1 where run-local +x runs along +at
-    const seg=(a0,a1,into,openLo,openHi)=>{ const r=F.runAt(a0,a1,into), c=(a0+a1)/2, lo=a0<=-h+1e-6, hi=a1>=h-1e-6, xs=[]; for(let p=Math.ceil(a0-0.5)+0.5;p<a1-0.25;p+=1) if(p>a0+0.25) xs.push(s*(p-c));   // fasteners on the half-feet, so they line up across a splice
-      section(r,(s>0?lo:hi)?-1:0,(s>0?hi:lo)?-1:0,xs,!(s>0?openLo:openHi),!(s>0?openHi:openLo)); return r; };   // open at an end that meets the model
+    const seg=(a0,a1,into,openLo,openHi)=>{ const r=F.runAt(a0,a1,into), lo=a0<=-h+1e-6, hi=a1>=h-1e-6;
+      section(r,(s>0?lo:hi)?-1:0,(s>0?hi:lo)?-1:0,!(s>0?openLo:openHi),!(s>0?openHi:openLo)); return r; };   // open at an end that meets the model
     const sp=(splices||[]).find(q=>q.k===sd.k&&q.id==='edge');
     if(!sp){ seg(-h,h); return; }
     seg(-h,sp.at-1.998,null,false,true); seg(sp.at+1.998,h,null,true,false);   // over-lap the model 0.6 mm, as the penthouse run does; no end cap inside it
     const fb=new THREE.Group(); g.add(fb); seg(sp.at-2,sp.at+2,fb); const r=F.runAt(sp.at-2,sp.at+2);
-    mountModel('edge',r,0,0,0,fb,{flange:M.coping,fascia:M.coping,hem:M.coping,cleat:M.coping,ply:surf,fastener:M.fast,screw:M.fast,primer:M.primerOv,flex:M.flexOv}); });   // model's +y (toward the roof) lands on run-local -z; skinned to the run's materials; code stand-in until it loads
+    mountModel('edge',r,0,0,0,fb,{flange:M.coping,fascia:M.coping,hem:M.coping,cleat:M.coping,ply:surf,screw:M.fast,primer:M.primerOv,flex:M.flexOv}); });   // model's +y (toward the roof) lands on run-local -z; skinned to the run's materials; code stand-in until it loads
   return g; }
 // Sleeper support per CS-8-TYP (concept CS8-2-19-3D): wood sleeper raised and reset; clean, repair, prime; Flex base coat and topcoat
 // run CONTINUOUS across the field under the support (nothing wraps the block — the field sheets already do it); loose-laid walkpad set
@@ -1199,7 +1210,7 @@ function buildHospital(){
   const hots=[
     {id:'pitchpan', anchor:()=> new THREE.Vector3(panPos[0][0],H+2.8,panPos[0][1]), show:()=>S.on.pitchpan},
     {id:'ej', anchor:()=> new THREE.Vector3(-main.IL/2+1.5,H+1.6,0), show:()=>S.on.ej},
-    {id:'penthouse', anchor:()=> new THREE.Vector3(30,H+15,-25), show:()=>S.on.penthouse},
+    {id:'penthouse', anchor:()=> new THREE.Vector3(30,H+15,-25), cam:PENT_FAR, show:()=>S.on.penthouse},
     {id:'rtu', anchor:()=> new THREE.Vector3(rtuPos[2][0],H+7.5,rtuPos[2][1]), show:()=>S.on.rtu},
     {id:'drain', anchor:()=> new THREE.Vector3(drainPos[4][0],H+1.2,drainPos[4][1]), show:()=>S.on.drain},
     {id:'pipe', anchor:()=> new THREE.Vector3(pipePos[3][0],H+3.6,pipePos[3][1]), show:()=>S.on.pipe},
@@ -1234,7 +1245,7 @@ function buildSilo(){
   const solar=makeSolar(cap.roof,[-20,0,20],[26]); solar.visible=false;
   const hots=[
     {id:'silowall', anchor:()=> new THREE.Vector3(0,SH*0.55,rows[1]+R+0.3), show:()=>S.on.silowall},
-    {id:'penthouse', anchor:()=> new THREE.Vector3(-39,H+20,0), show:()=>S.on.penthouse},
+    {id:'penthouse', anchor:()=> new THREE.Vector3(-39,H+20,0), cam:PENT_FAR, show:()=>S.on.penthouse},
     {id:'support', anchor:()=> new THREE.Vector3(32,H+3.5,2.6), show:()=>S.on.support},
     {id:'hatch', anchor:()=> new THREE.Vector3(-5,H+2.4,-23), show:()=>S.on.hatch},
     {id:'vent', anchor:()=> new THREE.Vector3(36,H+4.6,21), show:()=>S.on.vent},
@@ -1258,10 +1269,10 @@ function buildHotel(){
   const drainPos=[[-65,-25],[-10,25],[35,-25],[80,25]]; drainPos.forEach(([x,z])=>addStain(b,x,z)); const drains=new THREE.Group(); b.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(b,x,z)));
   const rtuPos=[[-20,-12],[20,12]]; const rtus=new THREE.Group(); b.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(b,x,z,7,1.4)));
   const pipePos=[]; for(let x=-80;x<=80;x+=16){ pipePos.push([x,-20],[x+6,-22],[x+3,20]); } const pipes=new THREE.Group(); b.roof.add(pipes); pipePos.forEach(([x,z])=>pipes.add(addPipe(b,x,z,0.28)));
-  const condPos=[[-40,10],[-30,10],[5,-8],[15,-8],[40,10],[46,10],[75,-10]]; const conds=new THREE.Group(); b.roof.add(conds); condPos.forEach(([x,z])=>conds.add(addCondenser(b,x,z,x===46&&z===10)));   // CS-8-TYP model under the condenser at the sleeper hotspot; x=46 keeps both patch holes clear of the TPO seams, mod-bit laps and concrete joints (the lap strips would show through the thin model coats)
+  const condPos=[[-40,10],[-30,10],[5,-8],[15,-8],[40,10],[46,10],[75,-10]]; const conds=new THREE.Group(); b.roof.add(conds); condPos.forEach(([x,z])=>conds.add(addCondenser(b,x,z,x===46&&z===10)));   // CS-8-TYP model under the condenser at the sleeper hotspot; seams, laps and joints stop short of its patch holes (drawLines), as they do at every model cutout
   const solar=makeSolar(b.roof,[-70,-50,-30,30,50,70],[0]); solar.visible=false;
   const hots=[
-    {id:'penthouse', anchor:()=> new THREE.Vector3(-60,H+13,-8), show:()=>S.on.penthouse},
+    {id:'penthouse', anchor:()=> new THREE.Vector3(-60,H+13,-8), cam:PENT_FAR, show:()=>S.on.penthouse},
     {id:'pipe', anchor:()=> new THREE.Vector3(-29,H+3.6,20), show:()=>S.on.pipe},
     {id:'sleeper', anchor:()=> new THREE.Vector3(47.2,H+1.2,10), show:()=>S.on.sleeper},   // the east sleeper under the condenser, not the unit top
     {id:'rtu', anchor:()=> new THREE.Vector3(20,H+5.6,12), show:()=>S.on.rtu},
@@ -1343,8 +1354,8 @@ function dist2(t){ return Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1]
 const hotsEl=document.getElementById('hots'); const v3=new THREE.Vector3();
 function buildHots(){ hotsEl.innerHTML=''; B.hots.forEach(h=>{ const d=document.createElement('div'); d.className='hot'; d.innerHTML=`<button>${DET(h.id).name} <span style="opacity:.6;font-weight:500">${DET(h.id).drawing}</span></button><i></i>`; d.querySelector('button').onclick=()=>goDetail(h.id); hotsEl.appendChild(d); h.el=d; }); }
 function placeHots(){ if(!B) return; const r=canvas.getBoundingClientRect(); B.hots.forEach(h=>{ const show=S.view==='roof'&&!!h.show(); h.el.classList.toggle('hide',!show); if(!show) return; v3.copy(h.anchor()).project(camera); h.el.style.left=((v3.x+1)/2*r.width)+'px'; h.el.style.top=((1-v3.y)/2*r.height)+'px'; }); }
-function goDetail(id){ const d=DET(id); const h=B&&B.hots.find(h=>h.id===id); if(!h){ console.warn(`no '${id}' hotspot on this building; it has: ${B?B.hots.map(x=>x.id).join(', '):'none'}`); return false; }
-  S.view=id; const a=h.anchor().clone(); secAnchor.copy(a); a.y-=d.drop||0; flyTo(a,d.dist,d.theta,d.phi); document.getElementById('secBtn').style.display='inline-block';
+function goDetail(id){ const h=B&&B.hots.find(h=>h.id===id); if(!h){ console.warn(`no '${id}' hotspot on this building; it has: ${B?B.hots.map(x=>x.id).join(', '):'none'}`); return false; }
+  const d=Object.assign({},DET(id),h.cam); S.view=id; const a=h.anchor().clone(); secAnchor.copy(a); a.y-=d.drop||0; flyTo(a,d.dist,d.theta,d.phi); document.getElementById('secBtn').style.display='inline-block';   // a hotspot's `cam` overrides the detail camera for that building
   document.getElementById('viewChip').querySelector('b').textContent='Detail'; document.getElementById('viewName').textContent=`${d.name} · ${d.drawing}`; document.getElementById('backBtn').style.display='inline-block'; document.getElementById('scaleNote').textContent='Stages replay at detail scale'; renderLayers(); }
 function goRoof(instant){ S.view='roof'; document.getElementById('secBtn').style.display='none'; const e=B.extent; flyTo(new THREE.Vector3(e.cx||0,e.dist?e.H-45:e.H+2,0),roofDist(),0.62,e.dist?1.2:1.0,instant);
   document.getElementById('viewChip').querySelector('b').textContent='Whole roof'; document.getElementById('viewName').textContent=''; document.getElementById('backBtn').style.display='none'; document.getElementById('scaleNote').textContent=''; renderLayers(); }
