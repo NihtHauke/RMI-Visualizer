@@ -1,7 +1,7 @@
 // RMI Roof Visualizer — Electron main process.
 // Opens index.html (the same file GitHub Pages serves) in a plain window: no menu bar, no browser chrome.
 // Everything the page needs (three.js, GLTFLoader, fonts, models) is on relative paths, so it runs offline.
-const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, shell, dialog, ipcMain, nativeImage } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -137,9 +137,12 @@ if (!app.requestSingleInstanceLock()) {
       // The window's navy backgroundColor would fill the page margins, so the print runs on white (the page covers the window
       // completely, so nothing visible changes).
       win.setBackgroundColor('#FFFFFF');
+      // Running header: the RMI logo, top right. Header templates can't load files, so it goes in as a small data URI.
+      const logo = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'rmi-logo.png'));
+      const logoTag = logo.isEmpty() ? '' : `<img src="${logo.resize({ height: 72 }).toDataURL()}" style="height:24px;width:auto">`;
       const data = await win.webContents.printToPDF({
         pageSize: 'Letter', printBackground: true, preferCSSPageSize: true, displayHeaderFooter: true,
-        headerTemplate: '<span></span>',
+        headerTemplate: `<div style="width:100%;margin:0 0.6in;display:flex;justify-content:flex-end;-webkit-print-color-adjust:exact">${logoTag}</div>`,
         footerTemplate: `<div style="width:100%;margin:0 0.6in;font-family:Arial,Helvetica,sans-serif;font-size:7.5px;color:#6B7684;display:flex;justify-content:space-between"><span>${footer}</span><span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span></div>`,
       });
       win.setBackgroundColor('#12213A');
