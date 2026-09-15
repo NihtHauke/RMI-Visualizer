@@ -11,6 +11,8 @@ Usage (from the repo root):
     python scripts/snapshot.py --building bigbox --detail rtu --section   # section view on
     python scripts/snapshot.py --building bigbox --detail coping --cam 7,1.75,1.1 --stages 6   # try a camera, one stage
     python scripts/snapshot.py --building warehouse --roof sseam                  # a roof other than the building's first
+    python scripts/snapshot.py --building bigbox --detail drain --drawing            # Drawing panel open, 2D tab
+    python scripts/snapshot.py --building bigbox --detail drain --drawing steps      # ... "How it's applied" tab (or 3d)
     python scripts/snapshot.py --building bigbox --photos a.jpg,b.png --width 1366 --height 768
         # prospect photos: loads the files into the photo strip, pins the first photo to the building's details
         # (which docks the slider on the right), shoots the split layout at laptop size, then clicks the first pin
@@ -18,6 +20,8 @@ Usage (from the repo root):
         # the plain default-camera layout. Each run is a fresh browser profile, so nothing restores from storage.
 
 A --detail the building does not carry is skipped with a message listing the ones it does have.
+--drawing needs the rendered sheets in drawings/ (scripts/render_drawings.py); without them the panel shows its
+"not bundled" message, which is also worth a look. The run prints the panel state (sheet number, loaded/missing).
 
 One-time setup:
     pip install playwright pillow
@@ -79,6 +83,7 @@ def main():
     ap.add_argument("--cam", default=None, help="override the detail camera: dist,theta,phi[,drop] (tune DETAILS[...] without editing index.html)")
     ap.add_argument("--stages", default=None, help="comma list of stage numbers to shoot, e.g. 4,6 (default: all six)")
     ap.add_argument("--photos", default=None, help="comma list of image files to load into the Prospect photos strip (JPG/PNG/HEIC); pins the first one, which opens the slider")
+    ap.add_argument("--drawing", nargs="?", const="2d", default=None, choices=["2d", "steps", "3d"], help="open the Drawing panel in detail view on this tab (default 2d)")
     args = ap.parse_args()
     want = {int(x) - 1 for x in args.stages.split(",")} if args.stages else set(range(len(STAGES)))
 
@@ -86,7 +91,7 @@ def main():
 
     OUT.mkdir(exist_ok=True)
     httpd = serve(args.port)
-    tag = f"{args.building}{'-' + args.roof if args.roof else ''}-{args.detail or 'roof'}{'-section' if args.section else ''}{'-photos' if args.photos else ''}"
+    tag = f"{args.building}{'-' + args.roof if args.roof else ''}-{args.detail or 'roof'}{'-section' if args.section else ''}{'-photos' if args.photos else ''}{'-drawing-' + args.drawing if args.drawing else ''}"
     photos = [str(Path(f.strip()).resolve()) for f in args.photos.split(",")] if args.photos else []
     for f in photos:
         if not Path(f).exists():
@@ -140,6 +145,12 @@ def main():
                 if args.section:
                     page.click("#secBtn")
                     page.wait_for_timeout(500)
+                if args.drawing:
+                    page.click("#drwBtn")
+                    page.evaluate(f"window.__rmi.drawing.tab('{args.drawing}')")
+                    page.wait_for_timeout(1200)  # manifest script + sheet PNG
+                    st = page.evaluate("window.__rmi.drawing.state()")
+                    print(f"drawing panel: tab={st['tab']} sheet={st['number']} status={st['status']} zoom={st['zoom']} steps={st['steps']} manifest={st['manifest']}")
             for i, name in enumerate(STAGES):
                 if i not in want:
                     continue

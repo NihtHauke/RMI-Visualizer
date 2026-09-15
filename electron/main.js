@@ -41,6 +41,29 @@ function createWindow() {
     win.webContents.on('did-fail-load', (_e, code, desc, url) => console.log(`[did-fail-load] ${code} ${desc} ${url}`));
   }
 
+  // RMI_SELFTEST=<png path>: build check for the packaged app. After load, pick the big-box drain, open the Drawing panel,
+  // print its state (sheet number, loaded / missing) as JSON, save a screenshot of the window to that path, then quit.
+  if (process.env.RMI_SELFTEST) {
+    win.webContents.once('did-finish-load', async () => {
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      try {
+        await sleep(4000);
+        await win.webContents.executeJavaScript("window.__rmi.selectBuilding('bigbox'); window.__rmi.finishCam(); window.__rmi.setStage(3,false); window.__rmi.S.prog=1;");
+        await sleep(3000);
+        await win.webContents.executeJavaScript("window.__rmi.goDetail('drain'); window.__rmi.finishCam(); window.__rmi.drawing.open(true);");
+        await sleep(2500);
+        const st = await win.webContents.executeJavaScript('JSON.stringify(window.__rmi.drawing.state())');
+        console.log('[selftest] drawing panel', st);
+        await sleep(500);
+        console.log('[selftest] view', await win.webContents.executeJavaScript("window.__rmi.S.view + ' / ' + document.getElementById('app').className"));
+        const img = await win.webContents.capturePage();
+        fs.writeFileSync(process.env.RMI_SELFTEST, img.toPNG());
+        console.log('[selftest] screenshot', process.env.RMI_SELFTEST);
+      } catch (err) { console.log('[selftest] FAILED', err.message); }
+      app.quit();
+    });
+  }
+
   win.loadFile(path.join(__dirname, '..', 'index.html'));
   return win;
 }

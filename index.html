@@ -92,6 +92,46 @@
   .desc p{margin:0 0 4px}
   .desc .src{color:var(--mute);font-size:12px}
 
+  /* ---- Drawing panel: the RMI 2D sheet (zoom + pan), plain-language steps, 3D concept. Docks over the right of the 3D view in detail mode. ---- */
+  .drw{grid-area:drw;display:none;flex-direction:column;min-height:0;min-width:0;background:#fff;border-left:1px solid var(--line)}
+  #app.drawing{grid-template-columns:var(--rail) minmax(0,1fr) minmax(0,.8fr);grid-template-areas:"head head head" "rail strip strip" "rail view drw" "rail foot foot"}
+  #app.drawing .drw{display:flex}
+  #app.drawing .layers{width:200px;font-size:12px;max-height:55%;overflow:auto}
+  #app.drawing .hint{display:none}
+  #app.slider.drawing{grid-template-columns:var(--rail) minmax(0,5fr) minmax(0,3.2fr) minmax(0,2.8fr);grid-template-areas:"head head head head" "rail strip strip strip" "rail view drw slider" "rail foot foot foot"}   /* both panels: 1366 px wide still gives the 3D view ~480 px */
+  #app.slider.drawing .layers{display:none}
+  .dhead{display:flex;align-items:flex-start;gap:8px;padding:8px 10px 6px;border-bottom:1px solid var(--line);flex:none;min-width:0}
+  .dhead .dtitle{flex:1;min-width:0;line-height:1.3}
+  .dhead .dtitle b{display:block;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:15px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dhead .dtitle span{display:block;font-size:12px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dhead .dtitle span b{display:inline;font:inherit;font-weight:700;color:var(--ink)}
+  .dtabs{display:flex;flex:none;border-bottom:1px solid var(--line);background:#FAFAF8}
+  .dtabs button{flex:1;border:0;border-bottom:3px solid transparent;background:transparent;padding:7px 4px 6px;font-size:13px;font-weight:600;color:var(--mute);cursor:pointer;white-space:nowrap}
+  .dtabs button.on{color:var(--navy);border-bottom-color:var(--gold)}
+  .dtabs button:hover{color:var(--navy)}
+  .dbody{flex:1;min-height:0;position:relative;display:flex;flex-direction:column}
+  .dview{flex:1;min-height:0;position:relative;overflow:hidden;background:#E3E7EB;cursor:grab;touch-action:none;user-select:none}
+  .dview.drag{cursor:grabbing}
+  .dview img{position:absolute;left:0;top:0;transform-origin:0 0;display:block;max-width:none;box-shadow:0 2px 12px rgba(0,0,0,.25);background:#fff;-webkit-user-drag:none;image-rendering:auto}
+  .dzoom{position:absolute;right:10px;bottom:10px;display:flex;gap:4px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:3px;padding:3px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+  .dzoom button{border:0;background:transparent;color:var(--navy);font-weight:700;font-size:14px;min-width:28px;padding:3px 6px;cursor:pointer;border-radius:2px;line-height:1}
+  .dzoom button:hover{background:var(--sky)}
+  .dzoom span{font-size:11px;color:var(--mute);align-self:center;min-width:34px;text-align:center}
+  .dmsg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--ink);font-size:13.5px;line-height:1.5}
+  .dmsg.show{display:flex}
+  .dmsg div{max-width:340px;background:rgba(255,255,255,.96);border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:3px;padding:14px 16px}
+  .dmsg small{display:block;color:var(--mute);font-size:12px;margin-top:6px}
+  .dsteps{flex:1;min-height:0;overflow:auto;padding:10px 14px 14px;font-size:13.5px;line-height:1.45;display:none}
+  .dsteps.show{display:block}
+  .dsteps h4{margin:0 0 6px;font-size:13px;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;color:var(--navy)}
+  .dsteps ol{margin:0;padding-left:26px}
+  .dsteps li{margin:0 0 8px;padding-left:2px}
+  .dsteps li::marker{color:var(--navy);font-weight:700}
+  .dsteps li.a{border-left:3px solid var(--warn);margin-left:-12px;padding-left:9px}
+  .dsteps .dnote{color:var(--mute);font-size:12px;line-height:1.4;margin:12px 0 0;padding-top:8px;border-top:1px solid var(--line)}
+  .dfoot{flex:none;font-size:11px;color:var(--mute);padding:5px 10px 6px;background:#F6F7F8;border-top:1px solid var(--line);line-height:1.35}
+  @media (max-width:820px){ #app.drawing,#app.slider.drawing{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "strip" "view" "foot"} #app.drawing .drw{grid-area:view;z-index:6;border-left:0} #app.drawing .layers{display:none} }
+
   /* ---- Prospect photos (v2): thumbnail strip across the top of the 3D view, a slider that docks on the right, local storage only ---- */
   #pstrip{grid-area:strip;display:none;align-items:center;gap:8px;padding:6px 10px;min-width:0;min-height:0;background:#fff;border-bottom:1px solid var(--line)}
   #app.photos #pstrip{display:flex}
@@ -226,11 +266,21 @@
 
   <main id="view">
     <canvas id="c"></canvas>
-    <div class="viewbar"><div class="chip" id="viewChip"><b>Whole roof</b><span id="viewName"></span><button id="backBtn" style="display:none">Back to roof</button><button id="secBtn" style="display:none;background:#fff;color:var(--navy);border:1px solid var(--navy)">Section view</button></div></div>
+    <div class="viewbar"><div class="chip" id="viewChip"><b>Whole roof</b><span id="viewName"></span><button id="backBtn" style="display:none">Back to roof</button><button id="secBtn" style="display:none;background:#fff;color:var(--navy);border:1px solid var(--navy)">Section view</button><button id="drwBtn" style="display:none;background:#fff;color:var(--navy);border:1px solid var(--navy)" title="RMI drawing, application steps and 3D concept for this detail">Drawing</button></div></div>
     <div class="hint">Drag to orbit · scroll to zoom · click a marker to zoom in</div>
     <div id="hots"></div>
     <div class="layers" id="layers"></div>
   </main>
+
+  <aside class="drw" id="drw" aria-label="RMI drawing">
+    <div class="dhead"><div class="dtitle"><b id="drwName"></b><span id="drwMeta"></span></div><button class="pbtn" id="drwClose" title="Close (Esc)">×</button></div>
+    <div class="dtabs" id="drwTabs"><button data-t="2d" class="on">2D drawing</button><button data-t="steps">How it's applied</button><button data-t="3d">3D concept</button></div>
+    <div class="dbody">
+      <div class="dview" id="drwView"><img id="drwImg" alt="" draggable="false"><div class="dzoom"><button data-z="-" title="Zoom out">−</button><span id="drwZoom"></span><button data-z="+" title="Zoom in">+</button><button data-z="fit" title="Fit the sheet">Fit</button></div><div class="dmsg" id="drwMsg"><div></div></div></div>
+      <div class="dsteps" id="drwSteps"></div>
+    </div>
+    <div class="dfoot" id="drwFoot"></div>
+  </aside>
 
   <section id="photos" aria-label="Prospect photo">
     <div class="phead"><span class="cap" id="photoCap"></span><span class="cnt" id="photoIdx"></span><span class="sp"></span>
@@ -372,80 +422,301 @@ const ROOFS = {
     ] }
 };
 
+/* "How it's applied" — numbered plain-language steps per detail, written from the notes on the 2D drawing named in
+   DETAILS[].drawing (and the 3D concept where one exists). The word ASSUMED marks a step, an order or a size the
+   drawing does not state; the Drawing panel renders it as a tag. Shared curb sequences come from CS-1-TYP note 7. */
+const curbSteps=(unit,drawing,opt)=>{ opt=opt||{}; return [
+  `Lift the ${unit} off the curb. It goes back only after the RMI system has fully cured.`,
+  ...(opt.pre||[]),
+  `Clean, repair, prepare and prime the curb, the (E) flashing and the roof around it per the RMI Specification Guide Manual for that surface (${drawing}). Adhesion test${opt.scan===false?'':' and moisture scan'} first (note 9).`,
+  `RMI-Flex flashing coat from the field up the full curb wall, over the top and onto the interior of the curb, encapsulating the (E) flashing and its fasteners ("extend to interior of curb").`,
+  `RMI-Thane or RMI-White Plus over the Flex.`,
+  `After full cure, reset the ${unit} and fasten it with stainless steel screws with EPDM washers.`,
+  `How far the Flex runs onto the field (18" modelled) and how far it turns down inside the curb (3") is ASSUMED — the drawing gives no dimension (catalog §5 #5).` ]; };
+const fixedCurbSteps=(unit,drawing,surface)=>[
+  `The ${unit} cannot be lifted: it stays in place. Remove the (E) fasteners at the skirt.`,
+  `Clean, repair, prepare and prime the curb and the ${surface} per the RMI Specification Guide Manual (${drawing}). Adhesion test first (note 9).`,
+  `RMI-Flex flashing coat up the curb to the underside of the (E) vertical metal, encapsulating the (E) flashing.`,
+  `RMI-Thane or RMI-White Plus over the Flex.`,
+  `New 24 ga. skirt metal extending a minimum 4" down over the RMI system, fastened with stainless steel screws with EPDM washers.`,
+  `Skirt fitted after the topcoat is ASSUMED — the drawing shows the finished assembly, not the order. Flex apron and turn-down sizes as for the CS-1 curb are ASSUMED (§5 #5).` ];
+const spfCurbSteps=(unit)=>[
+  `Clean and prime all surfaces as the manufacturers require (SPF-13-TYP note 9).`,
+  `Spray foam field-tapered up the ${unit} curb; minimum SPF density 3.00 lb everywhere for warranty (note 10). Gaps too wide for backer rod and sealant get the specified tape (note 8).`,
+  `RMI-Flex vapor barrier over the foam and up the curb.`,
+  `RMI-Thane or RMI-White Plus over the Flex.`,
+  `New skirt metal flashing over the top of the RMI system.`,
+  `How high the Flex runs up the curb, and whether the ${unit} is lifted for the work, is ASSUMED — SPF-13-TYP does not say (§5 #15).` ];
+const STEPS = {
+  curb: [
+    `Lift the unit off the exposed metal curb. It goes back only after the RMI system has fully cured.`,
+    `Clean, repair, prepare and prime the curb and the metal panel around it per the RMI Specification Guide Manual (CS-13-MP). Adhesion test first (note 9).`,
+    `RMI-Flex flashing coat from the panel up the full curb wall, over the top and onto the interior of the curb.`,
+    `RMI-Thane or RMI-White Plus over the Flex.`,
+    `After full cure, reset the unit and fasten it with stainless steel screws with EPDM washers.`,
+    `Note 7: the same detail covers every curb-mounted unit that can be lifted — vents, ducts, HVAC, hatches, skylight domes.`,
+    `How far the Flex runs onto the panel from the curb (18" modelled) and down inside (3") is ASSUMED — the drawing gives no dimension (§5 #5).` ],
+  lap: [
+    `Check the panels. Replace damaged, loose or missing fasteners. Treat rusted metal with an RMI approved application; rust with pinholes or lost integrity means patch, overlay or replace the panel (note 10). Ill-fitting overlapping panels can void the warranty — confirm with the panel manufacturer (note 12).`,
+    `Bead of RMI approved sealant at all voids in the lap.`,
+    `Clean, prepare and prime per the RMI Specification Guide Manual for the metal panel system (note 11). Adhesion test first (note 9).`,
+    `RMI-Flex flashing coat to fully encapsulate the fasteners and the lap, crest to flat on both sides.`,
+    `Optional: an RMI-Flex base coat over the whole field (pitted panels).`,
+    `RMI-Thane or RMI-White Plus over everything.`,
+    `How far past the rib the Flex runs onto the flat (2" modelled) is ASSUMED — the drawing is not to scale (§5 #10).` ],
+  sseam: [
+    `Check the seams. Loose or improperly crimped standing seams are re-crimped to the manufacturer original configuration — excessive voids void the warranty (note 11). Treat rusted metal; pinholes mean patch, overlay or replace (note 10).`,
+    `Clean, prepare and prime per the RMI Specification Guide Manual (note 12). Adhesion test first (note 9).`,
+    `RMI-Flex flashing coat fully over the standing seam — over the cap, down both legs and onto the flat both sides.`,
+    `Optional: an RMI-Flex base coat over the whole field.`,
+    `RMI-Thane or RMI-White Plus over everything.`,
+    `How far the Flex runs onto the flat is ASSUMED — the drawing is not to scale and says the seam configuration may vary (§5 #11).` ],
+  mskylight: [
+    `Fall protection first: coating a skylight panel with RMI-Flex, RMI-Thane or RMI-White is prohibited unless regulatory-approved fall protection is installed over it — confirm with the owner before any RMI material goes on (note 12).`,
+    `Replace damaged skylight panels, including any with exposed glass fibres; new panels must meet fall-resistance ratings and go in per the skylight manufacturer, on double-sided butyl tape (note 8).`,
+    `Replace damaged, loose or missing fasteners at the laps; treat rusted metal (note 10).`,
+    `Clean, prepare and prime per the RMI Specification Guide Manual for the metal panel system (note 13). Adhesion test first (note 9).`,
+    `RMI-Flex flashing coat encapsulating the fasteners and laps around the panel, extending a minimum 3" onto the skylight panel.`,
+    `Optional: an RMI-Flex base coat over the metal field.`,
+    `RMI-Thane or RMI-White Plus over the metal, extending a minimum 1" past the Flex onto the skylight. The rest of the panel stays clear.` ],
+  mskylightSpf: [
+    `There is no SPF skylight drawing in the RMI library. Treating the panel as a curb-mounted unit per SPF-13-TYP is ASSUMED (§5 #13).`,
+    ...spfCurbSteps('skylight') ],
+  vent: [
+    `Treat all surface rust; replace or repair defective metal (Plate D).`,
+    `Clean the galvanized or coated metal thoroughly — new metal with xylene or solvents to remove oils. No RMI material over silicone-based coatings (legend 1).`,
+    `Prime — required under all Flex, minimum 1 gal per 1,000 sq ft (legend 2). Adhesion test after preparation.`,
+    `Seal, prime and Flex all joints, connections and fasteners; replace loose or missing fasteners. Some conditions need tape or Flex with fabric.`,
+    `Optional: RMI-Flex over the entire vent surface where the metal is pitted but sound (legend 4).`,
+    `RMI-Thane 22 mil or RMI-White Plus 30 mil, minimum two coats; test the sides and underside first for runs and sags (legend 5).`,
+    `The curb-to-panel wrap shown in 3D is ASSUMED — the library has no vent drawing for metal roofs (§5 #12).` ],
+  ventSpf: [
+    `Clean and prime all surfaces as the manufacturers require (SPF-16-TYP note 9).`,
+    `Metal base or sleeve with its nailer flange sized to suit the foam taper and the vent top; wood nailer.`,
+    `Spray foam field-tapered up the penetration; minimum SPF density 3.00 lb (note 10).`,
+    `Backer rod and the specified sealant at the joint; the specified tape where the gap is too wide (note 8).`,
+    `RMI-Flex vapor barrier over the foam, extending above the flashing.`,
+    `RMI-Thane or RMI-White Plus over the Flex.`,
+    `How far above the flashing the Flex runs is ASSUMED — the drawing gives no dimension (§5 #15).` ],
+  ventCon: [
+    `Lift the vent off the exposed concrete curb. It goes back only after the RMI system has fully cured.`,
+    `Clean, repair, prepare and prime the curb and the deck around it per the RMI Specification Guide Manual for exposed concrete (CS-12-CON). Adhesion test and moisture scan first (note 9).`,
+    `RMI-Flex flashing coat from the deck up the curb, over the top and onto the interior of the curb.`,
+    `RMI-Thane or RMI-White Plus encapsulating the Flex.`,
+    `After full cure, reset the vent and fasten it with stainless steel screws with EPDM washers.`,
+    `Flex apron onto the deck (18" modelled) and turn-down inside the curb (3") are ASSUMED (§5 #5).` ],
+  mpipe: [
+    `Replace damaged or ill-fitting boots. A new flexible EPDM boot with a form-fitting aluminium mounting plate goes on with a bead of sealant under the plate and a stainless steel draw band at the pipe.`,
+    `Rake out the (E) sealant, mastic and repairs; new continuous bead of RMI approved sealant before the Flex goes on.`,
+    `Clean, prepare and prime per the RMI Specification Guide Manual (note 10). Adhesion test first (note 9).`,
+    `RMI-Flex flashing coat encapsulating all fasteners, extending a minimum 2" past the EPDM flashing up the pipe and 4" onto the metal roof panel.`,
+    `RMI-Thane or RMI-White Plus a minimum 2" up the pipe past the Flex.`,
+    `Note 7: the same detail covers all circular penetrations and supports on metal panels. P-10-MP is the metal roof-jack alternative.` ],
+  mpipeSpf: [
+    `Clean and prime all surfaces as the manufacturers require (SPF-4-TYP note 9).`,
+    `Spray foam field-tapered up the penetration to a minimum 1" below the top of the Flex flashing coat; minimum SPF density 3.00 lb (note 10).`,
+    `Backer rod and the specified sealant at the pipe (tape for wider gaps, note 8); prefabricated metal or EPDM rain collar with a stainless steel draw band and sealant.`,
+    `RMI-Flex flashing coat over the foam onto the deck and up the pipe, a minimum 1" above the flashing.`,
+    `RMI-Thane or RMI-White Plus a minimum 1" above the Flex.` ],
+  gutter: [
+    `Check for damaged components and replace any that are damaged or broken. The gutter must meet code and SMACNA for wind uplift, expansion and section lengths or it is excluded from warranty (note 7). Plastic and ABS gutters are excluded (note 10).`,
+    `Confirm seam and lap integrity; repair as needed. Rust must have no pinholes — patch or replace where it does (note 11).`,
+    `Clean, prepare and prime per the RMI Specification Guide Manual for the gutter configuration (note 12). Adhesion test first (note 9).`,
+    `Tape, or a three-course polyester and RMI-Flex, a minimum 2" each side over every joint and lap, with no voids (applies to all laps, joints, corners and transitions, note 8).`,
+    `Optional: an RMI-Flex base coat encapsulating the whole interior of the gutter.`,
+    `RMI-Thane encapsulating the interior of the gutter. Vertical surfaces may need multiple coats to prevent running and sagging.` ],
+  gutterinlet: [
+    `Replace damaged or ill-fitting inlet and gutter components; the assembly must meet code and SMACNA (notes 7, 8). Plastic and ABS excluded (note 11). Rust: no pinholes, else patch or replace (note 12).`,
+    `Clean, prepare and prime per the RMI Specification Guide Manual for the gutter and inlet (note 13). Adhesion test first (note 9).`,
+    `RMI-Flex flashing coat a minimum 3" out from the inlet across the gutter floor and 3" down into the inlet tube.`,
+    `RMI-Thane a minimum 1" into the inlet tube past the Flex.`,
+    `Water test the finished installation (note 10).` ],
+  hatch: fixedCurbSteps('hatch','CS-15-MP','metal panel around it'),
+  hatchSpf: spfCurbSteps('hatch'),
+  hatchCon: [ ...fixedCurbSteps('hatch','CS-14-CON','exposed concrete around it').slice(0,1),
+    `Clean, repair, prepare and prime the concrete curb and the deck per the RMI Specification Guide Manual for each exposed surface (CS-14-CON). Adhesion test and moisture scan first (note 9).`,
+    ...fixedCurbSteps('hatch','CS-14-CON','').slice(2) ],
+  ridge: [
+    `Confirm the metal closures are present and tight fitting without gaps; replace damaged or ill-fitting closures (note 11). Foam closures are not permitted without written approval from RMI Technical Services (note 13).`,
+    `Closures must be recessed a minimum 6" under the ridge cap or flashing metal — where they are not, add flat stock flashing (note 12).`,
+    `Set the closure in sealant or tape, seal its edges and run a ribbon of sealant at any voids before the Flex goes on (note 11). Closure fasteners through the cap.`,
+    `Clean, repair, prepare and prime per the RMI Specification Guide Manual (note 10). Adhesion test first (note 9).`,
+    `RMI-Flex encapsulating the metal closure and the cap edge onto the panel.`,
+    `RMI-Thane as the wear surface (the drawing labels it RMI-Thane; Plate MP offers Thane or White Plus).`,
+    `How far the Flex turns over the cap edge and runs onto the panel, the cap lap and the closure position are ASSUMED — no dimensions beyond the 6" recess, and no 3D concept render (§5 #16).` ],
+  ridgeSpf: [
+    `Clean and prime all surfaces as the manufacturers require (SPF-3-TYP note 9).`,
+    `Spray foam tapered to give positive slope to the drains, a minimum 1/8" up to 1/4" per foot where feasible, with no standing water (note 7); minimum SPF density 3.00 lb (note 10).`,
+    `RMI-Flex vapor barrier over the foam. Rough foam may need extra material for a smooth monolithic surface before the wear coat (note 8).`,
+    `RMI-Thane or RMI-White Plus over the Flex.` ],
+  rtu: curbSteps('unit','CS-1-TYP'),
+  drain: [
+    `Check the drain. Metal drain assemblies only — plastic and ABS are excluded from warranty (note 11); replace damaged components (note 8) and any rust with pinholes (note 12). Replace damaged strainer baskets. Water test for leaks before starting (note 10).`,
+    `Remove the (E) drain ring. Trim the (E) flashing and apply a bead of approved sealant for a smooth transition to the drain bowl.`,
+    `Reset the drain ring in RMI approved sealant, tightened without damaging the roof (note 8).`,
+    `Clean, prepare and prime the roof and the drain per the RMI Specification Guide Manual (note 13). Adhesion test and moisture scan first (note 9).`,
+    `RMI-Flex flashing coat encapsulating the drain ring, a minimum 18" diameter out from the drain and 3" down into the bowl past the ring.`,
+    `RMI-Thane or RMI-White Plus, extending a minimum 1" into the bowl past the Flex.`,
+    `Clean, prime and paint the strainer basket; water test the finished drain (note 10).` ],
+  scupper: [
+    `Check the scupper. Replace damaged components; the scupper must meet code (note 8). Plastic and ABS excluded (note 11); rust with pinholes replaced (note 12). Water test before starting (note 10).`,
+    `Clean, prepare and prime the tube, the wall flashing and the field per the RMI Specification Guide Manual (note 13). Adhesion test and moisture scan first (note 9).`,
+    `Bead of RMI approved sealant at the exterior termination. Whatever the scupper configuration, the exterior must be watertight to the building (note 14).`,
+    `RMI-Flex flashing coat encapsulating the interior of the scupper tube and extending a minimum 12" out onto the field.`,
+    `RMI-Flex base coat on up the (E) wall flashing.`,
+    `RMI-Thane or RMI-White Plus over the tube interior, the wall and the field.`,
+    `Water test the finished installation (note 10).`,
+    `Where the 12" is measured from (the cant toe, as modelled, or the wall) and the tube size are ASSUMED (§5 #8).` ],
+  wall: [
+    `Remove the (E) counterflashing without damaging the Fry-type reglet (note 7); replace damaged or worn counterflashing.`,
+    `Make sure the (E) wall flashing is firmly attached. Where voids are present, fasten it with a termination bar and sealant at 12" o.c.`,
+    `Rake out the (E) sealant, mastic and repairs at the reglet; new continuous bead of RMI approved sealant.`,
+    `Clean, prepare and prime the flashing and field per the RMI Specification Guide Manual. Adhesion test and moisture scan first (note 8).`,
+    `RMI-Flex flashing coat encapsulating the (E) flashing and the term bar, extending up to the reglet receiver.`,
+    `RMI-Thane or RMI-White Plus encapsulating the Flex.`,
+    `Reset the counterflashing. Optional: coat the counterflashing assembly too.`,
+    `The flashing height (24" modelled) is ASSUMED — the drawing runs the Flex the full height of the (E) flashing but does not dimension it (§5 #6).` ],
+  pipe: [
+    `Check the lead flashing; replace damaged or ill-fitting lead.`,
+    `Bead of RMI approved sealant at the base of the stack.`,
+    `Clean, prepare and prime the lead and the roof per the RMI Specification Guide Manual (note 10). Adhesion test and moisture scan first (note 9).`,
+    `RMI-Flex flashing coat encapsulating the lead flashing, from the field up the stack and inside it.`,
+    `RMI-Thane or RMI-White Plus extending past the Flex.`,
+    `Note 7: the same detail covers conduit, HVAC and refrigeration penetrations.`,
+    `How far the Flex runs past the lead flange (6" modelled) and down the bore (6"), and the topcoat 1" past it, are ASSUMED — the drawing is not to scale (§5 #9).` ],
+  skylight: curbSteps('skylight dome','CS-1-TYP'),
+  edge: [
+    `Confirm the edge metal and its cleats meet code and SMACNA for wind uplift — otherwise the edge is excluded from warranty (note 7). Replace damaged, ill-fitting or severely rusted metal.`,
+    `Confirm seam and flashing integrity where the flange is stripped into the (E) roof; repair as required.`,
+    `Clean, prepare and prime per the RMI Specification Guide Manual for the roof system (note 10). Adhesion test and moisture scan first (note 9).`,
+    `RMI-Flex base coat over the stripped-in flange and on across the field.`,
+    `RMI-Thane or RMI-White Plus over the Flex.`,
+    `Carrying the Flex and topcoat down the fascia face to the drip is ASSUMED — the 2D drawing ends both coats at the roof edge; the fascia follows F1-34-FT-3D note 10, topcoat to all surface areas (§5 #22).` ],
+  penthouse: [
+    `The counterflashing is fixed and stays in place (note 7). Replace damaged metal counterflashing.`,
+    `Bead of RMI approved sealant along the top edge of the counterflashing.`,
+    `Clean, prepare and prime the flashing and field per the RMI Specification Guide Manual. Adhesion test and moisture scan first (note 8).`,
+    `RMI-Flex flashing coat encapsulating the (E) flashing from the field up to the counterflashing.`,
+    `RMI-Thane or RMI-White Plus encapsulating the Flex. Optional: coat the counterflashing assembly too.`,
+    `24 ga. skirt metal extending a minimum 4" down over the RMI system.`,
+    `Fitting the skirt after the topcoat, and every size (counterflashing height, skirt lap, fastener spacing), is ASSUMED — the drawing is not to scale (§5 #21).` ],
+  sleeper: [
+    `Raise the wood sleeper off the roof. Replace damaged or rotted sleepers.`,
+    `Clean, repair, prepare and prime the roof under and around it per the RMI Specification Guide Manual. Adhesion test and moisture scan first (note 8).`,
+    `RMI-Flex base coat continuous across the field under the raised support — nothing wraps the block.`,
+    `RMI-Thane or RMI-White Plus continuous under it.`,
+    `After the RMI materials have completely cured, set a loose-laid walkpad and reset the sleeper on it.` ],
+  pitchpan: [
+    `Fabricate the Chem-Curb per the manufacturer for overall size and distance from the penetrations; install it per Chem-Link instructions, set in RMI M-1 sealant. Setting it before priming is ASSUMED — the drawing shows the finished assembly (§5 #20).`,
+    `Clean, prepare and prime the roof, the curb and the penetrations per the RMI Specification Guide Manual (note 10). Adhesion test and moisture scan first (note 9).`,
+    `Fill the interior pocket with RMI-Flex, tapered from the penetrations outward to shed water.`,
+    `RMI-Flex flashing coat over the curb onto the field and a minimum 4" up each penetration past the curb.`,
+    `RMI-Thane or RMI-White Plus over all, a minimum 2" up each penetration past the Flex.`,
+    `Note 7: for any penetration that is not circular, or where a roof jack or single-ply boot is not wanted or feasible. How far the Flex runs onto the field (6" modelled) is ASSUMED.` ],
+  ej: [
+    `Confirm the bellow is sound; repair or replace damaged materials — an improper or ill-fitting expansion joint can move enough to void the warranty (note 10). Replace damaged, loose or missing fasteners.`,
+    `Clean, prepare and prime the roof, the metal and the flexible bellow per the RMI Specification Guide Manual (note 12). Adhesion test first (note 9).`,
+    `Where gaps at the attachment flanges cannot be bridged with Flex, tape or a three-course polyester and RMI-Flex a minimum 2" each side of the joint, with no voids (note 11).`,
+    `RMI-Flex flashing coat fully encapsulating the expansion joint bellow, its fasteners and mounting flange, extending a minimum 2" past the assembly.`,
+    `RMI-Thane or RMI-White Plus over the Flex.`,
+    `The double-curb shape in the 3D view is ASSUMED — there is no 3D concept render for A-3-TYP (§5 #16).` ],
+  silowall: [
+    `Check all (E) panel-joint sealant; replace damaged, aged or cracked sealant.`,
+    `Clean, repair, prepare and prime per the RMI Specification Guide Manual for each type of surface (W-7-TYP). Adhesion test and moisture scan first (note 8).`,
+    `RMI-Flex vapor barrier base coat over the wall; the rate may increase depending on the wall finish.`,
+    `RMI-Thane or RMI-White Plus over the Flex. Applies to all types of concrete wall panels and finishes (note 7).`,
+    `Spraying vertically on a curved silo wall, and the coverage it takes, is ASSUMED — that comes from the Longview grain terminal project, not a drawing (§5 #17).` ],
+  support: [
+    `Rake out the (E) sealant, mastic and repairs at the base; new continuous bead of RMI approved sealant and/or tape before the Flex and wear coat go on. Backer rod in the gap at the deck.`,
+    `RMI approved butyl tape, or a three-course RMI-Flex and polyester, at the base — 2" up the support and 4" out onto the deck.`,
+    `Clean, prepare and prime per the RMI Specification Guide Manual (note 10). Adhesion test and moisture scan first (note 9).`,
+    `RMI-Flex flashing coat extending a minimum 6" up the support past that flashing.`,
+    `RMI-Thane or RMI-White Plus a minimum 2" up the support past the Flex.`,
+    `Note 7: the same detail covers all circular supports — site screens, solar, mechanical — set directly on a concrete deck (note 8).` ],
+  exhaust: curbSteps('fan','CS-1-TYP',{ pre:[`Remove the grease from the curb and the roof around it before priming — the spec plates allow no RMI material over a contaminant. The degreasing method is ASSUMED (§5 #4).`] }),
+  coping: [
+    `Check for damaged components and replace any that are damaged or broken. The coping must meet code and SMACNA for wind uplift or it is excluded from warranty (note 7). Fasteners through overlapping metal are not permitted — relocate them per SMACNA. Replace loose or missing fasteners with new oversize stainless steel screws with EPDM washers.`,
+    `Clean, prepare and prime per the RMI Specification Guide Manual. Adhesion test first (note 9).`,
+    `Tape a minimum 2" equally each side of the joint, with no voids.`,
+    `RMI-Flex flashing coat a minimum 2" beyond the tape on both sides and down both faces; encapsulate every fastener.`,
+    `RMI-Thane or RMI-White Plus a minimum 2" past the Flex for repairs — or the entire coping as part of the RMI system warranty. Vertical faces may need multiple coats to prevent running and sagging.`,
+    `Applies to all metal coping laps, joints, corners and transitions (note 8).` ]
+};
+
 const DETAILS = {
-  curb:   { name:'Curb-mounted HVAC unit', drawing:'CS-13-MP', concept:'CS13-1-8-3D', dist:21, phi:1.18, theta:0.85, drop:4.6, menu:'HVAC curb', byRoof:{ spf:{ drawing:'SPF-12-TYP', concept:'B-1-SPF-1-3D', src:'Assembly per SPF-12-TYP (HVAC curb). Wrap height is ASSUMED.' } },
+  curb:   { name:'Curb-mounted HVAC unit', drawing:'CS-13-MP', concept:'CS13-1-8-3D', dist:21, phi:1.18, theta:0.85, drop:4.6, menu:'HVAC curb', steps:STEPS.curb, byRoof:{ spf:{ drawing:'SPF-13-TYP', concept:'B-1-SPF-1-3D', steps:spfCurbSteps('HVAC'), src:'Assembly per SPF-13-TYP (SPF (E) HVAC curb flashing). Wrap height is ASSUMED.' } },
     layers:[{k:'existing',label:'(E) metal curb, flashing skirt and counterflashing; unit lifted',color:'#AEB3B0'},{k:'primer',label:'Primer on curb, flashing and the panel around it',color:'#E8D7A6'},{k:'flex',label:'Flex from the panel up the full curb wall, over the top, onto the interior',color:'#D9A21B'},{k:'thane',label:'Topcoat over all; counterflashing and unit reset after cure',color:'#C3C7CC'}],
     src:'Assembly per CS-13-MP and CS13-1-8-3D — VERIFIED: Flex up the full curb wall and over the top to the interior, counterflashing above, unit lifted and reset after cure.' },
-  lap:    { name:'R-panel side lap', drawing:'F-8-TYP', concept:'F8-2-FT-3D', dist:3.5, phi:1.2, theta:0.95, drop:0.2, menu:'Side laps',
+  lap:    { name:'R-panel side lap', drawing:'F-8-TYP', concept:'F8-2-FT-3D', dist:3.5, phi:1.2, theta:0.95, drop:0.2, menu:'Side laps', steps:STEPS.lap,
     layers:[{k:'existing',label:'(E) min 24 ga. panels lapped at a major rib, fastened through the crest; rust treated, damaged/loose fasteners replaced',color:'#AEB3B0'},{k:'primer',label:'Bead of approved sealant at all voids; clean and prime the lap and fasteners',color:'#E8D7A6'},{k:'flex',label:'Flex fully encapsulates the lap rib and its fasteners, rib to flat on both sides',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything; optional Flex base coat to the whole field',color:'#C3C7CC'}],
     src:'Assembly per F-8-TYP with F8-2-FT-3D / F8-10-FT-3D — VERIFIED: two panels overlap at a major rib and are fastened through the crest; sealant bead at the voids; Flex fully encapsulates the fasteners and the lap, crest to flat both sides; topcoat over all; a Flex base coat to the field is optional. Note 12: ill-fitting panels with excessive movement can void the warranty; note 10: rust with pinholes must be patched or replaced. The model is a 16" x 6-ft panel section: the rib profile, 24 ga. drawn at 0.05", the 1" / 3/4" lap lips, lap fasteners at 12" o.c., Flex 2" past the rib base and the coat thicknesses are ASSUMED.' },
-  sseam:  { name:'Standing seam', drawing:'F-9-TYP', concept:'B-1-F10-22-3D', dist:2.2, phi:1.33, theta:0.45, drop:0.2, menu:'Standing seams',
+  sseam:  { name:'Standing seam', drawing:'F-9-TYP', concept:'B-1-F10-22-3D', dist:2.2, phi:1.33, theta:0.45, drop:0.2, menu:'Standing seams', steps:STEPS.sseam,
     layers:[{k:'existing',label:'(E) min 24 ga. panels with a crimped double-lock seam; loose or improper crimps re-crimped to the manufacturer\'s profile',color:'#AEB3B0'},{k:'primer',label:'Rust treated per RMI approved application; clean and prime the seam',color:'#E8D7A6'},{k:'flex',label:'Flex fully encapsulates the standing seam — over the cap, down both legs and onto the flat',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything; optional Flex base coat to the whole field',color:'#C3C7CC'}],
     src:'Assembly per F-9-TYP (and F-20-TYP for seam laps) with B-1-F10-22-3D — VERIFIED: a crimped double-lock seam, vertical legs under a folded cap, clips concealed so no fastener shows at the seam; RMI-Flex is a flashing coat "to fully standing seam" — over the cap, down both legs and onto the flat both sides; topcoat over all; a Flex base coat to the field is optional. Note 11: loose or improper crimping leaves excessive voids, can exceed RMI performance criteria and voids the warranty — re-crimp to the manufacturer\'s original configuration, shown here as a prep step. Note 10: rust with pinholes must be patched, overlaid or replaced. The drawing is not to scale and carries no dimensions: the model is a 24" x 6-ft roof section and its seam silhouette (1.68" legs 2.4" tall under a 3.12" cap), 24 ga. drawn at 0.05", which cap laps over which, the interlocking plies inside the cap, the concealed clip at 24" o.c., how far the Flex runs onto the flat and every coat thickness are ASSUMED.' },
-  mskylight:{ name:'Flush-mounted skylight panel', drawing:'F-12-TYP', concept:'—', dist:16, phi:1.1, theta:0.6, drop:0.4, menu:'Skylight panels',
+  mskylight:{ name:'Flush-mounted skylight panel', drawing:'F-12-TYP', concept:'—', dist:16, phi:1.1, theta:0.6, drop:0.4, menu:'Skylight panels', steps:STEPS.mskylight,
     layers:[{k:'existing',label:'Existing translucent panel lapped into the metal',color:'#AEB3B0'},{k:'primer',label:'Primer on the laps around the panel',color:'#E8D7A6'},{k:'flex',label:'Flex over every lap and fastener around the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over the metal; panel left clear',color:'#C3C7CC'}],
-    src:'Assembly per F-12-TYP. No 3D concept render; geometry is ASSUMED.', byRoof:{ spf:{ drawing:'—', src:'No SPF skylight drawing in the library; treated as a curb per SPF-12-TYP. ASSUMED.' } } },
-  vent:   { name:'Roof exhaust vent', drawing:'Plate D', concept:'—', dist:12, phi:1.1, theta:2.6, drop:2.0, menu:'Vents',
+    src:'Assembly per F-12-TYP. No 3D concept render; geometry is ASSUMED.', byRoof:{ spf:{ drawing:'—', steps:STEPS.mskylightSpf, src:'No SPF skylight drawing in the library; treated as a curb per SPF-13-TYP. ASSUMED.' } } },
+  vent:   { name:'Roof exhaust vent', drawing:'Plate D', concept:'—', dist:12, phi:1.1, theta:2.6, drop:2.0, menu:'Vents', steps:STEPS.vent,
     layers:[{k:'existing',label:'Existing vent curb and gooseneck hood',color:'#AEB3B0'},{k:'primer',label:'Primer on curb and surrounding panel',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb and out onto the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
-    src:'Metal ducts, vents and curbs per Plate D. No dedicated vent drawing for metal roofs in the library; assembly is ASSUMED.', byRoof:{ spf:{ drawing:'SPF-16-TYP', src:'Assembly per SPF-16-TYP (roof vent). Wrap height is ASSUMED.' }, concrete:{ name:'Bin vent', drawing:'CS-12-CON', src:'Treated as a curb on exposed concrete per CS-12-CON. ASSUMED.' } } },
-  mpipe:  { name:'Pipe penetration, EPDM boot', drawing:'P-9-MP', concept:'—', dist:8, phi:1.05, theta:2.5, drop:2.2, menu:'Pipes',
+    src:'Metal ducts, vents and curbs per Plate D. No dedicated vent drawing for metal roofs in the library; assembly is ASSUMED.', byRoof:{ spf:{ drawing:'SPF-16-TYP', steps:STEPS.ventSpf, src:'Assembly per SPF-16-TYP (roof mounted vent). Wrap height is ASSUMED.' }, concrete:{ name:'Bin vent', drawing:'CS-12-CON', steps:STEPS.ventCon, src:'Treated as a curb on exposed concrete per CS-12-CON. ASSUMED.' } } },
+  mpipe:  { name:'Pipe penetration, EPDM boot', drawing:'P-9-MP', concept:'—', dist:8, phi:1.05, theta:2.5, drop:2.2, menu:'Pipes', steps:STEPS.mpipe,
     layers:[{k:'existing',label:'Existing pipe with EPDM boot',color:'#AEB3B0'},{k:'primer',label:'Primer on boot and panel',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the boot and its flange',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
-    src:'Assembly per P-9-MP (EPDM boot). P-10-MP covers the metal-jack alternative.', byRoof:{ spf:{ drawing:'SPF-3-TYP', src:'Assembly per SPF-3-TYP (penetration). Wrap height is ASSUMED.' } } },
-  gutter: { name:'Metal gutter seams', drawing:'W-7-TYP', concept:'D-7-FT-24-3D', dist:10, phi:1.2, theta:0.4, drop:0.5, menu:'Gutters',
+    src:'Assembly per P-9-MP (EPDM boot). P-10-MP covers the metal-jack alternative.', byRoof:{ spf:{ drawing:'SPF-4-TYP', steps:STEPS.mpipeSpf, src:'Assembly per SPF-4-TYP (SPF configuration, penetration): Flex min 1" above the rain-collar flashing, topcoat min 1" above the Flex.' } } },
+  gutter: { name:'Metal gutter seams', drawing:'W-7-TYP', sheet:'W-7-TYP-GUTTER', concept:'D-7-FT-24-3D', dist:10, phi:1.2, theta:0.4, drop:0.5, menu:'Gutters', steps:STEPS.gutter,
     layers:[{k:'existing',label:'Existing hung gutter with lapped and riveted seams',color:'#AEB3B0'},{k:'primer',label:'Primer on each seam',color:'#E8D7A6'},{k:'flex',label:'Flex over every seam and rivet inside the gutter',color:'#D9A21B'},{k:'thane',label:'Topcoat inside the gutter',color:'#C3C7CC'}],
     src:'Assembly per W-7-TYP (metal gutter seams) and D-7-FT-24-3D. Standard exterior gutters are limited to a material-only warranty per Plate MP.' },
-  gutterinlet:{ name:'Gutter inlet / downspout', drawing:'D-8-TYP', concept:'D8-9-FT-3D', dist:9, phi:1.2, theta:0.5, drop:0.6, menu:'Downspout inlets',
+  gutterinlet:{ name:'Gutter inlet / downspout', drawing:'D-8-TYP', concept:'D8-9-FT-3D', dist:9, phi:1.2, theta:0.5, drop:0.6, menu:'Downspout inlets', steps:STEPS.gutterinlet,
     layers:[{k:'existing',label:'Existing outlet tube through the gutter floor',color:'#AEB3B0'},{k:'primer',label:'Primer on outlet flange and gutter floor',color:'#E8D7A6'},{k:'flex',label:'Flex seals the flange into the gutter and down into the outlet',color:'#D9A21B'},{k:'thane',label:'Topcoat over the gutter floor',color:'#C3C7CC'}],
     src:'Assembly per D-8-TYP and D8-9-FT-3D.' },
-  hatch:  { name:'Roof hatch', drawing:'CS-15-MP', concept:'—', dist:12, phi:1.1, theta:0.8, drop:1.6, menu:'Roof hatch',
+  hatch:  { name:'Roof hatch', drawing:'CS-15-MP', concept:'—', dist:12, phi:1.1, theta:0.8, drop:1.6, menu:'Roof hatch', steps:STEPS.hatch,
     layers:[{k:'existing',label:'Existing hatch curb and lid',color:'#AEB3B0'},{k:'primer',label:'Primer on curb wall and panel',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb to the lid frame and out onto the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
-    src:'Access and smoke hatches are named in CS-1-TYP note 7 (flat roofs) — VERIFIED; on metal, CS-15-MP fixed curb. Flex up the full curb and over the top; hatch lifted and reset.', byRoof:{ spf:{ drawing:'SPF-12-TYP', src:'Curb per SPF-12-TYP. Hatch-specific wrap is ASSUMED.' }, concrete:{ name:'Manway / bin hatch', drawing:'CS-14-CON', src:'Fixed curb on exposed concrete per CS-14-CON.' } } },
-  ridge:  { name:'Ridge cap', drawing:'F-21-M-TYP', concept:'—', dist:12, phi:1.0, theta:0.2, drop:0, menu:'Ridge cap', byRoof:{ spf:{ drawing:'SPF-2-TYP', src:'Assembly per SPF-2-TYP (ridge).' } },
+    src:'Access and smoke hatches are named in CS-1-TYP note 7 (flat roofs) — VERIFIED; on metal, CS-15-MP fixed curb. Flex up the full curb and over the top; hatch lifted and reset.', byRoof:{ spf:{ drawing:'SPF-13-TYP', steps:STEPS.hatchSpf, src:'Curb per SPF-13-TYP. Hatch-specific wrap is ASSUMED.' }, concrete:{ name:'Manway / bin hatch', drawing:'CS-14-CON', steps:STEPS.hatchCon, src:'Fixed curb on exposed concrete per CS-14-CON.' } } },
+  ridge:  { name:'Ridge cap', drawing:'F-21-M-TYP', concept:'—', dist:12, phi:1.0, theta:0.2, drop:0, menu:'Ridge cap', steps:STEPS.ridge, byRoof:{ spf:{ drawing:'SPF-3-TYP', steps:STEPS.ridgeSpf, src:'Assembly per SPF-3-TYP (SPF ridge line configuration).' } },
     layers:[{k:'existing',label:'Existing ridge cap and closures',color:'#AEB3B0'},{k:'primer',label:'Primer on cap laps and fasteners',color:'#E8D7A6'},{k:'flex',label:'Flex over cap laps and both edges',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
     src:'Assembly per F-21-M-TYP — VERIFIED: (E) ridge cap over the (E) metal panel with a metal closure at the panel end, the closure set in sealant or tape with a ribbon of sealant at any voids, closure fasteners through the cap, RMI-Flex at the cap and the topcoat over all (the drawing labels it RMI-Thane; note 10 puts the wear surface coating per the RMI specification guide, where Plate MP offers Thane or White Plus). Note 12 gives the one dimension on the drawing: closures must be recessed a minimum 6\" under the ridge cap or flashing metal, or additional flat stock flashing is added — the model recesses the closure 7.8\". Note 11: confirm closures are present and tight fitting, replace ill-fitting ones and seal their edges before the Flex goes on. Note 13: foam closures are not permissible without prior written approval from RMI. There is no 3D concept render for this detail, so everything else is ASSUMED: the 4-ft section, the 6\" cap lap and its joggled end, the closure 18\" from the ridge and its 3\" width, the notches where the ribs pass, fasteners at 12\" o.c., how far the Flex turns over the cap edge and runs onto the panel, and every coat thickness.' },
-  rtu:    { name:'Curb-mounted RTU', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:22, phi:1.15, theta:0.8, drop:5.0, menu:'HVAC curbs',
+  rtu:    { name:'Curb-mounted RTU', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:22, phi:1.15, theta:0.8, drop:5.0, menu:'HVAC curbs', steps:STEPS.rtu,
     layers:[{k:'existing',label:'(E) curb with (E) flashing skirt and fasteners at the top; unit lifted',color:'#C9C9C2'},{k:'primer',label:'Clean, repair and prime the curb and field per the plate',color:'#E8D7A6'},{k:'flex',label:'Flex from the field up the full curb wall, over the top, onto the interior — encapsulating the (E) flashing',color:'#D9A21B'},{k:'thane',label:'Topcoat over all; unit reset with stainless screws and EPDM washers after full cure',color:'#C3C7CC'}],
     src:'Assembly per CS-1-TYP and CS13-1-8-3D — VERIFIED. Note 7: the same detail applies to vents, ducts, soil stacks, conduit, refrigeration lines, access and smoke hatches, and skylight domes.' },
-  drain:  { name:'Cast-iron roof drain', drawing:'D-1-TYP', concept:'CID-1-21-FT3D', dist:9, phi:1.05, theta:0.6, drop:0.6, menu:'Drains',
-    layers:[{k:'existing',label:'(E) cast-iron bowl, clamping ring and strainer; damaged strainers replaced, rust treated',color:'#C9C9C2'},{k:'primer',label:'(E) flashing trimmed, sealant bead to the bowl; clean and prime',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the ring, min 18" out from the drain and 3" down into the bowl past the ring',color:'#D9A21B'},{k:'thane',label:'Topcoat extends 1" further into the bowl than the Flex; ring reset in sealant, strainer painted',color:'#C3C7CC'}],
+  drain:  { name:'Cast-iron roof drain', drawing:'D-1-TYP', concept:'CID-1-21-FT3D', dist:9, phi:1.05, theta:0.6, drop:0.6, menu:'Drains', steps:STEPS.drain,
+    layers:[{k:'existing',label:'(E) cast-iron bowl, clamping ring and strainer; damaged strainers replaced, rust treated',color:'#C9C9C2'},{k:'primer',label:'(E) flashing trimmed, sealant bead to the bowl; ring reset in sealant; clean and prime',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the ring, min 18" out from the drain and 3" down into the bowl past the ring',color:'#D9A21B'},{k:'thane',label:'Topcoat extends 1" further into the bowl than the Flex; strainer cleaned, primed and painted',color:'#C3C7CC'}],
     src:'Assembly per D-1-TYP and CID-1-21-FT3D — VERIFIED, including the 18" / 3" / 1" extents. Notes: water-test after install; plastic/ABS drains excluded from warranty.' },
-  scupper:{ name:'Overflow scupper', drawing:'D-4-TYP', concept:'D4-1-FT-3D', dist:5, phi:1.35, theta:0.45, drop:2.6, menu:'Scuppers',
+  scupper:{ name:'Overflow scupper', drawing:'D-4-TYP', concept:'D4-1-FT-3D', dist:5, phi:1.35, theta:0.45, drop:2.6, menu:'Scuppers', steps:STEPS.scupper,
     layers:[{k:'existing',label:'(E) scupper tube through the parapet above the (E) cant, (E) wall flashing; damaged components replaced, rust treated',color:'#C9C9C2'},{k:'primer',label:'Clean and prime tube, wall and field; sealant bead at the exterior termination',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the interior of the tube and extends min 12" onto the field; base coat continues up the wall',color:'#D9A21B'},{k:'thane',label:'Topcoat over the tube interior, wall and field',color:'#C3C7CC'}],
     src:'Assembly per D-4-TYP and D4-1-FT-3D — VERIFIED: the tube sits above the (E) cant, Flex encapsulates the tube interior and extends min 12" onto the field, the base coat continues up the (E) wall flashing, topcoat over all, sealant bead at the exterior termination. Notes: water-test before and after; plastic/ABS scuppers excluded from warranty; the exterior must be watertight to the building. The model is a 4-ft parapet section: the 16" x 5" tube, exterior collar with the bead run all round, the tube bottom bent down over the cant, 6" cant, flashing height and coat thicknesses are ASSUMED.' },
-  wall:   { name:'Wall tie-in, reglet counterflashing', drawing:'W-11-TYP', concept:'W13-FT-26-3D', dist:5.5, phi:1.2, theta:1.45, drop:1.0, menu:'Wall tie-in',
+  wall:   { name:'Wall tie-in, reglet counterflashing', drawing:'W-11-TYP', concept:'W13-FT-26-3D', dist:5.5, phi:1.2, theta:1.45, drop:1.0, menu:'Wall tie-in', steps:STEPS.wall,
     layers:[{k:'existing',label:'(E) wall flashing up to a Fry-type reglet with counterflashing; voids fastened with term bar + sealant 12" o.c.',color:'#C9C9C2'},{k:'primer',label:'Rake out (E) sealant at the reglet, new continuous bead; counterflashing removed; clean and prime',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the (E) wall flashing and term bar, extending up to the reglet receiver',color:'#D9A21B'},{k:'thane',label:'Topcoat encapsulates the Flex; counterflashing reset (optionally coated too)',color:'#C3C7CC'}],
     src:'Assembly per W-11-TYP and W13-FT-26-3D — VERIFIED: Flex runs the full height of the (E) flashing and on up the wall to the reglet receiver, not a fixed band; term bar fastened 12" o.c.; counterflashing removed and reset. Flashing height varies by wall (24" here, ASSUMED), as are the reglet height, cant, counterflashing lap and coat extents. Note 7: applies to Fry-type reglets; do not damage the receiver.' },
-  pipe:   { name:'Soil stack / pipe penetration', drawing:'P-6-TYP', concept:'P3SP-11-FT-3D', dist:8, phi:1.05, theta:0.7, drop:1.8, menu:'Pipes / soil stacks',
+  pipe:   { name:'Soil stack / pipe penetration', drawing:'P-6-TYP', concept:'P3SP-11-FT-3D', dist:8, phi:1.05, theta:0.7, drop:1.8, menu:'Pipes / soil stacks', steps:STEPS.pipe,
     layers:[{k:'existing',label:'(E) stack with lead flashing up the pipe and folded into the top; ill-fitting lead replaced',color:'#C9C9C2'},{k:'primer',label:'Sealant bead at the base; clean and prime lead and field',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the lead from the field to the top and extends inside the stack',color:'#D9A21B'},{k:'thane',label:'Topcoat over the Flex and past it into the stack',color:'#C3C7CC'}],
     src:'Assembly per P-6-TYP and P3SP-11-FT-3D — VERIFIED (lead up the stack and turned into the bore, sealant bead at the base, Flex encapsulates the lead and extends inside the stack, topcoat past the Flex). The drawing is not to scale and gives no dimensions: the 4" stack, 24" height, 14" lead flange, Flex 6" past the flange and 6" down the bore, topcoat 1" past the Flex are all ASSUMED. Note 7: applies equally to conduit, HVAC and refrigeration penetrations.' },
-  skylight:{ name:'Curb-mounted skylight', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:18, phi:1.15, theta:0.8, drop:2.0, menu:'Skylights',
+  skylight:{ name:'Curb-mounted skylight', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:18, phi:1.15, theta:0.8, drop:2.0, menu:'Skylights', steps:STEPS.skylight,
     layers:[{k:'existing',label:'Existing curb and skylight frame',color:'#C9C9C2'},{k:'primer',label:'Primer on curb wall and field',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb to the frame',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
     src:'Assembly per CS-1-TYP, which names skylight domes in note 7 — VERIFIED. Flex up the full curb and over the top to the interior; dome lifted and reset.' },
-  edge:   { name:'Perimeter edge metal', drawing:'F-1-TYP', concept:'F1-34-FT-3D', dist:3.5, phi:1.05, theta:0.7, drop:0.75, menu:'Edge metal',
+  edge:   { name:'Perimeter edge metal', drawing:'F-1-TYP', concept:'F1-34-FT-3D', dist:3.5, phi:1.05, theta:0.7, drop:0.75, menu:'Edge metal', steps:STEPS.edge,
     layers:[{k:'existing',label:'(E) edge metal: flange on the roof stripped in with the (E) roof system, fascia hooked over a continuous cleat; damaged, ill-fitting or severely rusted metal replaced',color:'#C9C9C2'},{k:'primer',label:'Confirm seam and flashing integrity, repair as required; clean, prepare and prime',color:'#E8D7A6'},{k:'flex',label:'Flex over the stripped flange and on across the field; carried down the fascia to the drip (ASSUMED)',color:'#D9A21B'},{k:'thane',label:'Topcoat over all surface areas; down the fascia with the Flex (ASSUMED)',color:'#C3C7CC'}],
     src:'Assembly per F-1-TYP with F1-34-FT-3D as reference — VERIFIED: (E) edge metal with cleat; damaged, ill-fitting or severely rusted metal replaced; confirm seam and flashing integrity, repair as required; clean, prepare and prime (note 10); RMI-Flex base coat over the stripped flange and the field; RMI-Thane or White over the Flex, to all surface areas (F1-34-FT-3D note 10). No tape at the edge joint and no exposed face fasteners: the only fastener drawn is the cleat\'s, behind the fascia. Note 7: edge metal and cleats must meet code and SMACNA for wind uplift or the edge is excluded from warranty. Note 8: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems. ASSUMED: Flex and topcoat carried down the fascia face to the drip — the 2D drawing ends both coats at the roof edge; the fascia coverage follows F1-34-FT-3D note 10. The drawing is not to scale: the 4" flange and fascia, stripping 4" past the flange, cleat and hem sizes and coat thicknesses are ASSUMED.' },
-  penthouse:{ name:'Penthouse wall, fixed counterflashing', drawing:'W-13-TYP', concept:'W-11-24-FT-3D', dist:5.5, phi:1.3, theta:-2.5, drop:1.9, menu:'Penthouse walls',
+  penthouse:{ name:'Penthouse wall, fixed counterflashing', drawing:'W-13-TYP', concept:'W-11-24-FT-3D', dist:5.5, phi:1.3, theta:-2.5, drop:1.9, menu:'Penthouse walls', steps:STEPS.penthouse,
     layers:[{k:'existing',label:'(E) wall flashing up the wall behind a fixed, surface-mounted counterflashing that cannot be removed or lifted; damaged metal replaced',color:'#C9C9C2'},{k:'primer',label:'Bead of RMI approved sealant at the top edge of the counterflashing; clean, prepare and prime the flashing and field',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the (E) flashing from the field up to the counterflashing',color:'#D9A21B'},{k:'thane',label:'Topcoat encapsulates the Flex; 24 ga. skirt metal extends min 4" over the RMI system (fitted after the topcoat — ASSUMED)',color:'#C3C7CC'}],
     src:'Assembly per W-13-TYP and W-11-24-FT-3D — VERIFIED: the counterflashing is fixed and stays in place (note 7), damaged metal replaced; bead of RMI approved sealant at its top edge; Flex encapsulates the (E) flashing up to the counterflashing; topcoat encapsulates the Flex; 24 ga. skirt metal extends min 4" over the RMI system; coating the counterflashing assembly is optional (not shown). Note 9: all (E) BUR, mod-bit, EPDM, PVC, TPO systems regardless of wall type. The drawing is not to scale: the 24" counterflashing height, its 6" depth and 1" stand-off, the cant, the skirt size (5" lap modelled), fastener spacing, fitting the skirt after the topcoat and coat thicknesses are ASSUMED.' },
-  sleeper:{ name:'Sleeper support (pipes, condensers)', drawing:'CS-8-TYP', concept:'CS8-2-19-3D', dist:8, phi:1.3, theta:2.1, drop:0.4, menu:'Sleeper supports',
+  sleeper:{ name:'Sleeper support (pipes, condensers)', drawing:'CS-8-TYP', concept:'CS8-2-19-3D', dist:8, phi:1.3, theta:2.1, drop:0.4, menu:'Sleeper supports', steps:STEPS.sleeper,
     layers:[{k:'existing',label:'(E) wood sleeper on a walkpad; damaged or rotted sleepers replaced',color:'#C9C9C2'},{k:'primer',label:'Sleeper raised, pad removed; clean, repair, prepare and prime the field under it',color:'#E8D7A6'},{k:'flex',label:'Flex base coat runs continuous across the field under the raised sleeper',color:'#D9A21B'},{k:'thane',label:'Topcoat continuous under it; after full cure a loose-laid walkpad is set and the sleeper reset on it',color:'#C3C7CC'}],
     src:'Assembly per CS-8-TYP and CS8-2-19-3D — VERIFIED: wood sleeper raised and reset; Flex base coat and topcoat continuous across the field under the support, no wrap on the block; loose-laid walkpad set after the RMI materials have completely cured; damaged or rotted sleepers replaced. Note 7: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems. The drawing is not to scale and gives no dimensions: the 6x10 x 30" sleeper, 3/8" pad 2.5" past it, 6" raise and coat thicknesses are ASSUMED.' },
-  pitchpan:{ name:'Chem-Curb / pitch pan (pipe cluster)', drawing:'P-8-TYP', concept:'PP-1-FT-3D', dist:7, phi:1.0, theta:0.7, drop:2.2, menu:'Pipe clusters',
+  pitchpan:{ name:'Chem-Curb / pitch pan (pipe cluster)', drawing:'P-8-TYP', concept:'PP-1-FT-3D', dist:7, phi:1.0, theta:0.7, drop:2.2, menu:'Pipe clusters', steps:STEPS.pitchpan,
     layers:[{k:'existing',label:'(E) pipes and conduit through the roof',color:'#C9C9C2'},{k:'primer',label:'Chem-Curb set around the penetrations in RMI M-1 sealant (set before priming: ASSUMED); clean, prepare and prime roof, curb and penetrations',color:'#E8D7A6'},{k:'flex',label:'Flex fills the curb pocket, tapered from the penetrations outward to shed water, then flashes over the curb onto the field and at least 4" up each penetration past the curb',color:'#D9A21B'},{k:'thane',label:'Topcoat over all, at least 2" up each penetration past the Flex',color:'#C3C7CC'}],
     src:'Assembly per P-8-TYP (Chem-Curb) with PP-1-FT-3D as reference — VERIFIED: Chem-Curb fabricated and installed per the manufacturer, set in RMI M-1 sealant; pocket filled with RMI-Flex tapered from the penetration outward to shed water; Flex flashing coat min 4" up the penetration past the curb; RMI-Thane or White Plus min 2" up past the Flex. Note 7: any non-circular penetration, or where a roof jack or boot is not feasible. Note 8: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems. The drawing is not to scale: the 30" x 16" x 4" curb, the penetrations, how high the fill rises at a penetration, Flex 6" onto the field, and setting the curb before priming are ASSUMED.' },
-  ej:     { name:'Expansion joint', drawing:'A-3-TYP', concept:'—', dist:14, phi:1.1, theta:0.8, drop:1.0, menu:'Expansion joint',
-    layers:[{k:'existing',label:'Existing double curb with flexible cover',color:'#C9C9C2'},{k:'primer',label:'Primer on both curb walls and the field',color:'#E8D7A6'},{k:'flex',label:'Flex up both curbs to the cover; cover stays flexible',color:'#D9A21B'},{k:'thane',label:'Topcoat over curbs and field',color:'#C3C7CC'}],
+  ej:     { name:'Expansion joint', drawing:'A-3-TYP', concept:'—', dist:14, phi:1.1, theta:0.8, drop:1.0, menu:'Expansion joint', steps:STEPS.ej,
+    layers:[{k:'existing',label:'Existing double curb with flexible cover',color:'#C9C9C2'},{k:'primer',label:'Primer on both curb walls and the field',color:'#E8D7A6'},{k:'flex',label:'Flex fully encapsulates the bellow, its fasteners and mounting flange, min 2" past the assembly',color:'#D9A21B'},{k:'thane',label:'Topcoat over curbs and field',color:'#C3C7CC'}],
     src:'Assembly per A-3-TYP (expansion joint, EPDM/PVC/TPO). No 3D concept render; geometry is ASSUMED.' },
-  silowall:{ name:'Concrete silo wall, vertical application', drawing:'W-7-TYP', concept:'—', dist:60, phi:1.35, theta:0.55, drop:0, menu:'Silo walls',
+  silowall:{ name:'Concrete silo wall, vertical application', drawing:'W-7-TYP', concept:'—', dist:60, phi:1.35, theta:0.55, drop:0, menu:'Silo walls', steps:STEPS.silowall,
     layers:[{k:'existing',label:'Existing concrete wall: hairline cracks, spalls and staining',color:'#C9C9C2'},{k:'primer',label:'Primer fog-coated down the wall',color:'#E8D7A6'},{k:'flex',label:'Flex sprayed vertically, encapsulating the concrete',color:'#D9A21B'},{k:'thane',label:'Topcoat over the wall',color:'#C3C7CC'}],
     src:'Concrete wall assembly per W-7-TYP (concrete/CMU walls). Vertical field application on silos per the Longview grain terminal project; sequence and coverage on curved walls are ASSUMED.' },
-  support:{ name:'Circular support on concrete', drawing:'P-5-C', concept:'—', dist:10, phi:1.1, theta:0.7, drop:1.5, menu:'Gallery supports',
+  support:{ name:'Circular support on concrete', drawing:'P-5-C', concept:'—', dist:10, phi:1.1, theta:0.7, drop:1.5, menu:'Gallery supports', steps:STEPS.support,
     layers:[{k:'existing',label:'Existing steel post through the deck',color:'#C9C9C2'},{k:'primer',label:'Primer on post base and deck',color:'#E8D7A6'},{k:'flex',label:'Flex up the post and out onto the deck',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
     src:'Assembly per P-5-C / P-7-C (circular supports on concrete: site screens, solar, mechanical). Wrap height is ASSUMED.' },
-  exhaust:{ name:'Kitchen exhaust fan curb', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:12, phi:1.1, theta:0.7, drop:2.4, menu:'Kitchen exhaust',
+  exhaust:{ name:'Kitchen exhaust fan curb', drawing:'CS-1-TYP', concept:'CS1-18-3D', dist:12, phi:1.1, theta:0.7, drop:2.4, menu:'Kitchen exhaust', steps:STEPS.exhaust,
     layers:[{k:'existing',label:'Existing fan curb with grease staining on the membrane',color:'#C9C9C2'},{k:'primer',label:'Primer on curb and degreased field',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb and across the field',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything; grease guard reinstalled',color:'#C3C7CC'}],
     src:'Curb per CS-1-TYP (vents and ducts named in note 7) — VERIFIED. Grease must be removed before priming (plates: no RMI over contaminants); degreasing method is ASSUMED.' },
-  coping: { name:'Parapet and metal coping', drawing:'W-1-TYP', concept:'W1-11-FT3D', dist:6, phi:0.95, theta:1.85, drop:0.4, menu:'Parapet / coping',
+  coping: { name:'Parapet and metal coping', drawing:'W-1-TYP', concept:'W1-11-FT3D', dist:6, phi:0.95, theta:1.85, drop:0.4, menu:'Parapet / coping', steps:STEPS.coping,
     layers:[{k:'existing',label:'(E) metal coping with open joints and loose fasteners; damaged sections replaced, fasteners at joints relocated',color:'#C9C9C2'},{k:'primer',label:'4" tape centred on each joint (2" each side, no voids); loose fasteners replaced with oversize stainless + EPDM washers; prime',color:'#E8D7A6'},{k:'flex',label:'Flex over the tape, min 2" beyond it on both sides and down both faces; every fastener encapsulated',color:'#D9A21B'},{k:'thane',label:'Topcoat min 2" past the Flex — or the entire coping under the system warranty; vertical faces may need multiple coats',color:'#C3C7CC'}],
     src:'Assembly per W-1-TYP and W1-11-FT3D — VERIFIED, including the 4" tape / 2" Flex / 2" topcoat extents. Note 7: coping must meet code and SMACNA for wind uplift or it is excluded from warranty. Applies to all coping laps, joints, corners and transitions. The model is a 4-ft parapet section: the open-joint gap, fastener spacing and coat thicknesses are ASSUMED; the topcoat shows the entire-coping (system warranty) option.' }
 };
@@ -1355,9 +1626,9 @@ const hotsEl=document.getElementById('hots'); const v3=new THREE.Vector3();
 function buildHots(){ hotsEl.innerHTML=''; B.hots.forEach(h=>{ const d=document.createElement('div'); d.className='hot'; d.innerHTML=`<button>${DET(h.id).name} <span style="opacity:.6;font-weight:500">${DET(h.id).drawing}</span></button><i></i>`; d.querySelector('button').onclick=()=>goDetail(h.id); hotsEl.appendChild(d); h.el=d; }); }
 function placeHots(){ if(!B) return; const r=canvas.getBoundingClientRect(); B.hots.forEach(h=>{ const show=S.view==='roof'&&!!h.show(); h.el.classList.toggle('hide',!show); if(!show) return; v3.copy(h.anchor()).project(camera); h.el.style.left=((v3.x+1)/2*r.width)+'px'; h.el.style.top=((1-v3.y)/2*r.height)+'px'; }); }
 function goDetail(id){ const h=B&&B.hots.find(h=>h.id===id); if(!h){ console.warn(`no '${id}' hotspot on this building; it has: ${B?B.hots.map(x=>x.id).join(', '):'none'}`); return false; }
-  const d=Object.assign({},DET(id),h.cam); S.view=id; const a=h.anchor().clone(); secAnchor.copy(a); a.y-=d.drop||0; flyTo(a,d.dist,d.theta,d.phi); document.getElementById('secBtn').style.display='inline-block';   // a hotspot's `cam` overrides the detail camera for that building
+  const d=Object.assign({},DET(id),h.cam); S.view=id; const a=h.anchor().clone(); secAnchor.copy(a); a.y-=d.drop||0; flyTo(a,d.dist,d.theta,d.phi); document.getElementById('secBtn').style.display='inline-block'; document.getElementById('drwBtn').style.display='inline-block';   // a hotspot's `cam` overrides the detail camera for that building
   document.getElementById('viewChip').querySelector('b').textContent='Detail'; document.getElementById('viewName').textContent=`${d.name} · ${d.drawing}`; document.getElementById('backBtn').style.display='inline-block'; document.getElementById('scaleNote').textContent='Stages replay at detail scale'; renderLayers(); }
-function goRoof(instant){ S.view='roof'; document.getElementById('secBtn').style.display='none'; const e=B.extent; flyTo(new THREE.Vector3(e.cx||0,e.dist?e.H-45:e.H+2,0),roofDist(),0.62,e.dist?1.2:1.0,instant);
+function goRoof(instant){ S.view='roof'; document.getElementById('secBtn').style.display='none'; document.getElementById('drwBtn').style.display='none'; drwOpen(false); const e=B.extent; flyTo(new THREE.Vector3(e.cx||0,e.dist?e.H-45:e.H+2,0),roofDist(),0.62,e.dist?1.2:1.0,instant);
   document.getElementById('viewChip').querySelector('b').textContent='Whole roof'; document.getElementById('viewName').textContent=''; document.getElementById('backBtn').style.display='none'; document.getElementById('scaleNote').textContent=''; renderLayers(); }
 document.getElementById('backBtn').onclick=()=>goRoof(false);
 const secPlane=new THREE.Plane(new THREE.Vector3(0,0,1),0); let secAnchor=new THREE.Vector3();
@@ -1365,7 +1636,7 @@ document.getElementById('secBtn').onclick=()=>{ S.section=!S.section; document.g
 function applySection(){ const on=S.section&&S.view!=='roof'; if(!on){ renderer.clippingPlanes=[]; return; } const dir=secAnchor.clone().sub(camera.position); dir.y=0; dir.normalize(); secPlane.normal.copy(dir); secPlane.constant=-dir.dot(secAnchor); renderer.clippingPlanes=[secPlane]; }
 function renderLayers(){ const el=document.getElementById('layers'); if(S.view==='roof'){ el.classList.remove('show'); return; } const d=DET(S.view); const order=['existing','prep','primer','flex','thane','done']; const cur=order[S.stage];
   const on=k=> order.indexOf(k)<=order.indexOf(cur) && !(k==='thane'&&S.stage<4);
-  el.innerHTML=`<h3>${d.name} — layers</h3>`+d.layers.map(l=>`<div class="row ${on(l.k)?'on':''}"><span class="swatch" style="background:${l.k==='thane'?(S.topcoat==='white'?'#F1F0EB':l.color):l.color}"></span>${l.label}</div>`).join('')+`<div class="src">${d.src}</div>`; el.classList.add('show'); }
+  el.innerHTML=`<h3>${d.name} — layers</h3>`+d.layers.map(l=>`<div class="row ${on(l.k)?'on':''}"><span class="swatch" style="background:${l.k==='thane'?(S.topcoat==='white'?'#F1F0EB':l.color):l.color}"></span>${l.label}</div>`).join('')+`<div class="src">${d.src}</div>`; el.classList.add('show'); drwSync(); }
 
 /* =================================================================
    STAGES
@@ -1535,7 +1806,7 @@ function phRenderPins(){ const p=phCur(); [...phEl.wrap.querySelectorAll('.pin,.
 phEl.wrap.addEventListener('click',e=>{ const p=phCur(); if(!p||p.status!=='ok') return; const r=phEl.wrap.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height; if(x<0||x>1||y<0||y>1) return;
   const b=BUILDINGS[S.building]; PH.temp={ x, y, pick:(PH.temp&&PH.temp.pick)||b.details.find(k=>S.on[k])||b.details[0] }; phRenderPins(); });
 document.addEventListener('keydown',e=>{ // Esc: cancel a pending pin, else close the slider. ← →: previous / next photo while the slider is open (not while typing in a field).
-  if(e.key==='Escape'){ if(PH.temp){ PH.temp=null; phRenderPins(); } else if(phEl.app.classList.contains('slider')) phSlider(false); return; }
+  if(e.key==='Escape'){ if(PH.temp){ PH.temp=null; phRenderPins(); } else if(DR.open) drwOpen(false); else if(phEl.app.classList.contains('slider')) phSlider(false); return; }
   if(!phEl.app.classList.contains('slider')) return; const tag=(e.target&&e.target.tagName||'').toLowerCase(); if(tag==='input'||tag==='select'||tag==='textarea') return;
   if(e.key==='ArrowLeft'){ e.preventDefault(); phStep(-1); } else if(e.key==='ArrowRight'){ e.preventDefault(); phStep(1); } });
 function phCommit(id){ const p=phCur(); if(!p||!PH.temp||!id) return; const d=DET(id); p.pins.push({ x:PH.temp.x, y:PH.temp.y, detail:id, drawing:d.drawing, name:d.menu }); PH.temp=null; phSavePhoto(p); phRender(); }
@@ -1560,6 +1831,62 @@ function configuration(){ const e=estimate(), b=BUILDINGS[S.building], r=ROOFS[S
     prospect_photos:phSummary() }; }
 
 /* =================================================================
+   DRAWING PANEL — the RMI 2D sheet (zoom + pan), "How it's applied" steps, and the 3D concept render for the detail
+   in view. Images are PNGs in drawings/ rendered from the local RMI library by scripts/render_drawings.py, named by
+   drawing number; drawings/index.js (window.RMI_DRAWINGS) carries title, issue/revision date and size per sheet. The
+   folder is git-ignored and bundled by the installer; when a sheet is missing the tab says so instead of breaking.
+   The manifest loads with a plain <script> on first open (fetch() is not available on file:// in Electron).
+================================================================= */
+const DR = { open:false, tab:'2d', id:null, num:null, z:1, x:0, y:0, nw:0, nh:0, drag:null, status:'none', manifest:undefined };
+const drwEl = { app:document.getElementById('app'), panel:document.getElementById('drw'), name:document.getElementById('drwName'), meta:document.getElementById('drwMeta'), tabs:document.getElementById('drwTabs'),
+  view:document.getElementById('drwView'), img:document.getElementById('drwImg'), msg:document.getElementById('drwMsg'), zoom:document.getElementById('drwZoom'), steps:document.getElementById('drwSteps'), foot:document.getElementById('drwFoot'), btn:document.getElementById('drwBtn') };
+const drwFile=n=>'drawings/'+String(n).replace(/[^A-Za-z0-9.-]+/g,'-').replace(/^-|-$/g,'')+'.png';
+function drwManifest(){ if(DR.manifest!==undefined) return Promise.resolve(DR.manifest); if(window.RMI_DRAWINGS){ DR.manifest=window.RMI_DRAWINGS; return Promise.resolve(DR.manifest); }
+  return DR.loading=DR.loading||new Promise(res=>{ const sc=document.createElement('script'); sc.src='drawings/index.js'; sc.onload=()=>{ DR.manifest=window.RMI_DRAWINGS||null; res(DR.manifest); };
+    sc.onerror=()=>{ DR.manifest=null; console.warn('drawings/index.js not found — no RMI drawings are bundled in this build (scripts/render_drawings.py renders them)'); res(null); }; document.head.appendChild(sc); }); }
+function drwOpen(on){ if(on===undefined) on=!DR.open; if(on===DR.open){ if(on) drwRender(); return; } DR.open=on; drwEl.app.classList.toggle('drawing',on);
+  drwEl.btn.textContent=on?'Hide drawing':'Drawing'; drwEl.btn.style.background=on?'var(--navy)':'#fff'; drwEl.btn.style.color=on?'#fff':'var(--navy)';
+  if(on){ DR.id=null; if(DR.manifest!==undefined) drwRender(); else drwManifest().then(()=>drwRender()); } else { drwEl.img.removeAttribute('src'); DR.status='none'; } }
+function drwTab(t){ if(!['2d','steps','3d'].includes(t)) return; DR.tab=t; [...drwEl.tabs.children].forEach(b=>b.classList.toggle('on',b.dataset.t===t)); if(DR.open){ DR.id=null; drwRender(); } }
+function drwSync(){ if(!DR.open) return; if(S.view==='roof') return; const d=DET(S.view); if(DR.id!==S.view||DR.num!==(d.sheet||d.drawing)) drwRender(); }
+function drwEsc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function drwRender(){ if(!DR.open||S.view==='roof') return; const d=DET(S.view); const m=DR.manifest||{}; const num=DR.tab==='3d'?d.concept:(d.sheet||d.drawing); DR.id=S.view; DR.num=d.sheet||d.drawing;
+  const info=m[num]||m[d.drawing]||null; const shown=DR.tab==='3d'?d.concept:d.drawing;
+  drwEl.name.textContent=d.name;
+  drwEl.meta.innerHTML=shown==='—'?(DR.tab==='3d'?'No 3D concept render in the library':'No drawing in the library for this case')
+    :`<b>${drwEsc(shown)}</b>${info&&info.title?' · '+drwEsc(info.title):''}${info&&info.rev?' · Issue / revision '+drwEsc(info.rev):''}`;
+  drwEl.foot.textContent=DR.tab==='3d'?'RMI concept render, colour-coded Flex gold / Thane silver. The 2D drawing and its notes are the source of truth; the 3D view in the tool follows them.'
+    :DR.tab==='steps'?'Plain-language reading of the drawing notes for a walk-through — not a substitute for the RMI Specification Guide Manual. ASSUMED marks what the drawing does not state.'
+    :'Scroll to zoom, drag to pan, double-click for 1:1. The drawing and its notes are RMI spec; the 3D view is a visualization of them.';
+  const isImg=DR.tab!=='steps'; drwEl.view.style.display=isImg?'':'none'; drwEl.steps.classList.toggle('show',!isImg);
+  if(!isImg){ const st=d.steps||[]; const a=/ASSUMED/;
+    drwEl.steps.innerHTML=`<h4>${drwEsc(d.name)} — how it's applied (${drwEsc(d.drawing)})</h4>`+(st.length?`<ol>${st.map(t=>`<li class="${a.test(t)?'a':''}">${drwEsc(t).replace(/ASSUMED/g,'<span class="tag a">ASSUMED</span>')}</li>`).join('')}</ol>`:'<p>No steps written for this detail yet.</p>')
+      +`<p class="dnote">Written from the notes on ${drwEsc(d.drawing)}${d.concept&&d.concept!=='—'?' and the '+drwEsc(d.concept)+' concept':''}${d.sheet?' (the gutter-seams sheet, not the concrete-wall sheet of the same number)':''}. Every step traces to the sheet except those tagged ASSUMED, which RMI is asked to confirm (catalog §5).</p>`; return; }
+  // image tabs
+  drwEl.img.removeAttribute('src'); drwEl.img.style.visibility='hidden'; drwEl.msg.classList.remove('show');
+  if(shown==='—'){ DR.status='none'; drwMsg(DR.tab==='3d'?`No 3D concept render exists in the RMI library for ${drwEsc(d.name)}.`:`${drwEsc(d.src||'No drawing for this case.')}`, DR.tab==='3d'?'The 2D drawing tab and the steps still apply.':''); return; }
+  DR.status='loading'; const src=info?'drawings/'+info.file:drwFile(num); drwEl.img.dataset.num=num;
+  drwEl.img.onload=()=>{ if(drwEl.img.dataset.num!==num) return; DR.nw=drwEl.img.naturalWidth; DR.nh=drwEl.img.naturalHeight; DR.status='loaded'; drwEl.img.style.visibility=''; drwFit(); };
+  drwEl.img.onerror=()=>{ if(drwEl.img.dataset.num!==num) return; DR.status='missing'; drwMsg(`Drawing ${drwEsc(shown)} is not bundled with this build.`,`Rendered sheets live in drawings/ (scripts/render_drawings.py, from the RMI library). ${DR.manifest===null?'No drawings folder was found.':''}`); };
+  drwEl.img.src=src; }
+function drwMsg(t,small){ drwEl.msg.firstElementChild.innerHTML=t+(small?`<small>${small}</small>`:''); drwEl.msg.classList.add('show'); drwEl.zoom.textContent=''; }
+function drwApply(){ drwEl.img.style.transform=`translate(${DR.x}px,${DR.y}px) scale(${DR.z})`; drwEl.zoom.textContent=Math.round(DR.z*100)+'%'; }
+function drwFit(){ if(DR.status!=='loaded') return; const r=drwEl.view.getBoundingClientRect(); if(r.width<2||r.height<2) return; const pad=10; DR.z=Math.min((r.width-pad*2)/DR.nw,(r.height-pad*2)/DR.nh); DR.x=(r.width-DR.nw*DR.z)/2; DR.y=(r.height-DR.nh*DR.z)/2; drwApply(); }
+function drwZoomAt(f,cx,cy){ if(DR.status!=='loaded') return; const r=drwEl.view.getBoundingClientRect(); const fit=Math.min((r.width-20)/DR.nw,(r.height-20)/DR.nh); const nz=Math.max(fit*0.5,Math.min(6,DR.z*f)); f=nz/DR.z; DR.x=cx-(cx-DR.x)*f; DR.y=cy-(cy-DR.y)*f; DR.z=nz; drwApply(); }
+drwEl.view.addEventListener('wheel',e=>{ e.preventDefault(); const r=drwEl.view.getBoundingClientRect(); drwZoomAt(e.deltaY<0?1.15:1/1.15,e.clientX-r.left,e.clientY-r.top); },{passive:false});
+drwEl.view.addEventListener('pointerdown',e=>{ if(e.target.closest('.dzoom')) return; DR.drag={x:e.clientX,y:e.clientY}; drwEl.view.classList.add('drag'); drwEl.view.setPointerCapture(e.pointerId); });
+drwEl.view.addEventListener('pointermove',e=>{ if(!DR.drag) return; DR.x+=e.clientX-DR.drag.x; DR.y+=e.clientY-DR.drag.y; DR.drag={x:e.clientX,y:e.clientY}; drwApply(); });
+['pointerup','pointercancel'].forEach(t=>drwEl.view.addEventListener(t,()=>{ DR.drag=null; drwEl.view.classList.remove('drag'); }));
+drwEl.view.addEventListener('dblclick',e=>{ if(e.target.closest('.dzoom')||DR.status!=='loaded') return; const r=drwEl.view.getBoundingClientRect(); const fit=Math.min((r.width-20)/DR.nw,(r.height-20)/DR.nh); if(DR.z>fit*1.05) drwFit(); else drwZoomAt(1/DR.z,e.clientX-r.left,e.clientY-r.top); });
+[...drwEl.view.querySelectorAll('.dzoom button')].forEach(b=>b.onclick=()=>{ const r=drwEl.view.getBoundingClientRect(); if(b.dataset.z==='fit') drwFit(); else drwZoomAt(b.dataset.z==='+'?1.3:1/1.3,r.width/2,r.height/2); });
+[...drwEl.tabs.children].forEach(b=>b.onclick=()=>drwTab(b.dataset.t));
+drwEl.btn.onclick=()=>drwOpen();
+document.getElementById('drwClose').onclick=()=>drwOpen(false);
+new ResizeObserver(()=>{ if(DR.open&&DR.status==='loaded') drwFit(); }).observe(drwEl.view);
+// scripted access for snapshot.py and Playwright checks
+const drawingAPI={ open:drwOpen, tab:drwTab, ready:()=>drwManifest(), state:()=>({ open:DR.open, tab:DR.tab, detail:DR.id, number:drwEl.img.dataset.num||null, status:DR.status, zoom:+DR.z.toFixed(3), manifest:DR.manifest?Object.keys(DR.manifest).length:DR.manifest, steps:(S.view!=='roof'&&DET(S.view).steps||[]).length }) };
+
+/* =================================================================
    LOOP
 ================================================================= */
 function resize(){ const r=canvas.parentElement.getBoundingClientRect(); const w=Math.max(1,Math.floor(r.width)), h=Math.max(1,Math.floor(r.height)); if(canvas.width!==w*renderer.getPixelRatio()||canvas.height!==h*renderer.getPixelRatio()){ renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); } }
@@ -1571,7 +1898,7 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize()
   applyCam(); applyStage(); applySection(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
 
 selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame); phRestore();   // browser storage: last building/roof and the photos come back after a reload
-window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, configuration };
+window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, drawing:drawingAPI, configuration };
 })();
 </script>
 </body>

@@ -57,6 +57,9 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   unnamed, unaddressed (exception logged 14 Sept 2026). This covers code and docs alike, including `docs/TRACKER.md` and
   `docs/RMI_Library_Catalog.md`. Chemistry never. The generic
   buildings are archetypes; prospect photos are the only real-roof content and never become part of the archetypes.
+- **`drawings/` is never committed while the repo is public.** It holds RMI's detail sheets rendered to PNG (plus `index.js` /
+  `index.json`) by `scripts/render_drawings.py` from the local library, is git-ignored, and reaches reps only inside the installer
+  (electron-builder.yml `files`). Re-render before every `npm run dist`. Nothing under `drawings/` goes into git until step 6 is done.
 - Everything must keep working from a local folder with no network: no CDN dependencies once packaged (vendor
   three.js and GLTFLoader into the repo), no absolute URLs, model paths relative to index.html.
 
@@ -83,8 +86,10 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
     pipes on metal P-9-MP · gutters W-7-TYP · downspout inlets D-8-TYP · roof hatch on metal / SPF CS-15-MP ·
     expansion joint A-3-TYP ·
     silo walls W-7-TYP · gallery supports P-5-C / P-7-C · Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
-- Product features: desktop installer v0.1.2 **built** (`dist/RMI Roof Visualizer Setup 0.1.2.exe`); photo panel **done** (v2: top strip, docked slider, IndexedDB persistence, sample set).
-  Drawing panel, PDF export, EagleView import, saved prospects and the Project Evaluation pre-fill: **not started**.
+- Product features: desktop installer v0.1.3 **built** (`dist/RMI Roof Visualizer Setup 0.1.3.exe`); photo panel **done** (v2: top strip, docked slider, IndexedDB persistence, sample set);
+  drawing panel **built** (15 Sept 2026: "Drawing" button in detail view docks a panel with the 2D sheet zoom/pan, "How it's applied" steps from `STEPS` in
+  index.html with ASSUMED tagged, and the 3D concept; sheet number and issue/revision date from the sheet; 52 sheets rendered locally into `drawings/`, bundled by the installer, git-ignored).
+  PDF export, EagleView import, saved prospects and the Project Evaluation pre-fill: **not started**.
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## What's left (in order)
@@ -94,9 +99,9 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 4. Catalog alignment with the 25 `DETAILS` entries (the detail menu is a per-building checkbox list, not a dropdown).
 5. ASSUMED questions to RMI (catalog §5).
 6. Repo private, Pages off, transfer to an RMI-owned GitHub organization — in one step, so RMI controls
-   collaborator access. Until then the repo stays under nihthauke for team review. The drawing panel can't
-   start until this is done (no RMI drawings in the repo while it is public).
-7. Drawing panel.
+   collaborator access. Until then the repo stays under nihthauke for team review. Committing `drawings/` waits on
+   this (no RMI drawings in the repo while it is public); the panel itself is built and reads the git-ignored folder.
+7. Drawing panel — **built 15 Sept 2026** (sheets render locally; see the `drawings/` rule above).
 8. PDF export.
 9. EagleView import.
 10. Saved prospects.
@@ -113,7 +118,13 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   `electron/main.js` + `electron/preload.js` wrap the same `index.html`; `npm start` runs it, `npm run dist` builds the Windows
   installer into `dist/` (electron-builder.yml; `.blend` files are excluded). `RMI_DEBUG=1` mirrors the page console to stdout;
   F12 opens DevTools. The web build (Pages, snapshot.py) is unchanged — same file, no fork. Keep the grid tracks `minmax(0,1fr)` — a `1fr` track let the canvas grow the layout inside the Webflow iframe (fixed bug, don't regress).
-- Test with Playwright + swiftshader; `window.__rmi` exposes `S`, `setStage`, `goDetail`, `goRoof`, `selectBuilding`, `finishCam` for scripted screenshots.
+- Test with Playwright + swiftshader; `window.__rmi` exposes `S`, `setStage`, `goDetail`, `goRoof`, `selectBuilding`, `finishCam`, `photos`, `drawing`
+  (`open`, `tab`, `state`) for scripted screenshots; `snapshot.py --drawing [2d|steps|3d]` shoots the panel. `RMI_SELFTEST=<png>` makes the
+  packaged app open the big-box drain with the panel, print the panel state and save a screenshot, then quit (the installer check).
+- Drawing panel data: `DETAILS[].drawing` / `.concept` name the sheets; `DETAILS[].steps` (from the `STEPS` block above `DETAILS`) is the
+  plain-language sequence; `sheet` overrides the image name when two sheets share a number (gutter seams: `W-7-TYP-GUTTER`). Images are
+  `drawings/<number>.png`; `drawings/index.js` sets `window.RMI_DRAWINGS` (title, issue/revision, size) and is loaded with a `<script>` on
+  first open because `fetch()` does not work on `file://` in Electron. A missing sheet shows a message, never an error.
 
 ## Blender model conventions (for the detail rebuild)
 - One `.blend` + one `.glb` per detail in `models/`, named `<detail>-<DRAWING-NO>.glb` (e.g. `cast-iron-drain-D-1-TYP.glb`).
@@ -134,7 +145,8 @@ For every detail or code change, in this order:
 2. Write `scripts/build_<detail>_<DRAWING-NO>.py` using `scripts/rmi_blender.py` (see its docstring). Dimensions as named constants at the top with the note they came from.
    Run it headless: `blender -b --python scripts/build_<...>.py` (Blender is at `C:\Program Files\Blender Foundation\Blender 5.1\blender.exe`). Never open .blend files from inside a running Blender session via script — it crashes.
 3. Register the model in `index.html` (`MODELS` map) and give it a mount point + cutout sizes in the builder (see `addDrain` / `addRTU`). The coating cutout must sit just INSIDE the model's own Flex extent; the membrane cutout just inside the model's roof patch.
-4. Visual check: `python scripts/snapshot.py --building <b> --detail <id>` (and `--section`). Open the contact sheet and LOOK at every stage. Fix anything wrong before pushing. Zero console errors is the bar.
+4. Visual check: `python scripts/snapshot.py --building <b> --detail <id>` (and `--section`, `--drawing`). Open the contact sheet and LOOK at every stage. Fix anything wrong before pushing. Zero console errors is the bar.
+   Sheet numbers changed or a new detail added? `python scripts/render_drawings.py` re-renders `drawings/` (it reports any number it cannot find).
 5. `git add . && git commit -m "<what changed>" && git push`
 6. Update the detail's line in `docs/RMI_Library_Catalog.md` (model file, VERIFIED/ASSUMED) and tell Heath what moved from ASSUMED to VERIFIED.
 

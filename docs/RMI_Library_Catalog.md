@@ -97,6 +97,10 @@ Dollar figures never appear in the tool; they come from an RMI sales rep or cont
 
 ## 3c. The details in the tool (one row per entry in `DETAILS`)
 
+The Drawing panel (built 15 Sept 2026) reads these same fields: `drawing` and `concept` name the sheets it shows, `steps`
+carries the plain-language sequence, and `sheet` overrides the image name where two sheets share a number (gutter seams,
+`W-7-TYP-GUTTER`). Sheets render from the local library with `scripts/render_drawings.py`; the PNGs never enter the repo.
+
 This is the sync table: every clickable detail in `index.html`, in source order. **Menu label** is what the rep
 sees; the id in brackets is the key in `DETAILS` and in each building's `details` list. **Drawings** gives the
 detail's own drawing and 3D concept plus any `byRoof` override the tool swaps in when the roof type changes.
@@ -125,16 +129,16 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 
 | Menu label (id) | Drawings — incl. by-roof overrides | Model | Status | ASSUMED, per the tool's own text |
 |---|---|---|---|---|
-| HVAC curb (`curb`) | CS-13-MP · 3D CS13-1-8-3D · SPF → SPF-12-TYP, 3D B-1-SPF-1-3D | — code geometry | **VERIFIED** assembly: Flex up the full curb wall and over the top to the interior, counterflashing above, unit lifted and reset after cure | Wrap height on the SPF variant |
+| HVAC curb (`curb`) | CS-13-MP · 3D CS13-1-8-3D · SPF → SPF-13-TYP (SPF (E) HVAC curb flashing; was cited as SPF-12 until 15 Sept 2026 — SPF-12-TYP is the window base flashing), 3D B-1-SPF-1-3D | — code geometry | **VERIFIED** assembly: Flex up the full curb wall and over the top to the interior, counterflashing above, unit lifted and reset after cure | Wrap height on the SPF variant |
 | Side laps (`lap`) | F-8-TYP · 3D F8-2-FT-3D | `rpanel-side-lap-F-8-TYP.glb` | **VERIFIED**: two panels lapped at a major rib, fastened through the crest, sealant at the voids, Flex encapsulating lap and fasteners crest to flat both sides, topcoat over all, field Flex optional | Rib profile; 24 ga. drawn at 0.05"; the 1" / 3/4" lap lips; lap fasteners at 12" o.c.; Flex 2" past the rib base; coat thicknesses |
 | Standing seams (`sseam`) | F-9-TYP, F-20-TYP for seam laps · 3D B-1-F10-22-3D | `standing-seam-F-9-TYP.glb` | **VERIFIED**: crimped double-lock seam, vertical legs under a folded cap, clips concealed, Flex a shell over the cap, down both legs and onto the flat, topcoat over all. Note 11 re-crimping shown as a prep step | Drawing is NTS with no dimensions: seam silhouette (1.68" legs 2.4" tall under a 3.12" cap); 0.05" sheet; which cap laps over which; the interlocking plies inside the cap; concealed clip at 24" o.c.; Flex extent onto the flat; coat thicknesses |
-| Skylight panels (`mskylight`) | F-12-TYP · no 3D render · SPF → no drawing, treated as a curb per SPF-12-TYP | — code geometry | Per F-12-TYP; no VERIFIED tag | The geometry itself (no 3D concept render); the SPF treatment |
+| Skylight panels (`mskylight`) | F-12-TYP · no 3D render · SPF → no drawing, treated as a curb per SPF-13-TYP | — code geometry | Per F-12-TYP; no VERIFIED tag | The geometry itself (no 3D concept render); the SPF treatment |
 | Vents (`vent`) | Plate D · no 3D render · SPF → SPF-16-TYP · concrete → **Bin vent**, CS-12-CON | `bin-vent-CS-1-TYP.glb` on the silo | **ASSUMED** on metal: no dedicated vent drawing for metal roofs in the library | The whole metal assembly; wrap height on SPF; the concrete case treated as a curb per CS-12-CON |
-| Pipes (`mpipe`) | P-9-MP, EPDM boot; P-10-MP is the metal-jack alternative · no 3D render · SPF → SPF-3-TYP | — code geometry | Per P-9-MP; no VERIFIED tag | Wrap height on the SPF variant |
-| Gutters (`gutter`) | W-7-TYP · 3D D-7-FT-24-3D | — code geometry | Per W-7-TYP; no VERIFIED tag. Standard exterior gutters carry a material-only warranty per Plate MP | — |
+| Pipes (`mpipe`) | P-9-MP, EPDM boot; P-10-MP is the metal-jack alternative · no 3D render · SPF → SPF-4-TYP (SPF configuration, penetration; was cited as SPF-3, the ridge sheet) | — code geometry | Per P-9-MP; no VERIFIED tag. SPF-4-TYP gives the wrap: Flex min 1" above the rain-collar flashing, topcoat min 1" above the Flex | The SPF code geometry has not been checked against those two figures |
+| Gutters (`gutter`) | W-7-TYP (GUTTER SEAMS – TYPICAL, filed under Drains; a different sheet under Walls carries the same number, CONCRETE WALL – TYPICAL, used by `silowall`) · 3D D-7-FT-24-3D | — code geometry | Per W-7-TYP; no VERIFIED tag. Standard exterior gutters carry a material-only warranty per Plate MP | — |
 | Downspout inlets (`gutterinlet`) | D-8-TYP · 3D D8-9-FT-3D | — code geometry | Per D-8-TYP; no VERIFIED tag | — |
-| Roof hatch (`hatch`) | CS-15-MP on metal · CS-1-TYP note 7 on flat · SPF → SPF-12-TYP · concrete → **Manway / bin hatch**, CS-14-CON | `roof-hatch-CS-1-TYP.glb` on the silo | **VERIFIED** that access and smoke hatches are curb-mounted units, named in CS-1-TYP note 7; on metal it is the CS-15-MP fixed curb | Hatch-specific wrap on SPF; lid size and 2" thickness, the 22° it stands open, hinge, hold-open arm, handle; the concrete skinning of the CS-1-TYP curb; plus the shared curb numbers above |
-| Ridge cap (`ridge`) | F-21-M-TYP · no 3D render · SPF → SPF-2-TYP | `metal-ridge-cap-F-21-M-TYP.glb` on the warehouse | **VERIFIED**: (E) ridge cap over the (E) metal panel, metal closure at the panel end set in sealant or tape with a ribbon of sealant at any voids, closure fasteners, RMI-Flex at the cap, RMI-Thane over all. Note 12 is the only dimension the drawing gives: closures recessed a minimum 6" under the cap or flashing metal, else add flat stock — the model recesses 7.8". Note 11: closures tight fitting, edges sealed before the Flex. Note 13: no foam closures without written approval | No 3D concept render exists, so everything else: the 4-ft section; the 6" cap lap and its joggled end; the closure 18" from the ridge, its 3" width and the rectangular notches where the ribs pass; fasteners at 12" o.c.; how far the Flex turns over the cap edge and runs onto the panel; all coat thicknesses. Built for a 1:12 gable — the warehouse — so a different pitch needs a rebuild |
+| Roof hatch (`hatch`) | CS-15-MP on metal · CS-1-TYP note 7 on flat · SPF → SPF-13-TYP · concrete → **Manway / bin hatch**, CS-14-CON | `roof-hatch-CS-1-TYP.glb` on the silo | **VERIFIED** that access and smoke hatches are curb-mounted units, named in CS-1-TYP note 7; on metal it is the CS-15-MP fixed curb | Hatch-specific wrap on SPF; lid size and 2" thickness, the 22° it stands open, hinge, hold-open arm, handle; the concrete skinning of the CS-1-TYP curb; plus the shared curb numbers above |
+| Ridge cap (`ridge`) | F-21-M-TYP · no 3D render · SPF → SPF-3-TYP (SPF ridge line configuration; was cited as SPF-2, the concrete-repair sheet) | `metal-ridge-cap-F-21-M-TYP.glb` on the warehouse | **VERIFIED**: (E) ridge cap over the (E) metal panel, metal closure at the panel end set in sealant or tape with a ribbon of sealant at any voids, closure fasteners, RMI-Flex at the cap, RMI-Thane over all. Note 12 is the only dimension the drawing gives: closures recessed a minimum 6" under the cap or flashing metal, else add flat stock — the model recesses 7.8". Note 11: closures tight fitting, edges sealed before the Flex. Note 13: no foam closures without written approval | No 3D concept render exists, so everything else: the 4-ft section; the 6" cap lap and its joggled end; the closure 18" from the ridge, its 3" width and the rectangular notches where the ribs pass; fasteners at 12" o.c.; how far the Flex turns over the cap edge and runs onto the panel; all coat thicknesses. Built for a 1:12 gable — the warehouse — so a different pitch needs a rebuild |
 | HVAC curbs (`rtu`) | CS-1-TYP · 3D CS1-18-3D | `curb-mounted-unit-CS-1-TYP.glb` | **VERIFIED**. Note 7: the same detail covers vents, ducts, soil stacks, conduit, refrigeration lines, access and smoke hatches, skylight domes | Curb and unit sizes; nailer; skirt height; the (E) roof build-up |
 | Drains (`drain`) | D-1-TYP · 3D CID-1-21-FT3D | `cast-iron-drain-D-1-TYP.glb` | **VERIFIED**, including the 18" out / 3" down / 1" topcoat extents. Water-test after install; plastic and ABS drains excluded from warranty | Bowl, clamping-ring and dish sizes |
 | Scuppers (`scupper`) | D-4-TYP · 3D D4-1-FT-3D | `overflow-scupper-D-4-TYP.glb` | **VERIFIED**: tube above the (E) cant, Flex encapsulating the tube interior and min 12" onto the field, base coat up the (E) wall flashing, topcoat over all, sealant bead at the exterior termination | 16" x 5" tube; exterior collar with the bead run all round; the tube bottom bent down over the cant; 6" cant; flashing height; coat thicknesses |
@@ -147,7 +151,7 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 | Pipe clusters (`pitchpan`) | P-8-TYP, Chem-Curb / pitch pan · 3D PP-1-FT-3D | `chem-curb-P-8-TYP.glb` on all three hospital pans | **VERIFIED**: Chem-Curb fabricated and installed per the manufacturer (Chem-Link), set in RMI M-1 sealant; clean, prepare and prime (note 10); interior pocket filled with RMI-Flex tapered from the penetration outward to shed water; Flex flashing coat over the curb onto the field and min 4" up each penetration past the curb (5" modelled); RMI-Thane / White min 2" up past the Flex (2.5" modelled). The drawing has no metal flange and no pourable sealer: the pocket fill is Flex. Note 7: any non-circular penetration, or where jacks or boots are not feasible. Note 8: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems | Drawing is NTS: 30" x 16" x 4" curb with a 1/2" wall; the four penetrations (3" vent, 2" line, two 1-1/2" conduits); 3/8" beads; fill 3/4" higher at a penetration, tapering over 4"; Flex 6" and topcoat 7" onto the field; coat thicknesses; curb set before priming (§5 #20) |
 | Expansion joint (`ej`) | A-3-TYP, EPDM/PVC/TPO · no 3D render | — code geometry | Per A-3-TYP; geometry **ASSUMED** | The geometry itself (no 3D concept render) |
 | Silo walls (`silowall`) | W-7-TYP, concrete and CMU walls · no 3D render | — code geometry | Per W-7-TYP, with vertical field application on silos per the Longview grain terminal project | Sequence and coverage on curved walls |
-| Gallery supports (`support`) | P-5-C / P-7-C, circular supports on concrete · no 3D render | — code geometry | Per P-5-C / P-7-C; no VERIFIED tag | Wrap height |
+| Gallery supports (`support`) | P-5-C / P-7-C, circular supports on concrete · no 3D render | — code geometry | Per P-5-C; no VERIFIED tag. The sheet gives the wrap: butyl tape or three-course Flex/polyester 2" up and 4" out, Flex min 6" up past that, topcoat min 2" past the Flex | The code geometry has not been checked against those figures |
 | Kitchen exhaust (`exhaust`) | CS-1-TYP, note 7 names vents and ducts · 3D CS1-18-3D | `kitchen-exhaust-fan-CS-1-TYP.glb` | **VERIFIED** curb. Grease must be removed before priming — the plates allow no RMI material over contaminants | The degreasing method; fan housing, cowl, grease tray and motor sizes; plus the shared curb numbers above |
 | Parapet / coping (`coping`) | W-1-TYP · 3D W1-11-FT3D | `metal-coping-joint-W-1-TYP.glb` | **VERIFIED**, including the 4" tape / 2" Flex / 2" topcoat extents. Note 7: coping must meet code and SMACNA for wind uplift or it is excluded from warranty | Open-joint gap; fastener spacing; coat thicknesses. The topcoat shows the entire-coping (system warranty) option |
 
@@ -242,7 +246,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | Detail | 2D | 3D | Applies to |
 |---|---|---|---|
 | Duct joint / flexible connector / expansion joint | A-1, A-2, A-3-TYP | — | Metal ductwork; EPDM/PVC/TPO expansion joints |
-| SPF: configuration, ridge, penetration, support block, edge metal, scupper, drain, site screen, HVAC duct, interior gutter, window base flashing, HVAC curb, inlet drain, curb vent, roof vent | SPF-1 … SPF-16-TYP | B-1-SPF-1-3D | SPF only |
+| SPF, by title block (read 15 Sept 2026): SPF-1 configuration · SPF-2 configuration, concrete repair · SPF-3 ridge line · SPF-4 penetration · SPF-5 support block · SPF-6 perimeter edge metal · SPF-7 overflow scupper · SPF-8 (E) cast iron drain · SPF-9 (E) site screen support · SPF-10 HVAC duct · SPF-11 interior gutter · SPF-12 base flashing at window · SPF-13 (E) HVAC curb flashing · SPF-14 inlet drain / downspout · SPF-15 curb-mounted roof vents · SPF-16 roof-mounted vent | SPF-1 … SPF-16-TYP | B-1-SPF-1-3D | SPF only |
 | Concrete: crack repair, control joint, joints, spalling, perimeter edge band | F-21-CON, F-21-CON-CJ, F-22/23/24-CON | — | Concrete decks |
 
 ---
@@ -256,6 +260,9 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | Whether primer goes on before Flex on metal | Yes, always | Plate MP note 2 |
 | Detail assemblies would need a "generic ASSUMED" placeholder | Not needed — every category has a 2D logic drawing and most have a 3D concept render | Detail + 3D folders |
 | Solar Post would be a placeholder | Has three 2D details (P-1/2/3-S-TYP); no 3D render yet | Solar folder |
+| SPF variants of the HVAC curb / hatch, pipe and ridge cited as SPF-12, SPF-3, SPF-2 | Title blocks read SPF-13 (curb flashing), SPF-4 (penetration), SPF-3 (ridge line); the tool and both docs now cite those | SPF sheets, 15 Sept 2026 |
+| Wrap height on the SPF pipe and the concrete gallery support was open | SPF-4-TYP: Flex min 1" above the collar flashing, topcoat min 1" past the Flex. P-5-C: tape 2" up / 4" out, Flex min 6" past it, topcoat min 2" past the Flex. Code geometry still to be checked | SPF-4-TYP, P-5-C |
+| Sleeper support filed as CS 7 | The file "CS 7 TYP Sleeper Support" carries title block CS-8-TYP, and "CS 8 TYP Support Curb wSkirt Single Ply" reads CS-7-SP — the file names are swapped, the title blocks are right | Curbs folder, 15 Sept 2026 |
 
 ## 5. Open questions for RMI
 
@@ -309,13 +316,16 @@ as RMI spec — the UI tags all of it ASSUMED.
 12. **Roof vents on metal roofs.** No dedicated vent drawing in the library; the tool falls back to Plate D for
     metal ducts, vents and curbs, and the assembly is assumed. SPF has SPF-16-TYP; exposed concrete is treated
     as a curb per CS-12-CON.
-13. **Flush-mounted skylight panels on SPF.** No SPF skylight drawing; treated as a curb per SPF-12-TYP.
+13. **Flush-mounted skylight panels on SPF.** No SPF skylight drawing; treated as a curb per SPF-13-TYP.
 14. **The arena's roof hatch sits on a metal roof slope**, where CS-15-MP (fixed metal) governs. That is a
     different assembly from the CS-1-TYP curb: the (E) fasteners come out and new 24 ga. skirt metal extends a
     minimum 4" over the RMI system, with Flex to the underside of the (E) vertical metal. It is the next curb
     model; the arena hatch is code geometry until then.
-15. **Wrap heights on the SPF variants** of the HVAC curb (SPF-12-TYP), pipe penetration (SPF-3-TYP) and roof
-    hatch (SPF-12-TYP), and on the gallery support (P-5-C / P-7-C). Each is a single number in the builder. (The penthouse wall, W-13-TYP,
+15. **Wrap heights on the SPF variants** of the HVAC curb and roof hatch (SPF-13-TYP): the sheet shows Flex up the curb
+    under new skirt metal but gives no height. The pipe penetration (SPF-4-TYP) and the gallery support (P-5-C) are
+    off this list on paper — SPF-4-TYP runs the Flex min 1" above the rain-collar flashing and the topcoat min 1" past
+    the Flex; P-5-C has tape 2" up and 4" out, Flex min 6" past it and topcoat min 2" past the Flex (read 15 Sept 2026) —
+    but the code geometry for both has not yet been checked against those figures. Each is a single number in the builder. (The penthouse wall, W-13-TYP,
     is off this list: Flex runs up to the fixed counterflashing, VERIFIED 2026-09-14; its sizes are #21.) (The sleeper support, CS-8-TYP, is off this list:
     the drawing has no wrap — the coats run continuous under the raised sleeper. VERIFIED 2026-09-14.)
 16. **Ridge cap and expansion joint: no 3D concept render.** A-3-TYP still has none, so the expansion joint

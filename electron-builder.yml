@@ -11,6 +11,7 @@ files:
   - electron/**
   - vendor/**
   - models/*.glb
+  - drawings/**          # RMI drawings rendered locally by scripts/render_drawings.py (git-ignored; never committed while the repo is public)
   - build/icon.png
   - "!**/*.blend"
   - "!**/*.blend1"
