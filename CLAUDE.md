@@ -86,7 +86,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
     pipes on metal P-9-MP · gutters W-7-TYP · downspout inlets D-8-TYP · roof hatch on metal / SPF CS-15-MP ·
     expansion joint A-3-TYP ·
     silo walls W-7-TYP · gallery supports P-5-C / P-7-C · Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
-- Product features: desktop installer v0.2.0 **built** (`dist/RMI Roof Visualizer Setup 0.2.0.exe`; RMI crest icon in `build/`, RMI logo `assets/rmi-logo.png` in the header, PDF cover and PDF page header); photo panel **done** (v2: top strip, docked slider, IndexedDB persistence, sample set);
+- Product features: desktop installer v0.3.0 **built** (`dist/RMI Roof Visualizer Setup 0.3.0.exe`; RMI crest icon in `build/`, RMI logo `assets/rmi-logo.png` in the header, PDF cover and PDF page header); photo panel **done** (v2: top strip, docked slider, IndexedDB persistence, sample set);
   drawing panel **built** (15 Sept 2026: "Drawing" button in detail view docks a panel with the 2D sheet zoom/pan, "How it's applied" steps from `STEPS` in
   index.html with ASSUMED tagged, and the 3D concept; sheet number and issue/revision date from the sheet; 52 sheets rendered locally into `drawings/`, bundled by the installer, git-ignored).
   PDF export **built** (15 Sept 2026: "Export PDF" in the header; dialog with prospect, rep, notes and per-section toggles; canvas captures at the default
@@ -97,7 +97,13 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   against a higher facet the W-13 penthouse wall; penetrations at their centroids typed by area (best guess, ASSUMED until confirmed in the
   "Penetrations" panel); the estimate from the report's measured totals with the parapet height entered by the rep; PDF cover, configuration,
   penetration schedule, estimate basis and notes carry the report; `configuration().eagleview` for saved prospects; `__rmi.eagleview` API).
-  Saved prospects: **not started**.
+  Saved prospects **built** (16 Sept 2026: "Open prospect" / "Save prospect" in the header; one `.rmiproject` per prospect — a zip written and read in
+  the page, no library — holding `prospect.json` (prospect / address / rep / notes, restore keys, parapet height, the EagleView block with every penetration's
+  type and confirmation, photo files and pins, the full `configuration()`), the original XML under `eagleview/` and the photos under `photos/`. Desktop:
+  `rmiDesktop.prospects` writes to a folder chosen once and remembered in userData `settings.json` (default Documents\RMI Prospects), saving again
+  updates the same file, another prospect's file is never overwritten; browser: downloads. Open dialog: "Recent prospects" (desktop settings; browser
+  IndexedDB copies) + Browse…; open validates the whole file before changing anything, then rebuilds the roof from the embedded XML, the confirmations,
+  the photos and pins; `__rmi.prospect` API. `*.rmiproject` is git-ignored — prospect files are client data).
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## What's left (in order)
@@ -112,7 +118,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 7. Drawing panel — **built 15 Sept 2026** (sheets render locally; see the `drawings/` rule above).
 8. PDF export — **built 15 Sept 2026** (the Project Evaluation pre-fill is its appendix; a standalone form view is still open).
 9. EagleView import — **built 15 Sept 2026** (report files stay outside the repo; `*.xml` is git-ignored).
-10. Saved prospects.
+10. Saved prospects — **built 16 Sept 2026** (`*.rmiproject` is git-ignored; where the folder lives — laptop or shared — is still the team's call).
 11. Bundled drawings, code signing, wide rollout.
 
 ## Code layout
@@ -127,12 +133,16 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   installer into `dist/` (electron-builder.yml; `.blend` files are excluded). `RMI_DEBUG=1` mirrors the page console to stdout;
   F12 opens DevTools. The web build (Pages, snapshot.py) is unchanged — same file, no fork. Keep the grid tracks `minmax(0,1fr)` — a `1fr` track let the canvas grow the layout inside the Webflow iframe (fixed bug, don't regress).
 - Test with Playwright + swiftshader; `window.__rmi` exposes `S`, `setStage`, `goDetail`, `goRoof`, `selectBuilding`, `finishCam`, `photos`, `drawing`
-  (`open`, `tab`, `state`) for scripted screenshots; `snapshot.py --drawing [2d|steps|3d]` shoots the panel. `RMI_SELFTEST=<png>` makes the
+  (`open`, `tab`, `state`), `prospect` (`save`, `open`, `openRecent`, `state`) for scripted screenshots; `snapshot.py --drawing [2d|steps|3d]` shoots the panel. `RMI_SELFTEST=<png>` makes the
   packaged app open the big-box drain with the panel, print the panel state and save a screenshot, then quit (the installer check).
   `RMI_SELFTEST_PDF=<pdf>` exports the big-box presentation with the sample photos pinned to that path and quits (the export check).
   `RMI_SELFTEST_EV=<xml>` imports that EagleView report, prints the import state, saves a whole-roof screenshot (`RMI_SELFTEST_PNG`) and, with
   `RMI_SELFTEST_PDF`, exports its PDF (the import check); the selftests run in their own userData folder. `snapshot.py --eagleview <xml>` shoots the
   prospect roof (`--detail`, `--pdf` for a page.pdf() export); the sample report lives outside the repo (`../RMI-prospects/`).
+  Saved prospects: `scripts/check_prospect.py --eagleview <xml>` is the browser round trip (save → reopen from Recent and from Browse…, state compared,
+  zip entries byte-identical); `RMI_SELFTEST_PROSPECT=<folder>` is the installed-app round trip in two launches — with `RMI_SELFTEST_PROSPECT_XML=<xml>`
+  and `RMI_SELFTEST_PHOTOS=<a,b>` it builds and saves the prospect (two photos pinned, five penetrations confirmed), without them it reopens it from
+  "Recent prospects", compares, re-saves in place and prints PASS / FAIL. Keep its folder and the saved file outside the repo.
 - PDF export: `pdfExport()` in index.html — `pdfCaptures` renders the scene at fixed sizes (`pdfCapture`, 2D composite so JPEG gets the
   view background, hotspot labels drawn on the configuration image), `pdfBuild` writes the sections into `#pdfDoc`, `body.pdf` switches the
   `@media print` CSS to that document, then `rmiDesktop.exportPdf` (Electron: save dialog + `printToPDF`, main.js) or `window.print()`.

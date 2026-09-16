@@ -210,9 +210,9 @@
   .pins button b{color:var(--navy)}
   .pins button:hover{border-color:var(--navy)}
   .pnote{flex:none;font-size:11px;color:var(--mute);padding:4px 10px 6px;background:#F6F7F8;line-height:1.35}
-  #photoBtn{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:3px;padding:4px 10px;cursor:pointer;font-size:13px;margin-left:auto}
+  #photoBtn{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:3px;padding:4px 10px;cursor:pointer;font-size:13px}
   #photoBtn.on{background:var(--gold);color:var(--navy);border-color:var(--gold)}
-  header .mock{margin-left:0}
+  header .mock{margin-left:0;flex:none;white-space:nowrap}
   #app.photos .hint{display:none}
   #app.slider .layers{width:200px;font-size:12px;max-height:55%;overflow:auto}
   #app.slider .viewbar{max-width:calc(100% - 24px)}
@@ -224,7 +224,9 @@
     #app,#app.photos,#app.slider{grid-template-columns:minmax(0,1fr);grid-template-rows:56px auto minmax(0,1fr) var(--foot);grid-template-areas:"head" "strip" "view" "foot"}
     #app.slider #photos{grid-area:view;z-index:6;border-left:0}
     .strhint{display:none}
-    #photoBtn{font-size:12px;padding:3px 7px}
+    #photoBtn,#openBtn,#saveBtn,#pdfBtn{font-size:12px;padding:3px 7px}
+    header{gap:6px;padding:0 10px}
+    header .mark span{display:none}
     aside{position:fixed;top:56px;bottom:0;left:0;width:min(88vw,320px);transform:translateX(-100%);transition:transform .25s;z-index:10;box-shadow:4px 0 16px rgba(0,0,0,.15)}
     aside.open{transform:none}
     #railToggle{display:inline-block;border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:3px;padding:4px 9px;cursor:pointer;font-size:13px}
@@ -267,6 +269,31 @@
   .xrow .xstatus.ok{color:var(--ok)}
   .xrow .xstatus.err{color:var(--warn)}
   #pdfDoc{display:none}
+
+  /* ---- Saved prospects: "Open prospect" / "Save prospect" in the header; one .rmiproject file per prospect (a zip: prospect.json,
+     the EagleView XML, the photos). The dialogs reuse the export dialog's box. ---- */
+  #openBtn,#saveBtn{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:3px;padding:4px 10px;cursor:pointer;font-size:13px}
+  #openBtn{margin-left:auto}
+  #openBtn:disabled,#saveBtn:disabled{opacity:.5;cursor:default}
+  header>button{flex:none;white-space:nowrap}
+  header .sub{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  header .short{display:none}
+  @media (max-width:1320px){ header .long{display:none} header .short{display:inline} }   /* 1024–1320 px: "Open", "Save", "Photos", "Import EagleView" — the title attribute keeps the full name */
+  .xfolder{display:flex;gap:8px;align-items:center;margin:12px 0 0;font-size:12.5px;color:var(--mute);min-width:0}
+  .xfolder code{flex:1;min-width:0;font:inherit;color:var(--ink);background:#F6F7F8;border:1px solid var(--line);border-radius:3px;padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;text-align:left}
+  .xwhat{font-size:12.5px;color:var(--ink);background:#FAFAF8;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:3px;padding:6px 8px;margin:12px 0 0;line-height:1.4}
+  .rlist{border:1px solid var(--line);border-radius:3px;max-height:340px;overflow:auto}
+  .rrow{display:grid;grid-template-columns:minmax(0,1fr) auto 24px;gap:2px 10px;padding:7px 8px 7px 10px;border-bottom:1px solid var(--line);cursor:pointer;align-items:center}
+  .rrow:last-child{border-bottom:0}
+  .rrow:hover{background:#FFF9EA}
+  .rrow b{display:block;font-family:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;font-size:15px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #odlg .xbox{width:min(680px,100%)}
+  .rrow span{display:block;font-size:12px;color:var(--ink);line-height:1.35}
+  .rrow small{display:block;font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rrow .when{font-size:11.5px;color:var(--mute);white-space:nowrap;text-align:right;align-self:start;padding-top:2px}
+  .rrow .rx{border:0;background:transparent;color:var(--mute);font-size:16px;line-height:1;cursor:pointer;border-radius:2px;padding:2px 4px}
+  .rrow .rx:hover{background:var(--navy);color:#fff}
+  .rempty{padding:14px 12px;font-size:13px;color:var(--mute)}
 
   @media print{
     @page{size:Letter portrait;margin:0.55in 0.6in 0.75in}
@@ -371,10 +398,13 @@
 <div id="app">
   <header>
     <button id="railToggle" aria-label="Open options">Options</button>
-    <div class="mark"><img src="assets/rmi-logo.png" alt="RMI">Visualize your roof</div>
+    <div class="mark"><img src="assets/rmi-logo.png" alt="RMI"><span>Visualize your roof</span></div>
     <div class="sub" id="subTitle"></div>
-    <button id="photoBtn" title="Prospect photos (stay on this computer)">Prospect photos</button>
-    <button id="evBtn" title="Import an EagleView report XML from this computer (nothing is uploaded)">Import EagleView report</button>
+    <button id="openBtn" title="Open a saved prospect (.rmiproject) from this computer">Open<span class="long"> prospect</span></button>
+    <button id="saveBtn" title="Save this prospect — configuration, EagleView report, confirmations, photos and pins — as one file on this computer">Save<span class="long"> prospect</span></button>
+    <input type="file" id="prInput" accept=".rmiproject" style="display:none">
+    <button id="photoBtn" title="Prospect photos (stay on this computer)"><span class="long">Prospect photos</span><span class="short">Photos</span></button>
+    <button id="evBtn" title="Import an EagleView report XML from this computer (nothing is uploaded)">Import EagleView<span class="long"> report</span></button>
     <input type="file" id="evInput" accept=".xml,text/xml,application/xml" style="display:none">
     <button id="pdfBtn" title="Export this presentation as a PDF (no pricing)">Export PDF</button>
     <div class="mock">Mockup — not RMI spec</div>
@@ -485,6 +515,31 @@
     <div class="xsecs" id="xSecs"></div>
     <p class="xnote">Images are captured from the 3D view at the default cameras. The PDF carries a material-quantity estimate and no pricing; anything the drawings do not state is listed as ASSUMED. Prospect photos go into the PDF only if that section is on.</p>
     <div class="xrow"><span class="xstatus" id="xStatus"></span><button class="pbtn" id="xCancel">Cancel</button><button class="pbtn solid" id="xGo">Export PDF</button></div>
+  </div>
+</div>
+<div class="xdlg" id="sdlg" role="dialog" aria-label="Save prospect">
+  <div class="xbox">
+    <h3>Save prospect</h3>
+    <div class="xgrid">
+      <label for="sName">Prospect</label><input id="sName" placeholder="Company or building name" autocomplete="off">
+      <label for="sAddress">Address</label><input id="sAddress" placeholder="Street, city, state" autocomplete="off">
+      <label for="sRep">Rep name</label><input id="sRep" placeholder="Your name" autocomplete="off">
+      <label for="sNotes">Notes</label><textarea id="sNotes" placeholder="Anything to remember about this prospect (optional; also the PDF's notes)"></textarea>
+    </div>
+    <div class="xwhat" id="sWhat"></div>
+    <div class="xfolder" id="sFolder"></div>
+    <p class="xnote">One file per prospect, on this computer only — nothing is uploaded. It carries no pricing. The EagleView report inside it is client data: keep the file in the prospects folder, never in the repo.</p>
+    <div class="xrow"><span class="xstatus" id="sStatus"></span><button class="pbtn" id="sCancel">Cancel</button><button class="pbtn solid" id="sGo">Save prospect</button></div>
+  </div>
+</div>
+<div class="xdlg" id="odlg" role="dialog" aria-label="Open prospect">
+  <div class="xbox">
+    <h3>Open prospect</h3>
+    <h4 style="margin-top:0">Recent prospects</h4>
+    <div class="rlist" id="oList"></div>
+    <div class="xfolder" id="oFolder"></div>
+    <p class="xnote" id="oNote"></p>
+    <div class="xrow"><span class="xstatus" id="oStatus"></span><button class="pbtn" id="oCancel">Cancel</button><button class="pbtn solid" id="oBrowse">Browse…</button></div>
   </div>
 </div>
 <div id="pdfDoc"></div>
@@ -1960,15 +2015,19 @@ function evConfirmedCount(){ return EV.rep?EV.rep.pens.filter(p=>p.confirmed).le
 function evDate(ms){ const d=ms?new Date(ms):null; return d&&!isNaN(d)?d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}):null; }
 function evLabelText(){ const r=EV.rep; return `From EagleView report ${r.id}, file dated ${r.file.date||'unknown'} — penetration types confirmed by rep: ${evConfirmedCount()} of ${r.pens.length}`; }
 function evAddress(){ const l=EV.rep&&EV.rep.location; return l?[l.address,[l.city,l.state].filter(Boolean).join(', '),l.postal].filter(Boolean).join(', '):''; }
-function evImport(text,name,date){ let rep; try{ rep=evParse(String(text||'')); }catch(err){ console.warn('EagleView import failed:',err.message); evNotice(`Could not read ${name||'that file'} — ${err.message}`); return false; }
-  rep.file={ name:name||'', date:(typeof date==='number'?evDate(date):date)||null }; evPrepare(rep); EV.rep=rep; evRegister(); selectBuilding('prospect'); evOpen(true); return true; }
+function evImport(text,name,date,restore){ let rep; try{ rep=evParse(String(text||'')); }catch(err){ console.warn('EagleView import failed:',err.message); evNotice(`Could not read ${name||'that file'} — ${err.message}`); return false; }
+  rep.file={ name:name||'', date:(typeof date==='number'?evDate(date):date)||null }; evPrepare(rep);
+  if(restore){ if(restore.ph) EV.PH=Math.max(0.5,Math.min(10,+restore.ph||EV.PH));   // a saved prospect (#11): its parapet height, penetration types and confirmations; the caller does the one rebuild
+    (restore.pens||[]).forEach(s=>{ const p=rep.pens.find(x=>s.id&&x.id===s.id)||rep.pens.find(x=>String(x.n)===String(s.n)); if(!p) return; if(EV_TYPES.includes(s.type)) p.kind=s.type; p.confirmed=!!s.confirmed; }); }
+  EV.rep=rep; EV.xml=String(text); evRegister(); if(restore) return true; selectBuilding('prospect'); evOpen(true); return true; }   // EV.xml: the report as read, written into a saved prospect
+function evReset(){ if(!EV.rep) return; evOpen(false); EV.rep=null; EV.xml=null; delete BUILDINGS.prospect; const o=[...bldSel.options].find(x=>x.value==='prospect'); if(o) o.remove(); }   // opening a prospect without a report drops the previous one
 function evNotice(t){ const nm=document.getElementById('viewName'); nm.textContent=t; setTimeout(()=>{ if(nm.textContent===t) nm.textContent=''; },6000); }
 function evEstimate(r){ const t=EV.rep.totals, A=t.areaLess||t.area||S.sqft, wall=t.parapetLen*EV.PH, bands=(S.on.edge?t.eaveLen*EV_BAND.edge:0)+(S.on.wall?t.flashLen*EV_BAND.wall:0)+(S.on.penthouse?(t.penthouseLen||0)*EV_BAND.penthouse:0), pen=t.penPerimeter*EV.WRAP, treated=A+wall+bands+pen;
   const penGal=EV.rep.pens.reduce((a,p)=>a+(S.on[p.kind]?(UNIT_GAL[p.kind]||0):0),0)+(S.solar?SOLAR_GAL:0);   // measured field + parapet walls (rep's height) + edge bands + penetration wraps; Flex per penetration by count
   return { primerGal:treated/r.rates.primerSqFtPerGal, flexGal:treated/100*r.rates.flexGalPerSq+penGal, topGal:(A+wall+bands)/100*r.rates.topGalPerSq, system:r.system[S.topcoat], ev:{ A, wall, bands, pen, treated, penGal } }; }
 function evCounts(){ const c={}; (EV.rep?EV.rep.pens:[]).forEach(p=>{ if(S.on[p.kind]) c[p.kind]=(c[p.kind]||0)+1; }); return c; }
 function evSummary(){ const r=EV.rep; return { report:r.id, file:r.file, facets:r.facets.map(f=>({ id:f.id, designator:f.des, elevation_ft:+f.e.toFixed(2), area_sqft:Math.round(f.area) })), totals:r.totals, parapet_height_ft:EV.PH, parapet_height_note:'entered by the rep — not in the report (ASSUMED)',
-  penetrations:r.pens.map(p=>({ n:p.n, area_sqft:+p.area.toFixed(2), type:p.kind, drawing:DET(p.kind).drawing, guess:p.guess, confirmed:p.confirmed })), confirmed:evConfirmedCount(), unused:r.unused }; }
+  penetrations:r.pens.map(p=>({ id:p.id, n:p.n, area_sqft:+p.area.toFixed(2), type:p.kind, drawing:DET(p.kind).drawing, guess:p.guess, confirmed:p.confirmed })), confirmed:evConfirmedCount(), unused:r.unused }; }
 const evEl={ app:document.getElementById('app'), panel:document.getElementById('evp'), meta:document.getElementById('evpMeta'), list:document.getElementById('evList'), cnt:document.getElementById('evpCnt'), btn:document.getElementById('evBtn'), input:document.getElementById('evInput'), close:document.getElementById('evpClose'),
   all:document.getElementById('evConfirmAll'), chip:document.getElementById('evChip'), pbtn:document.getElementById('evpBtn'), basis:document.getElementById('evBasis'), ph:document.getElementById('evPH'), totals:document.getElementById('evTotals'), note:document.getElementById('evBasisNote'), sqftField:document.getElementById('sqft').closest('.field') };
 function evOpen(on){ if(on===undefined) on=!EV.open; if(on&&!(evActive()&&S.view==='roof')) on=false; EV.open=on; evEl.app.classList.toggle('ev',on); if(on){ if(PH.slider) phSlider(false); evRender(); } evEl.pbtn.textContent=on?'Hide penetrations':'Penetrations'; evEl.pbtn.style.background=on?'var(--navy)':'#fff'; evEl.pbtn.style.color=on?'#fff':'var(--navy)'; }
@@ -2088,7 +2147,7 @@ bldSel.onchange=()=>selectBuilding(bldSel.value);
 roofSel.onchange=()=>{ S.roof=roofSel.value; syncUI(); rebuild(); setStage(0,false); renderEstimate(); phSaveSel(); };
 function syncUI(){ const b=BUILDINGS[S.building], r=ROOFS[S.roof];
   roofSel.innerHTML=''; b.roofs.forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=ROOFS[k].label; roofSel.appendChild(o); }); roofSel.value=S.roof;
-  document.getElementById('patternNote').innerHTML=r.patternNote; const wb=document.querySelector('#topcoat button[data-v=white]'); wb.disabled=!!r.noWhite; wb.style.opacity=r.noWhite?.4:1; if(r.noWhite&&S.topcoat==='white'){ S.topcoat='thane'; [...document.getElementById('topcoat').children].forEach(x=>x.classList.toggle('on',x.dataset.v==='thane')); } document.getElementById('condLabel').textContent=r.condLabel; document.getElementById('subTitle').textContent=`${b.label} · ${r.label}`;
+  document.getElementById('patternNote').innerHTML=r.patternNote; const wb=document.querySelector('#topcoat button[data-v=white]'); wb.disabled=!!r.noWhite; wb.style.opacity=r.noWhite?.4:1; if(r.noWhite&&S.topcoat==='white'){ S.topcoat='thane'; [...document.getElementById('topcoat').children].forEach(x=>x.classList.toggle('on',x.dataset.v==='thane')); } document.getElementById('condLabel').textContent=r.condLabel; prTitle();
   const dc=document.getElementById('detailChecks'); dc.innerHTML=''; b.details.forEach(k=>{ const l=document.createElement('label'); l.innerHTML=`<input type="checkbox" ${S.on[k]?'checked':''}> ${DET(k).menu}`; l.querySelector('input').onchange=ev=>{ S.on[k]=ev.target.checked; if(!S.on[k]&&S.view===k) goRoof(false); renderEstimate(); }; dc.appendChild(l); });
   ['Penetrations','Skylights','Gutters','Vents'].filter(t=>!b.details.some(k=>DETAILS[k].menu.toLowerCase().includes(t.toLowerCase().slice(0,5)))).forEach(t=>{ const l=document.createElement('label'); l.className='off'; l.innerHTML=`<input type="checkbox" disabled> ${t}`; dc.appendChild(l); });
   buildStageBar(); evLabel(); }
@@ -2119,9 +2178,9 @@ const phEl = { app:document.getElementById('app'), strip:document.getElementById
 const SAMPLES=['samples/sample-01.jpg','samples/sample-02.jpg','samples/sample-03.jpg','samples/sample-04.jpg'];   // committed, EXIF stripped (public-repo exception)
 
 // ---- browser storage (IndexedDB). Every call degrades to "in memory only" if the store is unavailable. ----
-const DB={ name:'rmi-visualizer', ver:1, p:null };
+const DB={ name:'rmi-visualizer', ver:2, p:null };   // v2 adds 'prospects' (the browser build's recent saved prospects)
 function dbOpen(){ if(DB.p) return DB.p; DB.p=new Promise(res=>{ try{ if(!window.indexedDB) return res(null); const rq=indexedDB.open(DB.name,DB.ver);
-    rq.onupgradeneeded=()=>{ const d=rq.result; if(!d.objectStoreNames.contains('photos')) d.createObjectStore('photos',{keyPath:'id'}); if(!d.objectStoreNames.contains('state')) d.createObjectStore('state'); };
+    rq.onupgradeneeded=()=>{ const d=rq.result; if(!d.objectStoreNames.contains('photos')) d.createObjectStore('photos',{keyPath:'id'}); if(!d.objectStoreNames.contains('state')) d.createObjectStore('state'); if(!d.objectStoreNames.contains('prospects')) d.createObjectStore('prospects',{keyPath:'id'}); };
     rq.onsuccess=()=>res(rq.result); rq.onerror=()=>{ console.warn('browser storage unavailable — photos stay in memory:',rq.error&&rq.error.message); res(null); }; rq.onblocked=()=>res(null); }
   catch(e){ console.warn('browser storage unavailable — photos stay in memory:',e&&e.message); res(null); } }); return DB.p; }
 function dbTx(store,mode,fn){ return dbOpen().then(d=>{ if(!d) return null; return new Promise((res,rej)=>{ const tx=d.transaction(store,mode); const r=fn(tx.objectStore(store)); tx.oncomplete=()=>res(r?r.result:undefined); tx.onerror=()=>rej(tx.error); tx.onabort=()=>rej(tx.error); }); })
@@ -2187,7 +2246,7 @@ function phHeic(blob){ // Chrome and Edge do not decode HEIC; load the bundled c
   heicLib=heicLib||new Promise((res,rej)=>{ if(window.heic2any) return res(window.heic2any); const sc=document.createElement('script'); sc.src='vendor/heic2any.min.js'; sc.onload=()=>res(window.heic2any); sc.onerror=()=>rej(new Error('heic2any')); document.head.appendChild(sc); });
   return heicLib.then(h=>h({blob, toType:'image/jpeg', quality:0.9})).then(r=>Array.isArray(r)?r[0]:r); }
 function phBusy(){ let b=phEl.strip.querySelector('.busy'); if(PH.busy&&!b){ b=document.createElement('span'); b.className='busy'; b.textContent='Reading photos…'; phEl.strip.insertBefore(b,phEl.clear); } else if(!PH.busy&&b) b.remove(); }
-function phSelect(i){ PH.cur=i; PH.temp=null; PH.slider=true; phRender(); }
+function phSelect(i){ if(EV.open) evOpen(false); PH.cur=i; PH.temp=null; PH.slider=true; phRender(); }   // the slider and the Penetrations panel share the right-hand column
 function phRemove(i){ const p=PH.list[i]; if(p.url) URL.revokeObjectURL(p.url); phDropPhoto(p); PH.list.splice(i,1); if(PH.cur>=PH.list.length) PH.cur=PH.list.length-1; PH.temp=null; if(!PH.list.length) PH.slider=false; phRender(); }
 function phCur(){ return PH.list[PH.cur]; }
 const phLabel=p=>p.sample?`Sample roof · ${p.name}`:p.name;
@@ -2220,7 +2279,7 @@ function phRenderPins(){ const p=phCur(); [...phEl.wrap.querySelectorAll('.pin,.
 phEl.wrap.addEventListener('click',e=>{ const p=phCur(); if(!p||p.status!=='ok') return; const r=phEl.wrap.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height; if(x<0||x>1||y<0||y>1) return;
   const b=BUILDINGS[S.building]; PH.temp={ x, y, pick:(PH.temp&&PH.temp.pick)||b.details.find(k=>S.on[k])||b.details[0] }; phRenderPins(); });
 document.addEventListener('keydown',e=>{ // Esc: cancel a pending pin, else close the slider. ← →: previous / next photo while the slider is open (not while typing in a field).
-  if(e.key==='Escape'){ if(xEl.dlg.classList.contains('show')){ if(!PDF.busy) pdfOpen(false); return; } if(PH.temp){ PH.temp=null; phRenderPins(); } else if(DR.open) drwOpen(false); else if(EV.open) evOpen(false); else if(phEl.app.classList.contains('slider')) phSlider(false); return; }
+  if(e.key==='Escape'){ if(xEl.dlg.classList.contains('show')){ if(!PDF.busy) pdfOpen(false); return; } if(prEl.sdlg.classList.contains('show')||prEl.odlg.classList.contains('show')){ if(!PR.busy){ prSaveOpen(false); prOpenDialog(false); } return; } if(PH.temp){ PH.temp=null; phRenderPins(); } else if(DR.open) drwOpen(false); else if(EV.open) evOpen(false); else if(phEl.app.classList.contains('slider')) phSlider(false); return; }
   if(!phEl.app.classList.contains('slider')) return; const tag=(e.target&&e.target.tagName||'').toLowerCase(); if(tag==='input'||tag==='select'||tag==='textarea') return;
   if(e.key==='ArrowLeft'){ e.preventDefault(); phStep(-1); } else if(e.key==='ArrowRight'){ e.preventDefault(); phStep(1); } });
 function phCommit(id){ const p=phCur(); if(!p||!PH.temp||!id) return; const d=DET(id); p.pins.push({ x:PH.temp.x, y:PH.temp.y, detail:id, drawing:d.drawing, name:d.menu }); PH.temp=null; phSavePhoto(p); phRender(); }
@@ -2228,7 +2287,7 @@ function phGo(pin){ // zoom the 3D view to the pinned detail; switch it on first
   if(!S.on[pin.detail]&&BUILDINGS[S.building].details.includes(pin.detail)){ S.on[pin.detail]=true; syncUI(); renderEstimate(); }
   if(goDetail(pin.detail)===false){ const nm=document.getElementById('viewName'); nm.textContent=`${DETAILS[pin.detail]?DETAILS[pin.detail].menu:pin.detail} (${pin.drawing}) is not on the ${BUILDINGS[S.building].label} — pick a building that has it`; setTimeout(()=>{ if(S.view==='roof') nm.textContent=''; },4000); }
   document.getElementById('rail').classList.remove('open'); if(window.matchMedia('(max-width:820px)').matches) phSlider(false); }   // narrow screens: the slider covers the 3D view, so step aside to show the detail
-function phSummary(){ return { count:PH.list.length, note:'file names and pinned detail ids only — the images stay on the rep\'s machine',
+function phSummary(){ return { count:PH.list.length, note:'file names and pins — the images stay on the rep\'s machine (a saved prospect carries them in its photos/ folder)',
   files:PH.list.map(p=>({ file:p.name, ...(p.sample?{sample:true}:{}), pins:p.pins.map(x=>({ detail:x.detail, drawing:x.drawing })) })) }; }
 // scripted access for snapshot.py and Playwright checks
 const photosAPI={ open:phOpen, slider:phSlider, add:phAdd, clear:phClear, select:phSelect, samples:phSamples, restore:phRestore, pin:(i,x,y,id)=>{ if(i!==PH.cur||!PH.slider) phSelect(i); PH.temp={x,y,pick:id}; phCommit(id); }, click:(i,j)=>{ if(i!==PH.cur||!PH.slider) phSelect(i); phGo(PH.list[i].pins[j]); },
@@ -2327,7 +2386,7 @@ function pdfSelected(){ return B?BUILDINGS[S.building].details.filter(k=>S.on[k]
 function pdfPhotos(){ return PH.list.filter(p=>p.status==='ok'&&p.url); }
 function pdfStatus(t,cls){ xEl.status.textContent=t||''; xEl.status.className='xstatus'+(cls?' '+cls:''); }
 function pdfOpen(on){ if(on===undefined) on=!xEl.dlg.classList.contains('show'); if(!on){ xEl.dlg.classList.remove('show'); return; }
-  const m=pdfRecall(); xEl.prospect.value=m.prospect||''; xEl.address.value=m.address||''; if(evActive()&&!xEl.address.value) xEl.address.value=evAddress(); xEl.rep.value=m.rep||''; xEl.notes.value=m.notes||'';
+  const m=Object.assign(pdfRecall(),PR.id?{ prospect:PR.name, address:PR.address, rep:PR.rep||pdfRecall().rep, notes:PR.notes }:{}); xEl.prospect.value=m.prospect||''; xEl.address.value=m.address||''; if(evActive()&&!xEl.address.value) xEl.address.value=evAddress(); xEl.rep.value=m.rep||''; xEl.notes.value=m.notes||'';
   const nd=pdfSelected().length, np=pdfPhotos().length; xEl.secs.innerHTML='';
   PDF_SECTIONS.forEach(([k,label,hint])=>{ const l=document.createElement('label'); const off=(k==='photos'&&!np)||(k==='details'&&!nd); const on=off?false:(m.sections&&k in m.sections?!!m.sections[k]:true);
     const h=k==='photos'?(np?`${np} photo${np!==1?'s':''}`:'no photos loaded'):k==='details'?(nd?`${nd} detail${nd!==1?'s':''}`:'none selected'):hint;
@@ -2449,7 +2508,7 @@ async function pdfPrepare(form,say){ say=say||(()=>{}); const date=new Date(); s
   return { name:pdfFileName(form,date), footer:`RMI Roof Visualizer · ${form.prospect||'Prospect'} · ${pdfDate(date)}`, pages:xEl.doc.querySelectorAll('section').length, images:xEl.doc.querySelectorAll('img').length }; }
 function pdfDone(clear){ document.body.classList.remove('pdf'); if(clear) xEl.doc.innerHTML=''; }
 async function pdfExport(opt){ opt=opt||{}; if(PDF.busy) return { ok:false, error:'busy' }; const form=opt.form||pdfForm(); PDF.busy=true; xEl.go.disabled=true; xEl.btn.disabled=true; const say=t=>pdfStatus(t); let r=null;
-  try{ pdfRemember(form); const prep=await pdfPrepare(form,say); const d=window.rmiDesktop;
+  try{ pdfRemember(form); PDF.form=form; if(PR.id) Object.assign(PR,{ name:form.prospect||PR.name, address:form.address, rep:form.rep, notes:form.notes }); prTitle(); const prep=await pdfPrepare(form,say); const d=window.rmiDesktop;
     if(d&&d.exportPdf){ say('Writing the PDF…'); r=await d.exportPdf({ suggested:prep.name, footer:prep.footer }); }
     else { say('Print dialog open — choose "Save as PDF".'); window.print(); r={ printed:true }; }
     pdfDone(!opt.keep);
@@ -2465,6 +2524,185 @@ const pdfAPI={ open:pdfOpen, export:pdfExport, prepare:(form)=>pdfPrepare(Object
   state:()=>({ busy:PDF.busy, last:PDF.last, dialog:xEl.dlg.classList.contains('show'), printing:document.body.classList.contains('pdf'), sections:[...xEl.doc.querySelectorAll('section')].map(s=>s.className), images:xEl.doc.querySelectorAll('img').length, details:pdfSelected(), photos:pdfPhotos().length, file:pdfFileName(pdfForm(),new Date()) }) };
 
 /* =================================================================
+   SAVED PROSPECTS (§2 #11) — "Save prospect" / "Open prospect" in the header. A prospect is one .rmiproject file, a zip:
+   prospect.json (the full configuration() — building, roof, details, finish, estimate, the EagleView basis with every
+   penetration's type and confirmation — plus the keys to restore it, the parapet height and the rep's prospect / address /
+   rep / notes), the original EagleView XML under eagleview/, and the photos under photos/ with their pins in prospect.json.
+   The desktop app writes it through window.rmiDesktop.prospects into a folder chosen once and remembered (default
+   Documents\RMI Prospects) and keeps the recent list in its own settings; a browser downloads the file and keeps copies of
+   the recent ones in browser storage. Open rebuilds everything — the prospect roof from the embedded XML, the confirmations,
+   the photos and pins. Nothing is uploaded anywhere, and the file carries no pricing. The zip is written and read here
+   (stored, or deflate through the browser's CompressionStream), so there is no library to vendor.
+================================================================= */
+const PR={ id:null, name:'', address:'', rep:'', notes:'', path:null, file:null, saved:null, sig:null, busy:false, recent:[] };
+const PR_FORMAT='rmiproject', PR_VERSION=1, PR_RECENT=8;   // PR_RECENT: copies the browser build keeps
+const prEl={ sdlg:document.getElementById('sdlg'), odlg:document.getElementById('odlg'), name:document.getElementById('sName'), address:document.getElementById('sAddress'), rep:document.getElementById('sRep'), notes:document.getElementById('sNotes'),
+  what:document.getElementById('sWhat'), folder:document.getElementById('sFolder'), sstatus:document.getElementById('sStatus'), go:document.getElementById('sGo'), scancel:document.getElementById('sCancel'),
+  list:document.getElementById('oList'), ofolder:document.getElementById('oFolder'), onote:document.getElementById('oNote'), ostatus:document.getElementById('oStatus'), browse:document.getElementById('oBrowse'), ocancel:document.getElementById('oCancel'),
+  open:document.getElementById('openBtn'), save:document.getElementById('saveBtn'), input:document.getElementById('prInput') };
+const prDesk=()=>(window.rmiDesktop&&window.rmiDesktop.prospects)||null;
+
+// ---- zip: local headers + central directory, UTF-8 names, CRC-32; deflate only where it pays (JSON, XML), photos stored as they are
+const CRC_T=(()=>{ const t=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1?0xEDB88320^(c>>>1):c>>>1; t[n]=c>>>0; } return t; })();
+function crc32(u8){ let c=0xFFFFFFFF; for(let i=0;i<u8.length;i++) c=CRC_T[(c^u8[i])&0xFF]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+async function zipStream(u8,T,fmt){ return new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(new T(fmt))).arrayBuffer()); }
+async function zipWrite(entries){ const enc=new TextEncoder(), parts=[], dir=[], d=new Date(); let off=0;
+  const tm=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1), dt=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();
+  const put=(dv,fields)=>fields.forEach(([o,v,n])=>n===4?dv.setUint32(o,v,true):dv.setUint16(o,v,true));
+  for(const e of entries){ const name=enc.encode(e.name), crc=crc32(e.data); let body=e.data, method=0;
+    if(e.deflate&&typeof CompressionStream!=='undefined'){ try{ const z=await zipStream(e.data,CompressionStream,'deflate-raw'); if(z.length<e.data.length){ body=z; method=8; } }catch(err){ /* stored instead */ } }
+    const lh=new DataView(new ArrayBuffer(30)); put(lh,[[0,0x04034b50,4],[4,20,2],[6,0x0800,2],[8,method,2],[10,tm,2],[12,dt,2],[14,crc,4],[18,body.length,4],[22,e.data.length,4],[26,name.length,2],[28,0,2]]);
+    const ch=new DataView(new ArrayBuffer(46)); put(ch,[[0,0x02014b50,4],[4,20,2],[6,20,2],[8,0x0800,2],[10,method,2],[12,tm,2],[14,dt,2],[16,crc,4],[20,body.length,4],[24,e.data.length,4],[28,name.length,2],[42,off,4]]);
+    parts.push(lh.buffer,name,body); dir.push(ch.buffer,name); off+=30+name.length+body.length; }
+  const size=dir.reduce((s,p)=>s+p.byteLength,0), end=new DataView(new ArrayBuffer(22)); put(end,[[0,0x06054b50,4],[8,entries.length,2],[10,entries.length,2],[12,size,4],[16,off,4]]);
+  return new Blob([...parts,...dir,end.buffer],{type:'application/zip'}); }
+async function zipRead(u8){ const dv=new DataView(u8.buffer,u8.byteOffset,u8.byteLength), dec=new TextDecoder(), out=new Map(); let e=-1;
+  for(let i=u8.length-22;i>=Math.max(0,u8.length-65557);i--){ if(dv.getUint32(i,true)===0x06054b50){ e=i; break; } }
+  if(e<0) throw new Error('not an RMI prospect file');
+  let p=dv.getUint32(e+16,true); const n=dv.getUint16(e+10,true);
+  for(let k=0;k<n;k++){ if(p+46>u8.length||dv.getUint32(p,true)!==0x02014b50) throw new Error('the file is damaged');
+    const method=dv.getUint16(p+10,true), crc=dv.getUint32(p+16,true), csz=dv.getUint32(p+20,true), nl=dv.getUint16(p+28,true), xl=dv.getUint16(p+30,true), cl=dv.getUint16(p+32,true), lo=dv.getUint32(p+42,true);
+    const name=dec.decode(u8.subarray(p+46,p+46+nl)); p+=46+nl+xl+cl; if(name.endsWith('/')) continue;
+    if(lo+30>u8.length||dv.getUint32(lo,true)!==0x04034b50) throw new Error('the file is damaged');
+    const at=lo+30+dv.getUint16(lo+26,true)+dv.getUint16(lo+28,true), raw=u8.subarray(at,at+csz); let data;
+    if(method===0) data=raw.slice(); else if(method===8) data=await zipStream(raw,DecompressionStream,'deflate-raw'); else throw new Error(`${name} uses a compression this app does not read`);
+    if(crc32(data)!==crc) throw new Error(`${name} is damaged`); out.set(name,data); }
+  return out; }
+
+// ---- what a prospect is: the file's JSON, a signature for "unsaved changes", the header title
+function prDefaultName(){ return evActive()?`Prospect roof ${EV.rep.id}`:`${BUILDINGS[S.building].label} prospect`; }
+function prFileName(name){ return (String(name||'').replace(/[\\/:*?"<>|\x00-\x1f]+/g,'-').replace(/\s+/g,' ').replace(/-+/g,'-').trim().slice(0,80).replace(/^[-. ]+|[-. ]+$/g,'')||'Prospect')+'.rmiproject'; }   // the same rule as main.js
+function prTitle(){ const b=BUILDINGS[S.building], r=ROOFS[S.roof], el=document.getElementById('subTitle'); if(!b||!r) return; el.textContent=`${PR.name?PR.name+' — ':''}${b.label} · ${r.label}`; el.title=el.textContent; }
+function prSig(){ const b=BUILDINGS[S.building]; return JSON.stringify([S.building,S.roof,S.topcoat,S.solar,S.cond,S.sqft,b?b.details.filter(k=>S.on[k]):[],EV.rep?[EV.rep.id,EV.PH,EV.rep.pens.map(p=>p.kind+(p.confirmed?'+':''))]:null,
+  PH.list.map(p=>[p.name,p.pins.map(x=>[x.detail,+x.x.toFixed(4),+x.y.toFixed(4)])]),PR.name,PR.address,PR.rep,PR.notes]); }
+function prDirty(){ return PR.sig?prSig()!==PR.sig:(PH.list.some(p=>!p.sample)||!!EV.rep); }   // never saved: only the rep's own photos or a report count as work to lose
+function prConfirmDiscard(){ if(window.__rmiQuiet||!prDirty()) return true;
+  return confirm(PR.sig?`Changes to "${PR.name}" since it was saved will be lost. Open the other prospect?`:'The photos, pins and EagleView report on screen are not saved as a prospect and will be replaced. Open the prospect?'); }
+function prWhatText(){ const b=BUILDINGS[S.building], r=ROOFS[S.roof], nd=b.details.filter(k=>S.on[k]).length, ph=PH.list.filter(p=>p.status==='ok'), np=ph.reduce((a,p)=>a+p.pins.length,0), pl=(n,w)=>`${n} ${w}${n!==1?'s':''}`;
+  return `Saves: ${b.label} · ${r.label} · ${S.topcoat==='white'?'RMI-White Plus':'RMI-Thane'} · ${pl(nd,'detail')}${S.solar?' + Solar Post':''} · ${pl(ph.length,'photo')} with ${pl(np,'pin')}`
+    +(EV.rep?` · EagleView report ${EV.rep.id} and its XML: ${pl(EV.rep.pens.length,'penetration')}, ${evConfirmedCount()} confirmed, parapet ${EV.PH} ft${evActive()?'':' (not the building on screen)'}`:''); }
+async function prPack(form){ const enc=new TextEncoder(), cfg=configuration(), b=BUILDINGS[S.building], ev=EV.rep, id=PR.id||('p'+Date.now().toString(36)+Math.random().toString(36).slice(2,8));
+  const safe=s=>String(s||'').replace(/[^A-Za-z0-9._-]+/g,'-').replace(/^[-.]+|[-.]+$/g,'').slice(0,60);
+  const photos=PH.list.filter(p=>p.status==='ok'&&p.blob).map((p,i)=>({ p, file:`photos/${String(i+1).padStart(2,'0')}-${safe(p.name.replace(/\.[^.]+$/,''))||'photo'}.${/png/i.test(p.blob.type)?'png':'jpg'}` }));   // a HEIC is kept as the JPEG it was converted to
+  const pj={ format:PR_FORMAT, version:PR_VERSION, id, saved_at:new Date().toISOString(), saved_in:prDesk()?'RMI Roof Visualizer desktop app':'RMI Roof Visualizer in a browser',
+    note:'Saved prospect: configuration and material quantities only, no pricing. Items marked ASSUMED are not RMI specification. Client data: keep this file in the prospects folder, never in the repo.',
+    prospect:{ name:form.name, address:form.address, rep:form.rep, notes:form.notes },
+    building_key:S.building, roof_key:S.roof, topcoat_key:S.topcoat, solar_post:S.solar, existing_condition:S.cond, roof_sqft:S.sqft, details_on:b.details.filter(k=>S.on[k]),
+    parapet_height_ft:ev?EV.PH:null,
+    eagleview:ev?{ xml:`eagleview/${safe(ev.file.name)||'report.xml'}`, file_name:ev.file.name, file_date:ev.file.date, report:ev.id, on_screen:evActive(), totals:ev.totals,
+      penetrations:ev.pens.map(p=>({ id:p.id, n:p.n, area_sqft:+p.area.toFixed(2), type:p.kind, guess:p.guess, confirmed:p.confirmed })) }:null,
+    photos:photos.map(({p,file})=>({ file, name:p.name, type:p.blob.type||'image/jpeg', sample:!!p.sample, pins:p.pins.map(x=>({ x:x.x, y:x.y, detail:x.detail, drawing:x.drawing, name:x.name })) })),
+    configuration:cfg };
+  const entries=[{ name:'prospect.json', data:enc.encode(JSON.stringify(pj,null,2)), deflate:true }];
+  if(ev) entries.push({ name:pj.eagleview.xml, data:enc.encode(EV.xml||''), deflate:true });
+  for(const {p,file} of photos) entries.push({ name:file, data:new Uint8Array(await p.blob.arrayBuffer()) });
+  return { pj, blob:await zipWrite(entries) }; }
+function prMeta(pj){ const c=pj.configuration||{}, ev=pj.eagleview, pens=ev&&ev.penetrations||[];
+  return { name:(pj.prospect||{}).name||'', building:c.building||'', roof:c.roof||'', finish:c.topcoat||'', photos:(pj.photos||[]).length, pins:(pj.photos||[]).reduce((a,p)=>a+(p.pins||[]).length,0),
+    report:ev?ev.report:null, penetrations:pens.length, confirmed:pens.filter(p=>p.confirmed).length, saved_at:pj.saved_at||null }; }
+
+// ---- save
+function prStatus(el,t,cls){ el.textContent=t||''; el.className='xstatus'+(cls?' '+cls:''); }
+function prBusy(on){ [prEl.go,prEl.browse,prEl.open,prEl.save].forEach(b=>{ b.disabled=on; }); prEl.list.style.pointerEvents=on?'none':''; prEl.list.style.opacity=on?.6:''; }
+async function prFolderRender(el,label){ const d=prDesk();
+  if(!d){ if(el===prEl.folder){ el.style.display=''; el.innerHTML=`<span>Downloads as</span><code>${phEsc(prFileName(prEl.name.value.trim()||prDefaultName()))}</code>`; } else el.style.display='none'; return; }
+  let f=null; try{ f=await d.folder(); }catch(err){ f=null; } if(!f||!f.dir){ el.style.display='none'; return; }
+  el.style.display=''; el.innerHTML=`<span>${label}</span><code title="${phEsc(f.dir)}">${phEsc(f.dir)}</code>${f.chosen?'':'<span>(default)</span>'}<button class="pbtn">Change folder…</button>`;
+  el.querySelector('button').onclick=async()=>{ const r=await d.chooseFolder(); if(r&&r.dir){ prFolderRender(prEl.folder,'Saves to'); prFolderRender(prEl.ofolder,'Browse opens'); } }; }
+function prForm(){ return { name:prEl.name.value.trim(), address:prEl.address.value.trim(), rep:prEl.rep.value.trim(), notes:prEl.notes.value.trim() }; }
+function prSaveOpen(on){ if(on===undefined) on=!prEl.sdlg.classList.contains('show'); if(!on){ prEl.sdlg.classList.remove('show'); return; }
+  prOpenDialog(false); pdfOpen(false);
+  const m=pdfRecall(), f=PR.id?PR:PDF.form?{ name:PDF.form.prospect, address:PDF.form.address, rep:PDF.form.rep, notes:PDF.form.notes }:{};   // an open prospect, else what this session's PDF export used
+  prEl.name.value=f.name||''; prEl.name.placeholder=prDefaultName(); prEl.address.value=f.address||(evActive()?evAddress():''); prEl.rep.value=f.rep||m.rep||''; prEl.notes.value=f.notes||'';
+  prEl.what.textContent=prWhatText(); prStatus(prEl.sstatus,''); prEl.scancel.textContent='Cancel'; prFolderRender(prEl.folder,'Saves to'); prEl.sdlg.classList.add('show'); prEl.name.focus(); }
+async function prSave(opt){ opt=opt||{}; if(PR.busy) return { ok:false, error:'busy' }; const form=Object.assign(prForm(),opt.form||{}); form.name=form.name||prDefaultName();
+  PR.busy=true; prBusy(true); const say=t=>prStatus(prEl.sstatus,t);
+  try{ for(let i=0;PH.busy&&i<600;i++){ say('Waiting for the photos to finish loading…'); await new Promise(r=>setTimeout(r,100)); }
+    say('Packing the prospect…'); const { pj, blob }=await prPack(form); const meta=prMeta(pj), d=prDesk(); let r;
+    if(d){ say('Writing the file…'); r=await d.save({ name:form.name, data:new Uint8Array(await blob.arrayBuffer()), replace:PR.path, meta }); if(!r||r.error) throw new Error(r?r.error:'no answer from the desktop app'); }
+    else { const file=prFileName(form.name), url=URL.createObjectURL(blob), a=document.createElement('a'); a.href=url; a.download=file; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),60000);
+      await prRecentPut({ id:pj.id, name:form.name, meta, at:Date.now(), action:'saved', file, blob }); r={ file, bytes:blob.size }; }
+    Object.assign(PR,{ id:pj.id, name:form.name, address:form.address, rep:form.rep, notes:form.notes, path:r.path||null, file:r.path?r.path.split(/[\\/]/).pop():r.file, saved:pj.saved_at }); PR.sig=prSig(); prTitle();
+    prStatus(prEl.sstatus,r.path?`Saved ${r.path}`:`Downloaded ${r.file} — keep it in your prospects folder`,'ok'); prEl.scancel.textContent='Close';
+    return { ok:true, path:r.path||null, file:PR.file, bytes:r.bytes||blob.size, replaced:!!r.replaced, id:pj.id, meta }; }
+  catch(err){ prStatus(prEl.sstatus,'Save failed: '+err.message,'err'); console.error('Save prospect failed',err); return { ok:false, error:err.message }; }
+  finally{ PR.busy=false; prBusy(false); } }
+
+// ---- recent list: the desktop app's settings (files on disk), or copies in browser storage
+async function prRecentPut(row){ await dbTx('prospects','readwrite',s=>s.put(row)); const all=await dbTx('prospects','readonly',s=>s.getAll());
+  if(all&&all.length>PR_RECENT){ const drop=all.sort((a,b)=>b.at-a.at).slice(PR_RECENT); await dbTx('prospects','readwrite',s=>{ drop.forEach(x=>s.delete(x.id)); }); } }
+async function prRecent(){ const d=prDesk(); if(d){ try{ return (await d.recent())||[]; }catch(err){ return []; } }
+  const rows=await dbTx('prospects','readonly',s=>s.getAll()); return (rows||[]).sort((a,b)=>b.at-a.at).map(x=>({ id:x.id, name:x.name, meta:x.meta, at:x.at, action:x.action, file:x.file })); }
+function prWhen(ms,action){ const t=new Date(ms); if(!ms||isNaN(t)) return ''; return `${action==='opened'?'Opened':'Saved'} ${t.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}`; }
+async function prRecentRender(){ const d=prDesk(), list=await prRecent(); PR.recent=list;
+  prEl.list.innerHTML=list.length?list.map((x,i)=>{ const m=x.meta||{}, bits=[m.building,m.roof,m.finish,m.photos!=null?`${m.photos} photo${m.photos!==1?'s':''}, ${m.pins||0} pin${m.pins!==1?'s':''}`:'',m.report?`${m.confirmed||0} of ${m.penetrations||0} penetrations confirmed${String(m.building||'').includes(m.report)?'':` (EagleView ${m.report})`}`:''].filter(Boolean);
+      return `<div class="rrow" data-i="${i}" title="Open ${phEsc(x.name||'this prospect')}"><div><b>${phEsc(x.name||'Prospect')}</b><span>${phEsc(bits.join(' · '))}</span><small>${phEsc(d?x.path:'Copy in this browser · '+(x.file||''))}</small></div><div class="when">${phEsc(prWhen(x.at,x.action))}</div><button class="rx" title="Remove from this list${d?' — the file stays where it is':''}">×</button></div>`; }).join('')
+    :`<div class="rempty">${d?'No prospects saved or opened on this computer yet. "Save prospect" writes one; Browse… opens a .rmiproject file from anywhere.':'No prospects saved or opened in this browser yet.'}</div>`;
+  [...prEl.list.querySelectorAll('.rrow')].forEach(row=>{ const x=list[+row.dataset.i]; row.onclick=e=>{ if(e.target.closest('.rx')){ e.stopPropagation(); prForget(x); } else prOpenRecent(x); }; });
+  prEl.onote.textContent=d?'Recent prospects: the files saved or opened on this computer, newest first. Removing one from the list leaves the file where it is. Nothing is uploaded.'
+    :'In a browser, "Save prospect" downloads the file and this list keeps a copy of each in browser storage on this computer. Nothing is uploaded.';
+  if(d) prFolderRender(prEl.ofolder,'Browse opens'); else prEl.ofolder.style.display='none'; }
+async function prForget(x){ const d=prDesk(); if(d) await d.forget(x.path); else await dbTx('prospects','readwrite',s=>s.delete(x.id)); prRecentRender(); }
+function prOpenDialog(on){ if(on===undefined) on=!prEl.odlg.classList.contains('show'); if(!on){ prEl.odlg.classList.remove('show'); return Promise.resolve(); }
+  prSaveOpen(false); pdfOpen(false); prStatus(prEl.ostatus,''); prEl.odlg.classList.add('show'); prEl.browse.focus(); return prRecentRender(); }
+
+// ---- open: check the whole file before anything on screen changes, then rebuild in one pass
+async function prOpenRecent(x){ if(PR.busy||!prConfirmDiscard()) return { ok:false, canceled:true }; const d=prDesk();
+  if(d){ const r=await d.read(x.path); if(!r||r.error){ prStatus(prEl.ostatus,`Could not open ${x.name||'that prospect'} — ${r?r.error:'no answer'}`,'err'); return { ok:false, error:r?r.error:'no answer' }; } return prLoad(r.data,{ path:r.path, name:r.name }); }
+  const row=await dbTx('prospects','readonly',s=>s.get(x.id)); if(!row||!row.blob){ prStatus(prEl.ostatus,'That copy is no longer in browser storage.','err'); return { ok:false, error:'gone' }; }
+  return prLoad(new Uint8Array(await row.blob.arrayBuffer()),{ name:row.file, blob:row.blob }); }
+async function prLoad(bytes,src){ if(PR.busy) return { ok:false, error:'busy' }; PR.busy=true; prBusy(true); const say=t=>prStatus(prEl.ostatus,t);
+  try{ say(`Opening ${src.name||'the prospect'}…`); await pdfTick(); const res=await prOpenBytes(bytes,src,say); const d=prDesk();
+    if(d&&src.path) await d.remember(src.path,res.meta); else if(!d) await prRecentPut({ id:res.id, name:res.name, meta:res.meta, at:Date.now(), action:'opened', file:src.name, blob:src.blob||new Blob([bytes],{type:'application/zip'}) });
+    say(''); prOpenDialog(false); return Object.assign({ ok:true },res); }
+  catch(err){ prStatus(prEl.ostatus,`Could not open ${src.name||'that file'} — ${err.message}`,'err'); console.error('Open prospect failed',err); return { ok:false, error:err.message }; }
+  finally{ PR.busy=false; prBusy(false); } }
+async function prOpenBytes(bytes,src,say){ say=say||(()=>{}); const files=await zipRead(bytes instanceof Uint8Array?bytes:new Uint8Array(bytes)); const raw=files.get('prospect.json');
+  if(!raw) throw new Error('not an RMI prospect file (no prospect.json)'); let pj; try{ pj=JSON.parse(new TextDecoder().decode(raw)); }catch(err){ throw new Error('prospect.json is damaged'); }
+  if(!pj||pj.format!==PR_FORMAT) throw new Error('not an RMI prospect file'); if(+pj.version>PR_VERSION) throw new Error('saved by a newer version of the Visualizer — update the app to open it');
+  let xml=null; if(pj.eagleview){ const x=files.get(pj.eagleview.xml); if(!x) throw new Error('the EagleView report is missing from the file'); xml=new TextDecoder('utf-8',{ignoreBOM:true}).decode(x); try{ evParse(xml); }catch(err){ throw new Error('the EagleView report in the file cannot be read — '+err.message); } }
+  const key=pj.building_key; if(key==='prospect'?!xml:!(BUILDINGS[key]&&key!=='prospect'&&!BUILDINGS[key].disabled)) throw new Error(`unknown building type "${key}"`);
+  const photos=[]; let lost=0; (pj.photos||[]).forEach(ph=>{ const data=ph&&files.get(ph.file); if(!data){ lost++; return; }
+    photos.push({ name:ph.name||ph.file.split('/').pop(), type:ph.type||phMime(ph.file), data, sample:!!ph.sample, pins:(ph.pins||[]).filter(q=>q&&DETAILS[q.detail]&&isFinite(q.x)&&isFinite(q.y)) }); });
+  // the file is good: from here the prospect replaces what is on screen
+  say('Rebuilding the roof…'); await pdfTick(); S.playing=false; evOpen(false); if(PH.slider) phSlider(false);
+  if(xml){ if(!evImport(xml,pj.eagleview.file_name,pj.eagleview.file_date,{ ph:pj.parapet_height_ft, pens:pj.eagleview.penetrations })) throw new Error('the EagleView report could not be rebuilt'); } else evReset();
+  prApply(pj);
+  say('Loading photos…'); await prPhotos(photos);
+  const p=pj.prospect||{}; Object.assign(PR,{ id:pj.id||null, name:p.name||'', address:p.address||'', rep:p.rep||'', notes:p.notes||'', path:src.path||null, file:src.name||null, saved:pj.saved_at||null });
+  prTitle(); if(evActive()) evOpen(true); PR.sig=prSig(); if(lost) evNotice(`${lost} photo${lost>1?'s are':' is'} missing from ${src.name||'the file'}`);
+  return { id:PR.id, name:PR.name, meta:prMeta(pj), photos:PH.list.length, lost }; }
+function prApply(pj){ const key=pj.building_key, b=BUILDINGS[key];
+  S.building=key; S.roof=b.roofs.includes(pj.roof_key)?pj.roof_key:b.roofs[0]; S.topcoat=pj.topcoat_key==='white'&&!ROOFS[S.roof].noWhite?'white':'thane'; S.solar=!!pj.solar_post; S.cond=pj.existing_condition!==false; S.sqft=+pj.roof_sqft>0?+pj.roof_sqft:b.sqft; S.playing=false;
+  S.on={}; (Array.isArray(pj.details_on)?pj.details_on:b.defaultOn).forEach(k=>{ if(b.details.includes(k)) S.on[k]=true; });
+  bldSel.value=key; document.getElementById('sqft').value=S.sqft; document.getElementById('solar').checked=S.solar; document.getElementById('cond').checked=S.cond; [...document.getElementById('topcoat').children].forEach(x=>x.classList.toggle('on',x.dataset.v===S.topcoat));
+  syncUI(); rebuild(); setStage(0,false); renderEstimate(); phSaveSel(); }
+async function prPhotos(list){ phClear(); const t=Date.now();
+  const loads=list.map((x,i)=>{ const p={ id:t.toString(36)+i+Math.random().toString(36).slice(2,6), name:x.name, size:x.data.length, url:null, w:0, h:0, status:'loading', sample:x.sample, blob:null, added:t+i,
+    pins:x.pins.map(q=>({ x:+q.x, y:+q.y, detail:q.detail, drawing:q.drawing||DET(q.detail).drawing, name:q.name||DET(q.detail).menu })) }; PH.list.push(p); return phLoad(p,new File([x.data],x.name,{type:x.type})); });
+  if(PH.list.length) PH.cur=0; phRender(); await Promise.all(loads); }
+
+prEl.save.onclick=()=>prSaveOpen(true); prEl.open.onclick=()=>prOpenDialog(true);
+prEl.go.onclick=()=>prSave(); prEl.scancel.onclick=()=>{ if(!PR.busy) prSaveOpen(false); }; prEl.ocancel.onclick=()=>{ if(!PR.busy) prOpenDialog(false); };
+[prEl.sdlg,prEl.odlg].forEach(dl=>dl.addEventListener('click',e=>{ if(e.target===dl&&!PR.busy) dl.classList.remove('show'); }));
+prEl.sdlg.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.tagName==='INPUT'){ e.preventDefault(); prSave(); } });
+prEl.name.addEventListener('input',()=>{ if(!prDesk()) prFolderRender(prEl.folder,'Saves to'); });
+prEl.browse.onclick=async()=>{ const d=prDesk(); if(!d) return prEl.input.click();
+  const r=await d.pick(); if(!r) return; if(r.error) return prStatus(prEl.ostatus,`Could not read ${r.name||'that file'} — ${r.error}`,'err'); if(!prConfirmDiscard()) return; prLoad(r.data,{ path:r.path, name:r.name }); };
+prEl.input.onchange=async()=>{ const f=prEl.input.files&&prEl.input.files[0]; prEl.input.value=''; if(!f||!prConfirmDiscard()) return; prLoad(new Uint8Array(await f.arrayBuffer()),{ name:f.name, blob:f }); };
+// scripted access for the Playwright round trip (scripts/check_prospect.py) and the packaged-app selftest
+function prState(){ const ev=EV.rep, b=BUILDINGS[S.building];
+  return { prospect:{ id:PR.id, name:PR.name, address:PR.address, rep:PR.rep, notes:PR.notes }, file:PR.file, path:PR.path, dirty:prDirty(),
+    building:S.building, roof:S.roof, topcoat:S.topcoat, solar:S.solar, cond:S.cond, sqft:S.sqft, on:b?b.details.filter(k=>S.on[k]):[],
+    eagleview:ev?{ report:ev.id, file:ev.file, active:evActive(), parapet_height_ft:EV.PH, xml_chars:(EV.xml||'').length, confirmed:evConfirmedCount(), details:BUILDINGS.prospect?BUILDINGS.prospect.details:[],
+      penetrations:ev.pens.map(p=>({ id:p.id, n:p.n, type:p.kind, guess:p.guess, confirmed:p.confirmed })) }:null,
+    photos:PH.list.map(p=>({ name:p.name, status:p.status, w:p.w, h:p.h, bytes:p.blob?p.blob.size:0, sample:!!p.sample, pins:p.pins.map(x=>({ x:x.x, y:x.y, detail:x.detail, drawing:x.drawing, name:x.name })) })),
+    hots:B?B.hots.map(h=>h.id):[], configuration:configuration() }; }
+const prospectAPI={ saveDialog:prSaveOpen, openDialog:prOpenDialog, save:prSave, open:(bytes,name)=>prLoad(bytes instanceof Uint8Array?bytes:new Uint8Array(bytes),{ name:name||'prospect.rmiproject' }),
+  openRecent:async i=>{ const list=await prRecent(); return list[i]?prOpenRecent(list[i]):{ ok:false, error:'no recent prospect '+i }; }, recent:prRecent,
+  state:prState, busy:()=>PR.busy||PH.busy>0 };
+
+/* =================================================================
    LOOP
 ================================================================= */
 function resize(){ const r=canvas.parentElement.getBoundingClientRect(); const w=Math.max(1,Math.floor(r.width)), h=Math.max(1,Math.floor(r.height)); if(canvas.width!==w*renderer.getPixelRatio()||canvas.height!==h*renderer.getPixelRatio()){ renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); } }
@@ -2476,7 +2714,7 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize()
   applyCam(); applyStage(); applySection(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
 
 selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame); phRestore();   // browser storage: last building/roof and the photos come back after a reload
-window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, drawing:drawingAPI, configuration, pdf:pdfAPI, eagleview:eagleviewAPI };
+window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, drawing:drawingAPI, configuration, pdf:pdfAPI, eagleview:eagleviewAPI, prospect:prospectAPI };
 })();
 </script>
 </body>
