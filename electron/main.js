@@ -223,6 +223,19 @@ if (!app.requestSingleInstanceLock()) {
     }
     return out;
   });
+  // "Load sample photos": the four sample roofs bundled with the app (samples/, electron-builder.yml). fetch() cannot read a
+  // file inside app.asar, so the page asks for them by name and main reads them out of the app folder. Bundled files only:
+  // a name is reduced to its basename and must look like an image, so nothing outside samples/ can be read through this.
+  ipcMain.handle('rmi:sample-photos', async (_e, names) => {
+    const dir = path.join(__dirname, '..', 'samples');
+    const want = (Array.isArray(names) ? names : []).map((n) => path.basename(String(n || ''))).filter((n) => /^[\w.-]+\.(jpe?g|png)$/i.test(n));
+    const out = [];
+    for (const n of want) {
+      try { const data = await fs.promises.readFile(path.join(dir, n)); out.push({ name: n, size: data.length, data }); }
+      catch (err) { out.push({ name: n, size: 0, data: null, error: err.message }); }
+    }
+    return out;
+  });
   // EagleView import: the page asks for a native open dialog (window.rmiDesktop.pickEagleView) and gets the report XML back as
   // text with the file's date (the XML itself carries no report date). Read once into the page's memory; nothing is stored.
   ipcMain.handle('rmi:pick-eagleview', async (e) => {

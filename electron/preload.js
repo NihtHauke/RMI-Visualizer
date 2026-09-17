@@ -8,6 +8,9 @@ contextBridge.exposeInMainWorld('rmiDesktop', {
   // Native "Add photos" dialog. Resolves to [{ name, size, data: Uint8Array }] (empty when cancelled).
   // The bytes come straight from the rep's disk into the page's memory — nothing is copied or stored anywhere.
   pickPhotos: () => ipcRenderer.invoke('rmi:pick-photos'),
+  // "Load sample photos": the four sample roofs bundled with the app. The page passes their names (SAMPLES in index.html);
+  // main reads them out of samples/ and returns [{ name, size, data: Uint8Array }] — fetch() cannot read inside app.asar.
+  samplePhotos: (names) => ipcRenderer.invoke('rmi:sample-photos', names),
   // Native "Import EagleView report" dialog. Resolves to { name, text, mtime } (null when cancelled, { name, error } when unreadable).
   // The XML is read once into the page's memory; nothing is copied, cached or written anywhere.
   pickEagleView: () => ipcRenderer.invoke('rmi:pick-eagleview'),

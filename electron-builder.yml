@@ -14,6 +14,7 @@ files:
   - drawings/**          # RMI drawings rendered locally by scripts/render_drawings.py (git-ignored; never committed while the repo is public)
   - build/icon.png
   - assets/**            # RMI logo (header, PDF cover and page headers)
+  - samples/**           # the four sample roof photos behind "Load sample photos" (EXIF stripped, shared with permission)
   - "!**/*.blend"
   - "!**/*.blend1"
 asar: true

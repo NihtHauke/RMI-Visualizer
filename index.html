@@ -2219,8 +2219,13 @@ phEl.input.onchange=()=>{ phAdd([...phEl.input.files]); phEl.input.value=''; };
 phEl.clear.onclick=()=>{ if(!PH.list.length) return; if(!window.__rmiQuiet&&!confirm(`Clear ${PH.list.length} photo${PH.list.length>1?'s':''} and their pins from this computer?`)) return; phClear(); };
 function phClear(){ PH.list.forEach(p=>{ if(p.url) URL.revokeObjectURL(p.url); }); PH.list=[]; PH.cur=-1; PH.temp=null; PH.slider=false; dbTx('photos','readwrite',s=>s.clear()); phRender(); }
 document.getElementById('photoSamples').onclick=()=>phSamples();
-async function phSamples(){ if(PH.loadingSamples) return; PH.loadingSamples=true; PH.busy++; phBusy(); const files=[];
-  for(const u of SAMPLES){ try{ const r=await fetch(u); if(!r.ok) throw new Error('HTTP '+r.status); const b=await r.blob(); files.push(new File([b],u.split('/').pop(),{type:'image/jpeg'})); }catch(e){ console.warn('sample photo not found:',u,e&&e.message); } }
+// The desktop app reads the bundled samples through the bridge: fetch() cannot read a file inside app.asar. The browser build fetches them.
+async function phSamples(){ if(PH.loadingSamples) return; PH.loadingSamples=true; PH.busy++; phBusy(); let files=[]; const d=window.rmiDesktop;
+  if(d&&d.samplePhotos){ try{ const list=await d.samplePhotos(SAMPLES.map(u=>u.split('/').pop()));
+      files=(list||[]).filter(f=>f.data).map(f=>new File([f.data],f.name,{type:phMime(f.name)}));
+      (list||[]).filter(f=>!f.data).forEach(f=>console.warn('sample photo not found:',f.name,f.error||'')); }
+    catch(e){ console.warn('desktop sample photos failed, trying fetch:',e&&e.message); } }
+  if(!files.length) for(const u of SAMPLES){ try{ const r=await fetch(u); if(!r.ok) throw new Error('HTTP '+r.status); const b=await r.blob(); files.push(new File([b],u.split('/').pop(),{type:'image/jpeg'})); }catch(e){ console.warn('sample photo not found:',u,e&&e.message); } }
   PH.busy--; PH.loadingSamples=false; phBusy(); if(files.length) phAdd(files,{sample:true}); else phRender(); }
 // drag-and-drop onto the strip, the slider and the 3D view (which is where a rep will drop first)
 const phDropZones=[phEl.strip,phEl.stage,document.getElementById('view')];
