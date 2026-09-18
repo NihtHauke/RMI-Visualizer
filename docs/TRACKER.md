@@ -1,6 +1,6 @@
 # RMI Roof Visualizer — Project Tracker
 
-Tracker updated: Wed 16 Sept 2026
+Tracker updated: Fri 18 Sept 2026
 
 The single status page. Per-drawing ASSUMED questions live in the catalog, not here:
 [RMI_Library_Catalog.md](RMI_Library_Catalog.md) — §3c is the per-detail sync table, [§5](RMI_Library_Catalog.md#5-open-questions-for-rmi)
@@ -58,7 +58,7 @@ Roof types are those of the buildings that carry the detail.
 
 ## 2. Product features
 
-**Built** — what `index.html` already does, each row checked against the code (2026-09-14).
+**Built** — what `index.html` already does, each row checked against the code (2026-09-14; rechecked 2026-09-18).
 
 | # | Feature | Status | Notes |
 |---|---|---|---|
@@ -115,6 +115,67 @@ Roof types are those of the buildings that carry the detail.
 ## 4. Weekly update
 
 Newest first, one entry per week, written on Fridays.
+
+### 18 Sept 2026
+
+Covers Fri 11 – Thu 17 Sept. Monday's work is already in the 14 Sept entry and gets one line here so the week reads whole.
+
+- **Models: 9 this week, from 8 to 17 of 28 details modelled; 11 are still simple stand-in shapes.** Fri 11: roof hatch,
+  curb-mounted skylight, kitchen exhaust fan and silo bin vent, all four on one shared curb (CS-1-TYP note 7), plus the metal
+  ridge cap (F-21-M-TYP) on the warehouse. Mon 14 (see 14 Sept): sleeper supports (CS-8), pipe clusters on a Chem-Curb (P-8),
+  penthouse walls (W-13), perimeter edge metal (F-1). Tue 15: edge metal rebuilt without tape or face fasteners to match its
+  drawing; closer camera on the penthouse wall; seams and laps on flat roofs now stop short of every model.
+- **App features:**
+  - **Drawing panel** (Tue 15): a "Drawing" button in detail view shows RMI's 2D sheet (zoom and pan), "How it's applied" steps
+    taken from the sheet notes with ASSUMED steps marked, and the 3D concept. 52 sheets, shipped only inside the installer.
+  - **PDF export** (Tue 15): one click builds the presentation: cover, configuration, the six stages, a page per detail with its
+    drawing, material estimate (no pricing), photos with pins and the ASSUMED notes. The Project Evaluation pre-fill is its
+    appendix (#13). There is no standalone form yet.
+  - **RMI logo** (Tue 15): app icon, header, PDF cover and PDF page header.
+  - **EagleView import** (Tue 15): the rep opens a report file from their own computer and the tool builds that roof: roof areas at
+    their heights, parapets, edges, wall tie-ins, and penetrations typed by size as a best guess the rep confirms. The estimate
+    uses the report's measured totals.
+  - **Saved prospects** (Wed 16): "Save prospect" / "Open prospect" keep one prospect's configuration, report, confirmed
+    penetrations, photos and pins in a single file on the rep's computer, with a "Recent prospects" list.
+  - **Sample photos** now load in the installed app, not only in the browser (Thu 17).
+  - Mon 14 (see 14 Sept): photo panel v2, email form removed, topcoat choice carried through the stage text.
+- **Installer and tooling:** Fri 11 brought a self-contained build and the desktop wrapper: three.js, the model loader, the photo
+  converter and the fonts now live in the repo, so the app runs with no network. Installers 0.1.0 → 0.3.0 built (0.3.0 on
+  Wed 16). 0.3.1 packages, but its installer file can't be produced on this machine because Windows Smart App Control blocks an
+  unsigned step of the build (#12). New checks: the installed app can test itself (drawing panel, PDF export, EagleView import,
+  save-and-reopen), browser checks cover the same, and a script renders the drawing sheets from the local library.
+- **Docs:** this tracker created (Sat 12) and checked against the code. The catalog is now one row per detail, with every open
+  question in one list (§5). CLAUDE.md kept in step. Rules added: making the repo private, turning the review link off and moving
+  to an RMI-owned GitHub account happen as one step; RMI drawings are never committed while the repo is public; EagleView reports
+  and saved prospects are client data and are never committed.
+- **ASSUMED → VERIFIED this week** (full wording in each catalog §3c row and catalog §4):
+  - Roof hatch, curb-mounted skylight, kitchen exhaust, bin vent: each is a curb-mounted unit on the RTU curb. Flex runs up the
+    full curb and over the top, and the unit is lifted and reset. The hatch had been guessed as a fixed curb. Source: CS-1-TYP
+    note 7 (for the bin vent on concrete, CS-12-CON).
+  - Ridge cap: cap over the panel, metal closure set in sealant or tape, closure fasteners, Flex at the cap, Thane over all,
+    closures recessed at least 6" under the cap. Source: F-21-M-TYP (note 12).
+  - Sleeper supports: sleeper raised and reset, Flex and topcoat unbroken underneath (nothing wraps the block), walkpad after full
+    cure. Source: CS-8-TYP.
+  - Pipe clusters: Chem-Curb set in M-1 sealant, pocket filled with Flex tapered to shed water, Flex at least 4" and topcoat at
+    least 2" up each penetration. Source: P-8-TYP.
+  - Penthouse walls: counterflashing fixed and left in place, sealant bead at its top, Flex up to it, skirt metal at least 4" over
+    the system. Source: W-13-TYP (note 7).
+  - Edge metal: flange stripped in, Flex over the stripping and the field, topcoat over the Flex. No tape at the edge joint and no
+    exposed face fasteners; the only fastener is the concealed cleat. Source: F-1-TYP, F1-34-FT-3D note 10.
+  - Wrap extents read off the sheets. SPF pipe: Flex at least 1" above the collar flashing, topcoat 1" past it (SPF-4-TYP).
+    Gallery support: tape 2" up and 4" out, Flex at least 6" past it, topcoat at least 2" past the Flex (P-5-C). The stand-in
+    shapes haven't been checked against these yet (§3).
+  - Sheet numbers corrected from the title blocks: SPF curb/hatch is SPF-13, SPF pipe SPF-4, SPF ridge SPF-3. The sleeper sheet is
+    CS-8-TYP (two library file names are swapped). Two different sheets carry W-7-TYP (gutter seams, concrete wall).
+- **Open questions for Dennis / RMI technical side:** [catalog §5](RMI_Library_Catalog.md#5-open-questions-for-rmi), 22 open.
+  New this week: #20–22 (P-8, W-13 and F-1 sizes; #22 narrowed on 15 Sept once the drawing settled tape and fasteners). Also open
+  (§3): do reps see ballasted single-ply roofs? For the team (§3): do saved prospects live on the laptop or in a shared folder?
+- **Tracker check (18 Sept):** all 28 detail rows, B1–B9 and #0–#13 match the repo, and no status changed. Counts:
+  17 MODELLED+SPLICED · 0 MODELLED · 11 CODE-DRAWN · 0 NOT STARTED.
+- **Next** (CLAUDE.md "What's left" order): the remaining 11 details in the order the buildings need them, starting with the metal
+  roof hatch curb (CS-15-MP, arena), then fine-tuning (labels, camera pass, silo headhouse/shed). Textures, catalog alignment
+  and sending RMI the §5 questions come after, in that order. No new installer can be built until the code-signing / Smart App
+  Control decision (#12).
 
 ### 14 Sept 2026
 

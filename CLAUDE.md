@@ -6,7 +6,7 @@ A private presentation tool for RMI's sales reps, used live with contractors, bu
 then walks through RMI's fluid-applied system (primer → RMI-Flex → RMI-Thane or RMI-White Plus) stage by
 stage. One Three.js scene: whole roof (macro) with click-to-zoom details (micro), a section-view toggle,
 a material estimate and a photo panel for the prospect's own roof. Pre-filling RMI's Project Evaluation form
-is planned, not built (`docs/TRACKER.md` §2 #13, NOT STARTED).
+is built as the PDF export's appendix; a standalone form view is not built (`docs/TRACKER.md` §2 #13).
 
 Direction (10 Sept 2026): the final product is a DESKTOP APPLICATION, not a website. Electron wraps the existing
 index.html + models into an installer (Windows first; Mac if needed) that reps install and run offline in its own
