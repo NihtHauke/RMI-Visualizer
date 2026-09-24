@@ -671,13 +671,14 @@ const curbSteps=(unit,drawing,opt)=>{ opt=opt||{}; return [
   `RMI-Thane or RMI-White Plus over the Flex.`,
   `After full cure, reset the ${unit} and fasten it with stainless steel screws with EPDM washers.`,
   `How far the Flex runs onto the field (18" modelled) and how far it turns down inside the curb (3") is ASSUMED — the drawing gives no dimension (catalog §5 #5).` ]; };
-const fixedCurbSteps=(unit,drawing,surface)=>[
+const fixedCurbSteps=(unit,drawing,surface,extra)=>[
   `The ${unit} cannot be lifted: it stays in place. Remove the (E) fasteners at the skirt.`,
   `Clean, repair, prepare and prime the curb and the ${surface} per the RMI Specification Guide Manual (${drawing}). Adhesion test first (note 9).`,
   `RMI-Flex flashing coat up the curb to the underside of the (E) vertical metal, encapsulating the (E) flashing.`,
   `RMI-Thane or RMI-White Plus over the Flex.`,
   `New 24 ga. skirt metal extending a minimum 4" down over the RMI system, fastened with stainless steel screws with EPDM washers.`,
-  `Skirt fitted after the topcoat is ASSUMED — the drawing shows the finished assembly, not the order. Flex apron and turn-down sizes as for the CS-1 curb are ASSUMED (§5 #5).` ];
+  `Skirt fitted after the topcoat is ASSUMED — the drawing shows the finished assembly, not the order. How far the Flex runs onto the ${surface?'roof':'deck'} (18" modelled) is ASSUMED (§5 #5).`,
+  ...(extra||[]) ];
 const spfCurbSteps=(unit)=>[
   `Clean and prime all surfaces as the manufacturers require (SPF-13-TYP note 9).`,
   `Spray foam field-tapered up the ${unit} curb; minimum SPF density 3.00 lb everywhere for warranty (note 10). Gaps too wide for backer rod and sealant get the specified tape (note 8).`,
@@ -685,15 +686,17 @@ const spfCurbSteps=(unit)=>[
   `RMI-Thane or RMI-White Plus over the Flex.`,
   `New skirt metal flashing over the top of the RMI system.`,
   `How high the Flex runs up the curb, and whether the ${unit} is lifted for the work, is ASSUMED — SPF-13-TYP does not say (§5 #15).` ];
+const METAL_PANEL_NOTE=`The sheet does not draw the roof panel. The curb notched over the ribs so they run on under and around it, its top held level on the slope (taller on the down-slope side), and the Flex carried on over any rib its 18" edge lands on are ASSUMED (§5 #24).`;
 const STEPS = {
   curb: [
-    `Lift the unit off the exposed metal curb. It goes back only after the RMI system has fully cured.`,
+    `Lift the unit off the exposed metal curb — with the counterflashing that is its own downturned flange (CS13-1-8-3D). It goes back only after the RMI system has fully cured.`,
     `Clean, repair, prepare and prime the curb and the metal panel around it per the RMI Specification Guide Manual (CS-13-MP). Adhesion test first (note 9).`,
-    `RMI-Flex flashing coat from the panel up the full curb wall, over the top and onto the interior of the curb.`,
+    `RMI-Flex flashing coat from the panel, over every rib, up the full curb wall, over the top and onto the interior of the curb.`,
     `RMI-Thane or RMI-White Plus over the Flex.`,
-    `After full cure, reset the unit and fasten it with stainless steel screws with EPDM washers.`,
+    `After full cure, reset the unit and fasten it through the counterflashing with stainless steel screws with EPDM washers.`,
     `Note 7: the same detail covers every curb-mounted unit that can be lifted — vents, ducts, HVAC, hatches, skylight domes.`,
-    `How far the Flex runs onto the panel from the curb (18" modelled) and down inside (3") is ASSUMED — the drawing gives no dimension (§5 #5).` ],
+    `How far the Flex runs onto the panel from the curb (18" modelled) and down inside (3") is ASSUMED — the drawing gives no dimension (§5 #5).`,
+    METAL_PANEL_NOTE ],
   lap: [
     `Check the panels. Replace damaged, loose or missing fasteners. Treat rusted metal with an RMI approved application; rust with pinholes or lost integrity means patch, overlay or replace the panel (note 10). Ill-fitting overlapping panels can void the warranty — confirm with the panel manufacturer (note 12).`,
     `Bead of RMI approved sealant at all voids in the lap.`,
@@ -721,13 +724,15 @@ const STEPS = {
     `There is no SPF skylight drawing in the RMI library. Treating the panel as a curb-mounted unit per SPF-13-TYP is ASSUMED (§5 #13).`,
     ...spfCurbSteps('skylight') ],
   vent: [
-    `Treat all surface rust; replace or repair defective metal (Plate D).`,
-    `Clean the galvanized or coated metal thoroughly — new metal with xylene or solvents to remove oils. No RMI material over silicone-based coatings (legend 1).`,
-    `Prime — required under all Flex, minimum 1 gal per 1,000 sq ft (legend 2). Adhesion test after preparation.`,
-    `Seal, prime and Flex all joints, connections and fasteners; replace loose or missing fasteners. Some conditions need tape or Flex with fabric.`,
-    `Optional: RMI-Flex over the entire vent surface where the metal is pitted but sound (legend 4).`,
-    `RMI-Thane 22 mil or RMI-White Plus 30 mil, minimum two coats; test the sides and underside first for runs and sags (legend 5).`,
-    `The curb-to-panel wrap shown in 3D is ASSUMED — the library has no vent drawing for metal roofs (§5 #12).` ],
+    `There is no vent sheet for metal roofs in the RMI library. CS-13-MP note 7 names vents and ducts among the curb-mounted units that can be lifted, so the curb takes the CS-13-MP assembly. That this vent sits on a curb and can be lifted is ASSUMED — a fixed one would follow CS-15-MP (§5 #12).`,
+    `Lift the vent off the exposed metal curb, with the counterflashing that is its own flange. It goes back only after the RMI system has fully cured.`,
+    `Treat all surface rust; replace or repair defective metal (Plate D). Clean, repair, prepare and prime the curb and the metal panel around it per the RMI Specification Guide Manual (CS-13-MP). Adhesion test first (note 9).`,
+    `RMI-Flex flashing coat from the panel, over every rib, up the full curb wall, over the top and onto the interior of the curb.`,
+    `RMI-Thane or RMI-White Plus over the Flex.`,
+    `After full cure, reset the vent and fasten it through the counterflashing with stainless steel screws with EPDM washers.`,
+    `The vent's own metal is Plate D work: clean the galvanized metal (xylene or solvents on new metal; nothing over silicone coatings), prime, and seal, prime and Flex all joints, connections and fasteners; RMI-Thane 22 mil or RMI-White Plus 30 mil, minimum two coats. The hood is drawn bare in the 3D.`,
+    `The gooseneck hood and every size are ASSUMED; the Flex apron (18") and the turn-down inside the curb (3") as for the other curbs (§5 #5).`,
+    METAL_PANEL_NOTE ],
   ventSpf: [
     `Clean and prime all surfaces as the manufacturers require (SPF-16-TYP note 9).`,
     `Metal base or sleeve with its nailer flange sized to suit the foam taper and the vent top; wood nailer.`,
@@ -769,7 +774,7 @@ const STEPS = {
     `RMI-Flex flashing coat a minimum 3" out from the inlet across the gutter floor and 3" down into the inlet tube.`,
     `RMI-Thane a minimum 1" into the inlet tube past the Flex.`,
     `Water test the finished installation (note 10).` ],
-  hatch: fixedCurbSteps('hatch','CS-15-MP','metal panel around it'),
+  hatch: fixedCurbSteps('hatch','CS-15-MP','metal panel around it',[METAL_PANEL_NOTE]),
   hatchSpf: spfCurbSteps('hatch'),
   hatchCon: [ ...fixedCurbSteps('hatch','CS-14-CON','exposed concrete around it').slice(0,1),
     `Clean, repair, prepare and prime the concrete curb and the deck per the RMI Specification Guide Manual for each exposed surface (CS-14-CON). Adhesion test and moisture scan first (note 9).`,
@@ -887,8 +892,8 @@ const FLAT_HATCH={ drawing:'CS-1-TYP', concept:'CS1-18-3D', steps:curbSteps('hat
 const FLAT_VENT={ name:'Vent / duct curb', drawing:'CS-1-TYP', concept:'CS1-18-3D', steps:curbSteps('vent','CS-1-TYP'), src:'Vents and ducts are named in CS-1-TYP note 7 — VERIFIED: the same curb assembly as the RTU, the vent lifted and reset after cure. Curb and hood sizes are ASSUMED.' };
 const DETAILS = {
   curb:   { name:'Curb-mounted HVAC unit', drawing:'CS-13-MP', concept:'CS13-1-8-3D', dist:21, phi:1.18, theta:0.85, drop:4.6, menu:'HVAC curb', steps:STEPS.curb, byRoof:{ spf:{ drawing:'SPF-13-TYP', concept:'B-1-SPF-1-3D', steps:spfCurbSteps('HVAC'), src:'Assembly per SPF-13-TYP (SPF (E) HVAC curb flashing). Wrap height is ASSUMED.' } },
-    layers:[{k:'existing',label:'(E) metal curb, flashing skirt and counterflashing; unit lifted',color:'#AEB3B0'},{k:'primer',label:'Primer on curb, flashing and the panel around it',color:'#E8D7A6'},{k:'flex',label:'Flex from the panel up the full curb wall, over the top, onto the interior',color:'#D9A21B'},{k:'thane',label:'Topcoat over all; counterflashing and unit reset after cure',color:'#C3C7CC'}],
-    src:'Assembly per CS-13-MP and CS13-1-8-3D — VERIFIED: Flex up the full curb wall and over the top to the interior, counterflashing above, unit lifted and reset after cure.' },
+    layers:[{k:'existing',label:'(E) exposed metal curb on the panel, the ribs running under and around it; unit and its counterflashing lifted',color:'#AEB3B0'},{k:'primer',label:'Clean, repair and prime the curb and the panel around it',color:'#E8D7A6'},{k:'flex',label:'Flex from the panel, over every rib, up the full curb wall, over the top, into the curb',color:'#D9A21B'},{k:'thane',label:'Topcoat over all; unit reset after cure, SS screws with EPDM washers through its counterflashing',color:'#C3C7CC'}],
+    src:'Assembly per CS-13-MP and CS13-1-8-3D — VERIFIED: an (E) exposed metal curb (no membrane flashing skirt); RMI-Flex up the full curb wall, over the top and into the interior of the curb; RMI-Thane / White over it; the unit lifted, reset after full cure and fastened with stainless steel screws with EPDM washers through its downturned flange, the counterflashing the render draws with a kicked-out drip. Neither the sheet nor the render draws the roof panel, so how the curb meets it is ASSUMED: the curb notched over the ribs so they run under and around it, its top level on the slope, the Flex following every rib 18" out. Also ASSUMED: the 8-ft curb, 18" at its centre, the 2" insulated wall, the 3" turn-down, the 4" counterflashing, screws at 12" o.c., the unit.' },
   lap:    { name:'R-panel side lap', drawing:'F-8-TYP', concept:'F8-2-FT-3D', dist:3.5, phi:1.2, theta:0.95, drop:0.2, menu:'Side laps', steps:STEPS.lap,
     layers:[{k:'existing',label:'(E) min 24 ga. panels lapped at a major rib, fastened through the crest; rust treated, damaged/loose fasteners replaced',color:'#AEB3B0'},{k:'primer',label:'Bead of approved sealant at all voids; clean and prime the lap and fasteners',color:'#E8D7A6'},{k:'flex',label:'Flex fully encapsulates the lap rib and its fasteners, rib to flat on both sides',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything; optional Flex base coat to the whole field',color:'#C3C7CC'}],
     src:'Assembly per F-8-TYP with F8-2-FT-3D / F8-10-FT-3D — VERIFIED: two panels overlap at a major rib and are fastened through the crest; sealant bead at the voids; Flex fully encapsulates the fasteners and the lap, crest to flat both sides; topcoat over all; a Flex base coat to the field is optional. Note 12: ill-fitting panels with excessive movement can void the warranty; note 10: rust with pinholes must be patched or replaced. The model is a 16" x 6-ft panel section: the rib profile, 24 ga. drawn at 0.05", the 1" / 3/4" lap lips, lap fasteners at 12" o.c., Flex 2" past the rib base and the coat thicknesses are ASSUMED.' },
@@ -898,9 +903,9 @@ const DETAILS = {
   mskylight:{ name:'Flush-mounted skylight panel', drawing:'F-12-TYP', concept:'—', dist:16, phi:1.1, theta:0.6, drop:0.4, menu:'Skylight panels', steps:STEPS.mskylight,
     layers:[{k:'existing',label:'Existing translucent panel lapped into the metal',color:'#AEB3B0'},{k:'primer',label:'Primer on the laps around the panel',color:'#E8D7A6'},{k:'flex',label:'Flex over every lap and fastener around the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over the metal; panel left clear',color:'#C3C7CC'}],
     src:'Assembly per F-12-TYP. No 3D concept render; geometry is ASSUMED.', byRoof:{ spf:{ drawing:'—', steps:STEPS.mskylightSpf, src:'No SPF skylight drawing in the library; treated as a curb per SPF-13-TYP. ASSUMED.' } } },
-  vent:   { name:'Roof exhaust vent', drawing:'Plate D', concept:'—', dist:12, phi:1.1, theta:2.6, drop:2.0, menu:'Vents', steps:STEPS.vent,
-    layers:[{k:'existing',label:'Existing vent curb and gooseneck hood',color:'#AEB3B0'},{k:'primer',label:'Primer on curb and surrounding panel',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb and out onto the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
-    src:'Metal ducts, vents and curbs per Plate D. No dedicated vent drawing for metal roofs in the library; assembly is ASSUMED.', byRoof:{ spf:{ drawing:'SPF-16-TYP', steps:STEPS.ventSpf, src:'Assembly per SPF-16-TYP (roof mounted vent). Wrap height is ASSUMED.' }, concrete:{ name:'Bin vent', drawing:'CS-12-CON', steps:STEPS.ventCon, src:'Treated as a curb on exposed concrete per CS-12-CON. ASSUMED.' }, tpo:FLAT_VENT, modbit:FLAT_VENT, gravel:FLAT_VENT } },
+  vent:   { name:'Roof exhaust vent', drawing:'CS-13-MP', concept:'CS13-1-8-3D', dist:12, phi:1.1, theta:2.6, drop:2.0, menu:'Vents', steps:STEPS.vent,
+    layers:[{k:'existing',label:'(E) gooseneck vent on an exposed metal curb, the ribs running under and around it; vent lifted',color:'#AEB3B0'},{k:'primer',label:'Rust treated; clean and prime the curb and the panel around it',color:'#E8D7A6'},{k:'flex',label:'Flex from the panel, over every rib, up the curb, over the top, into the curb',color:'#D9A21B'},{k:'thane',label:'Topcoat over all; vent reset after cure (SS screws, EPDM washers)',color:'#C3C7CC'}],
+    src:'There is no vent sheet for metal roofs in the RMI library. CS-13-MP note 7 names VENTS, DUCTS among the curb-mounted units that can be lifted — VERIFIED — so the curb takes the CS-13-MP assembly: Flex up the curb, over the top and into it, topcoat over, the vent lifted and reset after cure with stainless steel screws with EPDM washers through its counterflashing. The vent\'s own metal is Plate D work (seal, prime and Flex all joints, connections and fasteners; Thane or White, minimum two coats) and is drawn bare. ASSUMED: that the vent is curb-mounted and liftable, the gooseneck hood, every size, and how the curb meets the panel (the sheet does not draw it).', byRoof:{ spf:{ drawing:'SPF-16-TYP', steps:STEPS.ventSpf, src:'Assembly per SPF-16-TYP (roof mounted vent). Wrap height is ASSUMED.' }, concrete:{ name:'Bin vent', drawing:'CS-12-CON', steps:STEPS.ventCon, src:'Treated as a curb on exposed concrete per CS-12-CON. ASSUMED.' }, tpo:FLAT_VENT, modbit:FLAT_VENT, gravel:FLAT_VENT } },
   mpipe:  { name:'Pipe penetration, EPDM boot', drawing:'P-9-MP', concept:'—', dist:8, phi:1.05, theta:2.5, drop:2.2, menu:'Pipes', steps:STEPS.mpipe,
     layers:[{k:'existing',label:'Existing pipe with EPDM boot',color:'#AEB3B0'},{k:'primer',label:'Primer on boot and panel',color:'#E8D7A6'},{k:'flex',label:'Flex encapsulates the boot and its flange',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
     src:'Assembly per P-9-MP (EPDM boot). P-10-MP covers the metal-jack alternative.', byRoof:{ spf:{ drawing:'SPF-4-TYP', steps:STEPS.mpipeSpf, src:'Assembly per SPF-4-TYP (SPF configuration, penetration): Flex min 1" above the rain-collar flashing, topcoat min 1" above the Flex.' } } },
@@ -911,8 +916,8 @@ const DETAILS = {
     layers:[{k:'existing',label:'Existing outlet tube through the gutter floor',color:'#AEB3B0'},{k:'primer',label:'Primer on outlet flange and gutter floor',color:'#E8D7A6'},{k:'flex',label:'Flex seals the flange into the gutter and down into the outlet',color:'#D9A21B'},{k:'thane',label:'Topcoat over the gutter floor',color:'#C3C7CC'}],
     src:'Assembly per D-8-TYP and D8-9-FT-3D.' },
   hatch:  { name:'Roof hatch', drawing:'CS-15-MP', concept:'—', dist:12, phi:1.1, theta:0.8, drop:1.6, menu:'Roof hatch', steps:STEPS.hatch,
-    layers:[{k:'existing',label:'Existing hatch curb and lid',color:'#AEB3B0'},{k:'primer',label:'Primer on curb wall and panel',color:'#E8D7A6'},{k:'flex',label:'Flex up the curb to the lid frame and out onto the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
-    src:'Access and smoke hatches are named in CS-1-TYP note 7 (flat roofs) — VERIFIED; on metal, CS-15-MP fixed curb. Flex up the full curb and over the top; hatch lifted and reset.', byRoof:{ spf:{ drawing:'SPF-13-TYP', steps:STEPS.hatchSpf, src:'Curb per SPF-13-TYP. Hatch-specific wrap is ASSUMED.' }, concrete:{ name:'Manway / bin hatch', drawing:'CS-14-CON', steps:STEPS.hatchCon, src:'Fixed curb on exposed concrete per CS-14-CON.' }, tpo:FLAT_HATCH, modbit:FLAT_HATCH, gravel:FLAT_HATCH } },
+    layers:[{k:'existing',label:'(E) hatch on a fixed exposed metal curb, the ribs running under and around it; (E) fasteners out at prep',color:'#AEB3B0'},{k:'primer',label:'Clean, repair and prime the curb and the panel around it',color:'#E8D7A6'},{k:'flex',label:'Flex from the panel up the curb to the underside of the (E) vertical metal',color:'#D9A21B'},{k:'thane',label:'Topcoat over the Flex; new 24 ga. skirt metal min 4" over the system, SS screws with EPDM washers',color:'#C3C7CC'}],
+    src:'On metal the hatch is a fixed unit per CS-15-MP, whose note 7 names ACCESS HATCH, SMOKE HATCH among the curb-mounted units that cannot be lifted — VERIFIED: the hatch stays in place; (E) fasteners removed; RMI-Flex up the curb to the underside of the (E) vertical metal, encapsulating the (E) flashing; RMI-Thane / White over it; new 24 ga. skirt metal extending a minimum 4" over the RMI system, fastened with stainless steel screws with EPDM washers. There is no 3D render and the sheet does not draw the panel. ASSUMED: the skirt going on after the topcoat, the curb notched over the ribs with its top level on the slope, the 18" apron, and every size (48" x 36" curb, 3" vertical metal, lid standing open 70 degrees).', byRoof:{ spf:{ drawing:'SPF-13-TYP', steps:STEPS.hatchSpf, src:'Curb per SPF-13-TYP. Hatch-specific wrap is ASSUMED.' }, concrete:{ name:'Manway / bin hatch', drawing:'CS-14-CON', steps:STEPS.hatchCon, src:'Fixed curb on exposed concrete per CS-14-CON.' }, tpo:FLAT_HATCH, modbit:FLAT_HATCH, gravel:FLAT_HATCH } },
   ridge:  { name:'Ridge cap', drawing:'F-21-M-TYP', concept:'—', dist:12, phi:1.0, theta:0.2, drop:0, menu:'Ridge cap', steps:STEPS.ridge, byRoof:{ spf:{ drawing:'SPF-3-TYP', steps:STEPS.ridgeSpf, src:'Assembly per SPF-3-TYP (SPF ridge line configuration).' } },
     layers:[{k:'existing',label:'Existing ridge cap and closures',color:'#AEB3B0'},{k:'primer',label:'Primer on cap laps and fasteners',color:'#E8D7A6'},{k:'flex',label:'Flex over cap laps and both edges',color:'#D9A21B'},{k:'thane',label:'Topcoat over everything',color:'#C3C7CC'}],
     src:'Assembly per F-21-M-TYP — VERIFIED: (E) ridge cap over the (E) metal panel with a metal closure at the panel end, the closure set in sealant or tape with a ribbon of sealant at any voids, closure fasteners through the cap, RMI-Flex at the cap and the topcoat over all (the drawing labels it RMI-Thane; note 10 puts the wear surface coating per the RMI specification guide, where Plate MP offers Thane or White Plus). Note 12 gives the one dimension on the drawing: closures must be recessed a minimum 6\" under the ridge cap or flashing metal, or additional flat stock flashing is added — the model recesses the closure 7.8\". Note 11: confirm closures are present and tight fitting, replace ill-fitting ones and seal their edges before the Flex goes on. Note 13: foam closures are not permissible without prior written approval from RMI. There is no 3D concept render for this detail, so everything else is ASSUMED: the 4-ft section, the 6\" cap lap and its joggled end, the closure 18\" from the ridge and its 3\" width, the notches where the ribs pass, fasteners at 12\" o.c., how far the Flex turns over the cap edge and runs onto the panel, and every coat thickness.' },
@@ -1083,7 +1088,13 @@ const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mo
   /* CS-1-TYP note 7: the same curb assembly carries hatches, skylight domes, vents and ducts — four units on one curb (scripts/rmi_curb.py) */
   ridge:'models/metal-ridge-cap-F-21-M-TYP.glb', hatch:'models/roof-hatch-CS-1-TYP.glb', skylight:'models/curb-skylight-CS-1-TYP.glb', exhaust:'models/kitchen-exhaust-fan-CS-1-TYP.glb', binvent:'models/bin-vent-CS-1-TYP.glb',
   sleeper:'models/sleeper-support-CS-8-TYP.glb', pitchpan:'models/chem-curb-P-8-TYP.glb', penthouse:'models/wall-counterflashing-fixed-W-13-TYP.glb',
-  edge:'models/perimeter-edge-metal-F-1-TYP.glb', ej:'models/expansion-joint-A-3-TYP.glb', support:'models/circular-support-P-5-C.glb' };
+  edge:'models/perimeter-edge-metal-F-1-TYP.glb', ej:'models/expansion-joint-A-3-TYP.glb', support:'models/circular-support-P-5-C.glb',
+  /* CS-13-MP (liftable) / CS-15-MP (fixed) units on a sloped metal roof, spliced into the slope like the lap (MCURB): one model per roof profile
+     and pitch — the curb's top is level on the sloped panel (scripts/rmi_metal_curb.py) */
+  'curb-rpanel-1in12':'models/metal-curb-unit-rpanel-1in12-CS-13-MP.glb', 'curb-sseam-1in12':'models/metal-curb-unit-sseam-1in12-CS-13-MP.glb',
+  'vent-rpanel-1in12':'models/metal-curb-vent-rpanel-1in12-CS-13-MP.glb', 'vent-sseam-1in12':'models/metal-curb-vent-sseam-1in12-CS-13-MP.glb',
+  'vent-rpanel-3in12':'models/metal-curb-vent-rpanel-3in12-CS-13-MP.glb', 'vent-sseam-3in12':'models/metal-curb-vent-sseam-3in12-CS-13-MP.glb',
+  'hatch-rpanel-3in12':'models/roof-hatch-rpanel-3in12-CS-15-MP.glb', 'hatch-sseam-3in12':'models/roof-hatch-sseam-3in12-CS-15-MP.glb' };
 const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=null;
 function loadModel(file){ if(modelCache[file]) return modelCache[file];
   modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
@@ -1101,7 +1112,7 @@ function mountModel(id,parent,x,z,rotY,fallback,skins){ const file=MODELS[id]; i
 function applyModels(p,seat){ const white=S.topcoat==='white';
   modelInstances.forEach(h=>{ if(!h.parent) return; const gt=h.userData.gate||{}; h.traverse(o=>{ if(!o.isMesh||o.userData.helper) return; const L=o.userData.layer; if(o.userData.reset){ o.visible = p.prep<0.5 || p.thane>0; return; } if(o.userData.after){ o.visible = p.thane>=1; return; }   /* W-13-TYP skirt metal: over the finished system */ if(o.userData.pad){ o.visible=!!seat; return; }   /* CS-8-TYP walkpad: out while the sleeper is raised, set after cure */if(o.userData.crimp){ o.visible = o.userData.crimp==='before' ? p.prep<0.5 : p.prep>=0.5; return; }
     if(L==='primer') o.visible= o.userData.tape ? p.prep>=0.5 : p.primer>(gt.primer||0); else if(L==='flex') o.visible=p.flex>(gt.flex||0); else if(L==='topcoat'){ o.visible=p.thane>0; o.material.color.set(white?0xF4F3EE:0xDCE0E4); o.material.metalness=white?0.04:0.38; o.material.roughness=white?0.62:0.3; }
-    if(o.userData.lift){ if(o.userData.y0===undefined) o.userData.y0=o.position.y; o.position.y=o.userData.y0-(seat?6*0.0254:0); } }); }); }
+    if(o.userData.lift){ if(o.userData.y0===undefined) o.userData.y0=o.position.y; o.position.y=o.userData.y0-(seat?(h.userData.liftIn||6)*0.0254:0); } }); }); }   /* liftIn: how far the model was built lifted (6" unless the mount says otherwise) */
 
 
 /* -----------------------------------------------------------------
@@ -1119,11 +1130,18 @@ const LAP={ B:6.6, T:3, H:1.32, TP:0.08, TF:0.30, TT:0.36, FOOT:2, BAY_W:16, BAY
 // manufacturing slope (scripts/build_standing_seam_F-9-TYP.py) is built from the SEAM / SHELL profiles below.
 const SEAMD={ BAY_W:24, BAY_L:72 };   /* inches; the seam model's bay — one full 24"-o.c. panel width x 6 ft */
 const RIDGED={ BAY_W:48 };   // inches; the seam model's bay — one full 24"-o.c. panel width x 6 ft
+// Metal-roof curb units spliced into a slope the same way (CS-13-MP HVAC curb and vent, CS-15-MP hatch): the bay each model fills, in ft —
+// half-width across the ribs per roof profile (both edges on a pan centre, so a unit sits at an even x, a vent at an odd x) and half-length
+// along the slope. Same numbers as the Variant(...) lines in scripts/build_metal_curb_unit_CS-13-MP.py, build_metal_curb_vent_CS-13-MP.py
+// and build_roof_hatch_metal_CS-15-MP.py, which also carry each building's lap phase and purlin rows — move a unit and rebuild its model.
+const MCURB={ curb:{hx:{rpanel:7,sseam:6},hz:6,lift:14}, vent:{hx:{rpanel:4,sseam:3},hz:3,lift:14}, hatch:{hx:{rpanel:5,sseam:4},hz:4} };   // lift: inches a CS-13-MP unit is raised through the work stages — clear of its own 4" counterflashing, so the Flex over the curb top shows (LIFT_IN in rmi_metal_curb.py)
 function lapProfile(off,foot){ const hw=LAP.B/2, tw=LAP.T/2, H=LAP.H, ln=Math.hypot(tw-hw,H), nx=H/ln, ny=(hw-tw)/ln; const p0=[hw+off*nx,off*ny], p1=[tw+off*nx,H+off*ny]; const xs=y=>p0[0]+(y-p0[1])*(p1[0]-p0[0])/(p1[1]-p0[1]);
   const right=[[foot,0],[foot,off],[xs(off),off],[xs(H+off),H+off]]; return right.slice().reverse().map(([x,y])=>[-x/12,y/12]).concat(right.map(([x,y])=>[x/12,y/12])); }   /* closed (x,y) polygon in feet */
-// A slope sheet (L x SL, drawn flat then rotated -90 about x) with one rectangular bay cut out; bay in slope coords (x0..x1 across, z0..z1 down-slope).
-function slopeSheet(L,SL,bay){ const sh=new THREE.Shape(); sh.moveTo(-L/2,-SL/2); sh.lineTo(L/2,-SL/2); sh.lineTo(L/2,SL/2); sh.lineTo(-L/2,SL/2); sh.closePath();
-  const h=new THREE.Path(); h.moveTo(bay.x0,SL/2-bay.z1); h.lineTo(bay.x0,SL/2-bay.z0); h.lineTo(bay.x1,SL/2-bay.z0); h.lineTo(bay.x1,SL/2-bay.z1); h.closePath(); sh.holes.push(h); return new THREE.ShapeGeometry(sh); }
+// A slope sheet (L x SL, drawn flat then rotated -90 about x) with rectangular bays cut out; bays in slope coords (x0..x1 across, z0..z1 down-slope).
+function slopeSheet(L,SL,bays){ const sh=new THREE.Shape(); sh.moveTo(-L/2,-SL/2); sh.lineTo(L/2,-SL/2); sh.lineTo(L/2,SL/2); sh.lineTo(-L/2,SL/2); sh.closePath();
+  bays.forEach(bay=>{ const h=new THREE.Path(); h.moveTo(bay.x0,SL/2-bay.z1); h.lineTo(bay.x0,SL/2-bay.z0); h.lineTo(bay.x1,SL/2-bay.z0); h.lineTo(bay.x1,SL/2-bay.z1); h.closePath(); sh.holes.push(h); }); return new THREE.ShapeGeometry(sh); }
+// What is left of 0..SL along a rib (or lap strip) at x once every bay it runs through is taken out: [[za,zb], ...]
+function runsAt(bays,x,SL){ const cut=bays.filter(b=>x>b.x0&&x<b.x1).map(b=>[b.z0,b.z1]).sort((p,q)=>p[0]-q[0]); const out=[]; let z=0; cut.forEach(([a,b])=>{ if(a>z) out.push([z,a]); z=Math.max(z,b); }); if(z<SL) out.push([z,SL]); return out; }
 function buildGable(cfg){
   const {L,W,H,PITCH=1/12} = cfg; const RUN=W/2, RISE=RUN*PITCH, SL=Math.sqrt(RUN*RUN+RISE*RISE), ANG=Math.atan(PITCH);
   if(cfg.pitchLabel) cfg.pitchLabel(PITCH);
@@ -1136,10 +1154,10 @@ function buildGable(cfg){
   const slopes=[]; const mm=new THREE.Matrix4(); const e=new THREE.Object3D();
   const ribPitch = surface==='sseam'?2:1, ribW = surface==='sseam'?0.14:0.28, ribH = surface==='sseam'?0.2:0.11, lapPitch = surface==='sseam'?2:3;
   function makeSlope(sign){
-    const outer=new THREE.Group(); outer.position.set(0,H+RISE,0); outer.rotation.y = sign>0?0:Math.PI; const g=new THREE.Group(); g.rotation.x=ANG; outer.add(g); g0.add(outer);
+    const outer=new THREE.Group(); outer.position.set(0,H+RISE,0); outer.rotation.y = sign>0?0:Math.PI; const g=new THREE.Group(); g.rotation.x=ANG; g.userData.slopeSide=sign>0?'right':'left'; outer.add(g); g0.add(outer);
     const pl=new THREE.Mesh(new THREE.PlaneGeometry(L,SL), metal?M.panel:M.spf); pl.rotation.x=-Math.PI/2; pl.position.set(0,0,SL/2); pl.receiveShadow=true; g.add(pl);
     const ov=new THREE.Mesh(new THREE.PlaneGeometry(L,SL),M.topcoat); ov.rotation.x=-Math.PI/2; ov.position.set(0,metal?0.03:0.11,SL/2); ov.receiveShadow=true; g.add(ov);
-    const s={sign,g,laps:[],fz:[],rusty:[]};
+    const s={sign,g,laps:[],fz:[],rusty:[],fills:[]};
     if(metal){
       const trap=(bw,tw,h,len)=>{ const sh=new THREE.Shape(); sh.moveTo(-bw/2,0); sh.lineTo(-tw/2,h); sh.lineTo(tw/2,h); sh.lineTo(bw/2,0); sh.closePath(); const ge=new THREE.ExtrudeGeometry(sh,{depth:len,bevelEnabled:false}); ge.translate(0,0,-len/2); return ge; };
       const poly=(pts,len)=>{ const sh=new THREE.Shape(); pts.forEach(([x,y],i)=> i?sh.lineTo(x,y):sh.moveTo(x,y)); sh.closePath(); const ge=new THREE.ExtrudeGeometry(sh,{depth:len,bevelEnabled:false}); ge.translate(0,0,-len/2); return ge; };
@@ -1149,19 +1167,26 @@ function buildGable(cfg){
       for(let i=1;i<L/lapPitch;i++) s.laps.push(-L/2+ribPitch/2+Math.round(i*lapPitch/ribPitch)*ribPitch );   // laps sit on a rib (R-panel) or are the seam itself (standing seam)
       // Model bay (R-panel side lap F-8-TYP / standing seam F-9-TYP): the field sheets, the rib and its overlays stop at the bay and the Blender section fills it
       const sseam=surface==='sseam', BD = sseam?SEAMD:LAP; const lm = sseam?cfg.seamModel:(surface==='rpanel'?cfg.lapModel:null);
-      const bay = lm&&lm.slope===(sign>0?'right':'left') ? (()=>{ const x=s.laps.reduce((p,q)=>Math.abs(q-lm.x)<Math.abs(p-lm.x)?q:p); return {x,z:lm.z,x0:x-BD.BAY_W/24,x1:x+BD.BAY_W/24,z0:lm.z-BD.BAY_L/24,z1:lm.z+BD.BAY_L/24,i:Math.round((x+L/2-ribPitch/2)/ribPitch),j:s.laps.indexOf(x)}; })() : null; s.bay=bay;
-      if(bay){ [pl,ov].forEach(m=>{ m.geometry.dispose(); m.geometry=slopeSheet(L,SL,bay); }); }
+      const bay = lm&&lm.slope===(sign>0?'right':'left') ? (()=>{ const x=s.laps.reduce((p,q)=>Math.abs(q-lm.x)<Math.abs(p-lm.x)?q:p); return {x,z:lm.z,x0:x-BD.BAY_W/24,x1:x+BD.BAY_W/24,z0:lm.z-BD.BAY_L/24,z1:lm.z+BD.BAY_L/24}; })() : null; s.bay=bay;
+      // CS-13-MP / CS-15-MP units (cfg.units, MCURB) take their bays out the same way; unitAt() mounts the model that fills each one
+      const ptag=`${Math.round(PITCH*12)}in12`;
+      s.unitBays=(cfg.units||[]).filter(u=>u.slope===(sign>0?'right':'left')&&MCURB[u.kind]&&MODELS[`${u.kind}-${surface}-${ptag}`]).map(u=>{ const B=MCURB[u.kind], hx=B.hx[surface];
+        return {x:u.x,z:u.z,x0:u.x-hx,x1:u.x+hx,z0:u.z-B.hz,z1:u.z+B.hz,kind:u.kind,model:`${u.kind}-${surface}-${ptag}`}; });
+      const bays=(bay?[bay]:[]).concat(s.unitBays); s.bays=bays;
+      if(bays.length){ [pl,ov].forEach(m=>{ m.geometry.dispose(); m.geometry=slopeSheet(L,SL,bays); }); }
       const seg=(im,k,x,y,za,zb,gl)=>{ mm.makeScale(1,1,(zb-za)/gl); mm.setPosition(x,y,(za+zb)/2); im.setMatrixAt(k,mm); };   /* an instance of geometry length gl cut down to za..zb */
-      const nR=Math.floor(L/ribPitch), nRi=nR+(bay?1:0); const ribG = surface==='rpanel' ? trap(0.55,0.25,ribH,SL) : poly(SEAM,SL); const ribGO = surface==='rpanel' ? trap(0.62,0.32,ribH+0.03,SL) : poly(SHELL(0.1,0.34),SL);
-      const ribs=new THREE.InstancedMesh(ribG,M.rib,nRi), ribsO=new THREE.InstancedMesh(ribGO,M.topcoat,nRi); const ribY = 0, ribYO = 0.002;
-      for(let i=0;i<nR;i++){ const x=-L/2+ribPitch/2+i*ribPitch; if(bay&&i===bay.i){ seg(ribs,i,x,ribY,0,bay.z0,SL); seg(ribs,nR,x,ribY,bay.z1,SL,SL); seg(ribsO,i,x,ribYO,0,bay.z0,SL); seg(ribsO,nR,x,ribYO,bay.z1,SL,SL); continue; } mm.makeTranslation(x,ribY,SL/2); ribs.setMatrixAt(i,mm); mm.makeTranslation(x,ribYO,SL/2); ribsO.setMatrixAt(i,mm); }
+      const nR=Math.floor(L/ribPitch), ribX=i=>-L/2+ribPitch/2+i*ribPitch; const ribG = surface==='rpanel' ? trap(0.55,0.25,ribH,SL) : poly(SEAM,SL); const ribGO = surface==='rpanel' ? trap(0.62,0.32,ribH+0.03,SL) : poly(SHELL(0.1,0.34),SL);
+      const ribRuns=[]; for(let i=0;i<nR;i++) runsAt(bays,ribX(i),SL).forEach(([za,zb])=>ribRuns.push([ribX(i),za,zb]));   // each rib, less the bays it runs through
+      const ribs=new THREE.InstancedMesh(ribG,M.rib,ribRuns.length), ribsO=new THREE.InstancedMesh(ribGO,M.topcoat,ribRuns.length); const ribY = 0, ribYO = 0.002;
+      ribRuns.forEach(([x,za,zb],k)=>{ seg(ribs,k,x,ribY,za,zb,SL); seg(ribsO,k,x,ribYO,za,zb,SL); });
       ribs.castShadow=true; ribs.receiveShadow=true; g.add(ribs); g.add(ribsO);
       const lapY = 0.002; const LP=lapProfile, hw=LAP.B/2;
       const lapG = surface==='rpanel' ? poly(LP(LAP.TP+LAP.TF,hw+LAP.FOOT+LAP.TF),1) : poly(SHELL(0.06,0.3),1);   // Flex fully encapsulates the lap rib / standing seam, down to the flat
       const lapGP = surface==='rpanel' ? poly(LP(LAP.TP,hw+LAP.FOOT),1) : poly(SHELL(0.03,0.26),1);
       const lapGO = surface==='rpanel' ? poly(LP(LAP.TP+LAP.TF+LAP.TT,hw+LAP.FOOT+LAP.TF+LAP.TT),1) : poly(SHELL(0.1,0.34),1);
-      const nL=s.laps.length+(bay?1:0); s.lapP=new THREE.InstancedMesh(lapGP,M.primer,nL); s.lapF=new THREE.InstancedMesh(lapG,M.flex,nL); const lapO=new THREE.InstancedMesh(lapGO,M.topcoat,nL);
-      s.laps.forEach((x,i)=>{ if(bay&&i===bay.j){ seg(lapO,i,x,0.003,0,bay.z0,1); seg(lapO,nL-1,x,0.003,bay.z1,SL,1); return; } mm.makeScale(1,1,SL); mm.setPosition(x,0.003,SL/2); lapO.setMatrixAt(i,mm); }); g.add(s.lapP); g.add(s.lapF); g.add(lapO); s.lapY=lapY; s.rp=true;
+      s.lapRuns=[]; s.laps.forEach(x=>runsAt(bays,x,SL).forEach(([za,zb])=>s.lapRuns.push([x,za,zb]))); const nL=s.lapRuns.length;   // lap strips stop at the bays too
+      s.lapP=new THREE.InstancedMesh(lapGP,M.primer,nL); s.lapF=new THREE.InstancedMesh(lapG,M.flex,nL); const lapO=new THREE.InstancedMesh(lapGO,M.topcoat,nL);
+      s.lapRuns.forEach(([x,za,zb],k)=>seg(lapO,k,x,0.003,za,zb,1)); g.add(s.lapP); g.add(s.lapF); g.add(lapO); s.lapY=lapY; s.rp=true;
       const eY=(surface==='sseam'?0.3:ribH)+0.02; s.endP=box(L,0.05,1.0,M.primer,0,eY,SL/2,false); s.endF=box(L,0.06,1.0,M.flex,0,eY+0.01,SL/2,false); g.add(s.endP); g.add(s.endF);
       // Ridge band per F-21-M-TYP: the Flex sits at the CAP EDGE and runs out onto the panel from there — the cap
       // covers 0..2.15 ft from the ridge, so a band at the ridge itself was hidden under it. Same numbers as the
@@ -1172,13 +1197,13 @@ function buildGable(cfg){
       // exposed fasteners: every purlin on R-panel; only the end-lap row on standing seam (clips are concealed). The lap model carries its own inside the bay.
       const rows=[]; if(surface==='sseam'){ rows.push(SL/2-0.7); } else { for(let z=4;z<SL-1;z+=5) rows.push(z); }
       const cols=[]; if(surface==='rpanel'){ for(let i=0;i<nR;i++) cols.push(-L/2+ribPitch/2+i*ribPitch); } else { for(let x=-L/2+1.5;x<L/2;x+=1.5) cols.push(x); }
-      const fp=[]; rows.forEach(z=>cols.forEach(x=>{ if(bay&&Math.abs(x-bay.x)<0.01&&z>bay.z0-0.2&&z<bay.z1+0.2) return; fp.push([x,z]); })); const nF=fp.length; const fy = surface==='rpanel'?ribH+0.02:0.05;
+      const fp=[]; rows.forEach(z=>cols.forEach(x=>{ if(bays.some(b=>x>b.x0&&x<b.x1&&z>b.z0-0.2&&z<b.z1+0.2)) return; fp.push([x,z]); })); const nF=fp.length; const fy = surface==='rpanel'?ribH+0.02:0.05;   /* each model carries its own inside its bay */
       // true scale, matching the lap model's 5/8" washer: ~5/8" head, ~1.5" Flex dab, topcoat just past it (sizes ASSUMED). The whole-roof read comes from the rust patches and lap strips.
       s.fast=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.026,0.026,0.04,10),M.fast,nF); const fr=0.0625; s.fastF=new THREE.InstancedMesh(new THREE.CylinderGeometry(fr,fr+0.008,0.04,14),M.flex,nF); const fastO=new THREE.InstancedMesh(new THREE.CylinderGeometry(fr+0.008,fr+0.016,0.04,14),M.topcoat,nF);
       let k=0; fp.forEach(([x,z])=>{ mm.makeTranslation(x,fy,z); s.fast.setMatrixAt(k,mm); mm.makeTranslation(x,fy+0.005,z); s.fastF.setMatrixAt(k,mm); mm.makeTranslation(x,fy+0.01,z); fastO.setMatrixAt(k,mm); s.fz.push(z); k++; });
       s.cRust=new THREE.Color(0x8A4A22); s.cZinc=new THREE.Color(0xB9BEC0); for(let i=0;i<nF;i++){ const r=Math.random()<0.28; s.rusty.push(r); s.fast.setColorAt(i, r?s.cRust:s.cZinc); } s.fast.instanceColor.needsUpdate=true;
-      const nP=Math.round(L*0.38), patch=new THREE.InstancedMesh(new THREE.CircleGeometry(1,14),M.rust,nP); const pool=bay?s.laps.filter((_,i)=>i!==bay.j):s.laps;   /* the model carries its own rust inside the bay */
-      for(let i=0;i<nP;i++){ const x=pool[Math.floor(Math.random()*pool.length)]+(Math.random()-.5)*0.3, z= surface==='sseam'? SL/2-1+Math.random()*3 : 2+Math.random()*(SL-4), sc=0.5+Math.random()*1.4; e.position.set(x,ribH+0.03,z); e.rotation.set(-Math.PI/2,0,0); e.scale.set(sc*0.5,sc*1.6,1); e.updateMatrix(); patch.setMatrixAt(i,e.matrix); }
+      const nP=Math.round(L*0.38), patch=new THREE.InstancedMesh(new THREE.CircleGeometry(1,14),M.rust,nP); const inBay=(x,z)=>bays.some(b=>x>b.x0-0.5&&x<b.x1+0.5&&z>b.z0-1.5&&z<b.z1+1.5);   /* the models carry their own rust inside their bays */
+      for(let i=0;i<nP;i++){ let x,z,n=0; do { x=s.laps[Math.floor(Math.random()*s.laps.length)]+(Math.random()-.5)*0.3; z= surface==='sseam'? SL/2-1+Math.random()*3 : 2+Math.random()*(SL-4); } while(inBay(x,z)&&++n<20); const sc=inBay(x,z)?0.0001:0.5+Math.random()*1.4; e.position.set(x,ribH+0.03,z); e.rotation.set(-Math.PI/2,0,0); e.scale.set(sc*0.5,sc*1.6,1); e.updateMatrix(); patch.setMatrixAt(i,e.matrix); }
       s.fast.castShadow=true; g.add(s.fast); g.add(s.fastF); g.add(fastO); g.add(patch); s.patch=patch;
       if(bay){   // code stand-in for the bay until the model loads (pan, rib, the three lap overlays), toggled like the other gable details
         const fb=new THREE.Group(); fb.position.set(bay.x,0,bay.z); g.add(fb); const bl=bay.z1-bay.z0, bw=bay.x1-bay.x0, d={g:fb,prim:[],flex:[]};
@@ -1190,6 +1215,16 @@ function buildGable(cfg){
         const holder=mountModel(sseam?'sseam':'lap',g,bay.x,bay.z,0,fb,{panel:M.panel,rib:M.rib,fastener:M.fast,rust:M.rust,sealant:M.joint,primer:M.primer,flex:M.flex,topcoat:M.topcoat});   // skinned to the slope's materials so the seams vanish
         if(holder) holder.userData.gate={flex:bay.z0/SL};   // its Flex appears once the lap/seam strip has swept down to the bay
       }
+      // Plain panel for a unit's bay — what the bay shows while its detail is switched off, and under the code stand-in until the model loads:
+      // pan, topcoat sheet, every rib crossing it with its topcoat, and the three coats on its laps (the Flex once the strip has swept down to it)
+      s.bayFill=b=>{ const fb=new THREE.Group(); fb.position.set(b.x,0,b.z); g.add(fb); const bl=b.z1-b.z0, bw=b.x1-b.x0, f={g:fb,prim:[],flex:[],z0:b.z0};
+        const pan=new THREE.Mesh(new THREE.PlaneGeometry(bw,bl),M.panel); pan.rotation.x=-Math.PI/2; fb.add(pan); const ovp=new THREE.Mesh(new THREE.PlaneGeometry(bw,bl),M.topcoat); ovp.rotation.x=-Math.PI/2; ovp.position.y=0.03; fb.add(ovp);
+        const rG=sseam?poly(SEAM,bl):trap(0.55,0.25,ribH,bl), rGO=sseam?poly(SHELL(0.1,0.34),bl):trap(0.62,0.32,ribH+0.03,bl);
+        const CP = sseam ? [SHELL(0.03,0.26),SHELL(0.06,0.3),SHELL(0.1,0.34)] : [LP(LAP.TP,hw+LAP.FOOT),LP(LAP.TP+LAP.TF,hw+LAP.FOOT+LAP.TF),LP(LAP.TP+LAP.TF+LAP.TT,hw+LAP.FOOT+LAP.TF+LAP.TT)];
+        const cG=CP.map(c=>poly(c,bl));
+        for(let i=0;i<nR;i++){ const x=ribX(i); if(x<=b.x0||x>=b.x1) continue; const r=new THREE.Mesh(rG,M.rib); r.position.x=x-b.x; fb.add(r); const ro=new THREE.Mesh(rGO,M.topcoat); ro.position.set(x-b.x,0.002,0); fb.add(ro);
+          if(!s.laps.some(q=>Math.abs(q-x)<0.01)) continue; const pP=new THREE.Mesh(cG[0],M.primer), pF=new THREE.Mesh(cG[1],M.flex), pO=new THREE.Mesh(cG[2],M.topcoat); pP.position.set(x-b.x,0.0015,0); pF.position.set(x-b.x,0.002,0); pO.position.set(x-b.x,0.003,0); fb.add(pP); fb.add(pF); fb.add(pO); f.prim.push(pP); f.flex.push(pF); }
+        s.fills.push(f); return f; };
     } else { // SPF: sweep overlays + pitted foam
       [[M.primerOv,0.05],[M.flexOv,0.08]].forEach(([mat,dy])=>{ const f=new THREE.Mesh(new THREE.PlaneGeometry(L,SL),mat); f.rotation.x=-Math.PI/2; f.position.set(0,dy,SL/2); g.add(f); });
       const nP=Math.round(L*0.5), pits=new THREE.InstancedMesh(new THREE.CircleGeometry(1,12),M.spfPit,nP), fix=new THREE.InstancedMesh(new THREE.CircleGeometry(1,12),M.spfPatch,nP);
@@ -1218,6 +1253,13 @@ function buildGable(cfg){
   // --- detail factories on a slope (local coords). Each returns {g, prim:[], flex:[]} for stage toggling
   const dets=[]; slopes.forEach(s=>{ if(s.fbDet) dets.push(s.fbDet); });
   function reg(d){ dets.push(d); return d; }
+  // A CS-13-MP / CS-15-MP unit on a metal slope: its Blender model (panel patch + curb + unit) fills the unit's bay (MCURB); `code` draws the
+  // stand-in until the model loads, and the whole detail on SPF, where nothing is spliced. With the detail off the bay shows plain panel, not a hole.
+  const UNIT_SKIN={panel:M.panel,rib:M.rib,fastener:M.fast,rust:M.rust,primer:M.primer,flex:M.flex,topcoat:M.topcoat};   // the slope's own materials, so the bay edges vanish
+  function unitAt(kind,slope,x,z,code){ const d=code(); const b=(slope.unitBays||[]).find(q=>q.kind===kind&&Math.abs(q.x-x)<0.01&&Math.abs(q.z-z)<0.01); if(!b) return d;
+    const h=mountModel(b.model,slope.g,x,z,0,null,UNIT_SKIN); if(h){ h.userData.gate={flex:b.z0/SL}; h.userData.liftIn=MCURB[kind].lift; }   // its Flex lands when the lap strips have swept down to the bay
+    d.bay={fill:slope.bayFill(b),h}; return d; }
+  function showUnit(d,on){ const b=d.bay; if(!b){ d.g.visible=on; return; } const ld=!!(b.h&&b.h.userData.loaded); d.g.visible=on&&!ld; if(b.h) b.h.visible=on; b.fill.g.visible=!(on&&ld); }
   function curbAt(slope,x,z,CW=6,CH=1.4){ const g=new THREE.Group(); g.position.set(x,0,z); slope.g.add(g); const d=curbAssembly(g,CW,CH,metal?'toggle':'sweep',metal); d.g=g; if(!metal){ d.prim=[]; d.flex=[]; }
     d.unit.add(box(CW+1.2,CW*0.53,CW+1.2,M.unit,0,CW*0.27,0)); d.unit.add(box(CW+1.4,0.35,CW+1.4,M.unitD,0,CW*0.55,0)); const fan=new THREE.Mesh(new THREE.CylinderGeometry(CW*0.37,CW*0.37,0.2,24),M.unitD); fan.position.set(0,CW*0.55+0.25,0); d.unit.add(fan); g.userData.unit=d.unit; g.userData.CH=CH; return reg(d); }
   function pipeAt(slope,x,z){ const g=new THREE.Group(); g.position.set(x,0,z); slope.g.add(g); const d={g,prim:[],flex:[]};
@@ -1245,7 +1287,7 @@ function buildGable(cfg){
       for(let x=-L/2+20;x<L/2;x+=40){ const ds=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.35,H-1,12),M.coping); ds.position.set(x,(H-1)/2,sg*(W/2+0.85)); gutters.add(ds); const inlet=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.35,0.6,12),M.iron); inlet.position.set(x,H-0.9,z); gutters.add(inlet);
         gd.flex.push(new THREE.Mesh(new THREE.CylinderGeometry(0.55,0.4,0.62,12),M.flex)); gd.flex[gd.flex.length-1].position.set(x,H-0.88,z); } });
     gd.prim.concat(gd.flex).forEach(m=>gutters.add(m)); reg(gd); }
-  const placed = cfg.place({right,left,curbAt,pipeAt,ventAt,skylightAt,hatchAt,gutters,SL,L,W,H,RISE});
+  const placed = cfg.place({right,left,curbAt,pipeAt,ventAt,skylightAt,hatchAt,unitAt,showUnit,gutters,SL,L,W,H,RISE});
   const solar=makeSolar(left.g, cfg.solarCols, cfg.solarRows); solar.visible=false;
   const tmpO=new THREE.Object3D(), tmpM=new THREE.Matrix4();
   function applyStage(p){
@@ -1254,7 +1296,8 @@ function buildGable(cfg){
       if(!metal){ s.pits.visible=S.cond&&p.prep<1; s.fix.visible=S.cond&&p.prep>0.3&&p.flex<1; return; }
       if(s._lp!==p.prep || s._lc!==S.cond){ const c=new THREE.Color(); for(let i=0;i<s.rusty.length;i++){ if(s.rusty[i]&&S.cond) c.copy(s.cRust).lerp(s.cZinc,p.prep); else c.copy(s.cZinc); s.fast.setColorAt(i,c);} s.fast.instanceColor.needsUpdate=true; s._lp=p.prep; s._lc=S.cond; }
       const len=SL*p.flex, yP=s.rp?0.0015:s.lapY-0.025, yF=s.rp?0.002:s.lapY, put=(im,k,x,y,za,zb)=>{ tmpO.position.set(x,y,(za+zb)/2); tmpO.scale.set(1,1,Math.max(0.001,zb-za)); tmpO.rotation.set(0,0,0); tmpO.updateMatrix(); im.setMatrixAt(k,tmpO.matrix); };
-      s.laps.forEach((x,i)=>{ const b=s.bay; if(b&&i===b.j){ const n=s.laps.length; put(s.lapP,i,x,yP,0,b.z0); put(s.lapP,n,x,yP,b.z1,SL); put(s.lapF,i,x,yF,0,Math.min(len,b.z0)); put(s.lapF,n,x,yF,b.z1,Math.max(b.z1,len)); } else { put(s.lapP,i,x,yP,0,SL); put(s.lapF,i,x,yF,0,len); } });
+      s.lapRuns.forEach(([x,za,zb],k)=>{ put(s.lapP,k,x,yP,za,zb); put(s.lapF,k,x,yF,za,Math.max(za,Math.min(zb,len))); });   // the Flex strip grows down the slope, jumping each bay
+      s.fills.forEach(f=>{ f.prim.forEach(m=>m.visible=p.primer>0); f.flex.forEach(m=>m.visible=len>f.z0); });
       s.lapP.instanceMatrix.needsUpdate=true; s.lapF.instanceMatrix.needsUpdate=true; s.lapF.visible=p.flex>0;
       const pX=Math.max(0,Math.min(1,(p.flex-0.35)/0.65)); s.endF.scale.x=Math.max(0.001,pX); s.endF.position.x=-L/2+L*pX/2; s.endF.visible=pX>0; s.ridgeF.scale.x=Math.max(0.001,pX); s.ridgeF.position.x=-L/2+L*pX/2; s.ridgeF.visible=pX>0;
       for(let i=0;i<s.fz.length;i++){ const on=s.fz[i]<=SL*p.flex; s.fastF.getMatrixAt(i,tmpM); const el=tmpM.elements; const sc=on?1:0.0001; if((el[0]===1)!==on){ tmpO.position.set(el[12],el[13],el[14]); tmpO.scale.set(sc,sc,sc); tmpO.rotation.set(0,0,0); tmpO.updateMatrix(); s.fastF.setMatrixAt(i,tmpO.matrix);} }
@@ -1269,25 +1312,28 @@ function buildGable(cfg){
 }
 
 function buildWarehouse(){ return buildGable({ L:120, W:80, H:20, lapModel:{slope:'right',x:-27,z:26.5}, ridgeModel:{x:-30}, solarCols:[-34,-24,-14,-4,6,16,26,36], solarRows:[8,20,32],
-  place:({right,left,curbAt,SL,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf'; const c=curbAt(right,18,17);
+  units:[{kind:'curb',slope:'right',x:18,z:27}],   // CS-13-MP model (scripts/build_metal_curb_unit_CS-13-MP.py) — clear of the end-lap band mid-slope
+  place:({right,left,curbAt,unitAt,showUnit,SL,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf'; const c=unitAt('curb',right,18,27,()=>curbAt(right,18,27,8,1.5));
     const hots=[
-      {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(18,5.2,17)), show:()=>S.on.curb},
+      {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(18,6.2,27)), show:()=>S.on.curb},
       {id:'lap',  anchor:()=> right.g.localToWorld(right.bay?new THREE.Vector3(right.bay.x,0.3,right.bay.z):new THREE.Vector3(-27,0.3,26)), show:()=>S.on.lap&&ROOFS[S.roof].surface==='rpanel'},
       {id:'ridge',anchor:()=> new THREE.Vector3(-30,H+RISE+0.4,0), show:()=>S.on.ridge}];   /* the F-21-M-TYP bay sits here */
-    return { hots, apply:()=>{ c.g.visible=!!S.on.curb; } }; } }); }
+    return { hots, apply:()=>{ showUnit(c,!!S.on.curb); } }; } }); }
 
+const ARENA_VENTS=[-83,-41,1,43,85];   // odd x, 42 ft apart: every vent sees the same R-panel lap phase, so one model serves all five
 function buildArena(){ return buildGable({ L:220, W:190, H:44, PITCH:3/12, doors:[-90,-60,-30,0,30,60,90], gutters:true, solarCols:[-90,-70,-50,-30,-10,10,30,50,70,90], solarRows:[20,40,60,80],
-  place:({right,left,curbAt,ventAt,hatchAt,gutters,SL,L,W,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
-    const vents=[[-80,20],[-40,20],[0,20],[40,20],[80,20]].map(([x,z])=>ventAt(left,x,z)); const hatch=hatchAt(right,-95,SL-8); const curbs=[[60,30],[-60,30]].map(([x,z])=>curbAt(right,x,z,10,1.8));
+  units:ARENA_VENTS.map(x=>({kind:'vent',slope:'left',x,z:19})).concat([{kind:'hatch',slope:'right',x:-94,z:89}]),   // CS-13-MP vents, CS-15-MP hatch
+  place:({right,left,curbAt,ventAt,hatchAt,unitAt,showUnit,gutters,SL,L,W,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
+    const vents=ARENA_VENTS.map(x=>unitAt('vent',left,x,19,()=>ventAt(left,x,19))); const hatch=unitAt('hatch',right,-94,89,()=>hatchAt(right,-94,89)); const curbs=[[60,30],[-60,30]].map(([x,z])=>curbAt(right,x,z,10,1.8));
     const hots=[
       {id:'sseam', anchor:()=> right.g.localToWorld(new THREE.Vector3(20,0.4,SL*0.55)), show:()=>S.on.sseam&&metal},
       {id:'gutter', anchor:()=> new THREE.Vector3(-45,H+0.2,W/2+0.45), show:()=>S.on.gutter},
       {id:'gutterinlet', anchor:()=> new THREE.Vector3(60,H+0.2,W/2+0.45), show:()=>S.on.gutterinlet},
-      {id:'hatch', anchor:()=> right.g.localToWorld(new THREE.Vector3(-95,2.4,SL-8)), show:()=>S.on.hatch},
-      {id:'vent', anchor:()=> left.g.localToWorld(new THREE.Vector3(0,3.8,20)), show:()=>S.on.vent},
+      {id:'hatch', anchor:()=> right.g.localToWorld(new THREE.Vector3(-94,4.8,89)), cam:{dist:15,drop:4.0}, show:()=>S.on.hatch},   /* label above the open lid; camera backed off to take it in */
+      {id:'vent', anchor:()=> left.g.localToWorld(new THREE.Vector3(1,3.6,19)), show:()=>S.on.vent},
       {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(60,8.2,30)), show:()=>S.on.curb},
       {id:'ridge',anchor:()=> new THREE.Vector3(-40,H+RISE+0.4,0), show:()=>S.on.ridge}];
-    return { hots, apply:()=>{ vents.forEach(d=>d.g.visible=!!S.on.vent); hatch.g.visible=!!S.on.hatch; curbs.forEach(d=>d.g.visible=!!S.on.curb); if(gutters) gutters.visible=!!(S.on.gutter||S.on.gutterinlet); } }; } }); }
+    return { hots, apply:()=>{ vents.forEach(d=>showUnit(d,!!S.on.vent)); showUnit(hatch,!!S.on.hatch); curbs.forEach(d=>d.g.visible=!!S.on.curb); if(gutters) gutters.visible=!!(S.on.gutter||S.on.gutterinlet); } }; } }); }
 
 function buildAirport(){ return buildGable({ L:300, W:200, H:52, PITCH:1.5/12, doors:[], gutters:true, solarCols:[-120,-90,-60,-30,0,30,60,90,120], solarRows:[20,45,70],
   place:({right,left,ventAt,pipeAt,skylightAt,gutters,SL,L,W,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
@@ -1306,17 +1352,19 @@ function buildAirport(){ return buildGable({ L:300, W:200, H:52, PITCH:1.5/12, d
       {id:'ridge',anchor:()=> new THREE.Vector3(100,H+RISE+0.4,0), show:()=>S.on.ridge}];
     return { hots, apply:()=>{ skies.forEach(d=>d.g.visible=!!S.on.mskylight); vents.forEach(d=>d.g.visible=!!S.on.vent); pipes.forEach(d=>d.g.visible=!!S.on.mpipe); if(gutters) gutters.visible=!!(S.on.gutter||S.on.gutterinlet); } }; } }); }
 
+const MFG_VENTS=[-69,-9,51];   // odd x, 60 ft apart: the same R-panel lap phase at each, so one model serves all three
 function buildManufacturing(){ return buildGable({ L:240, W:100, H:28, doors:[-90,-60,-30,0,30,60,90], seamModel:{slope:'right',x:-111,z:20}, solarCols:[-100,-80,-60,-40,-20,0,20,40,60,80,100], solarRows:[10,24,38],
-  place:({right,left,curbAt,pipeAt,ventAt,skylightAt,SL,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
-    const skies=[-84,-52,-20,12,44,76].map(x=>skylightAt(right,x,SL/2+6)); const vents=[[-70,14],[-10,14],[50,14]].map(([x,z])=>ventAt(left,x,z)); const pipes=[[-70,34],[-66,36],[40,32]].map(([x,z])=>pipeAt(left,x,z)); const c=curbAt(right,90,20,8,1.6);
+  units:MFG_VENTS.map(x=>({kind:'vent',slope:'left',x,z:14})),   // CS-13-MP vents (scripts/build_metal_curb_vent_CS-13-MP.py)
+  place:({right,left,curbAt,pipeAt,ventAt,skylightAt,unitAt,showUnit,SL,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
+    const skies=[-84,-52,-20,12,44,76].map(x=>skylightAt(right,x,SL/2+6)); const vents=MFG_VENTS.map(x=>unitAt('vent',left,x,14,()=>ventAt(left,x,14))); const pipes=[[-70,34],[-66,36],[40,32]].map(([x,z])=>pipeAt(left,x,z)); const c=curbAt(right,90,20,8,1.6);
     const hots=[
       {id:'sseam', anchor:()=> right.g.localToWorld(right.bay?new THREE.Vector3(right.bay.x,0.35,right.bay.z):new THREE.Vector3(-111,0.35,20)), show:()=>S.on.sseam&&ROOFS[S.roof].surface==='sseam'},
       {id:'mskylight', anchor:()=> right.g.localToWorld(new THREE.Vector3(12,0.5,SL/2+6)), show:()=>S.on.mskylight},
-      {id:'vent', anchor:()=> left.g.localToWorld(new THREE.Vector3(-70,3.8,14)), show:()=>S.on.vent},
+      {id:'vent', anchor:()=> left.g.localToWorld(new THREE.Vector3(-69,3.6,14)), show:()=>S.on.vent},
       {id:'mpipe', anchor:()=> left.g.localToWorld(new THREE.Vector3(40,3.2,32)), show:()=>S.on.mpipe},
       {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(90,6.6,20)), show:()=>S.on.curb},
       {id:'ridge',anchor:()=> new THREE.Vector3(60,H+RISE+0.4,0), show:()=>S.on.ridge}];
-    return { hots, apply:()=>{ skies.forEach(d=>d.g.visible=!!S.on.mskylight); vents.forEach(d=>d.g.visible=!!S.on.vent); pipes.forEach(d=>d.g.visible=!!S.on.mpipe); c.g.visible=!!S.on.curb; } }; } }); }
+    return { hots, apply:()=>{ skies.forEach(d=>d.g.visible=!!S.on.mskylight); vents.forEach(d=>showUnit(d,!!S.on.vent)); pipes.forEach(d=>d.g.visible=!!S.on.mpipe); c.g.visible=!!S.on.curb; } }; } }); }
 
 /* -----------------------------------------------------------------
    FLAT-ROOF HELPERS (shared by big-box, school, ...)
@@ -2787,7 +2835,7 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; resize()
   applyCam(); applyStage(); applySection(); placeHots(); renderer.render(scene,camera); requestAnimationFrame(frame); }
 
 selectBuilding('warehouse'); applyCam(); requestAnimationFrame(frame); phRestore();   // browser storage: last building/roof and the photos come back after a reload
-window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, drawing:drawingAPI, configuration, pdf:pdfAPI, eagleview:eagleviewAPI, prospect:prospectAPI };
+window.__rmi={ S, DETAILS, setStage, goDetail, goRoof, selectBuilding, flyTo, details:()=>B?B.hots.map(h=>h.id):[], finishCam:()=>{ camT=1; }, world, modelInstances, camera, BLOCKS, photos:photosAPI, drawing:drawingAPI, configuration, pdf:pdfAPI, eagleview:eagleviewAPI, prospect:prospectAPI };
 })();
 </script>
 </body>

@@ -75,16 +75,17 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Detail menu: a per-building checkbox list (`BUILDINGS[].details`) — not a roof-type filter and not a dropdown. The roof type
   only swaps a detail's name and drawing (`byRoof`).
 - 28 detail rows (the 25 `DETAILS` entries + 2 concrete `byRoof` variants + the Solar Post toggle), keyed to drawing numbers.
-  Status as in `docs/TRACKER.md` §1: **19 MODELLED+SPLICED · 0 MODELLED · 9 CODE-DRAWN · 0 NOT STARTED.**
+  Status as in `docs/TRACKER.md` §1: **22 MODELLED+SPLICED · 0 MODELLED · 6 CODE-DRAWN · 0 NOT STARTED.**
   Spliced models still carry open ASSUMED items (listed per row in the tracker).
   - **MODELLED+SPLICED (19):** R-panel side lap F-8-TYP · standing seam F-9-TYP / F-20-TYP · bin vent CS-12-CON (CS-1-TYP note 7) ·
     manway / bin hatch CS-14-CON (CS-1-TYP note 7) · ridge cap F-21-M-TYP · HVAC curbs / RTU CS-1-TYP · drains D-1-TYP / D-2-TYP ·
     scuppers D-4-TYP · wall tie-in, reglet W-11-TYP · soil stacks P-6-TYP · skylights, curb-mounted CS-1-TYP note 7 ·
     kitchen exhaust CS-1-TYP note 7 · parapet / coping W-1-TYP · sleeper supports CS-8-TYP · pipe clusters / Chem-Curb P-8-TYP ·
     penthouse walls, fixed counterflashing W-13-TYP · perimeter edge metal F-1-TYP · expansion joint A-3-TYP ·
-    gallery supports P-5-C (P-7-C reference).
-  - **CODE-DRAWN (9):** HVAC curb on metal CS-13-MP · skylight panels, flush F-12-TYP · vents on metal / SPF Plate D ·
-    pipes on metal P-9-MP · gutters W-7-TYP · downspout inlets D-8-TYP · roof hatch on metal / SPF CS-15-MP ·
+    gallery supports P-5-C (P-7-C reference) · HVAC curb on metal CS-13-MP (warehouse) · vents on metal CS-13-MP note 7
+    (no vent sheet exists; manufacturing, arena) · roof hatch on metal CS-15-MP (arena). The three metal curbs share
+    `scripts/rmi_metal_curb.py`: one model per roof profile and pitch, spliced into the slope like the lap (`MCURB`, `unitAt`).
+  - **CODE-DRAWN (6):** skylight panels, flush F-12-TYP · pipes on metal P-9-MP · gutters W-7-TYP · downspout inlets D-8-TYP ·
     silo walls W-7-TYP · Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
 - Product features: desktop installer v0.3.0 **built** (`dist/RMI Roof Visualizer Setup 0.3.0.exe`; RMI crest icon in `build/`, RMI logo `assets/rmi-logo.png` in the header, PDF cover and PDF page header);
   v0.3.1 packages (`dist/win-unpacked`) but the `.exe` does not: Smart App Control blocks the unsigned NSIS uninstaller stub `npm run dist` has to run (`docs/TRACKER.md` §2 #12);
@@ -109,7 +110,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## What's left (in order)
-1. Remaining detail models — the 9 CODE-DRAWN rows, in the order the buildings need them.
+1. Remaining detail models — the 6 CODE-DRAWN rows, in the order the buildings need them.
 2. Fine-tuning — labels, camera pass, silo headhouse/shed.
 3. Textures.
 4. Catalog alignment with the 25 `DETAILS` entries (the detail menu is a per-building checkbox list, not a dropdown).
@@ -134,7 +135,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   `electron/main.js` + `electron/preload.js` wrap the same `index.html`; `npm start` runs it, `npm run dist` builds the Windows
   installer into `dist/` (electron-builder.yml; `.blend` files are excluded). `RMI_DEBUG=1` mirrors the page console to stdout;
   F12 opens DevTools. The web build (Pages, snapshot.py) is unchanged — same file, no fork. Keep the grid tracks `minmax(0,1fr)` — a `1fr` track let the canvas grow the layout inside the Webflow iframe (fixed bug, don't regress).
-- Test with Playwright + swiftshader; `window.__rmi` exposes `S`, `setStage`, `goDetail`, `goRoof`, `selectBuilding`, `finishCam`, `photos`, `drawing`
+- Test with Playwright + swiftshader; `window.__rmi` exposes `S`, `setStage`, `goDetail`, `goRoof`, `selectBuilding`, `finishCam`, `flyTo` (aim at any point), `photos`, `drawing`
   (`open`, `tab`, `state`), `prospect` (`save`, `open`, `openRecent`, `state`) for scripted screenshots; `snapshot.py --drawing [2d|steps|3d]` shoots the panel. `RMI_SELFTEST=<png>` makes the
   packaged app open the big-box drain with the panel, print the panel state and save a screenshot, then quit (the installer check).
   `RMI_SELFTEST_PDF=<pdf>` exports the big-box presentation with the sample photos pinned to that path and quits (the export check).
@@ -164,6 +165,9 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   `RMI_membrane`, `RMI_modbit`, `RMI_concrete`, `RMI_tape`, `RMI_sealant`, `RMI_fastener`. Change a material once, every detail follows.
 - Export: glTF Binary, apply modifiers, Draco compression on. Keep textures at 1K–2K.
 - Remaining models follow the TRACKER.md details table; curb variants (vents, hatch, exhaust) share the CS-1 pattern, gutter pairs with inlet.
+- Metal-roof curbs (`scripts/rmi_metal_curb.py`): the panel patch is built in the panel frame from the app's own rib / coat numbers, the
+  curb and unit level and then tilted onto the slope; the build script carries each building's lap phase and purlin rows, so moving a
+  unit on a slope means rebuilding its model. A liftable unit ships lifted `MCURB[kind].lift` inches (14" — its counterflashing is 4").
 
 ## The working loop (Claude Code)
 For every detail or code change, in this order:
