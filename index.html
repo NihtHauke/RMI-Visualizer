@@ -857,7 +857,7 @@ const STEPS = {
     `Where gaps at the attachment flanges cannot be bridged with Flex, tape or a three-course polyester and RMI-Flex a minimum 2" each side of the joint, with no voids (note 11).`,
     `RMI-Flex flashing coat fully encapsulating the expansion joint bellow, its fasteners and mounting flange, extending a minimum 2" past the assembly.`,
     `RMI-Thane or RMI-White Plus over the Flex.`,
-    `Mounting the bellow on two curbs, with the Flex and topcoat carried down them to the field, is ASSUMED — A-3-TYP lays the flanges on the roof system (its deck is "shown for illustration") and note 8 covers every configuration. Every size is ASSUMED too: the drawing is not to scale and there is no 3D concept render (§5 #16, #23).` ],
+    `Note 8: the detail applies to all (E) EPDM, neoprene, PVC and TPO expansion joints, regardless of individual configuration; the deck and insulation are shown for illustration and vary between roof and wall applications. Every size in the 3D view is ASSUMED — the drawing is not to scale and there is no 3D concept render (§5 #16).` ],
   silowall: [
     `Check all (E) panel-joint sealant; replace damaged, aged or cracked sealant.`,
     `Clean, repair, prepare and prime per the RMI Specification Guide Manual for each type of surface (W-7-TYP). Adhesion test and moisture scan first (note 8).`,
@@ -870,7 +870,7 @@ const STEPS = {
     `Clean, prepare and prime per the RMI Specification Guide Manual (note 10). Adhesion test and moisture scan first (note 9).`,
     `RMI-Flex flashing coat extending a minimum 6" up the support past that flashing.`,
     `RMI-Thane or RMI-White Plus a minimum 2" up the support past the Flex.`,
-    `Note 7: the same detail covers all circular supports — site screens, solar, mechanical — set directly on a concrete deck (note 8). The post size, the gap, and the bead and backer-rod sizes are ASSUMED; the drawing is not to scale (§5 #24).` ],
+    `Note 7: the same detail covers all circular supports — site screens, solar, mechanical — set directly on a concrete deck (note 8). The post size, the gap, and the bead and backer-rod sizes are ASSUMED; the drawing is not to scale (§5 #23).` ],
   exhaust: curbSteps('fan','CS-1-TYP',{ pre:[`Remove the grease from the curb and the roof around it before priming — the spec plates allow no RMI material over a contaminant. The degreasing method is ASSUMED (§5 #4).`] }),
   coping: [
     `Check for damaged components and replace any that are damaged or broken. The coping must meet code and SMACNA for wind uplift or it is excluded from warranty (note 7). Fasteners through overlapping metal are not permitted — relocate them per SMACNA. Replace loose or missing fasteners with new oversize stainless steel screws with EPDM washers.`,
@@ -946,9 +946,9 @@ const DETAILS = {
   pitchpan:{ name:'Chem-Curb / pitch pan (pipe cluster)', drawing:'P-8-TYP', concept:'PP-1-FT-3D', dist:7, phi:1.0, theta:0.7, drop:2.2, menu:'Pipe clusters', steps:STEPS.pitchpan,
     layers:[{k:'existing',label:'(E) pipes and conduit through the roof',color:'#C9C9C2'},{k:'primer',label:'Chem-Curb set around the penetrations in RMI M-1 sealant (set before priming: ASSUMED); clean, prepare and prime roof, curb and penetrations',color:'#E8D7A6'},{k:'flex',label:'Flex fills the curb pocket, tapered from the penetrations outward to shed water, then flashes over the curb onto the field and at least 4" up each penetration past the curb',color:'#D9A21B'},{k:'thane',label:'Topcoat over all, at least 2" up each penetration past the Flex',color:'#C3C7CC'}],
     src:'Assembly per P-8-TYP (Chem-Curb) with PP-1-FT-3D as reference — VERIFIED: Chem-Curb fabricated and installed per the manufacturer, set in RMI M-1 sealant; pocket filled with RMI-Flex tapered from the penetration outward to shed water; Flex flashing coat min 4" up the penetration past the curb; RMI-Thane or White Plus min 2" up past the Flex. Note 7: any non-circular penetration, or where a roof jack or boot is not feasible. Note 8: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems. The drawing is not to scale: the 30" x 16" x 4" curb, the penetrations, how high the fill rises at a penetration, Flex 6" onto the field, and setting the curb before priming are ASSUMED.' },
-  ej:     { name:'Expansion joint', drawing:'A-3-TYP', concept:'—', dist:5.5, phi:1.28, theta:-0.75, drop:0.35, menu:'Expansion joint', steps:STEPS.ej,
-    layers:[{k:'existing',label:'Existing double curb with flexible cover: (E) metal flanges fastened down, bellow looped over the joint',color:'#C9C9C2'},{k:'primer',label:'Bellow checked; damaged, loose or missing fasteners replaced; roof, curbs, metal and bellow primed (note 12)',color:'#E8D7A6'},{k:'flex',label:'Flex fully encapsulates the bellow, its fasteners and mounting flange, min 2" past the assembly',color:'#D9A21B'},{k:'thane',label:'Topcoat over the Flex, the curbs and the field',color:'#C3C7CC'}],
-    src:'Assembly per A-3-TYP — VERIFIED: (E) metal mounting flanges and flexible bellow; bellow confirmed, damaged materials repaired, damaged, loose or missing fasteners replaced; roof, metal and bellow primed (note 12); Flex fully encapsulates the bellow, fasteners and flange, min 2" past the assembly; topcoat over the Flex. Note 8: all EPDM, neoprene, PVC and TPO joints, any configuration. No 3D concept render. ASSUMED: the two curbs (the drawing lays the flanges on the roof), the coats down the curbs, every size.' },
+  ej:     { name:'Expansion joint', drawing:'A-3-TYP', concept:'—', dist:3.4, phi:1.0, theta:-1.2, drop:0.2, menu:'Expansion joint', steps:STEPS.ej,
+    layers:[{k:'existing',label:'(E) metal mounting flanges fastened down on the roof, flexible bellow looped over the joint between them',color:'#C9C9C2'},{k:'primer',label:'Bellow checked; damaged, loose or missing fasteners replaced; roof, metal and bellow primed (note 12)',color:'#E8D7A6'},{k:'flex',label:'Flex fully encapsulates the bellow, its fasteners and mounting flange, min 2" past the assembly',color:'#D9A21B'},{k:'thane',label:'Topcoat over the Flex and on across the field',color:'#C3C7CC'}],
+    src:'Assembly per A-3-TYP, as drawn — VERIFIED: (E) metal mounting flanges fastened down on the roof system, flexible bellow looped over the joint; bellow confirmed, damaged materials repaired, damaged, loose or missing fasteners replaced; roof, metal and bellow primed (note 12); Flex fully encapsulates the bellow, fasteners and flange, min 2" past the assembly; topcoat over the Flex. Note 8: applies to all (E) EPDM, neoprene, PVC and TPO expansion joints regardless of individual configuration. No 3D concept render; every size is ASSUMED.' },
   silowall:{ name:'Concrete silo wall, vertical application', drawing:'W-7-TYP', concept:'—', dist:60, phi:1.35, theta:0.55, drop:0, menu:'Silo walls', steps:STEPS.silowall,
     layers:[{k:'existing',label:'Existing concrete wall: hairline cracks, spalls and staining',color:'#C9C9C2'},{k:'primer',label:'Primer fog-coated down the wall',color:'#E8D7A6'},{k:'flex',label:'Flex sprayed vertically, encapsulating the concrete',color:'#D9A21B'},{k:'thane',label:'Topcoat over the wall',color:'#C3C7CC'}],
     src:'Concrete wall assembly per W-7-TYP (concrete/CMU walls). Vertical field application on silos per the Longview grain terminal project; sequence and coverage on curved walls are ASSUMED.' },
@@ -1324,7 +1324,8 @@ function buildManufacturing(){ return buildGable({ L:240, W:100, H:28, doors:[-9
 function makeBlock(o){ // walls, parapet ring, coping with joints, field membrane, sweep overlays
   const {L,W,H,PH=3,PT=1,x=0,y=0,z=0,edge='parapet'} = o; const mem=ROOFS[S.roof]; const skip = edge==='metal' ? ['N','S','E','W'] : (o.skip||[]);
   const g=new THREE.Group(); g.position.set(x,y,z); world.add(g);
-  if(!o.noBase){ g.add(box(L,H,W,M.wall,0,H/2,0)); g.add(box(L+0.2,4,W+0.2,M.wallB,0,2,0)); } else { g.add(box(L,H,W,M.concrete,0,H/2,0)); }
+  const base=box(L,H,W,o.noBase?M.concrete:M.wall,0,H/2,0); g.add(base); if(!o.noBase) g.add(box(L+0.2,4,W+0.2,M.wallB,0,2,0));
+  { const ps=base.geometry.attributes.position, nm=base.geometry.attributes.normal; for(let i=0;i<ps.count;i++) if(nm.getY(i)>0.5) ps.setY(i,ps.getY(i)-0.02); }   // the box's top face drops 1/4" under the roof (the walls keep their height): level with the field plane it z-fought it, and the wall top showed through the bare felts at prep
   const par=new THREE.Group(); par.position.y=H; g.add(par); const cop=new THREE.Group(); par.add(cop);
   const sides=[{k:'N',w:L,d:PT,x:0,z:-W/2+PT/2,jx:true},{k:'S',w:L,d:PT,x:0,z:W/2-PT/2,jx:true},{k:'W',w:PT,d:W,x:-L/2+PT/2,z:0,jx:false},{k:'E',w:PT,d:W,x:L/2-PT/2,z:0,jx:false}];
   const tapes=new THREE.Group(); cop.add(tapes);
@@ -1356,7 +1357,7 @@ function makeBlock(o){ // walls, parapet ring, coping with joints, field membran
   const EI=edge==='metal'?0:PT, SI=edge==='metal'?1:0, IL=L-2*EI, IW=W-2*EI;   /* a metal edge has no parapet: the field and its coat sheets run out to the wall face, where addEdgeMetal takes over; seams and joints stop 1 ft short, clear of the flange */ const roof=new THREE.Group(); roof.position.y=H; g.add(roof);
   const surf = mem.plate==='A'?M.modbit : mem.plate==='C'?M.concrete : mem.plate==='MA'?M.felts : M.membrane;
   const fld=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),surf); fld.rotation.x=-Math.PI/2; fld.receiveShadow=true; roof.add(fld); fld.userData.kind='mem'; const fieldPlanes=[fld]; const cutouts=[];
-  if(mem.plate==='MA'){ const gv=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),M.gravel); gv.rotation.x=-Math.PI/2; gv.position.y=0.03; gv.receiveShadow=true; roof.add(gv); gv.userData.kind='mem'; gv.userData.gravel=true; fieldPlanes.push(gv);
+  if(mem.plate==='MA'){ const gv=new THREE.Mesh(new THREE.PlaneGeometry(IL,IW),M.gravel); gv.rotation.x=-Math.PI/2; gv.position.y=0.03; gv.receiveShadow=true; roof.add(gv); gv.userData.kind='mem'; fieldPlanes.push(gv);
     const nPb=Math.round(IL*IW/28); const e2=new THREE.Object3D(); [M.pebble,M.pebble2].forEach(pm=>{ const pb=new THREE.InstancedMesh(new THREE.CircleGeometry(0.5,6),pm,nPb); for(let i=0;i<nPb;i++){ e2.position.set(-IL/2+Math.random()*IL,0.04,-IW/2+Math.random()*IW); e2.rotation.set(-Math.PI/2,0,Math.random()*3); const sc=0.4+Math.random()*0.9; e2.scale.set(sc,sc*0.7,1); e2.updateMatrix(); pb.setMatrixAt(i,e2.matrix); } roof.add(pb); }); }
   const pitch=mem.plate==='A'?3:mem.plate==='C'?20:mem.plate==='MA'?3:10, nS=Math.floor(IL/pitch)-1; const seamMat=mem.plate==='A'?M.lapA:mem.plate==='C'?M.cjoint:mem.plate==='MA'?M.felts:M.seam;
   const lineSets=[{mat:seamMat, w:mem.plate==='C'?0.3:mem.plate==='A'?0.25:0.35, alongZ:true, at:Array.from({length:nS},(_,i)=>-IL/2+pitch*(i+1)), half:IW/2-SI}];   // seams / laps / joints at fixed x, running along z
@@ -1396,11 +1397,20 @@ function drawLines(roof,ls,cutouts){ if(ls.mesh){ roof.remove(ls.mesh); ls.mesh.
   segs.forEach(([p,lo,hi],i)=>{ const c=(lo+hi)/2, l=hi-lo; if(ls.alongZ) mm.makeScale(1,1,l).setPosition(p,0.02,c); else mm.makeScale(l,1,1).setPosition(c,0.02,p); mesh.setMatrixAt(i,mm); });
   roof.add(mesh); ls.mesh=mesh; }
 function applyCutouts(b){ if(!b.cutouts.length) return; b.lineSets.forEach(ls=>drawLines(b.roof,ls,b.cutouts));
-  const build=(kind,shrink=0,gravel,primer)=>{ const sh=b.shape?b.shape():new THREE.Shape(); if(!b.shape){ sh.moveTo(-b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,b.IW/2); sh.lineTo(-b.IL/2,b.IW/2); sh.closePath(); }   // a polygon block (EagleView prospect) supplies its own outline
-    b.cutouts.forEach(c=>{ if(gravel&&c.keepGravel) return; const h=new THREE.Path(); if(primer) shrink=-(c.primerGrow||0); const r=(kind==='mem'?c.rMem:c.rCoat)-shrink, hh=(kind==='mem'?c.hMem:c.hCoat); const hx=(Array.isArray(hh)?hh[0]:hh)-shrink, hz=(Array.isArray(hh)?hh[1]:hh)-shrink;   // hMem/hCoat: half-size, or [half-x, half-z] for a rectangle
+  const build=(kind,shrink=0,primer)=>{ const sh=b.shape?b.shape():new THREE.Shape(); if(!b.shape){ sh.moveTo(-b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,-b.IW/2); sh.lineTo(b.IL/2,b.IW/2); sh.lineTo(-b.IL/2,b.IW/2); sh.closePath(); }   // a polygon block (EagleView prospect) supplies its own outline
+    b.cutouts.forEach(c=>{ const h=new THREE.Path(); if(primer) shrink=-(c.primerGrow||0); const r=(kind==='mem'?c.rMem:c.rCoat)-shrink, hh=(kind==='mem'?c.hMem:c.hCoat); const hx=(Array.isArray(hh)?hh[0]:hh)-shrink, hz=(Array.isArray(hh)?hh[1]:hh)-shrink;   // hMem/hCoat: half-size, or [half-x, half-z] for a rectangle
       if(kind==='mem'?c.rMem:c.rCoat){ h.absarc(c.x,-c.z,r,0,Math.PI*2,true); } else { h.moveTo(c.x-hx,-c.z-hz); h.lineTo(c.x-hx,-c.z+hz); h.lineTo(c.x+hx,-c.z+hz); h.lineTo(c.x+hx,-c.z-hz); h.closePath(); } sh.holes.push(h); });
     return new THREE.ShapeGeometry(sh,24); };
-  const gm=build('mem'), gg=b.cutouts.some(c=>c.keepGravel)?build('mem',0,true):gm, gc=build('coat'), gt=build('coat',1/12), gp=b.cutouts.some(c=>c.primerGrow)?build('coat',0,false,true):gc; b.fieldPlanes.forEach(pl=>{ pl.geometry.dispose(); pl.geometry= pl.userData.kind==='mem'?(pl.userData.gravel?gg:gm) : pl.userData.top?gt : pl.material===M.primerOv?gp : gc; }); }   // `keepGravel`: the gravel sheet stays whole over that model (it is swept off at prep) — no bare-felt patch at the existing stage; `primerGrow`: the primer sheet's hole that much bigger than the Flex sheet's, so at a low detail camera the grazing view under the Flex sheet's far edge lands on model Flex, not on the pale primer sheet
+  const gm=build('mem'), gc=build('coat'), gt=build('coat',1/12), gp=b.cutouts.some(c=>c.primerGrow)?build('coat',0,true):gc; b.fieldPlanes.forEach(pl=>{ pl.geometry.dispose(); pl.geometry= pl.userData.kind==='mem'?gm : pl.userData.top?gt : pl.material===M.primerOv?gp : gc; });   // `primerGrow`: the primer sheet's hole that much bigger than the Flex sheet's, so at a low detail camera the grazing view under the Flex sheet's far edge lands on model Flex, not on the pale primer sheet
+  // gravel decals (pebbles) inside a membrane hole would float on the model's bare patch: drop them
+  const open=b.cutouts, m4=new THREE.Matrix4(), pp=new THREE.Vector3(), R=0.65;   // R: the largest pebble's radius
+  if(open.length) b.roof.children.forEach(pb=>{ if(!pb.isInstancedMesh||(pb.material!==M.pebble&&pb.material!==M.pebble2)) return;
+    for(let i=0;i<pb.count;i++){ pb.getMatrixAt(i,m4); pp.setFromMatrixPosition(m4);
+      if(open.some(c=>{ const dx=Math.abs(pp.x-c.x), dz=Math.abs(pp.z-c.z); if(c.rMem) return Math.hypot(dx,dz)<c.rMem+R; const hh=c.hMem, hx=Array.isArray(hh)?hh[0]:hh, hz=Array.isArray(hh)?hh[1]:hh; return dx<hx+R&&dz<hz+R; })){ m4.makeScale(0,0,0); pb.setMatrixAt(i,m4); } }
+    pb.instanceMatrix.needsUpdate=true; });
+  // random failure and repair decals (blisters, granule loss, cracks, patches) float above the field: one that overlaps a model's roof patch would lie over the model — drop it
+  [b.fails,b.patches].forEach(grp=>grp&&grp.children.slice().forEach(m=>{ if(!m.geometry) return; m.geometry.computeBoundingBox(); const bb=m.geometry.boundingBox, r=Math.hypot((bb.max.x-bb.min.x)/2*m.scale.x,(bb.max.y-bb.min.y)/2*m.scale.y,(bb.max.z-bb.min.z)/2*m.scale.z);
+    if(b.cutouts.some(c=>{ const dx=Math.abs(m.position.x-c.x), dz=Math.abs(m.position.z-c.z); if(c.rMem) return Math.hypot(dx,dz)<c.rMem+r; const hh=c.hMem, hx=Array.isArray(hh)?hh[0]:hh, hz=Array.isArray(hh)?hh[1]:hh; return dx<hx+r&&dz<hz+r; })) grp.remove(m); })); }
 function addStain(b,x,z,r=9){ const st=new THREE.Mesh(new THREE.CircleGeometry(r,24),M.stain); st.rotation.x=-Math.PI/2; st.position.set(x+r*0.2,0.035,z-r*0.1); st.scale.set(1.4,1,1); b.stains.add(st); }
 // Curb assembly per CS-1-TYP (flat) / CS-13-MP (metal): (E) curb with (E) flashing skirt and fasteners at the top;
 // Flex from the field up the full curb wall, over the top lip and onto the interior; topcoat over all; unit lifted and reset.
@@ -1668,40 +1678,40 @@ function addPitchPan(b,x,z){ let g=new THREE.Group(); g.position.set(x,0,z); b.r
     const fl=new THREE.Mesh(new THREE.CylinderGeometry(r+0.02,r+0.02,0.75,12),M.flexOv); fl.position.set(px,0.375,pz); g.add(fl); const tc=new THREE.Mesh(new THREE.CylinderGeometry(r+0.03,r+0.03,0.96,12),M.topcoat); tc.position.set(px,0.48,pz); g.add(tc); });
   g.add(box(2.52,0.35,1.35,M.primerOv,0,0.175,0,false)); g.add(box(2.54,0.4,1.37,M.flexOv,0,0.2,0,false)); g.add(box(3.5,0.06,2.33,M.flexOv,0,0.1,0,false)); g.add(box(2.56,0.42,1.39,M.topcoat,0,0.21,0,false)); g.add(box(3.67,0.06,2.5,M.topcoat,0,0.13,0,false));
   return gOuter; }
-// Expansion joint per A-3-TYP (EXPANSION JOINT – TYPICAL; no 3D concept render): (E) metal mounting flanges fastened down either side of the
-// joint with a flexible bellow (EPDM, neoprene, PVC or TPO — note 8) looped over it. Confirm the bellow, repair or replace damaged materials,
-// replace damaged, loose or missing fasteners; clean, prepare and prime the roof, the metal and the bellow (note 12); Flex fully encapsulates the
-// bellow, its fasteners and mounting flange, min 2" past the assembly; topcoat over the Flex (VERIFIED). ASSUMED: the flanges sit on two wood
-// curbs with the (E) membrane carried up and over them as base flashing (the drawing lays them on the roof system, whose deck it shows "for
-// illustration"; note 8 covers every configuration), the coats carried down the curbs to the field, and every size. The cross-section is the one
-// scripts/build_expansion_joint_A-3-TYP.py builds from the same numbers — keep the two in step or the seams show.
-const EJ={ GAP:4, CURB_W:5.5, CURB_H:10, FT:0.1875, MT:0.0625, FLANGE:4, BT:0.1875, LEG:1, FAST_Y:4, FAST_OC:6, HEAD_R:0.22, HEAD_H:0.14, WASH_R:0.3, WASH_T:0.04,
-  COAT:0.04, LIFT:0.01, MEM_T:0.1, FOOT:1, PATCH:18, FIELD:17, ARC:24 };   // inches: y across the joint from its centre, z up from the roof surface
-function ejProfile(){ const E=EJ, CI=E.GAP/2, CO0=CI+E.CURB_W, CO=CO0+E.FT, CT=E.CURB_H+E.FT, FLT=CT+E.MT, FO=CI+E.FLANGE, RO=CI, RI=RO-E.BT, ZC=FLT+E.LEG;
+// Expansion joint per A-3-TYP (EXPANSION JOINT – TYPICAL; no 3D concept render), as drawn: (E) metal mounting flanges fastened down flat on the
+// (E) roof system either side of the joint, the flexible bellow (EPDM, neoprene, PVC or TPO) looped up between them. Confirm the bellow, repair or
+// replace damaged materials, replace damaged, loose or missing fasteners; clean, prepare and prime the roof, the metal and the bellow (note 12);
+// Flex fully encapsulates the bellow, its fasteners and mounting flange, min 2" past the assembly; topcoat over the Flex (VERIFIED). Note 8: all
+// (E) EPDM, neoprene, PVC and TPO expansion joints regardless of individual configuration. ASSUMED: every size. The flanges stand 1/16" off the
+// roof, under the floating field coat sheets, so the whole run lies in ONE field cutout and carries its own roof strip and tight coats; the 4-ft
+// model (scripts/build_expansion_joint_A-3-TYP.py, built from the same numbers) replaces a piece of it — keep the two in step or the seams show.
+const EJ={ GAP:4, MT:0.0625, FLANGE:4, BT:0.1875, LEG:0.5, FAST_Y:4, FAST_OC:6, HEAD_R:0.22, HEAD_H:0.14, WASH_R:0.3, WASH_T:0.04,
+  COAT:0.04, LIFT:0.01, MEM_T:0.1, PATCH:12, FIELD:{primer:11,flex:11,topcoat:11.2}, ARC:24 };   // inches: y across the joint from its centre, z up from the field plane
+function ejProfile(){ const E=EJ, CI=E.GAP/2, FO=CI+E.FLANGE, FLT=E.MEM_T+E.MT, RO=CI, RI=RO-E.BT, ZC=FLT+E.LEG;
   const arc=(R,a0,a1)=>Array.from({length:E.ARC+1},(_,i)=>{ const t=a0+(a1-a0)*i/E.ARC; return [R*Math.cos(t),ZC+R*Math.sin(t)]; }), mir=pts=>pts.map(([y,z])=>[-y,z]);
-  const right=[[CO+E.FOOT,E.MEM_T],[CO,E.MEM_T],[CO,CT],[FO,CT],[FO,FLT],[RO,FLT]];   // the surface the coats follow: a 1" foot (the field sheets take over), up the curb, over the flange edge, to the bellow
-  return { FLT, curb:[[CI,0],[CO0,0],[CO0,E.CURB_H],[CI,E.CURB_H]], flashing:[[CO0,0],[CO,0],[CO,CT],[CI,CT],[CI,E.CURB_H],[CO0,E.CURB_H]], flange:[[CI,CT],[FO,CT],[FO,FLT],[CI,FLT]], mir,
-    bellow:[[RO,CT]].concat(arc(RO,0,Math.PI),[[-RO,CT],[-RI,CT]],arc(RI,Math.PI,0),[[RI,CT]]), coat:right.concat(arc(RO,0,Math.PI),mir(right.slice().reverse())) }; }
+  const coat=f=>{ const right=[[f,E.MEM_T],[FO,E.MEM_T],[FO,FLT],[RO,FLT]]; return right.concat(arc(RO,0,Math.PI),mir(right.slice().reverse())); };   // the surface the coats follow: roof, over the flange edge, across the flange, over the bellow
+  return { FLT, mir, coat, roof:[[CI,0],[E.PATCH,0],[E.PATCH,E.MEM_T],[CI,E.MEM_T]], flange:[[CI,E.MEM_T],[FO,E.MEM_T],[FO,FLT],[CI,FLT]],
+    bellow:[[RO,E.MEM_T]].concat(arc(RO,0,Math.PI),[[-RO,E.MEM_T],[-RI,E.MEM_T]],arc(RI,Math.PI,0),[[RI,E.MEM_T]]) }; }
 // One run of the section; `ts` = run-local positions of the fasteners (6" o.c. on both flanges, in step with the model's).
 function ejSection(r,surf,capA,capB,ts){ const IN=1/12, E=EJ, P=ejProfile(), L2=r.userData.len/2, add=(pts,mat)=>prismRun(r,pts,mat,-L2,L2,0,0,capA,capB);
-  [pts=>pts,P.mir].forEach(f=>{ add(f(P.curb),M.wood); add(f(P.flashing),surf); add(f(P.flange),M.coping); });   // (E) curbs, base flashing up and over them, mounting flanges
+  [pts=>pts,P.mir].forEach(f=>{ add(f(P.roof),surf); add(f(P.flange),M.coping); });   // (E) roof system to the joint edge, (E) mounting flange on it
   add(P.bellow,M.ejCover);   // (E) flexible bellow looped over the joint
-  [[M.primerOv,1],[M.flexOv,2],[M.topcoat,3]].forEach(([mat,i])=>{ const m=add(bandPath(P.coat,(i-1)*E.COAT||E.LIFT,i*E.COAT),mat); if(i===1) m.receiveShadow=false; });   // coats over the whole profile; the primer lifted off its substrate (double-sided materials z-fight when coincident) and not shadowed
+  [['primer',M.primerOv,1],['flex',M.flexOv,2],['topcoat',M.topcoat,3]].forEach(([k,mat,i])=>{ const m=add(bandPath(P.coat(E.FIELD[k]),(i-1)*E.COAT||E.LIFT,i*E.COAT),mat); if(i===1) m.receiveShadow=false; });   // tight coats over the whole strip; the primer lifted off its substrate (double-sided materials z-fight when coincident) and not shadowed
   if(!ts.length) return; const spots=[]; ts.forEach(t=>[1,-1].forEach(s=>spots.push([t,s*E.FAST_Y])));
   const inst=(geo,mat,y,sy)=>{ const m=new THREE.InstancedMesh(geo,mat,spots.length), o=new THREE.Object3D(); spots.forEach(([t,sy0],i)=>{ o.position.set(t,y*IN,-sy0*IN); o.scale.set(1,sy||1,1); o.updateMatrix(); m.setMatrixAt(i,o.matrix); }); r.add(m); return m; };
   inst(new THREE.CylinderGeometry(E.WASH_R*IN,E.WASH_R*IN,E.WASH_T*IN,16),M.fast,P.FLT+E.WASH_T/2); inst(new THREE.CylinderGeometry(E.HEAD_R*IN,E.HEAD_R*IN,E.HEAD_H*IN,6),M.fast,P.FLT+E.WASH_T+E.HEAD_H/2);   // hex washer-head fasteners
   [[M.flexOv,2],[M.topcoat,3]].forEach(([mat,i])=>{ const d0=(i-1)*E.COAT, d1=i*E.COAT, rr=E.WASH_R+0.1+d1, h=E.WASH_T+E.HEAD_H+0.07+d1;   // Flex and topcoat dome over every head
     inst(new THREE.SphereGeometry(rr*IN,20,6,0,Math.PI*2,0,Math.PI/2),mat,P.FLT+d0,h/rr); }); }
-// The run along world z at x, from z0 to z1; `at` (world z) sets the 4-ft model into it with its roof patch and field cutout.
-function addExpansionJoint(b,x,z0,z1,at){ const g=new THREE.Group(); b.roof.add(g); const surf=b.fieldPlanes[0].material, oc=EJ.FAST_OC/12;
+// The run along world z at x, from z0 to z1, in one field cutout; `at` (world z) sets the 4-ft model into it at the hotspot.
+function addExpansionJoint(b,x,z0,z1,at){ const g=new THREE.Group(); b.roof.add(g); const surf=b.fieldPlanes[0].material, oc=EJ.FAST_OC/12, E=EJ;
   const runAt=(a0,a1,into)=>{ const r=new THREE.Group(); r.position.set(x,0,(a0+a1)/2); r.rotation.y=-Math.PI/2; r.userData.len=a1-a0; (into||g).add(r); return r; };   // run-local +x along world +z
   const fz=(a0,a1)=>{ const t=[], c=(a0+a1)/2, ref=at===undefined?z0:at; for(let k=Math.ceil((a0-ref-oc/2)/oc)-1;;k++){ const v=ref+oc/2+k*oc; if(v>a1-0.1) break; if(v>a0+0.1) t.push(v-c); } return t; };
   const seg=(a0,a1,into,capA,capB)=>{ const r=runAt(a0,a1,into); ejSection(r,surf,capA,capB,fz(a0,a1)); return r; };
+  const hz=(z1-z0)/2; b.cutouts.push({x,z:(z0+z1)/2,hMem:[(E.PATCH-1.2)/12,hz-1.2/12],hCoat:[(E.FIELD.flex-3.5)/12,hz-3.5/12],primerGrow:1.5/12});   // membrane hole 1.2" inside the strip; coat holes 3.5" inside its Flex (the topcoat's, 1" smaller again, still clears the 6" flanges), the primer's 1.5" bigger, so a low camera's grazing view under the Flex sheet's edge lands on strip Flex; the gravel sheet opens too, or it would bury the flanges
   if(at===undefined){ seg(z0,z1,null,true,true); return g; }
   seg(z0,at-1.998,null,true,false); seg(at+1.998,z1,null,false,true);   // over-lap the model 0.6 mm, as the edge-metal run does; no end cap against it
   const fb=new THREE.Group(); g.add(fb); seg(at-2,at+2,fb,false,false);   // code stand-in until the model loads
-  if(mountModel('ej',g,x,at,0,fb,{membrane:surf,curb:M.wood,flange:M.coping,bellow:M.ejCover,fastener:M.fast,primer:M.primerOv,flex:M.flexOv}))
-    b.cutouts.push({x,z:at,hMem:[(EJ.PATCH-1.2)/12,1.9],hCoat:[(EJ.FIELD-3.5)/12,(24-3.5)/12],primerGrow:1.5/12,keepGravel:true});   // membrane hole 1.2" inside the model's 36"x48" patch; coat holes 3.5" inside its Flex, the primer's 1.5" bigger — the detail camera is low (17°), so the grazing view under the far hole edge reaches ~2.6" in
+  mountModel('ej',g,x,at,0,fb,{membrane:surf,flange:M.coping,bellow:M.ejCover,fastener:M.fast,primer:M.primerOv,flex:M.flexOv});
   return g; }
 function sweepFor(p,x0,x1){ const f=q=>x0-6+(x1-x0+12)*q; clipPrim.constant=f(p.primer); clipFlex.constant=f(p.flex); clipTop.constant=f(p.thane); }
 function condFor(b,p){ if(b.tapeList) b.tapeList.forEach(t=>t.visible = p.prep>=0.5); if(b.beforeParts) b.beforeParts.forEach(m=>m.visible = p.prep<0.5); /* (E) work raked out or removed at prep (P-5-C mastic) */ if(b.resetParts) b.resetParts.forEach(m=>m.visible = p.prep<0.5 || p.thane>0); /* counterflashing: removed at prep, reset with the topcoat */ if(b.afterParts) b.afterParts.forEach(m=>m.visible = p.thane>=1); /* W-13-TYP skirt metal: fitted over the finished system */ if(ROOFS[S.roof].plate==='MA'&&!b._noGravelClip){ const x0=(B&&B.gravelSpan?B.gravelSpan[0]:b.x-b.IL/2)-4, x1=(B&&B.gravelSpan?B.gravelSpan[1]:b.x+b.IL/2)+4; clipGravel.constant = -( x0 + (x1-x0)*p.prep ); } M.blister.opacity=S.cond?0.9*(1-p.primer):0; M.stain.opacity=S.cond?0.5*(1-p.prep):0; M.granLoss.opacity=S.cond?0.8*(1-p.prep):0; M.crack.opacity=S.cond?0.9*(1-p.prep):0; const MA=ROOFS[S.roof].plate==='MA'; b.stains.visible=S.cond&&p.prep<1; b.fails.visible=S.cond&&(MA?p.primer<1:p.prep<1); b.patches.visible=S.cond&&p.prep>0.3&&p.flex<1; }
@@ -1784,7 +1794,7 @@ function buildHospital(){
   for(let f=0;f<4;f++){ main.g.add(box(L+0.3,4,W+0.3,M.glazing,0,8+f*11,0,false)); wing.g.add(box(90.3,4,80.3,M.glazing,0,8+f*11,0,false)); }
   main.g.add(box(60,14,0.5,M.unitD,20,7,W/2+0.2,false)); main.g.add(box(64,1.5,14,M.coping,20,15,W/2+7));   // ER entrance canopy
   const pents=new THREE.Group(); main.roof.add(pents); pents.add(addPenthouse(main,30,-25,46,30,14)); pents.add(addPenthouse(main,-55,25,24,20,10));
-  const EJX=-main.IL/2+4, ej=addExpansionJoint(main,EJX,-38,38,0);   // A-3-TYP model at the ej hotspot (world z=0); 4 ft in from the wing, so the low detail camera (west of it) stays over the field, not past the block edge
+  const EJX=-main.IL/2+4, ej=addExpansionJoint(main,EJX,-38,38,0);   // A-3-TYP model at the ej hotspot (world z=0); 4 ft in from the wing, so the detail camera (west of it) stays over the field, not past the block edge
   const drainPos=[[-70,-40],[0,-45],[70,-40],[-70,42],[0,45],[70,42]]; drainPos.forEach(([x,z])=>addStain(main,x,z)); addStain(wing,10,10);
   const drains=new THREE.Group(); main.roof.add(drains); drainPos.forEach(([x,z])=>drains.add(addDrain(main,x,z))); [[-25,-20],[25,20]].forEach(([x,z])=>drains.add(addDrain(wing,x,z)));
   const rtuPos=[[-30,-30],[-5,-30],[70,15],[70,-15]]; const rtus=new THREE.Group(); main.roof.add(rtus); rtuPos.forEach(([x,z])=>rtus.add(addRTU(main,x,z,9,1.6))); rtus.add(addRTU(wing,0,-15,8,1.5));
@@ -1793,7 +1803,7 @@ function buildHospital(){
   const solar=makeSolar(wing.roof,[-30,-15,0,15,30],[-25,5]); solar.visible=false;
   const hots=[
     {id:'pitchpan', anchor:()=> new THREE.Vector3(panPos[0][0],H+2.8,panPos[0][1]), show:()=>S.on.pitchpan},
-    {id:'ej', anchor:()=> new THREE.Vector3(EJX,H+1.1,0), show:()=>S.on.ej},
+    {id:'ej', anchor:()=> new THREE.Vector3(EJX,H+0.4,0), show:()=>S.on.ej},
     {id:'penthouse', anchor:()=> new THREE.Vector3(30,H+15,-25), cam:PENT_FAR, show:()=>S.on.penthouse},
     {id:'rtu', anchor:()=> new THREE.Vector3(rtuPos[2][0],H+7.5,rtuPos[2][1]), show:()=>S.on.rtu},
     {id:'drain', anchor:()=> new THREE.Vector3(drainPos[4][0],H+1.2,drainPos[4][1]), show:()=>S.on.drain},
@@ -2004,7 +2014,7 @@ function makePolyBlock(o){ const {outer,holes=[],E,PH=3,PT=0.67,offset=0}=o; con
   const shape=()=>toShape(outer,holes); const bb=polyBBox([outer]); const IL=bb.maxX-bb.minX, IW=bb.maxZ-bb.minZ; const inside=(x,z)=>pointIn([x,z],outer)&&!holes.some(h=>pointIn([x,z],h));
   const fld=new THREE.Mesh(new THREE.ShapeGeometry(shape(),24),surf); fld.rotation.x=-Math.PI/2; fld.receiveShadow=true; roof.add(fld); fld.userData.kind='mem'; const fieldPlanes=[fld], cutouts=[];
   const area=Math.abs(polyArea(outer))-holes.reduce((s,h)=>s+Math.abs(polyArea(h)),0);
-  if(mem.plate==='MA'){ const gv=new THREE.Mesh(new THREE.ShapeGeometry(shape(),24),M.gravel); gv.rotation.x=-Math.PI/2; gv.position.y=0.03; gv.receiveShadow=true; roof.add(gv); gv.userData.kind='mem'; gv.userData.gravel=true; fieldPlanes.push(gv);
+  if(mem.plate==='MA'){ const gv=new THREE.Mesh(new THREE.ShapeGeometry(shape(),24),M.gravel); gv.rotation.x=-Math.PI/2; gv.position.y=0.03; gv.receiveShadow=true; roof.add(gv); gv.userData.kind='mem'; fieldPlanes.push(gv);
     const nPb=Math.max(1,Math.round(area/28)); const e2=new THREE.Object3D(); [M.pebble,M.pebble2].forEach(pm=>{ const pb=new THREE.InstancedMesh(new THREE.CircleGeometry(0.5,6),pm,nPb); let i=0, tries=0; while(i<nPb&&tries++<nPb*20){ const x=bb.minX+Math.random()*IL, z=bb.minZ+Math.random()*IW; if(!inside(x,z)) continue; e2.position.set(x,0.04,z); e2.rotation.set(-Math.PI/2,0,Math.random()*3); const sc=0.4+Math.random()*0.9; e2.scale.set(sc,sc*0.7,1); e2.updateMatrix(); pb.setMatrixAt(i++,e2.matrix); } pb.count=i; roof.add(pb); }); }
   const pitch=mem.plate==='A'?3:mem.plate==='C'?20:mem.plate==='MA'?3:10, seamMat=mem.plate==='A'?M.lapA:mem.plate==='C'?M.cjoint:mem.plate==='MA'?M.felts:M.seam;
   const ticks=(a,b)=>{ const t=[]; for(let v=Math.ceil(a/pitch)*pitch;v<b-1;v+=pitch) if(v>a+1) t.push(v); return t; };
