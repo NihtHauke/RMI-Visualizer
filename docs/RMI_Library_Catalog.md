@@ -149,9 +149,9 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 | Penthouse walls (`penthouse`) | W-13-TYP, fixed counterflashing · 3D W-11-24-FT-3D | `wall-counterflashing-fixed-W-13-TYP.glb`: a 4-ft section spliced into the office penthouse west face at the hotspot. Every penthouse draws the same cross-section in code (`PW13`), mitred at the corners | **VERIFIED**: counterflashing fixed, cannot be removed or lifted, stays in place (note 7), damaged metal replaced; bead of RMI approved sealant at its top edge; clean, prepare and prime; Flex encapsulates the (E) flashing up to the counterflashing; RMI-Thane / White encapsulates the Flex; 24 ga. skirt metal extends min 4" over the RMI system. Coating the counterflashing assembly is optional (not shown). The drawing has no term bar: the counterflashing's own top flange carries the bead. Note 9: all (E) BUR, mod-bit, EPDM, PVC, TPO regardless of wall type | Drawing is NTS: counterflashing top 24", 6" deep, 1" off the wall, 1/2" hem; the (E) flashing running up behind it to its top; 6" cant and 10" foot (not drawn); coats 1/2" up behind the hem; skirt 21" to 13.5" (5" lap); skirt fasteners 12" o.c.; skirt fitted after the topcoat; coat thicknesses (§5 #21) |
 | Sleeper supports (`sleeper`) | CS-8-TYP · 3D CS8-2-19-3D | `sleeper-support-CS-8-TYP.glb` at the office hotspot sleeper and under both sleepers of the hotel hotspot condenser; the rest code-drawn to the same sizes | **VERIFIED**: wood sleeper raised and reset; Flex base coat and topcoat run continuous across the field under the support — nothing wraps the block; loose-laid walkpad set after the RMI materials have completely cured; damaged or rotted sleepers replaced. Note 7: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems. (The 2024 library file is named "CS 7 TYP Sleeper Support"; its title block reads CS-8-TYP.) | Drawing is NTS with no dimensions: 6x10 x 30" sleeper; 3/8" synthetic rubber pad 2.5" past the sleeper; the 6" raise; the 22" x 48" roof patch; coat thicknesses. Whether the (E) condition already has a pad |
 | Pipe clusters (`pitchpan`) | P-8-TYP, Chem-Curb / pitch pan · 3D PP-1-FT-3D | `chem-curb-P-8-TYP.glb` on all three hospital pans | **VERIFIED**: Chem-Curb fabricated and installed per the manufacturer (Chem-Link), set in RMI M-1 sealant; clean, prepare and prime (note 10); interior pocket filled with RMI-Flex tapered from the penetration outward to shed water; Flex flashing coat over the curb onto the field and min 4" up each penetration past the curb (5" modelled); RMI-Thane / White min 2" up past the Flex (2.5" modelled). The drawing has no metal flange and no pourable sealer: the pocket fill is Flex. Note 7: any non-circular penetration, or where jacks or boots are not feasible. Note 8: all (E) BUR, mod-bit, EPDM, PVC, TPO and concrete deck systems | Drawing is NTS: 30" x 16" x 4" curb with a 1/2" wall; the four penetrations (3" vent, 2" line, two 1-1/2" conduits); 3/8" beads; fill 3/4" higher at a penetration, tapering over 4"; Flex 6" and topcoat 7" onto the field; coat thicknesses; curb set before priming (§5 #20) |
-| Expansion joint (`ej`) | A-3-TYP, EPDM/PVC/TPO · no 3D render | — code geometry | Per A-3-TYP; geometry **ASSUMED** | The geometry itself (no 3D concept render) |
+| Expansion joint (`ej`) | A-3-TYP, all (E) EPDM, neoprene, PVC and TPO joints · no 3D render | `expansion-joint-A-3-TYP.glb`: a 4-ft section with its own roof patch, spliced into the hospital's run at the ej hotspot. The rest of the run draws the same cross-section in code (`EJ`) | **VERIFIED**: (E) metal mounting flanges fastened down either side of the joint, a flexible bellow looped over it; confirm bellow integrity, repair or replace damaged materials; replace damaged, loose or missing fasteners (one is shown backed out, replaced at prep); clean, prepare and prime the roof, the metal and the bellow (note 12), adhesion test first (note 9); RMI-Flex fully encapsulates the bellow, fasteners and mounting flange, min 2" past the assembly; RMI-Thane / White over the Flex. Note 8: all (E) EPDM, neoprene, PVC and TPO expansion joints regardless of configuration. Note 10: an improper or ill-fitting joint can move more than the RMI materials allow and void the warranty. Note 11 (tape or three-course polyester/Flex min 2" each side where gaps at the flanges cannot be bridged) is conditional and not on the section, so not modelled | No 3D concept render. Mounting the flanges on two wood curbs with the (E) membrane carried up and over them as base flashing: the drawing lays the flanges on the roof system over a deck it shows "for illustration", and note 8 covers every configuration. The Flex and topcoat carried down the curbs to the field. Drawing is NTS: 4" joint; 5-1/2" x 10" curbs; 4" x 1/16" flanges; 3/16" bellow rising 1" and looping over the joint (crown 3" above the flanges); fasteners mid-flange at 6" o.c.; coat thicknesses (§5 #23) |
 | Silo walls (`silowall`) | W-7-TYP, concrete and CMU walls · no 3D render | — code geometry | Per W-7-TYP, with vertical field application on silos per the Longview grain terminal project | Sequence and coverage on curved walls |
-| Gallery supports (`support`) | P-5-C / P-7-C, circular supports on concrete · no 3D render | — code geometry | Per P-5-C; no VERIFIED tag. The sheet gives the wrap: butyl tape or three-course Flex/polyester 2" up and 4" out, Flex min 6" up past that, topcoat min 2" past the Flex | The code geometry has not been checked against those figures |
+| Gallery supports (`support`) | P-5-C, circular support through a concrete deck; P-7-C (the same support on a base plate) as reference · no 3D render | `circular-support-P-5-C.glb` on the silo gallery post at the support hotspot: its own disc of deck and the bottom 30" of the post. The other five posts draw the same wrap in code (`SP`) | **VERIFIED**, extents included: (E) support through the (E) concrete deck, backer rod in the gap; rake out the (E) sealant, mastic and repairs, new continuous bead of RMI approved sealant and/or tape before the Flex and wear coat; RMI approved butyl tape or three-course Flex/polyester 2" up and 4" out; clean, prepare and prime (note 10), adhesion test and moisture scan first (note 9); Flex min 6" up past the tape (8" above the deck); topcoat min 2" past the Flex (10"). Model and code both draw those minimums. Note 7: all circular supports (site screens, solar, mechanical). Note 8: installations directly over concrete decks. P-7-C, for reference: Flex min 4" up, topcoat min 2" past it, every fastener encapsulated in Flex, beads at the post and the plate edge | Drawing is NTS: 10-3/4" OD post (10" NPS) with a 0.365" wall; 1/2" gap and 6" deck; 1/2" bead; backer-rod size and depth; the old mastic collar; 60-mil tape and where its corner cuts across the bead; coat thicknesses (§5 #24) |
 | Kitchen exhaust (`exhaust`) | CS-1-TYP, note 7 names vents and ducts · 3D CS1-18-3D | `kitchen-exhaust-fan-CS-1-TYP.glb` | **VERIFIED** curb. Grease must be removed before priming — the plates allow no RMI material over contaminants | The degreasing method; fan housing, cowl, grease tray and motor sizes; plus the shared curb numbers above |
 | Parapet / coping (`coping`) | W-1-TYP · 3D W1-11-FT3D | `metal-coping-joint-W-1-TYP.glb` | **VERIFIED**, including the 4" tape / 2" Flex / 2" topcoat extents. Note 7: coping must meet code and SMACNA for wind uplift or it is excluded from warranty | Open-joint gap; fastener spacing; coat thicknesses. The topcoat shows the entire-coping (system warranty) option |
 
@@ -159,7 +159,7 @@ show the rep a different name (Bin vent, Manway / bin hatch) plus the Solar Post
 P-3-S-TYP, no 3D render, code geometry. `configuration()` returns it as its own field, `solar_post`
 (true/false), not in the detail lists.
 
-**17 of the 25 carry a Blender model**; the other 8 are generic code geometry pending the same treatment.
+**19 of the 25 carry a Blender model**; the other 6 are generic code geometry pending the same treatment.
 
 ## 3d. MICRO table — the library's own drawing index
 
@@ -171,7 +171,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | Pipe / soil stack / conduit (lead flashing) — **model** `models/lead-soil-stack-P-6-TYP.glb` (`scripts/build_lead_soil_stack_P-6-TYP.py`). Assembly VERIFIED to P-6-TYP; every dimension ASSUMED (drawing is NTS with no dimensions) | P-6-TYP | P3SP-11-FT-3D, P3SP-2-FT-3D, P3SP-14-FT-3D | BUR, mod-bit (notes say equally applies to conduit, HVAC, refrigeration lines) |
 | Pipe penetration, BUR | P-1-BUR | P1BUR-1-FT-3D (roof jack) | BUR, mod-bit |
 | Pipe penetration, single-ply | P-2-SP, P-3-SP | P3SP-3-2-FT-3D | PVC, EPDM, TPO |
-| Pipe penetration, concrete deck | P-4-C, P-5-C, P-7-C | — | Direct over concrete; P-5/P-7 cover circular supports (site screen, solar, mechanical) |
+| Pipe penetration, concrete deck — P-5-C circular support: **model** `models/circular-support-P-5-C.glb` (`scripts/build_circular_support_P-5-C.py`). Assembly and wrap extents VERIFIED to P-5-C; sizes ASSUMED | P-4-C, P-5-C, P-7-C | — | Direct over concrete; P-5/P-7 cover circular supports (site screen, solar, mechanical) |
 | Pipe penetration, metal roof — EPDM boot | P-9-MP | — | All metal panel systems |
 | Pipe penetration, metal roof — metal jack | P-10-MP | P1BUR-11-FT-3D | All metal panel systems |
 | Non-circular / cluster penetration — chem curb / pitch pan — **model** `models/chem-curb-P-8-TYP.glb` (`scripts/build_chem_curb_P-8-TYP.py`). Assembly VERIFIED to P-8-TYP (curb in M-1, Flex-filled pocket tapered to shed water, Flex min 4" / topcoat min 2" up the penetrations); every dimension ASSUMED | P-8-TYP | PP-1-FT-3D, PP-1-1-3D, PP-1-6-3D, PP-5-6-3D | BUR, mod-bit, single-ply, concrete |
@@ -245,7 +245,7 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 ### Accessories, SPF-specific, concrete repairs
 | Detail | 2D | 3D | Applies to |
 |---|---|---|---|
-| Duct joint / flexible connector / expansion joint | A-1, A-2, A-3-TYP | — | Metal ductwork; EPDM/PVC/TPO expansion joints |
+| Duct joint / flexible connector / expansion joint — A-3-TYP: **model** `models/expansion-joint-A-3-TYP.glb` (`scripts/build_expansion_joint_A-3-TYP.py`), a 4-ft section spliced into the hospital's code-drawn run. Assembly VERIFIED to A-3-TYP; curb mounting and every size ASSUMED | A-1, A-2, A-3-TYP | — | Metal ductwork; EPDM, neoprene, PVC and TPO expansion joints |
 | SPF, by title block (read 15 Sept 2026): SPF-1 configuration · SPF-2 configuration, concrete repair · SPF-3 ridge line · SPF-4 penetration · SPF-5 support block · SPF-6 perimeter edge metal · SPF-7 overflow scupper · SPF-8 (E) cast iron drain · SPF-9 (E) site screen support · SPF-10 HVAC duct · SPF-11 interior gutter · SPF-12 base flashing at window · SPF-13 (E) HVAC curb flashing · SPF-14 inlet drain / downspout · SPF-15 curb-mounted roof vents · SPF-16 roof-mounted vent | SPF-1 … SPF-16-TYP | B-1-SPF-1-3D | SPF only |
 | Concrete: crack repair, control joint, joints, spalling, perimeter edge band | F-21-CON, F-21-CON-CJ, F-22/23/24-CON | — | Concrete decks |
 
@@ -261,7 +261,9 @@ Each row = one detail the user can click into. 2D = the logic drawing (section +
 | Detail assemblies would need a "generic ASSUMED" placeholder | Not needed — every category has a 2D logic drawing and most have a 3D concept render | Detail + 3D folders |
 | Solar Post would be a placeholder | Has three 2D details (P-1/2/3-S-TYP); no 3D render yet | Solar folder |
 | SPF variants of the HVAC curb / hatch, pipe and ridge cited as SPF-12, SPF-3, SPF-2 | Title blocks read SPF-13 (curb flashing), SPF-4 (penetration), SPF-3 (ridge line); the tool and both docs now cite those | SPF sheets, 15 Sept 2026 |
-| Wrap height on the SPF pipe and the concrete gallery support was open | SPF-4-TYP: Flex min 1" above the collar flashing, topcoat min 1" past the Flex. P-5-C: tape 2" up / 4" out, Flex min 6" past it, topcoat min 2" past the Flex. Code geometry still to be checked | SPF-4-TYP, P-5-C |
+| Wrap height on the SPF pipe and the concrete gallery support was open | SPF-4-TYP: Flex min 1" above the collar flashing, topcoat min 1" past the Flex. P-5-C: tape 2" up / 4" out, Flex min 6" past it, topcoat min 2" past the Flex. P-5-C model and code drawn to those figures 24 Sept 2026; SPF-4-TYP code still to be checked | SPF-4-TYP, P-5-C |
+| Expansion joint geometry ASSUMED end to end (no 3D render) | Modelled to A-3-TYP: (E) metal mounting flanges fastened down with a flexible bellow looped over the joint; Flex fully encapsulates the bellow, fasteners and mounting flange, min 2" past the assembly; topcoat over the Flex; roof, metal and bellow primed (note 12); damaged, loose or missing fasteners replaced. Curb mounting and every size still ASSUMED (§5 #23) | A-3-TYP |
+| Gallery-support wrap drawn with ASSUMED heights | Model and code posts drawn to the sheet: (E) sealant and mastic raked out, backer rod and new bead; tape 2" up / 4" out; Flex 8" above the deck; topcoat 10" | P-5-C |
 | Sleeper support filed as CS 7 | The file "CS 7 TYP Sleeper Support" carries title block CS-8-TYP, and "CS 8 TYP Support Curb wSkirt Single Ply" reads CS-7-SP — the file names are swapped, the title blocks are right | Curbs folder, 15 Sept 2026 |
 
 ## 5. Open questions for RMI
@@ -322,14 +324,15 @@ as RMI spec — the UI tags all of it ASSUMED.
     minimum 4" over the RMI system, with Flex to the underside of the (E) vertical metal. It is the next curb
     model; the arena hatch is code geometry until then.
 15. **Wrap heights on the SPF variants** of the HVAC curb and roof hatch (SPF-13-TYP): the sheet shows Flex up the curb
-    under new skirt metal but gives no height. The pipe penetration (SPF-4-TYP) and the gallery support (P-5-C) are
-    off this list on paper — SPF-4-TYP runs the Flex min 1" above the rain-collar flashing and the topcoat min 1" past
-    the Flex; P-5-C has tape 2" up and 4" out, Flex min 6" past it and topcoat min 2" past the Flex (read 15 Sept 2026) —
-    but the code geometry for both has not yet been checked against those figures. Each is a single number in the builder. (The penthouse wall, W-13-TYP,
+    under new skirt metal but gives no height. The pipe penetration (SPF-4-TYP) is off this list on paper — the Flex
+    runs min 1" above the rain-collar flashing and the topcoat min 1" past the Flex — but its code geometry has not yet
+    been checked against those figures (a single number in the builder). (The gallery support, P-5-C, is off this list:
+    tape 2" up and 4" out, Flex min 6" past it, topcoat min 2" past the Flex; model and code drawn to them 24 Sept 2026.
+    Its sizes are #24.) (The penthouse wall, W-13-TYP,
     is off this list: Flex runs up to the fixed counterflashing, VERIFIED 2026-09-14; its sizes are #21.) (The sleeper support, CS-8-TYP, is off this list:
     the drawing has no wrap — the coats run continuous under the raised sleeper. VERIFIED 2026-09-14.)
-16. **Ridge cap and expansion joint: no 3D concept render.** A-3-TYP still has none, so the expansion joint
-    shape is assumed. F-21-M-TYP is now modelled to its 2D drawing, but with no render to check the massing
+16. **Ridge cap and expansion joint: no 3D concept render.** A-3-TYP still has none; the expansion joint is now
+    modelled to its 2D drawing (24 Sept 2026) and its open items are #23. F-21-M-TYP is now modelled to its 2D drawing, but with no render to check the massing
     against, these are open: is a 6" cap lap right, and is the closure typically nearer the ridge than the
     18" the model uses? Note 12 only sets the minimum recess, not the position. Constants in
     `scripts/build_metal_ridge_cap_F-21-M-TYP.py`.
@@ -363,6 +366,19 @@ as RMI spec — the UI tags all of it ASSUMED.
     down the fascia or only the topcoat, and how far — to the drip, or a set distance? Is the seam the drawing says to confirm the
     stripping's field edge? Typical flange and fascia sizes (the model uses 4" and 4", stripping 4" past the flange). Constants in
     `scripts/build_perimeter_edge_metal_F-1-TYP.py` and `EM` in index.html.
+23. **A-3-TYP expansion joint: curb mounting and sizes.** The drawing lays the metal mounting flanges on the roof
+    system over the deck (which it shows "for illustration") and note 8 covers every configuration. The hospital joint is
+    modelled on two wood curbs, 5-1/2" x 10", with the (E) membrane carried up and over them as base flashing and the Flex
+    and topcoat carried down the curbs to the field. Open: is the curb-mounted joint the typical case RMI sees on
+    commercial roofs, or the flat, on-the-roof one drawn? Should the Flex stop 2" past the flange, or run down the
+    curbs as modelled? Typical joint width, flange width and bellow loop (4", 4" x 1/16", 3/16" bellow looping 3" above
+    the flanges modelled), and fastener spacing (6" o.c. modelled). Constants in `scripts/build_expansion_joint_A-3-TYP.py`
+    and `EJ` in index.html.
+24. **P-5-C circular support sizes.** The wrap extents are on the sheet and modelled at their minimums; nothing else is
+    dimensioned. The model uses a 10-3/4" OD steel pipe (10" NPS) through a 6" deck with a 1/2" gap, a 1/2" sealant bead at
+    the corner, a backer rod in the gap below it, and 60-mil butyl tape whose corner cuts across the bead. Open: the typical
+    gap, and how deep the backer rod sits; butyl tape or the three-course Flex/polyester as the default. Constants in
+    `scripts/build_circular_support_P-5-C.py` and `SP` in index.html.
 
 ---
 

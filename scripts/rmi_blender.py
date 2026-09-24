@@ -71,6 +71,7 @@ LIB = {
     "wall":       lambda: mat("RMI_wall",         (0.80, 0.78, 0.74), 0.9),
     "fast":       lambda: mat("RMI_fastener",     (0.72, 0.74, 0.75), 0.4, 0.9),
     "seal":       lambda: mat("RMI_sealant",      (0.25, 0.25, 0.27), 0.6),
+    "mastic":     lambda: mat("RMI_mastic",       (0.10, 0.09, 0.08), 0.95),   # aged (E) mastic, raked out at prep
     "tape":       lambda: mat("RMI_tape",         (0.82, 0.83, 0.84), 0.5, 0.4),
     "primer":     lambda: mat("RMI_primer",       (0.90, 0.82, 0.62), 0.4),
     "flex":       lambda: mat("RMI_Flex",         (0.85, 0.62, 0.10), 0.45),
@@ -214,12 +215,79 @@ class Shell:
                 self.f.append((n + i * m + k, n + j * m + k, n + j * m + k + 1, n + i * m + k + 1))
         return self
 
+    def ring(self, poly, seg=48):
+        """Revolve a CLOSED (r, z) polygon about z — a solid ring of that cross-section (coat bands, tape, backer rod).
+        Any winding; faces come out wound outward."""
+        a = sum(p[0] * q[1] - q[0] * p[1] for p, q in zip(poly, poly[1:] + poly[:1]))
+        if a < 0:
+            poly = poly[::-1]
+        n = len(self.v); m = len(poly)
+        for i in range(seg):
+            t = 2 * math.pi * i / seg; ca, sa = math.cos(t), math.sin(t)
+            for (r, z) in poly:
+                self.v.append((r * ca, r * sa, z))
+        for i in range(seg):
+            j = (i + 1) % seg
+            for k in range(m):
+                l = (k + 1) % m
+                self.f.append((n + i * m + k, n + j * m + k, n + j * m + l, n + i * m + l))
+        return self
+
     def emit(self, layer, name, material):
         me = bpy.data.meshes.new(name); me.from_pydata(self.v, [], self.f); me.validate()
         for p in me.polygons:                       # smooth the round walls, keep the flat rings crisp
             p.use_smooth = abs(p.normal.z) < 0.5
         o = bpy.data.objects.new(name, me); o.data.materials.append(material)
         return link(o, layer, name)
+
+
+def offset_path(path, d):
+    """Offset an open (u, v) polyline by d along its right-hand normal (dv, -du), mitring the corners. Walk the path with
+    the substrate on the LEFT (e.g. across a roof toward a wall, then up it) and the offset lies on the outside — which
+    is how a coat of thickness d sits on a section profile. Same maths as offsetPath() in index.html."""
+    out, n = [], len(path)
+
+    def nrm(a, b):
+        du, dv = b[0] - a[0], b[1] - a[1]; l = math.hypot(du, dv)
+        return (dv / l, -du / l)
+    for i in range(n):
+        ns = ([nrm(path[i - 1], path[i])] if i > 0 else []) + ([nrm(path[i], path[i + 1])] if i < n - 1 else [])
+        m, k = ns[0], 1.0
+        if len(ns) == 2:
+            mx, my = ns[0][0] + ns[1][0], ns[0][1] + ns[1][1]; l = math.hypot(mx, my)
+            if l > 1e-9:
+                m = (mx / l, my / l); k = 1 / max(0.2, m[0] * ns[0][0] + m[1] * ns[0][1])
+        out.append((path[i][0] + m[0] * d * k, path[i][1] + m[1] * d * k))
+    return out
+
+
+def band(path, d0, d1):
+    """Closed polygon of a coat lying between offsets d0 and d1 of `path` (see offset_path)."""
+    return offset_path(path, d1) + offset_path(path, d0)[::-1]
+
+
+def smooth_by_angle(me, degrees=35):
+    """Smooth shading with edges sharper than `degrees` kept hard (curved bellows and arcs read round, corners stay crisp)."""
+    try:
+        me.shade_smooth(); me.set_sharp_from_angle(angle=math.radians(degrees))
+    except (AttributeError, TypeError):
+        for p in me.polygons:
+            p.use_smooth = True
+
+
+def prism_y(name, layer, pts, material, y0, y1, sharp=35):
+    """Prism of the closed (x, z) polygon `pts` (metres, any winding, concave is fine) from y0 to y1 along Blender Y
+    (the web app's -z), with NO end caps: a run section splices into a code-drawn run that overlaps its ends, and an
+    end face there shows as a hairline across the seam."""
+    a = sum(p[0] * q[1] - q[0] * p[1] for p, q in zip(pts, pts[1:] + pts[:1]))
+    if a < 0:
+        pts = pts[::-1]
+    n = len(pts)
+    v = [(x, y0, z) for x, z in pts] + [(x, y1, z) for x, z in pts]
+    f = [(i, n + i, n + (i + 1) % n, (i + 1) % n) for i in range(n)]    # wound outward for a CCW (x, z) polygon
+    me = bpy.data.meshes.new(name); me.from_pydata(v, [], f); me.validate(); smooth_by_angle(me, sharp)
+    o = bpy.data.objects.new(name, me); o.data.materials.append(material)
+    return link(o, layer, name)
 
 
 def _override():
