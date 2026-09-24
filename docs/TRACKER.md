@@ -23,13 +23,13 @@ Roof types are those of the buildings that carry the detail.
 
 | Detail | Drawing No. | Roof Types | Status | Open ASSUMED |
 |---|---|---|---|---|
-| HVAC curb on metal (`curb`) — warehouse hotspot (R-panel and standing seam); manufacturing and arena curbs and SPF still code | CS-13-MP · SPF → SPF-13-TYP | R-panel, standing seam, SPF | MODELLED+SPLICED | The curb-to-panel junction — no sheet draws the panel (§5 #24); curb, counterflashing and unit sizes; SPF wrap height (§5 #15) |
+| HVAC curb on metal (`curb`) — every curb: warehouse, manufacturing (1:12), both arena curbs (3:12); SPF still code | CS-13-MP · SPF → SPF-13-TYP | R-panel, standing seam, SPF | MODELLED+SPLICED | The curb-to-panel junction — no sheet draws the panel (§5 #24); curb, counterflashing and unit sizes; SPF wrap height (§5 #15) |
 | R-panel side lap (`lap`) — warehouse slope | F-8-TYP | R-panel | MODELLED+SPLICED | Rib, lap lips, fastener spacing, Flex extent past the rib (§5 #10) |
 | Standing seam (`sseam`) — manufacturing slope | F-9-TYP, F-20-TYP | Standing seam | MODELLED+SPLICED | Seam silhouette, clip spacing, Flex extent (§5 #11) |
-| Skylight panels, flush (`mskylight`) | F-12-TYP · SPF → none | R-panel, standing seam, SPF | CODE-DRAWN | Geometry (no 3D render); SPF treated as a curb (§5 #13) |
+| Skylight panels, flush (`mskylight`) — every skylight on manufacturing and the hangar (both slopes); SPF still code | F-12-TYP · SPF → none | R-panel, standing seam, SPF | MODELLED+SPLICED | No 3D render: end laps, panel width and length, where the 3" is measured from (§5 #13); SPF treated as a curb (§5 #13) |
 | Vents on metal / SPF (`vent`) — every vent on manufacturing (1:12) and arena (3:12); SPF still code | CS-13-MP note 7 (no vent sheet exists), Plate D for the vent metal · SPF → SPF-16-TYP · membrane (EagleView prospect) → CS-1-TYP note 7 | R-panel, standing seam, SPF | MODELLED+SPLICED | Curb-mounted and liftable, the hood, sizes (§5 #12); panel junction (§5 #24); SPF wrap height (§5 #15) |
 | Bin vent (`vent` on concrete) — silo cap | CS-12-CON; CS-1-TYP note 7 | Concrete | MODELLED+SPLICED | Shared curb numbers (§5 #5); concrete skinning of the curb |
-| Pipes on metal (`mpipe`) | P-9-MP (P-10-MP alt.) · SPF → SPF-4-TYP | R-panel, standing seam, SPF | CODE-DRAWN | SPF wrap is on the sheet (Flex 1" above the collar flashing); code geometry not yet checked against it (§5 #15) |
+| Pipes on metal (`mpipe`) — every pipe on manufacturing and the hangar; SPF still code | P-9-MP (P-10-MP alt.) · SPF → SPF-4-TYP | R-panel, standing seam, SPF | MODELLED+SPLICED | Plate over the ribs, boot and pipe sizes (§5 #25); SPF wrap is on the sheet (Flex 1" above the collar flashing), code geometry not yet checked against it (§5 #15) |
 | Gutters (`gutter`) | W-7-TYP (gutter-seams sheet; the concrete-wall sheet carries the same number, so the panel renders this one as `W-7-TYP-GUTTER`) | Standing seam, R-panel, SPF | CODE-DRAWN | None flagged yet — sizes will be ASSUMED when modelled |
 | Downspout inlets (`gutterinlet`) | D-8-TYP | Standing seam, R-panel, SPF | CODE-DRAWN | None flagged yet — sizes will be ASSUMED when modelled |
 | Roof hatch on metal / SPF (`hatch`) — arena hotspot (standing seam and R-panel); SPF still code | CS-15-MP · SPF → SPF-13-TYP · membrane (EagleView prospect) → CS-1-TYP note 7 | Standing seam, R-panel, SPF | MODELLED+SPLICED | Skirt after the topcoat, (E) vertical metal drop, sizes (§5 #14); panel junction (§5 #24); SPF wrap (§5 #15) |
@@ -52,7 +52,7 @@ Roof types are those of the buildings that carry the detail.
 | Parapet / coping (`coping`) — big-box east run only | W-1-TYP | TPO, mod-bit, gravel BUR, concrete | MODELLED+SPLICED | Joint gap, fastener spacing, whole-coping primer (§5 #3) |
 | Solar Post supports (toggle, not in `DETAILS`) | P-1-S-TYP, P-2-S-TYP, P-3-S-TYP | All | CODE-DRAWN | Geometry, no 3D render |
 
-**Totals:** 22 MODELLED+SPLICED · 0 MODELLED · 6 CODE-DRAWN · 0 NOT STARTED.
+**Totals:** 24 MODELLED+SPLICED · 0 MODELLED · 4 CODE-DRAWN · 0 NOT STARTED.
 
 ---
 
@@ -78,7 +78,7 @@ Roof types are those of the buildings that carry the detail.
 |---|---|---|---|
 | 0 | Desktop installer (Electron, Windows) | BUILT (v0.3.0) | `npm run dist` → `dist/RMI Roof Visualizer Setup 0.3.0.exe`; RMI crest as the app/taskbar icon (`build/icon.ico`, `build/icon.png`) and the RMI logo (`assets/rmi-logo.png`) in the header, on the PDF cover and in the PDF page header; runs offline, vendored libs; bundles `drawings/` (render it first) and `samples/` (the four sample roof photos, 2026-09-17). `RMI_SELFTEST=<png>` opens the big-box drain with the Drawing panel, prints its state and saves a screenshot; `RMI_SELFTEST_PDF=<pdf>` exports the big-box presentation with the sample photos to that path; `RMI_SELFTEST_PROSPECT=<folder>` runs the saved-prospect round trip in two launches (#11) (the build checks). Window title shows the version from package.json at runtime (`app.getVersion()`), e.g. "RMI Roof Visualizer 0.3.0". **v0.3.1 packages but the installer `.exe` cannot be produced on this machine:** Smart App Control blocks the unsigned NSIS uninstaller stub electron-builder has to run mid-build (`spawn UNKNOWN`; CodeIntegrity event 3077) — `dist/win-unpacked` builds and passes the checks, only the NSIS step fails (#12). Mac only if needed. Rollout to reps not yet recorded |
 | 1 | Photo panel | DONE (v2, 2026-09-14) | v2 per Dennis: a thumbnail strip across the top of the 3D view (56 px, 4:3, pin-count badge, × to remove, "+" tile, drag-drop, "Clear photos", the orbit hint at its right end); click a thumbnail and the slider docks on the right at about 40 % (filename, i / n, prev/next, ← → keys, Esc). Pins unchanged from v1. Photos (blob), pins and the building/roof selection persist in IndexedDB on that machine (`rmi-visualizer` db); "Clear photos" wipes the photo store; nothing is uploaded. "Load sample photos" on the empty strip loads `samples/sample-01…04.jpg`, labelled "Sample roof"; a rep's own photos replace them. In the installed app they come through the desktop bridge (`rmiDesktop.samplePhotos` → main reads them out of the bundled `samples/`), because `fetch()` cannot read a file inside `app.asar` — it silently loaded nothing before (fixed 2026-09-17, `RMI_SELFTEST_PDF` now exports the photo pages from the packaged app); the browser build still fetches them. Native "Add photos" dialog in Electron kept. A saved prospect (#11) carries the photos and pins in its own file |
-| 2 | Remaining detail models | IN PROGRESS | 6 CODE-DRAWN rows in §1, in the order the buildings need them |
+| 2 | Remaining detail models | IN PROGRESS | 4 CODE-DRAWN rows in §1, in the order the buildings need them |
 | 3 | Fine-tuning | OPEN | Labels, camera pass, silo headhouse/shed (fastener size done 2026-09-14) |
 | 4 | Textures | NOT STARTED | `textures/` folder (planned layout) |
 | 5 | Catalog alignment with the 25 `DETAILS` entries | OPEN | Catalog rows ↔ the 25 `DETAILS` entries. The detail menu is a per-building checkbox list, not a dropdown (B1) |
@@ -105,7 +105,7 @@ Roof types are those of the buildings that carry the detail.
 - [ ] Mac installer, only if needed
 - [ ] Split `index.html` into `src/` JS modules (planned layout; `models/`, `scripts/`, `docs/` exist; textures are §2 #4)
 - [x] Refresh CLAUDE.md "Current state" to match §1 and §2
-- [ ] Extend spliced models to the instances still code-drawn: RTU curbs at other sizes (school, office, hotel, restaurant); coping on hospital, restaurant, hotel; ridge cap on manufacturing, airport, arena (confirm pitch vs. the 1:12 model); CS-13-MP HVAC curbs on manufacturing (8 ft, 1:12) and arena (10 ft, 3:12) — a `Variant` line each in `scripts/build_metal_curb_unit_CS-13-MP.py` plus an `MCURB` entry; airport vents (1.5:12)
+- [ ] Extend spliced models to the instances still code-drawn: RTU curbs at other sizes (school, office, hotel, restaurant); coping on hospital, restaurant, hotel; ridge cap on manufacturing, airport, arena (confirm pitch vs. the 1:12 model); airport vents (1.5:12) — a `Variant` line in `scripts/build_metal_curb_vent_CS-13-MP.py` and vents moved to odd x on a 6k-ft spacing
 - [x] CS-15-MP fixed metal curb for the arena hatch (§5 #14) — with the CS-13-MP HVAC curb and vents, one core (`scripts/rmi_metal_curb.py`), spliced into the slope like the lap
 - [ ] Ask RMI whether reps see ballasted single-ply roofs (Plate SPB) — candidate 8th roof type; ballast removal is not built
 - Friday update (Heath): `git log --since="last friday"` → write the week's entry in §4 → update the title line → run contact sheets → `git push` → confirm Pages loads → tell Dennis the tracker is updated

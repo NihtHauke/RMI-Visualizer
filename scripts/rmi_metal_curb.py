@@ -1,7 +1,7 @@
 """
 rmi_metal_curb.py — the metal-roof curb shared by the CS-13-MP (liftable) and CS-15-MP (fixed) units: a bay of sloped
 R-panel or standing-seam roof with an exposed metal curb standing on it, spliced into buildGable's slope the same way the
-F-8-TYP lap section is (index.html: `MCURB`, `unitAt`, the slope-splice in makeSlope).
+F-8-TYP lap section is (index.html: `SLOPE_BAY`, `unitAt`, the slope-splice in makeSlope).
 
 Derived from build_curb_mounted_unit_CS-1-TYP.py / rmi_curb.py: same apron figure, same "extend to interior" turn-down,
 the same lift-and-seat convention for a liftable unit (built lifted, 14" here so it clears its own counterflashing). What changes on metal:
@@ -72,7 +72,7 @@ CURB_COAT = [0.06, 0.26, 0.46]    # primer / Flex / topcoat outer offsets on the
 APRON_T = [LAP_TP, LAP_TP + LAP_TF, LAP_TP + LAP_TF + LAP_TT]       # apron coat tops on a flat pan: 0.08 / 0.38 / 0.74"
 CF_DROP, CF_KICK, CF_GAP, CF_T = 4.0, 0.75, 0.12, 0.06    # counterflashing: drop, kick-out, stand-off past the topcoat, sheet
 SCREW_PITCH, SCREW_DOWN = 12.0, 2.0                       # SS screws w/ EPDM washers, o.c. and below the curb top
-LIFT_IN = 14.0                                            # built lifted this far; the app seats it (MCURB[kind].lift in index.html).
+LIFT_IN = 14.0                                            # built lifted this far; the app seats it (SLOPE_BAY[kind].lift in index.html).
                                                           # 6" on the CS-1 curbs, but here the 4" counterflashing would hide the gap
 
 
@@ -251,66 +251,52 @@ def panel_top(V, x0, x1, ribs):
     return pts
 
 
-class Curb:
-    """What a unit script gets: numbers in the LEVEL frame (metres) plus the angle."""
-    pass
+LAYERS3 = [("primer", "primer"), ("flex", "flex"), ("topcoat", "thane")]
 
 
-def build(V, unit, finalize_name=None):
-    reset_scene()
-    A = V.A; tanA, cosA = math.tan(A), math.cos(A)
-    X, Y = V.hx * 12, V.hz * 12                      # bay half-sizes, inches
-    ribs = rib_offsets(V)
-    level = []                                        # objects built in the level frame, turned onto the slope at the end
-    unit_objs = []
+def apron_extents(V, ribs, ax_nom, ay_nom):
+    """Per-coat half-extents of an apron (inches): nominal, carried over a rib the x-edge lands on (to 2" past the rib
+    base, as at a lap), each coat nesting outside the last."""
+    ax0 = ax_nom
+    for r in ribs:
+        if abs(ax0 - abs(r)) < rib_foot(V, 0):
+            ax0 = max(ax0, abs(r) + rib_foot(V, 0) + 0.05)
+    grow = [0.0, LAP_TF, LAP_TF + LAP_TT]
+    AX, AY = [ax0 + g for g in grow], [ay_nom + g for g in grow]
+    X, Y = V.hx * 12, V.hz * 12
+    assert AX[2] < X - 0.02 and AY[2] < Y - 0.02, f"apron {AX[2]:.2f} x {AY[2]:.2f} in does not fit the bay {X} x {Y}"
+    return AX, AY
 
-    # ================================================================ panel patch (panel frame)
+
+def panel_patch(V, ribs, AX, AY, cx_in=0.0, cy_in=0.0, keep_out=lambda x, y: False):
+    """The bay of panel in the PANEL frame (inches in, metres out): pan, ribs, purlin fasteners with their Flex / topcoat
+    dabs (R-panel rows, except where keep_out(x, y)), rust, the 0.36" field topcoat, the rib coats from the bay edges in
+    to the apron, and the apron itself — four strips round an inner rectangle (cx_in, cy_in) whose edges are buried in
+    whatever stands there, or one sheet when there is none."""
+    X, Y = V.hx * 12, V.hz * 12
     box("panel", "existing", 2 * X * IN, 2 * Y * IN, SHEET_T * IN, 0, 0, -SHEET_T / 2 * IN, M("panel"))
     for i, r in enumerate(ribs):
         prof = ([(r - RP_B / 2, 0), (r - RP_T / 2, RP_H), (r + RP_T / 2, RP_H), (r + RP_B / 2, 0)] if V.surface == "rpanel"
                 else [(r + x * 12, z * 12) for x, z in SEAM])
         prism(f"rib_{i}", "existing", prof, -Y, Y, M("panel"), caps=(False, False))
-
-    # the curb's footprint on the panel (plumb walls meet a pan at y = a / cos A)
-    cy_out = V.CD / 2 / cosA                         # outer face, along the slope
-    cy_in = (V.CD / 2 - WT / 2) / cosA               # mid-wall: coat and slab edges stop here, buried in the wall
-    cx_in = V.CW / 2 - WT / 2
-
-    # apron extents per coat: 18" past the curb, carried over a rib it lands on (to 2" past the rib base, as at a lap)
-    ax0 = V.CW / 2 + APRON_IN
-    for r in ribs:
-        if abs(ax0 - abs(r)) < rib_foot(V, 0):
-            ax0 = max(ax0, abs(r) + rib_foot(V, 0) + 0.05)
-    grow = [0.0, LAP_TF, LAP_TF + LAP_TT]
-    AX = [ax0 + g for g in grow]
-    AY = [cy_out + APRON_IN + g for g in grow]
-    assert AX[2] < X - 0.02 and AY[2] < Y - 0.02, f"apron {AX[2]:.2f} x {AY[2]:.2f} in does not fit the bay {X} x {Y}"
-
-    # purlin fasteners (R-panel): crest of every rib on the rows that cross the bay, outside the curb
     if V.surface == "rpanel":
         for j, y in enumerate(V.rows):
             for i, r in enumerate(ribs):
-                if abs(r) < V.CW / 2 + 3 and abs(y) < cy_out + 3:
+                if keep_out(r, y):
                     continue
                 cyl(f"fastener_{j}_{i}", "existing", FAST["r"] * IN, FAST["h"] * IN, r * IN, y * IN, FAST["z"] * IN, M("fast"), verts=10)
                 cyl(f"flex_dab_{j}_{i}", "flex", FAST["fr"][1] * IN, FAST["h"] * IN, r * IN, y * IN, FAST["fz"] * IN, M("flex"), verts=14, r2=FAST["fr"][0] * IN)
                 cyl(f"topcoat_dab_{j}_{i}", "topcoat", FAST["tr"][1] * IN, FAST["h"] * IN, r * IN, y * IN, FAST["tz"] * IN, M("thane"), verts=14, r2=FAST["tr"][0] * IN)
-
-    # rust on the pans at the curb base (the app fades it out through prep)
     for i, (x, y, rr) in enumerate(V.rust):
         cyl(f"rust_{i}", "existing", rr * IN, 0.01 * IN, x * IN, y * IN, 0.006 * IN, M("rust"), verts=20)
-
-    # field topcoat on the pans: the whole bay but the curb's inside (the apron topcoat stands over it near the curb)
     t = FIELD_TT
-    for nm, (x0, x1, y0, y1) in {"up": (-X, X, cy_in, Y), "dn": (-X, X, -Y, -cy_in), "l": (-X, -cx_in, -cy_in, cy_in), "r": (cx_in, X, -cy_in, cy_in)}.items():
+    fields = ({"up": (-X, X, cy_in, Y), "dn": (-X, X, -Y, -cy_in), "l": (-X, -cx_in, -cy_in, cy_in), "r": (cx_in, X, -cy_in, cy_in)}
+              if cy_in > 0 else {"all": (-X, X, -Y, Y)})
+    for nm, (x0, x1, y0, y1) in fields.items():
         box(f"topcoat_field_{nm}", "topcoat", (x1 - x0) * IN, (y1 - y0) * IN, t * IN, (x0 + x1) / 2 * IN, (y0 + y1) / 2 * IN, t / 2 * IN, M("thane"))
-
-    # the rib coats from the bay edges in to the apron edge (primer/Flex only on laps on R-panel; every seam on standing
-    # seam); a rib outside the apron runs the full bay
-    LAYER = [("primer", "primer"), ("flex", "flex"), ("topcoat", "thane")]
     for i, r in enumerate(ribs):
         lap = is_lap(V, r)
-        for k, (layer, mat) in enumerate(LAYER):
+        for k, (layer, mat) in enumerate(LAYERS3):
             poly = rib_coat(V, k, lap)
             if poly is None:
                 continue
@@ -320,19 +306,54 @@ def build(V, unit, finalize_name=None):
                 prism(f"{layer}_rib_{i}_dn", layer, poly, -Y, -AY[k], M(mat), LIFT[k], caps=(False, False))
             else:
                 prism(f"{layer}_rib_{i}", layer, poly, -Y, Y, M(mat), LIFT[k], caps=(False, False))
-
-    # the apron: four strips round the curb, each following the ribs; their inner edges are buried mid-wall
-    for k, (layer, mat) in enumerate(LAYER):
-        up = apron_top(V, k, -AX[k], AX[k], ribs)
-        prism(f"{layer}_apron_up", layer, up, cy_in, AY[k], M(mat), LIFT[k])
-        prism(f"{layer}_apron_dn", layer, up, -AY[k], -cy_in, M(mat), LIFT[k])
+    for k, (layer, mat) in enumerate(LAYERS3):
+        full = apron_top(V, k, -AX[k], AX[k], ribs)
+        if cy_in <= 0:
+            prism(f"{layer}_apron", layer, full, -AY[k], AY[k], M(mat), LIFT[k])
+            continue
+        prism(f"{layer}_apron_up", layer, full, cy_in, AY[k], M(mat), LIFT[k])
+        prism(f"{layer}_apron_dn", layer, full, -AY[k], -cy_in, M(mat), LIFT[k])
         prism(f"{layer}_apron_r", layer, apron_top(V, k, cx_in, AX[k], ribs), -cy_in, cy_in, M(mat), LIFT[k])
         prism(f"{layer}_apron_l", layer, apron_top(V, k, -AX[k], -cx_in, ribs), -cy_in, cy_in, M(mat), LIFT[k])
 
-    # cutter: everything below the panel's top surface, so the plumb curb walls (and their coats) stop ON the panel
-    # and are notched over the ribs — the ribs run on under the curb
-    under = panel_top(V, -X - 12, X + 12, ribs) + [(X + 12, -80.0), (-X - 12, -80.0)]
-    cutter = helper(prism("wall_cutter", "existing", under, -Y - 12, Y + 12, M("panel")))
+
+def panel_cutter(V, ribs, lift=0.0, name="wall_cutter"):
+    """Helper: everything below the panel's top surface (raised by `lift`) — plumb parts cut by it stop ON the panel,
+    notched over the ribs."""
+    X, Y = V.hx * 12, V.hz * 12
+    under = [(x, z + lift) for x, z in panel_top(V, -X - 12, X + 12, ribs)] + [(X + 12, -80.0), (-X - 12, -80.0)]
+    return helper(prism(name, "existing", under, -Y - 12, Y + 12, M("panel")))
+
+
+def level_to_panel(A, objs):
+    """Turn objects built in the LEVEL frame (z plumb, y horizontal up-slope) onto the panel (rotate -A about x)."""
+    bpy.context.view_layer.update()
+    R = Matrix.Rotation(-A, 4, 'X')
+    for o in objs:
+        o.matrix_world = R @ o.matrix_world
+
+
+class Curb:
+    """What a unit script gets: numbers in the LEVEL frame (metres) plus the angle."""
+    pass
+
+
+def build(V, unit, finalize_name=None):
+    reset_scene()
+    A = V.A; tanA, cosA = math.tan(A), math.cos(A)
+    ribs = rib_offsets(V)
+    level = []                                        # objects built in the level frame, turned onto the slope at the end
+    unit_objs = []
+
+    # the curb's footprint on the panel (plumb walls meet a pan at y = a / cos A)
+    cy_out = V.CD / 2 / cosA                         # outer face, along the slope
+    cy_in = (V.CD / 2 - WT / 2) / cosA               # mid-wall: coat and slab edges stop here, buried in the wall
+    cx_in = V.CW / 2 - WT / 2
+    # apron: 18" past the curb, carried over a rib it lands on; purlin fasteners on the crests, not under the curb
+    AX, AY = apron_extents(V, ribs, V.CW / 2 + APRON_IN, cy_out + APRON_IN)
+    panel_patch(V, ribs, AX, AY, cx_in, cy_in, keep_out=lambda x, y: abs(x) < V.CW / 2 + 3 and abs(y) < cy_out + 3)
+    cutter = panel_cutter(V, ribs)
+    LAYER = LAYERS3
 
     # ================================================================ the curb (level frame, metres)
     C = Curb()
@@ -367,11 +388,8 @@ def build(V, unit, finalize_name=None):
     unit(C)
 
     # ================================================================ onto the slope
-    bpy.context.view_layer.update()
-    R = Matrix.Rotation(-A, 4, 'X')                  # level frame -> panel frame
-    for o in level + unit_objs:
-        o.matrix_world = R @ o.matrix_world
-    if V.liftable:                                   # build seated, ship lifted: the app seats it 6" along the panel normal
+    level_to_panel(A, level + unit_objs)
+    if V.liftable:                                   # build seated, ship lifted: the app seats it LIFT_IN along the panel normal
         for o in unit_objs:
             o.location += Vector((0, 0, LIFT_IN * IN))
     report(V, C, AX, AY)
@@ -424,4 +442,4 @@ def screws(C, face, z, name, layer="existing", pitch=SCREW_PITCH, washer=True):
 def report(V, C, AX, AY):
     print(f"\n{V.name}: {V.surface}, {V.pitch}:12, curb {V.CW:.0f} x {V.CD:.0f} in, {V.CH:.1f} in high at the centre "
           f"({V.CH - V.CD / 2 * math.tan(V.A):.1f} up-slope / {V.CH + V.CD / 2 * math.tan(V.A):.1f} down-slope)")
-    print(f"  bay {2 * V.hx} x {2 * V.hz} ft (MCURB hx {V.hx}, hz {V.hz}); Flex apron to {AX[1] / 12:.2f} x {AY[1] / 12:.2f} ft")
+    print(f"  bay {2 * V.hx} x {2 * V.hz} ft (SLOPE_BAY hx {V.hx}, hz {V.hz}); Flex apron to {AX[1] / 12:.2f} x {AY[1] / 12:.2f} ft")

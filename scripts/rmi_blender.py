@@ -78,6 +78,8 @@ LIB = {
     "thane":      lambda: mat("RMI_Thane",        (0.82, 0.85, 0.88), 0.3, 0.6),
     "white":      lambda: mat("RMI_White",        (0.96, 0.96, 0.94), 0.5),
     "glazing":    lambda: mat_glass("RMI_glazing", (0.80, 0.89, 0.93), 0.45),
+    "frp":        lambda: mat_glass("RMI_skylight_panel", (0.78, 0.86, 0.83), 0.42, 0.3),   # translucent FRP skylight panel
+    "interior":   lambda: mat("RMI_interior",      (0.05, 0.06, 0.07), 1.0),        # the building's inside, seen through a skylight
 }
 
 

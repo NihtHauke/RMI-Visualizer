@@ -1,48 +1,61 @@
 """
 build_metal_curb_unit_CS-13-MP.py — curb-mounted HVAC unit on a metal roof panel per RMI detail CS-13-MP (CURB MOUNTED
 UNITS – METAL ROOF PANEL, 11/05/24), with CS13-1-8-3D as the 3D reference. Derived from build_curb_mounted_unit_CS-1-TYP.py
-(same 8-ft curb and unit, same 18" apron, same 6" lift), spliced into the warehouse's sloped roof at the HVAC hotspot.
+(same curb, unit and 18" apron), spliced into the warehouse, manufacturing and arena slopes at every HVAC curb.
 
     blender -b --python scripts/build_metal_curb_unit_CS-13-MP.py
 
-Two models, one per metal roof the warehouse offers, both at the warehouse's 1:12 pitch:
-    models/metal-curb-unit-rpanel-1in12-CS-13-MP.glb     (R-panel, the warehouse default)
-    models/metal-curb-unit-sseam-1in12-CS-13-MP.glb      (standing seam)
+Four models, one per metal roof the buildings offer and per pitch — no HVAC curb on a metal roof is code-drawn:
+    models/metal-curb-unit-{rpanel,sseam}-1in12-CS-13-MP.glb     warehouse and manufacturing (1:12, 8-ft curb)
+    models/metal-curb-unit-{rpanel,sseam}-3in12-CS-13-MP.glb     arena (3:12, 10-ft curb)
 The shared curb, the panel patch and what the sheet does / does not say are in rmi_metal_curb.py.
 
 What CS-13-MP adds over CS-1-TYP (VERIFIED): an (E) EXPOSED metal curb — no membrane flashing skirt; the Flex up the curb,
 over the top and into its interior; the topcoat over it; the unit lifted, reset after full cure and fastened with
 stainless steel screws with EPDM washers through its own downturned flange, the counterflashing CS13-1-8-3D draws with a
-kicked-out drip. ASSUMED here: the 96" curb and the unit body/top/fan (the CS-1 RTU's), 18" of curb at its centre (so
-14" up-slope and 22" down-slope at 1:12), and the placement numbers below, which come from index.html.
+kicked-out drip. ASSUMED here: the curbs (96" at 1:12 — the CS-1 RTU's — and 120" at 3:12, the size the arena already
+drew), their heights at the centre (18" and 27", so 14"/22" and 12"/42" up-/down-slope), the units, and the placement
+numbers below, which come from index.html.
 
-Placement (must match buildWarehouse / MCURB in index.html): right slope x = 18, z = 27 ft on a 120-ft building, so the
-R-panel laps fall at bay offsets (o + 2.5) % 3 == 0 ft and the purlin fastener rows (z = 4, 9, 14, ... ft) cross the bay
-at z = 24 and 29 ft — 36" up-slope and 24" down-slope of the curb's centre.
+Placement (must match buildWarehouse / buildManufacturing / buildArena / SLOPE_BAY in index.html): every curb sits where
+the R-panel laps fall at bay offsets (o + 2.5) % 3 == 0 ft and at the same place relative to the purlin fastener rows
+(z = 4, 9, 14, ... ft) — warehouse (18, 27) and manufacturing (90, 17) share one model; the arena curbs at (61, 30) and
+(-59, 30) share the other.
 """
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from rmi_blender import IN, M, box, cyl
 from rmi_metal_curb import Variant, build, counterflashing, screws, SCREW_DOWN
 
-CURB_W, CURB_H = 96.0, 18.0           # 8-ft curb (the CS-1 RTU's); height at the curb centre above the pan
-UNIT_H, TOP_OVER, TOP_H = 43.2, 1.0, 4.0     # unit body (CS-1: 1.0973 m), its dark top 1" over each side, 4" thick
-FAN_R, FAN_H = 31.7, 3.0
+# The unit script derives from the CS-1 RTU: its curb and unit, scaled per building (sizes ASSUMED).
 RUST = [(24.0, 57.0, 1.4), (-24.0, -60.0, 1.1), (0.0, 55.0, 0.9)]    # on pans at the curb base (x on a pan for both roofs)
+RUST_10 = [(36.0, 70.0, 1.4), (-12.0, -68.0, 1.1), (12.0, 68.0, 0.9)]
 
 
-def unit(C):
-    z0, face = counterflashing(C)
-    C.unit_objs.extend(screws(C, face, C.top - SCREW_DOWN * IN, "unit_screw"))
-    w, d = 2 * face[0], 2 * face[1]
-    C.unit_objs.append(box("unit_body", "existing", w, d, UNIT_H * IN, 0, 0, z0 + UNIT_H / 2 * IN, M("unit"), bevel=0.02))
-    zt = z0 + UNIT_H * IN
-    C.unit_objs.append(box("unit_top", "existing", w + 2 * TOP_OVER * IN, d + 2 * TOP_OVER * IN, TOP_H * IN, 0, 0, zt + TOP_H / 2 * IN, M("unitD")))
-    C.unit_objs.append(cyl("unit_fan", "existing", FAN_R * IN, FAN_H * IN, 0, 0, zt + (TOP_H + FAN_H / 2) * IN, M("unitD")))
-    C.unit_top = zt + (TOP_H + FAN_H) * IN
+def make_unit(unit_h, top_over, top_h, fan_r, fan_h):
+    def unit(C):
+        z0, face = counterflashing(C)
+        C.unit_objs.extend(screws(C, face, C.top - SCREW_DOWN * IN, "unit_screw"))
+        w, d = 2 * face[0], 2 * face[1]
+        C.unit_objs.append(box("unit_body", "existing", w, d, unit_h * IN, 0, 0, z0 + unit_h / 2 * IN, M("unit"), bevel=0.02))
+        zt = z0 + unit_h * IN
+        C.unit_objs.append(box("unit_top", "existing", w + 2 * top_over * IN, d + 2 * top_over * IN, top_h * IN, 0, 0, zt + top_h / 2 * IN, M("unitD")))
+        C.unit_objs.append(cyl("unit_fan", "existing", fan_r * IN, fan_h * IN, 0, 0, zt + (top_h + fan_h / 2) * IN, M("unitD")))
+        C.unit_top = zt + (top_h + fan_h) * IN
+    return unit
 
 
-for surface, hx in (("rpanel", 7), ("sseam", 6)):
-    V = Variant(f"metal-curb-unit-{surface}-1in12-CS-13-MP", surface, 1, CURB_W, CURB_W, CURB_H, hx=hx, hz=6,
-                lap_phase=2.5, rows=(36.0, -24.0), liftable=True, rust=RUST)
-    build(V, unit)
+# (tag, pitch, curb W, curb H at its centre, bay half-width per roof, bay half-length, R-panel lap phase, purlin rows, rust, unit)
+VARIANTS = [
+    # warehouse (18, 27) and manufacturing (90, 17): 1:12, 8-ft curb (the CS-1 RTU's); rows 3 ft up-slope and 2 ft down-slope
+    ("1in12", 1, 96.0, 18.0, {"rpanel": 7, "sseam": 6}, 6, 2.5, (36.0, -24.0), RUST, make_unit(43.2, 1.0, 4.0, 31.7, 3.0)),
+    # arena (61, 30) and (-59, 30): 3:12, the 10-ft curb the arena already drew, 27" at its centre (12" up-slope, 42" down-slope);
+    # odd x so both 10-ft walls land on pans; rows 6 ft up-slope, 1 ft up-slope and 4 ft down-slope
+    ("3in12", 3, 120.0, 27.0, {"rpanel": 8, "sseam": 7}, 7, 2.5, (72.0, 12.0, -48.0), RUST_10, make_unit(48.0, 1.0, 4.0, 36.0, 3.0)),
+]
+
+for tag, pitch, cw, ch, hxs, hz, phase, rows, rust, unit in VARIANTS:
+    for surface in ("rpanel", "sseam"):
+        V = Variant(f"metal-curb-unit-{surface}-{tag}-CS-13-MP", surface, pitch, cw, cw, ch, hx=hxs[surface], hz=hz,
+                    lap_phase=phase, rows=rows, liftable=True, rust=rust)
+        build(V, unit)

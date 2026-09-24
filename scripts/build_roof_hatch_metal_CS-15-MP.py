@@ -23,7 +23,7 @@ thick, standing open 70 degrees on its up-slope hinge), hold-open arm, handle; a
 
 Two models, R-panel and standing seam, at the arena's 3:12:
     models/roof-hatch-{rpanel,sseam}-3in12-CS-15-MP.glb
-Placement (must match buildArena / MCURB in index.html): right slope x = -94, z = 89 ft on a 220-ft building, so the
+Placement (must match buildArena / SLOPE_BAY in index.html): right slope x = -94, z = 89 ft on a 220-ft building, so the
 R-panel laps fall at (o + 0.5) % 3 == 0 ft and the purlin row z = 89 ft runs through the curb's centre.
 """
 import sys, os, math

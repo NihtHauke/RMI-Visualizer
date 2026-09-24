@@ -16,7 +16,7 @@ in rmi_metal_curb.py.
 
 Four models: R-panel and standing seam, each at the manufacturing building's 1:12 and the arena's 3:12 pitch:
     models/metal-curb-vent-{rpanel,sseam}-{1in12,3in12}-CS-13-MP.glb
-Placement (must match buildManufacturing / buildArena / MCURB in index.html): vents at odd x on 60-ft (manufacturing,
+Placement (must match buildManufacturing / buildArena / SLOPE_BAY in index.html): vents at odd x on 60-ft (manufacturing,
 -69/-9/51) and 42-ft (arena, -83/-41/1/43/85) spacing so every vent sees the same R-panel lap phase ((o + 2.5) % 3 == 0)
 and the same purlin row through its centre (z = 14 ft on the manufacturing building, 19 ft on the arena).
 """
