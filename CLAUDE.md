@@ -75,9 +75,9 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Detail menu: a per-building checkbox list (`BUILDINGS[].details`) — not a roof-type filter and not a dropdown. The roof type
   only swaps a detail's name and drawing (`byRoof`).
 - 28 detail rows (the 25 `DETAILS` entries + 2 concrete `byRoof` variants + the Solar Post toggle), keyed to drawing numbers.
-  Status as in `docs/TRACKER.md` §1: **26 MODELLED+SPLICED · 0 MODELLED · 2 CODE-DRAWN · 0 NOT STARTED.**
+  Status as in `docs/TRACKER.md` §1: **27 MODELLED+SPLICED · 0 MODELLED · 1 CODE-DRAWN · 0 NOT STARTED.**
   Spliced models still carry open ASSUMED items (listed per row in the tracker).
-  - **MODELLED+SPLICED (26):** R-panel side lap F-8-TYP · standing seam F-9-TYP / F-20-TYP · bin vent CS-12-CON (CS-1-TYP note 7) ·
+  - **MODELLED+SPLICED (27):** R-panel side lap F-8-TYP · standing seam F-9-TYP / F-20-TYP · bin vent CS-12-CON (CS-1-TYP note 7) ·
     manway / bin hatch CS-14-CON (CS-1-TYP note 7) · ridge cap F-21-M-TYP · HVAC curbs / RTU CS-1-TYP · drains D-1-TYP / D-2-TYP ·
     scuppers D-4-TYP · wall tie-in, reglet W-11-TYP · soil stacks P-6-TYP · skylights, curb-mounted CS-1-TYP note 7 ·
     kitchen exhaust CS-1-TYP note 7 · parapet / coping W-1-TYP · sleeper supports CS-8-TYP · pipe clusters / Chem-Curb P-8-TYP ·
@@ -87,8 +87,10 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
     skylight panels, flush F-12-TYP (manufacturing, hangar). All five share `scripts/rmi_metal_curb.py` (the panel patch):
     one model per roof profile and pitch (or panel length), spliced into the slope like the lap (`SLOPE_BAY`, `unitAt`) ·
     gutter seams W-7-TYP (the gutter sheet, `W-7-TYP-GUTTER`) and downspout inlets D-8-TYP (arena, hangar): 4-ft sections of the
-    eave-hung gutter spliced into the code-drawn run (`GUT`, `scripts/rmi_gutter.py`), the third mounting type after the flat field and the metal slope.
-  - **CODE-DRAWN (2):** silo walls W-7-TYP · Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
+    eave-hung gutter spliced into the code-drawn run (`GUT`, `scripts/rmi_gutter.py`), the third mounting type after the flat field and the metal slope ·
+    silo walls W-7-TYP (the concrete-wall sheet) + Plate C crack repair: a 4-ft ring of one bin's wall at the silo hotspot, spliced into the
+    code-drawn bin (`buildSilo`, `scripts/build_silo_wall_W-7-TYP.py`) — the only vertical, curved application; every extent ASSUMED pending RMI (catalog §5 #17).
+  - **CODE-DRAWN (1):** Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
 - Product features: desktop installer v0.3.0 **built** (`dist/RMI Roof Visualizer Setup 0.3.0.exe`; RMI crest icon in `build/`, RMI logo `assets/rmi-logo.png` in the header, PDF cover and PDF page header);
   v0.3.1 packages (`dist/win-unpacked`) but the `.exe` does not: Smart App Control blocks the unsigned NSIS uninstaller stub `npm run dist` has to run (`docs/TRACKER.md` §2 #12);
   photo panel **done** (v2: top strip, docked slider, IndexedDB persistence, sample set — the app reads the bundled `samples/` through `rmiDesktop.samplePhotos`, since `fetch()` cannot read inside `app.asar`);
@@ -112,7 +114,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## What's left (in order)
-1. Remaining detail models — the 2 CODE-DRAWN rows (silo walls, Solar Post supports).
+1. Remaining detail models — the 1 CODE-DRAWN row (Solar Post supports).
 2. Fine-tuning — labels, camera pass, silo headhouse/shed.
 3. Textures.
 4. Catalog alignment with the 25 `DETAILS` entries (the detail menu is a per-building checkbox list, not a dropdown).
@@ -182,6 +184,12 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
   The downspout column below an inlet is always code (the model carries 12" of the drop). Hotspot x must be a multiple of 2.5 ft from the
   run's end so the section's straps (15" either side of its centre) keep the run's 30" phase; a seam section sits on a run seam (every
   10 ft from 5 ft in), an inlet on a run downspout (every 40 ft from 20 ft in) — `cfg.gutterModels` in `buildArena` / `buildAirport`.
+- Curved-wall details (`scripts/build_silo_wall_W-7-TYP.py`: `arc`, `ring`) — the silo wall: the model is a 4-ft ring of one bin's wall, origin on the bin
+  axis at the band's bottom, faceted on the app's 48-segment cylinder grid (Blender's angle 0 is the app's +x, three.js's is +z — both grids sit on
+  7.5° multiples, so the flats meet). The bin's concrete and coat cylinders stop 0.6 mm inside the band and the ring fills it (`BAND` in `buildSilo`);
+  a plain concrete ring is the fill until the model loads and with the detail off. The coats are open-ended shells that enclose the radius the app
+  draws each coat at (R + 0.04 / 0.08 / 0.12 ft) and sweep with the same clip planes. Old joint sealant and cracks are `_before_` parts (gone at
+  prep), the repairs `_after_` parts (from prep), and the building's stage loop makes the repairs follow the condition toggle.
 
 ## The working loop (Claude Code)
 For every detail or code change, in this order:
