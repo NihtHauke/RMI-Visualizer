@@ -75,9 +75,9 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Detail menu: a per-building checkbox list (`BUILDINGS[].details`) — not a roof-type filter and not a dropdown. The roof type
   only swaps a detail's name and drawing (`byRoof`).
 - 28 detail rows (the 25 `DETAILS` entries + 2 concrete `byRoof` variants + the Solar Post toggle), keyed to drawing numbers.
-  Status as in `docs/TRACKER.md` §1: **24 MODELLED+SPLICED · 0 MODELLED · 4 CODE-DRAWN · 0 NOT STARTED.**
+  Status as in `docs/TRACKER.md` §1: **26 MODELLED+SPLICED · 0 MODELLED · 2 CODE-DRAWN · 0 NOT STARTED.**
   Spliced models still carry open ASSUMED items (listed per row in the tracker).
-  - **MODELLED+SPLICED (19):** R-panel side lap F-8-TYP · standing seam F-9-TYP / F-20-TYP · bin vent CS-12-CON (CS-1-TYP note 7) ·
+  - **MODELLED+SPLICED (26):** R-panel side lap F-8-TYP · standing seam F-9-TYP / F-20-TYP · bin vent CS-12-CON (CS-1-TYP note 7) ·
     manway / bin hatch CS-14-CON (CS-1-TYP note 7) · ridge cap F-21-M-TYP · HVAC curbs / RTU CS-1-TYP · drains D-1-TYP / D-2-TYP ·
     scuppers D-4-TYP · wall tie-in, reglet W-11-TYP · soil stacks P-6-TYP · skylights, curb-mounted CS-1-TYP note 7 ·
     kitchen exhaust CS-1-TYP note 7 · parapet / coping W-1-TYP · sleeper supports CS-8-TYP · pipe clusters / Chem-Curb P-8-TYP ·
@@ -85,9 +85,10 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
     gallery supports P-5-C (P-7-C reference) · HVAC curb on metal CS-13-MP (every metal-roof curb) · vents on metal CS-13-MP
     note 7 (no vent sheet exists; manufacturing, arena) · roof hatch on metal CS-15-MP (arena) · pipes on metal P-9-MP ·
     skylight panels, flush F-12-TYP (manufacturing, hangar). All five share `scripts/rmi_metal_curb.py` (the panel patch):
-    one model per roof profile and pitch (or panel length), spliced into the slope like the lap (`SLOPE_BAY`, `unitAt`).
-  - **CODE-DRAWN (4):** gutters W-7-TYP · downspout inlets D-8-TYP · silo walls W-7-TYP ·
-    Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
+    one model per roof profile and pitch (or panel length), spliced into the slope like the lap (`SLOPE_BAY`, `unitAt`) ·
+    gutter seams W-7-TYP (the gutter sheet, `W-7-TYP-GUTTER`) and downspout inlets D-8-TYP (arena, hangar): 4-ft sections of the
+    eave-hung gutter spliced into the code-drawn run (`GUT`, `scripts/rmi_gutter.py`), the third mounting type after the flat field and the metal slope.
+  - **CODE-DRAWN (2):** silo walls W-7-TYP · Solar Post supports P-1-S-TYP / P-2-S-TYP / P-3-S-TYP.
 - Product features: desktop installer v0.3.0 **built** (`dist/RMI Roof Visualizer Setup 0.3.0.exe`; RMI crest icon in `build/`, RMI logo `assets/rmi-logo.png` in the header, PDF cover and PDF page header);
   v0.3.1 packages (`dist/win-unpacked`) but the `.exe` does not: Smart App Control blocks the unsigned NSIS uninstaller stub `npm run dist` has to run (`docs/TRACKER.md` §2 #12);
   photo panel **done** (v2: top strip, docked slider, IndexedDB persistence, sample set — the app reads the bundled `samples/` through `rmiDesktop.samplePhotos`, since `fetch()` cannot read inside `app.asar`);
@@ -111,7 +112,7 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Full index of drawings ↔ details ↔ status: `docs/RMI_Library_Catalog.md` (keep it current; it is the punch list for RMI's technical side).
 
 ## What's left (in order)
-1. Remaining detail models — the 4 CODE-DRAWN rows, in the order the buildings need them.
+1. Remaining detail models — the 2 CODE-DRAWN rows (silo walls, Solar Post supports).
 2. Fine-tuning — labels, camera pass, silo headhouse/shed.
 3. Textures.
 4. Catalog alignment with the 25 `DETAILS` entries (the detail menu is a per-building checkbox list, not a dropdown).
@@ -169,6 +170,18 @@ Current temporary build: https://nihthauke.github.io/RMI-Visualizer/ (GitHub Pag
 - Metal-slope details (`scripts/rmi_metal_curb.py`: `panel_patch`, `apron_extents`, `panel_cutter`, `level_to_panel`): the panel patch is
   built in the panel frame from the app's own rib / coat numbers, anything plumb (curb, unit, pipe, boot) level and then tilted onto the slope; the build script carries each building's lap phase and purlin rows, so moving a
   unit on a slope means rebuilding its model. A liftable unit ships lifted `SLOPE_BAY[kind].lift` inches (14" — its counterflashing is 4").
+- Eave-hung details (`scripts/rmi_gutter.py`: `trough`, `straps`, `coat_u`, `prism_x`, `open_ends`) — the gutter seam W-7-TYP and inlet D-8-TYP:
+  the model is a 4-ft section of the gutter in its own frame — x along the run, Blender +y toward the building (the wall face at y = 0, the
+  gutter in -y, which the export turns into the app's run-local +z, outward), z = 0 at the eave (panel edge) with the gutter hanging below.
+  Nothing is tilted: a gutter is level. The app mounts it with `mountModel` on a run group sitting on the eave line (y = H, z = ±W/2, rotated
+  to face out), takes a 4-ft bay out of the code-drawn run there and draws the SAME cross-section from the same numbers either side (`GUT`
+  in index.html ↔ the constants in `rmi_gutter.py`), over-lapping the model 0.6 mm; the model's full-length parts are open-ended (no cap
+  faces) so no hairline shows, and anything that stops inside the section (a coat band, the outlet) is capped. A bay keeps a plain fill —
+  what shows with the detail off, and under the code stand-in until the model loads (`showUnit`). Coats live INSIDE the gutter as films
+  following the interior U (`band` / `offsetPath`, same maths both sides); the topcoat covers the whole interior and rises over a Flex band.
+  The downspout column below an inlet is always code (the model carries 12" of the drop). Hotspot x must be a multiple of 2.5 ft from the
+  run's end so the section's straps (15" either side of its centre) keep the run's 30" phase; a seam section sits on a run seam (every
+  10 ft from 5 ft in), an inlet on a run downspout (every 40 ft from 20 ft in) — `cfg.gutterModels` in `buildArena` / `buildAirport`.
 
 ## The working loop (Claude Code)
 For every detail or code change, in this order:

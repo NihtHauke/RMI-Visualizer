@@ -772,6 +772,7 @@ const STEPS = {
     `RMI-Thane encapsulating the interior of the gutter. Vertical surfaces may need multiple coats to prevent running and sagging.` ],
   gutterinlet: [
     `Replace damaged or ill-fitting inlet and gutter components; the assembly must meet code and SMACNA (notes 7, 8). Plastic and ABS excluded (note 11). Rust: no pinholes, else patch or replace (note 12).`,
+    `Lift out the strainer basket and set it aside; it goes back in once the topcoat has cured (ASSUMED: no sheet shows a strainer).`,
     `Clean, prepare and prime per the RMI Specification Guide Manual for the gutter and inlet (note 13). Adhesion test first (note 9).`,
     `RMI-Flex flashing coat a minimum 3" out from the inlet across the gutter floor and 3" down into the inlet tube.`,
     `RMI-Thane a minimum 1" into the inlet tube past the Flex.`,
@@ -911,11 +912,11 @@ const DETAILS = {
   mpipe:  { name:'Pipe penetration, EPDM boot', drawing:'P-9-MP', concept:'—', dist:8, phi:1.05, theta:2.5, drop:2.2, menu:'Pipes', steps:STEPS.mpipe,
     layers:[{k:'existing',label:'(E) pipe with an EPDM boot on a form-fitting plate fastened to the panel; (E) sealant raked out',color:'#AEB3B0'},{k:'primer',label:'New sealant bead at the plate edge and the boot top; primer on boot, plate and panel',color:'#E8D7A6'},{k:'flex',label:'Flex over boot, plate and fasteners, min 2" up the pipe past the EPDM and 4" onto the panel',color:'#D9A21B'},{k:'thane',label:'Topcoat over all, min 2" up the pipe past the Flex',color:'#C3C7CC'}],
     src:'Assembly per P-9-MP — VERIFIED: (E) or (N) flexible EPDM boot with a form-fitting aluminium mounting plate, sealant under the plate for a new boot, a stainless steel draw band at the pipe; (E) sealant, mastic and repairs raked out and a new continuous bead of approved sealant laid before the Flex; RMI-Flex encapsulates all fasteners and extends a minimum 2" past the EPDM up the penetration and 4" onto the metal roof panel; RMI-Thane / White a minimum 2" up the penetration past the Flex. Note 7: all circular penetrations and supports; note 8: all metal panel systems. There is no 3D concept render and the sheet draws the panel flat, so ASSUMED: the plate formed over the ribs (24" on R-panel) or between the seams (18" on standing seam), the Flex carried over a rib its 4" edge lands on, and every size (4" pipe, four-step boot 11" across, fasteners 3" o.c.). P-10-MP covers the metal-jack alternative.', byRoof:{ spf:{ drawing:'SPF-4-TYP', steps:STEPS.mpipeSpf, src:'Assembly per SPF-4-TYP (SPF configuration, penetration): Flex min 1" above the rain-collar flashing, topcoat min 1" above the Flex.' } } },
-  gutter: { name:'Metal gutter seams', drawing:'W-7-TYP', sheet:'W-7-TYP-GUTTER', concept:'D-7-FT-24-3D', dist:10, phi:1.2, theta:0.4, drop:0.5, menu:'Gutters', steps:STEPS.gutter,
-    layers:[{k:'existing',label:'Existing hung gutter with lapped and riveted seams',color:'#AEB3B0'},{k:'primer',label:'Primer on each seam',color:'#E8D7A6'},{k:'flex',label:'Flex over every seam and rivet inside the gutter',color:'#D9A21B'},{k:'thane',label:'Topcoat inside the gutter',color:'#C3C7CC'}],
+  gutter: { name:'Metal gutter seams', drawing:'W-7-TYP', sheet:'W-7-TYP-GUTTER', concept:'D-7-FT-24-3D', dist:4.5, phi:0.75, theta:0.75, drop:0, menu:'Gutters', steps:STEPS.gutter,
+    layers:[{k:'existing',label:'Existing hung gutter: the next section lapped 1" inside this one and riveted through (sizes ASSUMED, no dimension on the sheet)',color:'#AEB3B0'},{k:'primer',label:'Primer over each seam, following the inside of the gutter',color:'#E8D7A6'},{k:'flex',label:'Flex band a minimum 2" each side of every joint and lap, up the back, across the floor and up the front',color:'#D9A21B'},{k:'thane',label:'Topcoat encapsulating the whole interior of the gutter',color:'#C3C7CC'}],
     src:'Assembly per W-7-TYP (metal gutter seams) and D-7-FT-24-3D. Standard exterior gutters are limited to a material-only warranty per Plate MP.' },
-  gutterinlet:{ name:'Gutter inlet / downspout', drawing:'D-8-TYP', concept:'D8-9-FT-3D', dist:9, phi:1.2, theta:0.5, drop:0.6, menu:'Downspout inlets', steps:STEPS.gutterinlet,
-    layers:[{k:'existing',label:'Existing outlet tube through the gutter floor',color:'#AEB3B0'},{k:'primer',label:'Primer on outlet flange and gutter floor',color:'#E8D7A6'},{k:'flex',label:'Flex seals the flange into the gutter and down into the outlet',color:'#D9A21B'},{k:'thane',label:'Topcoat over the gutter floor',color:'#C3C7CC'}],
+  gutterinlet:{ name:'Gutter inlet / downspout', drawing:'D-8-TYP', concept:'D8-9-FT-3D', dist:4.5, phi:0.7, theta:0.9, drop:0, menu:'Downspout inlets', steps:STEPS.gutterinlet,
+    layers:[{k:'existing',label:'Existing outlet tube through the gutter floor, flanged and riveted, with its strainer basket (ASSUMED: no sheet shows one; lifted out for the work, reset after the topcoat)',color:'#AEB3B0'},{k:'primer',label:'Primer on the flange, the floor around it and down the tube',color:'#E8D7A6'},{k:'flex',label:'Flex a minimum 3" out from the inlet across the gutter floor and 3" down into the tube',color:'#D9A21B'},{k:'thane',label:'Topcoat over the whole gutter interior and a minimum 1" into the tube past the Flex',color:'#C3C7CC'}],
     src:'Assembly per D-8-TYP and D8-9-FT-3D.' },
   hatch:  { name:'Roof hatch', drawing:'CS-15-MP', concept:'—', dist:12, phi:1.1, theta:0.8, drop:1.6, menu:'Roof hatch', steps:STEPS.hatch,
     layers:[{k:'existing',label:'(E) hatch on a fixed exposed metal curb, the ribs running under and around it; (E) fasteners out at prep',color:'#AEB3B0'},{k:'primer',label:'Clean, repair and prime the curb and the panel around it',color:'#E8D7A6'},{k:'flex',label:'Flex from the panel up the curb to the underside of the (E) vertical metal',color:'#D9A21B'},{k:'thane',label:'Topcoat over the Flex; new 24 ga. skirt metal min 4" over the system, SS screws with EPDM washers',color:'#C3C7CC'}],
@@ -1091,6 +1092,8 @@ const MODELS = { drain:'models/cast-iron-drain-D-1-TYP.glb', rtu:'models/curb-mo
   ridge:'models/metal-ridge-cap-F-21-M-TYP.glb', hatch:'models/roof-hatch-CS-1-TYP.glb', skylight:'models/curb-skylight-CS-1-TYP.glb', exhaust:'models/kitchen-exhaust-fan-CS-1-TYP.glb', binvent:'models/bin-vent-CS-1-TYP.glb',
   sleeper:'models/sleeper-support-CS-8-TYP.glb', pitchpan:'models/chem-curb-P-8-TYP.glb', penthouse:'models/wall-counterflashing-fixed-W-13-TYP.glb',
   edge:'models/perimeter-edge-metal-F-1-TYP.glb', ej:'models/expansion-joint-A-3-TYP.glb', support:'models/circular-support-P-5-C.glb',
+  /* W-7-TYP gutter seam and D-8-TYP inlet: 4-ft sections of the eave-hung gutter, spliced into the code-drawn run (GUT, the gutter block in buildGable) */
+  gutter:'models/gutter-seam-W-7-TYP.glb', gutterinlet:'models/gutter-inlet-D-8-TYP.glb',
   /* CS-13-MP (liftable) / CS-15-MP (fixed) units on a sloped metal roof, spliced into the slope like the lap (SLOPE_BAY): one model per roof profile
      and pitch — the curb's top is level on the sloped panel (scripts/rmi_metal_curb.py) */
   'curb-rpanel-1in12':'models/metal-curb-unit-rpanel-1in12-CS-13-MP.glb', 'curb-sseam-1in12':'models/metal-curb-unit-sseam-1in12-CS-13-MP.glb',
@@ -1107,7 +1110,7 @@ const M2FT=3.2808; const modelCache={}; const modelInstances=[]; let gltfLoader=
 function loadModel(file){ if(modelCache[file]) return modelCache[file];
   modelCache[file]=new Promise((res,rej)=>{ if(!THREE.GLTFLoader) return rej(new Error('no loader')); gltfLoader=gltfLoader||new THREE.GLTFLoader(); gltfLoader.load(file,g=>res(g.scene),undefined,rej); }); return modelCache[file]; }
 const LAYER_CLIP={primer:clipPrim,flex:clipFlex,topcoat:clipTop};
-function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); if(!['existing','primer','flex','topcoat'].includes(layer)){ o.visible=false; o.userData.helper=true; return; } o.castShadow=o.receiveShadow=(layer!=='primer'); /* the primer is a translucent film 1 mm off its substrate: shadows cast or taken there are only acne */ o.userData.layer=layer; o.userData.tape=/__(tape|sealant)/.test(o.name); o.userData.reset=/__counterflashing/.test(o.name); o.userData.after=/__skirt/.test(o.name); o.userData.pad=/__walkpad/.test(o.name);o.userData.crimp = /_before_/.test(o.name)?'before':(/_after_/.test(o.name)?'after':null);   /* a part the prep stage swaps: the open standing-seam crimp for the re-crimped one (F-9-TYP note 11), or new work it installs (the P-8-TYP Chem-Curb) */
+function prepModel(root){ root.traverse(o=>{ if(!o.isMesh) return; if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); const layer=(o.name.split('__')[0]||'').toLowerCase(); if(!['existing','primer','flex','topcoat'].includes(layer)){ o.visible=false; o.userData.helper=true; return; } o.castShadow=o.receiveShadow=(layer!=='primer'); /* the primer is a translucent film 1 mm off its substrate: shadows cast or taken there are only acne */ o.userData.layer=layer; o.userData.tape=/__(tape|sealant)/.test(o.name); o.userData.reset=/__counterflashing/.test(o.name); o.userData.resetDone=/__strainer/.test(o.name); o.userData.after=/__skirt/.test(o.name); o.userData.pad=/__walkpad/.test(o.name);o.userData.crimp = /_before_/.test(o.name)?'before':(/_after_/.test(o.name)?'after':null);   /* a part the prep stage swaps: the open standing-seam crimp for the re-crimped one (F-9-TYP note 11), or new work it installs (the P-8-TYP Chem-Curb) */
     const m=o.material.clone(); m.side=THREE.DoubleSide; if(LAYER_CLIP[layer]&&!o.userData.tape){ m.clippingPlanes=[LAYER_CLIP[layer]]; m.clipShadows=true; }   /* tape and sealant are prep work: shown from the prep stage, never swept */ if(layer==='primer'){ m.transparent=true; m.opacity=.75; }
     if(layer==='topcoat'){ m.envMapIntensity=1.2; o.userData.topcoat=true; } o.material=m; if(/existing__unit/.test(o.name)) o.userData.lift=true; }); }
 // Place a model instance under `parent` at (x,z), hiding `fallback` (the code-drawn group) once it arrives.
@@ -1118,7 +1121,7 @@ function mountModel(id,parent,x,z,rotY,fallback,skins){ const file=MODELS[id]; i
     .catch(e=>{ console.warn('model not loaded, keeping code geometry:',file,e.message); });
   return holder; }
 function applyModels(p,seat){ const white=S.topcoat==='white';
-  modelInstances.forEach(h=>{ if(!h.parent) return; const gt=h.userData.gate||{}; h.traverse(o=>{ if(!o.isMesh||o.userData.helper) return; const L=o.userData.layer; if(o.userData.reset){ o.visible = p.prep<0.5 || p.thane>0; return; } if(o.userData.after){ o.visible = p.thane>=1; return; }   /* W-13-TYP skirt metal: over the finished system */ if(o.userData.pad){ o.visible=!!seat; return; }   /* CS-8-TYP walkpad: out while the sleeper is raised, set after cure */if(o.userData.crimp){ o.visible = o.userData.crimp==='before' ? p.prep<0.5 : p.prep>=0.5; return; }
+  modelInstances.forEach(h=>{ if(!h.parent) return; const gt=h.userData.gate||{}; h.traverse(o=>{ if(!o.isMesh||o.userData.helper) return; const L=o.userData.layer; if(o.userData.reset){ o.visible = p.prep<0.5 || p.thane>0; return; } if(o.userData.resetDone){ o.visible = p.prep<0.5 || p.thane>=1; return; }   /* D-8-TYP strainer: out for the work, back once the topcoat is done */ if(o.userData.after){ o.visible = p.thane>=1; return; }   /* W-13-TYP skirt metal: over the finished system */ if(o.userData.pad){ o.visible=!!seat; return; }   /* CS-8-TYP walkpad: out while the sleeper is raised, set after cure */if(o.userData.crimp){ o.visible = o.userData.crimp==='before' ? p.prep<0.5 : p.prep>=0.5; return; }
     if(L==='primer') o.visible= o.userData.tape ? p.prep>=0.5 : p.primer>(gt.primer||0); else if(L==='flex') o.visible=p.flex>(gt.flex||0); else if(L==='topcoat'){ o.visible=p.thane>0; o.material.color.set(white?0xF4F3EE:0xDCE0E4); o.material.metalness=white?0.04:0.38; o.material.roughness=white?0.62:0.3; }
     if(o.userData.lift){ if(o.userData.y0===undefined) o.userData.y0=o.position.y; o.position.y=o.userData.y0-(seat?(h.userData.liftIn||6)*0.0254:0); } }); }); }   /* liftIn: how far the model was built lifted (6" unless the mount says otherwise) */
 
@@ -1154,6 +1157,39 @@ function slopeSheet(L,SL,bays){ const sh=new THREE.Shape(); sh.moveTo(-L/2,-SL/2
   bays.forEach(bay=>{ const h=new THREE.Path(); h.moveTo(bay.x0,SL/2-bay.z1); h.lineTo(bay.x0,SL/2-bay.z0); h.lineTo(bay.x1,SL/2-bay.z0); h.lineTo(bay.x1,SL/2-bay.z1); h.closePath(); sh.holes.push(h); }); return new THREE.ShapeGeometry(sh); }
 // What is left of 0..SL along a rib (or lap strip) at x once every bay it runs through is taken out: [[za,zb], ...]
 function runsAt(bays,x,SL){ const cut=bays.filter(b=>x>b.x0&&x<b.x1).map(b=>[b.z0,b.z1]).sort((p,q)=>p[0]-q[0]); const out=[]; let z=0; cut.forEach(([a,b])=>{ if(a>z) out.push([z,a]); z=Math.max(z,b); }); if(z<SL) out.push([z,SL]); return out; }
+/* -----------------------------------------------------------------
+   EAVE-HUNG GUTTER (arena, airport hangar): W-7-TYP seams, D-8-TYP inlets.
+   The run hangs on the eave line (y = H, z = ±W/2), back wall on the wall face, level — nothing sits on the slope. A 4-ft
+   model section fills a bay at each hotspot (gutter-seam-W-7-TYP.glb, gutter-inlet-D-8-TYP.glb; scripts/rmi_gutter.py)
+   and the code draws the SAME cross-section from the same numbers either side, over-lapping the model 0.6 mm with open
+   ends — keep GUT and the constants in rmi_gutter.py in step or the seams show. The downspout column below an inlet is
+   always code (the model carries 12" of the drop). Section points are [y,h] in inches for prismRun: y = -(distance out
+   from the wall face), h = height from the eave; the run group's local +z is outward on both sides.
+   Neither sheet carries a dimension, so every size here is ASSUMED; the coat extents (2" each side of a joint, 3" out
+   from an inlet and 3" into it, topcoat 1" further and over the whole interior) are the sheets'.
+----------------------------------------------------------------- */
+const GUT={ MT:0.06, W:12, D:8, BACK_TOP:-0.25, FRONT_TOP:-0.75, BEAD_W:0.75, BEAD_H:0.5, STRAP_W:1, STRAP_T:0.125, STRAP_PITCH:30, TOPIN:0.5,
+  LAP:1, FLEX_SIDE:2, PRIMER_PAST:0.5, TOP_PAST:0.26, OUT_R:2, OUT_FL:1, OUT_DROP:12, FLEX_OUT:3, DS_R:2.1, SEAM_PITCH:10, DS_PITCH:40,
+  COATS:{primer:[0.02,0.08],flex:[0.08,0.32],topcoat:[0.02,0.28]}, BAND_TOP:0.58 };   // inches except the two pitches (ft); a model section's straps sit 15" either side of its centre, so a hotspot x must be a multiple of 2.5 ft from the run's end
+const gutIn=(o0,o1,h0,h1)=>rectYZ(-o1,-o0,h0,h1);   // a rectangle o0..o1 out from the wall face, h0..h1 from the eave
+function gutPath(){ const G=GUT; return [[-G.MT,G.BACK_TOP-G.TOPIN],[-G.MT,-G.D+G.MT],[-(G.W-G.MT),-G.D+G.MT],[-(G.W-G.MT),G.FRONT_TOP-G.TOPIN]]; }   // the inside, walked with the metal on the left: down the back, across the floor, up the front
+function gutBand(o0,o1){ const p=gutPath(); return offsetPath(p,o1).concat(offsetPath(p,o0).reverse()); }   // a film o0..o1 off the metal, following the inside
+function gutterMetal(r,x0,x1,ca,cb){ const G=GUT, add=pts=>prismRun(r,pts,M.coping,x0,x1,0,0,ca,cb);
+  add(gutIn(0,G.MT,-G.D,G.BACK_TOP)); add(gutIn(0,G.W,-G.D,-G.D+G.MT)); add(gutIn(G.W-G.MT,G.W,-G.D,G.FRONT_TOP)); add(gutIn(G.W-G.MT,G.W+G.BEAD_W,G.FRONT_TOP-G.BEAD_H,G.FRONT_TOP)); }   // back wall, floor, front wall, rolled bead
+function gutterStrap(r,x){ const G=GUT, IN=1/12; r.add(box(G.STRAP_W*IN,G.STRAP_T*IN,(G.W+G.BEAD_W)*IN,M.curb,x,(G.BACK_TOP+G.STRAP_T/2)*IN,(G.W+G.BEAD_W)/2*IN,false)); }   // hanger strap, wall face to bead
+function gutterCoat(r,x0,x1,o0,o1,mat,ca,cb){ return prismRun(r,gutBand(o0,o1),mat,x0,x1,0,0,ca,cb); }
+function gutRing(ro,ri,t,mat,x,y,z){ const IN=1/12, sh=new THREE.Shape(); sh.absarc(0,0,ro*IN,0,Math.PI*2,false); const h=new THREE.Path(); h.absarc(0,0,ri*IN,0,Math.PI*2,true); sh.holes.push(h);
+  const m=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:t*IN,bevelEnabled:false,curveSegments:24}),mat); m.rotation.x=-Math.PI/2; m.position.set(x,y,z); return m; }   // a flat ring ro..ri (inches), t thick, lying on y
+// A W-7-TYP seam at run-local x (ft): the joint line, then primer and Flex bands 2" past the 1" lap and the topcoat rising over them. `at` = where along the run (0..1), so the Flex bands land in order.
+function gutterSeam(r,x,d,at){ const G=GUT, IN=1/12, C=G.COATS, jx0=x-G.LAP*IN, jx1=x;
+  prismRun(r,gutBand(0,0.03),M.joint,jx1-0.08*IN,jx1,0,0);
+  const fx0=jx0-G.FLEX_SIDE*IN, fx1=jx1+G.FLEX_SIDE*IN, px0=fx0-G.PRIMER_PAST*IN, px1=fx1+G.PRIMER_PAST*IN, tx0=px0-G.TOP_PAST*IN, tx1=px1+G.TOP_PAST*IN;
+  const pm=gutterCoat(r,px0,px1,...C.primer,M.primer), fm=gutterCoat(r,fx0,fx1,...C.flex,M.flex); gutterCoat(r,tx0,tx1,C.topcoat[0],G.BAND_TOP,M.topcoat); fm.userData.at=at; d.prim.push(pm); d.flex.push(fm); }
+// A D-8-TYP inlet at run-local x: the outlet tube through the floor with its flange, and (with `coats`) the primer and Flex discs 3" out and the topcoat over them. The tube's mouth stays closed in code; the model opens it.
+function gutterInlet(r,x,d,coats,at){ const G=GUT, IN=1/12, C=G.COATS, zc=G.W/2*IN, zf=(-G.D+G.MT)*IN, zt=zf+G.MT*IN, ir=G.OUT_R-G.MT;
+  const tube=new THREE.Mesh(new THREE.CylinderGeometry(G.OUT_R*IN,G.OUT_R*IN,(G.OUT_DROP+G.MT)*IN,24),M.coping); tube.position.set(x,zt-(G.OUT_DROP+G.MT)/2*IN,zc); r.add(tube); r.add(gutRing(G.OUT_R+G.OUT_FL,ir,G.MT,M.coping,x,zf,zc));
+  if(!coats) return; const pm=gutRing(G.OUT_R+G.FLEX_OUT+G.PRIMER_PAST,ir,C.primer[1]-C.primer[0],M.primer,x,zt+C.primer[0]*IN,zc), fm=gutRing(G.OUT_R+G.FLEX_OUT,ir,C.flex[1]-C.flex[0],M.flex,x,zt+C.flex[0]*IN,zc);
+  r.add(pm); r.add(fm); r.add(gutRing(G.OUT_R+G.FLEX_OUT+G.PRIMER_PAST+G.TOP_PAST,ir,G.BAND_TOP-C.topcoat[0],M.topcoat,x,zt+C.topcoat[0]*IN,zc)); fm.userData.at=at; d.prim.push(pm); d.flex.push(fm); }
 function buildGable(cfg){
   const {L,W,H,PITCH=1/12} = cfg; const RUN=W/2, RISE=RUN*PITCH, SL=Math.sqrt(RUN*RUN+RISE*RISE), ANG=Math.atan(PITCH);
   if(cfg.pitchLabel) cfg.pitchLabel(PITCH);
@@ -1292,14 +1328,26 @@ function buildGable(cfg){
     g.add(box(CW,CH,CW,M.curb,0,CH/2,0)); const lid=box(CW+0.5,0.25,CW+0.5,M.coping,0,CH+0.45,-0.35); lid.rotation.x=-0.28; g.add(lid);
     d.prim.push(box(CW+0.12,1.0,CW+0.12,M.primer,0,0.5,0,false), box(CW+2.0,0.05,CW+2.0,M.primer,0,0.2,0,false)); d.flex.push(box(CW+0.16,0.9,CW+0.16,M.flex,0,0.45,0,false), box(CW+2.2,0.06,CW+2.2,M.flex,0,0.23,0,false));
     d.prim.concat(d.flex).forEach(m=>g.add(m)); g.add(box(CW+0.22,CH+0.02,CW+0.22,M.topcoat,0,CH/2+0.01,0,false)); g.add(box(CW+2.4,0.06,CW+2.4,M.topcoat,0,0.26,0,false)); return reg(d); }
-  let gutters=null;
-  if(cfg.gutters){ gutters=new THREE.Group(); g0.add(gutters); const gd={g:gutters,prim:[],flex:[]};
-    [-1,1].forEach(sg=>{ const z=sg*(W/2+0.45); gutters.add(box(L+0.4,0.9,0.9,M.coping,0,H-0.45,z)); gutters.add(box(L+0.2,0.5,0.6,M.unitD,0,H-0.2,z,false));
-      for(let x=-L/2+10;x<L/2;x+=10){ gutters.add(box(0.1,0.92,0.92,M.joint,x,H-0.45,z,false)); gd.prim.push(box(1.0,0.5,0.7,M.primer,x,H-0.2,z,false)); gd.flex.push(box(1.2,0.52,0.72,M.flex,x,H-0.2,z,false)); gutters.add(box(1.4,0.54,0.74,M.topcoat,x,H-0.2,z,false)); }
-      for(let x=-L/2+20;x<L/2;x+=40){ const ds=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.35,H-1,12),M.coping); ds.position.set(x,(H-1)/2,sg*(W/2+0.85)); gutters.add(ds); const inlet=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.35,0.6,12),M.iron); inlet.position.set(x,H-0.9,z); gutters.add(inlet);
-        gd.flex.push(new THREE.Mesh(new THREE.CylinderGeometry(0.55,0.4,0.62,12),M.flex)); gd.flex[gd.flex.length-1].position.set(x,H-0.88,z); } });
-    gd.prim.concat(gd.flex).forEach(m=>gutters.add(m)); reg(gd); }
-  const placed = cfg.place({right,left,curbAt,pipeAt,ventAt,skylightAt,hatchAt,unitAt,showUnit,gutters,SL,L,W,H,RISE});
+  // Eave-hung gutter run (GUT): both eaves, seams every 10 ft, a downspout every 40 ft; each cfg.gutterModels entry ({id:'gutter'|'gutterinlet', x, side})
+  // takes a 4-ft bay out of the run for its model section. A bay keeps a plain fill (what shows with the detail off, and under the code stand-in until the model loads).
+  let gutters=null; const gutSplices=[];
+  if(cfg.gutters){ gutters=new THREE.Group(); g0.add(gutters); const G=GUT, IN=1/12, OV=0.002, gd={g:gutters,prim:[],flex:[],along:true}; reg(gd); const at=x=>(x+L/2)/L;
+    const GUT_SKIN={gutter:M.coping,tab:M.coping,strap:M.curb,outlet:M.coping,rivet:M.fast,strainer:M.fast,primer:M.primer,flex:M.flex,topcoat:M.topcoat};   // the run's own materials, so the bay ends vanish
+    [-1,1].forEach(sg=>{ const run=new THREE.Group(); run.position.set(0,H,sg*W/2); run.rotation.y=sg>0?0:Math.PI; gutters.add(run); const lx=x=>sg*x;   // run-local x: world x on the +z eave, mirrored on the other; local +z is outward on both
+      const bays=(cfg.gutterModels||[]).filter(q=>(q.side||1)===sg).map(q=>({id:q.id,x:q.x,x0:q.x-2,x1:q.x+2})).sort((p,q)=>p.x0-q.x0), inBay=x=>bays.some(b=>x>b.x0&&x<b.x1);
+      const segs=[]; let a=-L/2-0.2, capA=true; bays.forEach(b=>{ segs.push([a,b.x0+OV,capA,false]); a=b.x1-OV; capA=false; }); segs.push([a,L/2+0.2,capA,true]);   // the run between the bays, over-lapping each model 0.6 mm with no end cap inside it
+      segs.forEach(([x0,x1,ca,cb])=>{ const [l0,l1,c0,c1]=sg>0?[x0,x1,ca,cb]:[-x1,-x0,cb,ca]; gutterMetal(run,l0,l1,c0,c1); gutterCoat(run,l0,l1,...G.COATS.topcoat,M.topcoat,c0,c1); });   // metal and the topcoat film over the whole interior (W-7-TYP)
+      for(let x=-L/2+G.STRAP_PITCH/24;x<L/2;x+=G.STRAP_PITCH/12) if(!inBay(x)) gutterStrap(run,lx(x));
+      for(let x=-L/2+G.SEAM_PITCH/2;x<L/2;x+=G.SEAM_PITCH) if(!inBay(x)) gutterSeam(run,lx(x),gd,at(x));
+      const dsX=new Set(); for(let x=-L/2+G.DS_PITCH/2;x<L/2;x+=G.DS_PITCH) dsX.add(x); bays.filter(b=>b.id==='gutterinlet').forEach(b=>dsX.add(b.x));
+      dsX.forEach(x=>{ if(!inBay(x)) gutterInlet(run,lx(x),gd,true,at(x)); const top=H-(G.D+G.OUT_DROP-1)/12, m=new THREE.Mesh(new THREE.CylinderGeometry(G.DS_R*IN,G.DS_R*IN,top,16),M.coping); m.position.set(x,top/2,sg*(W/2+G.W/2*IN)); m.castShadow=true; gutters.add(m); });   // the downspout to grade, wrapping the last inch of the drop
+      bays.forEach(b=>{ const x=lx(b.x), fb=new THREE.Group(), fill=new THREE.Group(); run.add(fb); run.add(fill); const d={g:fb,prim:[],flex:[],along:true}; reg(d);
+        gutterMetal(fill,x-2,x+2,false,false); gutterCoat(fill,x-2,x+2,...G.COATS.topcoat,M.topcoat,false,false); [x-1.25,x+1.25].forEach(sx=>gutterStrap(fill,sx));
+        if(b.id==='gutter') gutterSeam(fb,x,d,at(b.x)); else gutterInlet(fb,x,d,true,at(b.x));
+        const h=mountModel(b.id,run,x,0,0,null,GUT_SKIN); if(h) h.userData.gate={flex:0.15+0.5*at(b.x)};   // its Flex lands when the run's bands have reached the bay
+        d.bay={fill:{g:fill},h}; gutSplices.push({id:b.id,d}); }); });
+    gutters.userData.apply=()=>{ gutters.visible=!!(S.on.gutter||S.on.gutterinlet); gutSplices.forEach(q=>showUnit(q.d,!!S.on[q.id])); }; }
+  const placed = cfg.place({right,left,curbAt,pipeAt,ventAt,skylightAt,hatchAt,unitAt,showUnit,SL,L,W,H,RISE});
   const solar=makeSolar(left.g, cfg.solarCols, cfg.solarRows); solar.visible=false;
   const tmpO=new THREE.Object3D(), tmpM=new THREE.Matrix4();
   function applyStage(p){
@@ -1316,9 +1364,9 @@ function buildGable(cfg){
       s.fastF.instanceMatrix.needsUpdate=true; s.fastF.visible=p.flex>0;
     });
     const pC=Math.max(0,Math.min(1,(p.flex-0.15)/0.5));
-    dets.forEach(d=>{ d.prim.forEach(m=>m.visible=p.primer>0); d.flex.forEach((m,i)=>{ m.visible=pC>0; const t=Math.max(0.001,Math.min(1,pC*1.5-i*0.15)); m.scale.set(1,t,1); if(m.userData.y0===undefined) m.userData.y0=m.position.y; m.position.y=m.userData.y0*t; }); });
+    dets.forEach(d=>{ d.prim.forEach(m=>m.visible=p.primer>0); if(d.along){ d.flex.forEach(m=>m.visible=pC>0&&(m.userData.at||0)<=pC); return; }   /* the gutter's bands, in order along the run */ d.flex.forEach((m,i)=>{ m.visible=pC>0; const t=Math.max(0.001,Math.min(1,pC*1.5-i*0.15)); m.scale.set(1,t,1); if(m.userData.y0===undefined) m.userData.y0=m.position.y; m.position.y=m.userData.y0*t; }); });
     if(metal){ clipTop.constant = -L/2-4+(L+8)*p.thane; clipFlex.constant=1000; clipPrim.constant=1000; /* nothing is swept on metal: a model's primer/Flex stay whole */ } else { sweepFor(p,-L/2,L/2); }
-    placed.apply(); solar.visible=S.solar;
+    placed.apply(); if(gutters) gutters.userData.apply(); solar.visible=S.solar;
   }
   return { extent:{L,W,H:H+RISE}, hots:placed.hots, applyStage };
 }
@@ -1333,24 +1381,24 @@ function buildWarehouse(){ return buildGable({ L:120, W:80, H:20, lapModel:{slop
     return { hots, apply:()=>{ showUnit(c,!!S.on.curb); } }; } }); }
 
 const ARENA_VENTS=[-83,-41,1,43,85], ARENA_CURBS=[61,-59];   // curbs: odd x so both walls of the 10-ft curb land on pans, one lap phase for both   // odd x, 42 ft apart: every vent sees the same R-panel lap phase, so one model serves all five
-function buildArena(){ return buildGable({ L:220, W:190, H:44, PITCH:3/12, doors:[-90,-60,-30,0,30,60,90], gutters:true, solarCols:[-90,-70,-50,-30,-10,10,30,50,70,90], solarRows:[20,40,60,80],
+function buildArena(){ return buildGable({ L:220, W:190, H:44, PITCH:3/12, doors:[-90,-60,-30,0,30,60,90], gutters:true, gutterModels:[{id:'gutter',x:-45},{id:'gutterinlet',x:70}], solarCols:[-90,-70,-50,-30,-10,10,30,50,70,90], solarRows:[20,40,60,80],
   units:ARENA_VENTS.map(x=>({kind:'vent',slope:'left',x,z:19})).concat([{kind:'hatch',slope:'right',x:-94,z:89}],ARENA_CURBS.map(x=>({kind:'curb',slope:'right',x,z:30}))),   // CS-13-MP vents and HVAC curbs, CS-15-MP hatch
-  place:({right,left,curbAt,ventAt,hatchAt,unitAt,showUnit,gutters,SL,L,W,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
+  place:({right,left,curbAt,ventAt,hatchAt,unitAt,showUnit,SL,L,W,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
     const vents=ARENA_VENTS.map(x=>unitAt('vent',left,x,19,()=>ventAt(left,x,19))); const hatch=unitAt('hatch',right,-94,89,()=>hatchAt(right,-94,89)); const curbs=ARENA_CURBS.map(x=>unitAt('curb',right,x,30,()=>curbAt(right,x,30,10,1.8)));
     const hots=[
       {id:'sseam', anchor:()=> right.g.localToWorld(new THREE.Vector3(20,0.4,SL*0.55)), show:()=>S.on.sseam&&metal},
-      {id:'gutter', anchor:()=> new THREE.Vector3(-45,H+0.2,W/2+0.45), show:()=>S.on.gutter},
-      {id:'gutterinlet', anchor:()=> new THREE.Vector3(60,H+0.2,W/2+0.45), show:()=>S.on.gutterinlet},
+      {id:'gutter', anchor:()=> new THREE.Vector3(-45,H-0.35,W/2+0.5), show:()=>S.on.gutter},   /* the W-7-TYP seam section on a seam of the run, straps in phase */
+      {id:'gutterinlet', anchor:()=> new THREE.Vector3(70,H-0.35,W/2+0.5), show:()=>S.on.gutterinlet},   /* the D-8-TYP inlet section on a downspout of the run */
       {id:'hatch', anchor:()=> right.g.localToWorld(new THREE.Vector3(-94,4.8,89)), cam:{dist:15,drop:4.0}, show:()=>S.on.hatch},   /* label above the open lid; camera backed off to take it in */
       {id:'vent', anchor:()=> left.g.localToWorld(new THREE.Vector3(1,3.6,19)), show:()=>S.on.vent},
       {id:'curb', anchor:()=> right.g.localToWorld(new THREE.Vector3(61,7.6,30)), cam:{dist:27,drop:5.4}, show:()=>S.on.curb},   /* the 10-ft unit on its tall down-slope curb */
       {id:'ridge',anchor:()=> new THREE.Vector3(-40,H+RISE+0.4,0), show:()=>S.on.ridge}];
-    return { hots, apply:()=>{ vents.forEach(d=>showUnit(d,!!S.on.vent)); showUnit(hatch,!!S.on.hatch); curbs.forEach(d=>showUnit(d,!!S.on.curb)); if(gutters) gutters.visible=!!(S.on.gutter||S.on.gutterinlet); } }; } }); }
+    return { hots, apply:()=>{ vents.forEach(d=>showUnit(d,!!S.on.vent)); showUnit(hatch,!!S.on.hatch); curbs.forEach(d=>showUnit(d,!!S.on.curb)); } }; } }); }
 
 const AIR_SKIES=[-130,-88,-46,-4,38,80,122], AIR_PIPES=[-120,-108,60];   // skylights between two R-panel lap ribs, both slopes; pipes even x, 6k ft apart
-function buildAirport(){ return buildGable({ L:300, W:200, H:52, PITCH:1.5/12, doors:[], gutters:true, solarCols:[-120,-90,-60,-30,0,30,60,90,120], solarRows:[20,45,70],
+function buildAirport(){ return buildGable({ L:300, W:200, H:52, PITCH:1.5/12, doors:[], gutters:true, gutterModels:[{id:'gutter',x:-85},{id:'gutterinlet',x:-50}], solarCols:[-120,-90,-60,-30,0,30,60,90,120], solarRows:[20,45,70],
   units:[].concat(...['right','left'].map(slope=>AIR_SKIES.map(x=>({kind:'mskylight',slope,x,z:35,tag:'14ft'}))), AIR_PIPES.map(x=>({kind:'mpipe',slope:'right',x,z:21.5}))),   // F-12-TYP panels, P-9-MP boots
-  place:({right,left,ventAt,pipeAt,skylightAt,unitAt,showUnit,gutters,SL,L,W,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
+  place:({right,left,ventAt,pipeAt,skylightAt,unitAt,showUnit,SL,L,W,H,RISE})=>{ const metal=ROOFS[S.roof].surface!=='spf';
     // hangar door on the +x gable end: full-width sliding leaves
     world.add(box(0.8,H-4,W-10,M.unitD,L/2+0.3,(H-4)/2+2,0,false)); for(let z=-W/2+15;z<W/2-5;z+=20){ world.add(box(1.2,H-6,0.6,M.coping,L/2+0.5,(H-6)/2+2,z,false)); } world.add(box(2,3,W+2,M.coping,L/2+0.6,H-1.5,0,false));
     world.add(box(40,10,0.4,M.unitD,-100,5,W/2+0.1,false)); world.add(box(0.4,10,30,M.unitD,-L/2-0.1,5,-40,false));
@@ -1359,12 +1407,12 @@ function buildAirport(){ return buildGable({ L:300, W:200, H:52, PITCH:1.5/12, d
     const hots=[
       {id:'sseam', anchor:()=> right.g.localToWorld(new THREE.Vector3(-40,0.4,SL*0.7)), show:()=>S.on.sseam&&metal},
       {id:'mskylight', anchor:()=> right.g.localToWorld(new THREE.Vector3(38,0.5,35)), show:()=>S.on.mskylight},
-      {id:'gutter', anchor:()=> new THREE.Vector3(-85,H+0.2,W/2+0.45), show:()=>S.on.gutter},
-      {id:'gutterinlet', anchor:()=> new THREE.Vector3(-50,H+0.2,W/2+0.45), show:()=>S.on.gutterinlet},
+      {id:'gutter', anchor:()=> new THREE.Vector3(-85,H-0.35,W/2+0.5), show:()=>S.on.gutter},   /* W-7-TYP seam section */
+      {id:'gutterinlet', anchor:()=> new THREE.Vector3(-50,H-0.35,W/2+0.5), show:()=>S.on.gutterinlet},   /* D-8-TYP inlet section on a downspout */
       {id:'vent', anchor:()=> left.g.localToWorld(new THREE.Vector3(20,3.8,60)), show:()=>S.on.vent},
       {id:'mpipe', anchor:()=> right.g.localToWorld(new THREE.Vector3(60,3.2,21.5)), show:()=>S.on.mpipe},
       {id:'ridge',anchor:()=> new THREE.Vector3(100,H+RISE+0.4,0), show:()=>S.on.ridge}];
-    return { hots, apply:()=>{ skies.forEach(d=>showUnit(d,!!S.on.mskylight)); vents.forEach(d=>d.g.visible=!!S.on.vent); pipes.forEach(d=>showUnit(d,!!S.on.mpipe)); if(gutters) gutters.visible=!!(S.on.gutter||S.on.gutterinlet); } }; } }); }
+    return { hots, apply:()=>{ skies.forEach(d=>showUnit(d,!!S.on.mskylight)); vents.forEach(d=>d.g.visible=!!S.on.vent); pipes.forEach(d=>showUnit(d,!!S.on.mpipe)); } }; } }); }
 
 const MFG_VENTS=[-69,-9,51];   // odd x, 60 ft apart: the same R-panel lap phase at each, so one model serves all three
 const MFG_PIPES=[-74,-62,40], MFG_SKIES=[-82,-52,-22,8,38,68];   // pipes: even x, 6k ft apart (one lap phase), z clear of the purlin rows; skylights: between two R-panel lap ribs
